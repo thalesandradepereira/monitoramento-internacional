@@ -11,7 +11,7 @@ O sistema opera de forma totalmente automatizada executando um pipeline robusto 
 3. **Curadoria Inteligente (Gemini 2.5 Flash):** Analisa o oceano de dados recebidos e exige da IA a seleção de *exatamente* 5 tópicos por país (totalizando 50), priorizando Economia, Ciência, Tecnologia, Esportes, Conflitos e Política Interna. Tudo traduzido obrigatoriamente para PT-BR.
 4. **Localização Bilíngue:** Após gerar os 50 resumos em português, um segundo agente de IA entra em ação para espelhar todo o conteúdo para o inglês nativo (EN-US).
 5. **Composição Visual (E-mail):** Gera um e-mail HTML dinâmico, organizado com "Table of Contents" (índice âncora) e agrupado por país com suporte automático às bandeiras locais (ex: 🇯🇵 Japão).
-6. **Servidor Web de Inscrição:** Roda simultaneamente um micro-serviço (Express) na rota principal, entregando uma *Landing Page* clean para novos usuários digitarem seus e-mails e se inscreverem no boletim, alimentando o banco de destinatários (`state/recipients.txt`).
+6. **Servidor Web de Inscrição:** Roda simultaneamente um micro-serviço (Express) na rota principal, entregando uma *Landing Page* clean para novos usuários digitarem seus e-mails e se inscreverem no boletim, alimentando o banco de destinatários (`recipients.txt`).
 
 ## 🛠 Tecnologias Utilizadas
 
@@ -61,12 +61,12 @@ O sistema opera de forma totalmente automatizada executando um pipeline robusto 
    Para forçar o pipeline rodar imediatamente (sem precisar esperar a madrugada), abra outro terminal e digite:
    \`\`\`bash
    npm run once
-   \`\`\`
+   ```
 
 ## 📬 Cadastrando Usuários
 
 O sistema lê os destinatários de duas vias distintas e as une antes do envio:
 1. **Destinatário Estático:** Varíavel `DEST_EMAIL` cadastrada de forma fixa no arquivo `.env`.
-2. **Destinatários Dinâmicos:** Acessando a variável configurável \`WEB_URL\` (ex: `http://localhost:3000`), qualquer colega poderá preencher o formulário. O sistema salvará este contato com segurança no arquivo `state/recipients.txt`.
+2. **Destinatários Dinâmicos:** Acessando a variável configurável `WEB_URL` (ex: `http://localhost:3000`), qualquer colega poderá preencher o formulário. O sistema salvará este contato com segurança no arquivo `recipients.txt`.
 
 > O projeto herdou a estabilidade arquitetural de projetos irmãos como o *Radar Beleza* e *Resumo IA*, otimizado agora para o escopo bilíngue global.

@@ -8,7 +8,7 @@ const app = express()
 // Middleware to parse urlencoded bodies from the HTML form
 app.use(express.urlencoded({ extended: true }))
 
-const RECIPIENTS_FILE = path.resolve(__dirname, '..', 'state', 'recipients.txt')
+const RECIPIENTS_FILE = path.resolve(__dirname, '..', 'recipients.txt')
 
 // Ensure state dir and file exist
 if (!fs.existsSync(path.dirname(RECIPIENTS_FILE))) {
