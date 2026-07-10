@@ -139,7 +139,7 @@ export async function enviarEmail(
   try {
     const fs = require('fs')
     const path = require('path')
-    const file = path.resolve(__dirname, '..', 'state', 'recipients.txt')
+    const file = path.resolve(__dirname, '..', 'recipients.txt')
     if (fs.existsSync(file)) {
       txtEmails = fs.readFileSync(file, 'utf8')
         .split('\n')
