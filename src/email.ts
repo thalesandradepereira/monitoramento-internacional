@@ -7,15 +7,15 @@ function esc(s: string): string {
 }
 
 const flags: Record<string, string> = {
-  'Brasil': '🇧🇷',
-  'Estados Unidos': '🇺🇸',
-  'França': '🇫🇷',
-  'Inglaterra': '🇬🇧',
-  'Espanha': '🇪🇸',
-  'Alemanha': '🇩🇪',
-  'Japão': '🇯🇵',
+  'Brasil': '🇧🇷', 'Brazil': '🇧🇷',
+  'Estados Unidos': '🇺🇸', 'United States': '🇺🇸', 'USA': '🇺🇸', 'US': '🇺🇸',
+  'França': '🇫🇷', 'France': '🇫🇷',
+  'Inglaterra': '🇬🇧', 'England': '🇬🇧', 'UK': '🇬🇧', 'Reino Unido': '🇬🇧',
+  'Espanha': '🇪🇸', 'Spain': '🇪🇸',
+  'Alemanha': '🇩🇪', 'Germany': '🇩🇪',
+  'Japão': '🇯🇵', 'Japan': '🇯🇵',
   'China': '🇨🇳',
-  'Índia': '🇮🇳',
+  'Índia': '🇮🇳', 'India': '🇮🇳',
   'Portugal': '🇵🇹'
 }
 
