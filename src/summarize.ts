@@ -19,7 +19,9 @@ export async function resumirNoticias(noticias: Noticia[]): Promise<Topico[]> {
 
   const prompt = `
 Abaixo está uma lista de notícias de 10 países das últimas 24h.
-Sua tarefa é selecionar EXATAMENTE 5 notícias relevantes para CADA UM DOS 10 PAÍSES, totalizando até 50 notícias no máximo. Se um país não tiver 5 notícias, pegue todas as disponíveis daquele país.
+Os 10 países são: Brasil, Estados Unidos, França, Inglaterra, Espanha, Alemanha, Japão, China, Índia e Portugal.
+Sua tarefa é selecionar EXATAMENTE 5 notícias relevantes para CADA UM DOS 10 PAÍSES, totalizando 50 notícias no máximo. Se um país não tiver 5 notícias, pegue todas as disponíveis daquele país.
+Você NÃO PODE parar a geração antes de fornecer as notícias de TODOS os 10 países.
 FOCO OBRIGATÓRIO: Economia, Ciência, Tecnologia, Esportes, Conflitos e Política Interna.
 Para cada notícia selecionada:
 1. TRADUZA O TÍTULO OBRIGATORIAMENTE para o Português do Brasil. Nenhum título pode ficar em inglês ou na língua original.
