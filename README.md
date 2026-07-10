@@ -63,6 +63,19 @@ O sistema opera de forma totalmente automatizada executando um pipeline robusto 
    npm run once
    ```
 
+## ☁️ Automação na Nuvem (GitHub Actions)
+
+O projeto já vem equipado com uma integração Contínua (CI) nativa para o GitHub. Isso significa que você não precisa deixar o seu computador ligado para que os resumos sejam gerados e enviados de madrugada.
+
+**Estratégias de Gatilho configuradas:**
+1. **Agendamento Cron (Automático):** O servidor do GitHub acordará todos os dias às 05:45 UTC (02:45 Horário de Brasília) para executar toda a coleta, IA e disparo sem nenhuma intervenção humana.
+2. **Disparo Manual (Workflow Dispatch):** Na aba "Actions" do GitHub, existe um botão azul chamado "Run workflow". Ao clicar nele, você força a geração de um boletim extraordinário instantaneamente.
+
+**⚠️ Importante:** O GitHub não tem acesso ao arquivo `.env` do seu computador. Para a automação em nuvem funcionar, você **precisa** entrar na página do seu repositório no GitHub -> **Settings -> Secrets and variables -> Actions** e cadastrar três senhas vitais:
+- `GEMINI_API_KEY`
+- `SMTP_USER`
+- `SMTP_PASS`
+
 ## 📬 Cadastrando Usuários
 
 O sistema lê os destinatários de duas vias distintas e as une antes do envio:
