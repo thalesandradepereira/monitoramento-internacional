@@ -46,7 +46,13 @@ ${JSON.stringify(noticias, null, 2)}
   const result = await model.generateContent(prompt)
   const text = result.response.text() || '[]'
   
-  const limpo = text.replace(/```json/g, '').replace(/```/g, '').trim()
+  let limpo = text.replace(/```json/gi, '').replace(/```/g, '').trim()
+  
+  const match = limpo.match(/\\[[\\s\\S]*\\]/)
+  if (match) {
+    limpo = match[0]
+  }
+
   try {
     const arr = JSON.parse(limpo)
     return Array.isArray(arr) ? arr.slice(0, config.maxTopicos) : []
