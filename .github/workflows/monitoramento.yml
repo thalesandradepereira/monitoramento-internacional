@@ -1,0 +1,46 @@
+name: Disparo Monitoramento Internacional
+
+on:
+  # Permite que você dispare um teste manualmente clicando no botão no GitHub
+  workflow_dispatch:
+  
+  # Roda todos os dias às 02h45 Horário de Brasília (BRT)
+  # Como o GitHub usa horário de Londres (UTC), 02h45 BRT = 05h45 UTC
+  schedule:
+    - cron: '45 5 * * *'
+
+jobs:
+  rodar-monitoramento:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Clonar Código do Repositório
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Preparar Ambiente Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 📦 Instalar Dependências
+        run: npm ci || npm install
+
+      - name: 🚀 Executar Disparo
+        env:
+          # Segredos (Você precisa cadastrar na aba Settings do repositório no GitHub)
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          
+          # Variáveis padrões e públicas
+          GEMINI_MODEL: 'gemini-2.5-flash'
+          DEST_EMAIL: 'thalesandrade@yahoo.com'
+          SMTP_HOST: 'smtp.gmail.com'
+          SMTP_PORT: '465'
+          SMTP_SECURE: 'true'
+          FROM_NAME: 'Monitoramento Internacional'
+          MAX_TOPICOS: '50'
+          JANELA_HORAS: '24'
+          WEB_URL: 'http://localhost:3000'
+        
+        run: npm run once
