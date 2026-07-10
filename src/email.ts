@@ -141,7 +141,10 @@ export async function enviarEmail(
     const path = require('path')
     const file = path.resolve(__dirname, '..', 'state', 'recipients.txt')
     if (fs.existsSync(file)) {
-      txtEmails = fs.readFileSync(file, 'utf8').split('\n').map((e: string) => e.trim()).filter(Boolean)
+      txtEmails = fs.readFileSync(file, 'utf8')
+        .split('\n')
+        .map((e: string) => e.trim())
+        .filter((e: string) => e && !e.startsWith('#'))
     }
   } catch (err) {
     console.warn('[email] Erro ao ler recipients.txt:', err)
