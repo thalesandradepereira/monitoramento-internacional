@@ -8,8 +8,8 @@ O sistema opera de forma totalmente automatizada executando um pipeline robusto 
 
 1. **Agregação Global (RSS):** Conecta-se aos feeds RSS das maiores mídias de 10 nações (Brasil, EUA, França, Inglaterra, Espanha, Alemanha, Japão, China, Índia e Portugal).
 2. **Janela Temporal e Deduplicação:** Filtra estritamente as notícias publicadas nas últimas 24 horas. O sistema possui memória (`state/news-history.json`) para impedir que uma notícia repetida seja reenviada em dias subsequentes.
-3. **Curadoria Inteligente (Gemini 2.5 Flash):** Analisa o oceano de dados recebidos e exige da IA a seleção de *exatamente* 5 tópicos por país (totalizando 50), priorizando Economia, Ciência, Tecnologia, Esportes, Conflitos e Política Interna. Tudo traduzido obrigatoriamente para PT-BR.
-4. **Localização Bilíngue:** Após gerar os 50 resumos em português, um segundo agente de IA entra em ação para espelhar todo o conteúdo para o inglês nativo (EN-US).
+3. **Arquitetura Diamante de 2 Passos (Gemini 2.5 Flash):** Em vez de enviar todas as notícias de uma vez (estourando tokens), a IA realiza uma **Triagem Rápida (Map)** nos lotes para separar links crus de Tecnologia e Ciência. Depois, realiza uma **Decisão Qualitativa (Reduce)** agrupando por país e filtrando cirurgicamente os top 8 finalistas absolutos.
+4. **Localização Bilíngue:** Após gerar os (até) 80 resumos em português, um segundo agente de IA entra em ação para espelhar todo o conteúdo para o inglês nativo (EN-US).
 5. **Composição Visual (E-mail):** Gera um e-mail HTML dinâmico, organizado com "Table of Contents" (índice âncora) e agrupado por país com suporte automático às bandeiras locais (ex: 🇯🇵 Japão).
 6. **Servidor Web de Inscrição:** Roda simultaneamente um micro-serviço (Express) na rota principal, entregando uma *Landing Page* clean para novos usuários digitarem seus e-mails e se inscreverem no boletim, alimentando o banco de destinatários (`recipients.txt`).
 
