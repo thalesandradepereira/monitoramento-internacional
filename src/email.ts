@@ -100,7 +100,7 @@ function getFooterHTML(lang: 'pt' | 'en'): string {
     madeBy: 'Made by TAP 💌',
     unsub: 'Não quero mais receber',
     indicarLink: config.webUrl,
-    unsubLink: '#' // Substituir caso tenha URL real
+    unsubLink: `mailto:${config.smtp.user}?subject=${encodeURIComponent("Descadastrar — Monitoramento Internacional")}&body=${encodeURIComponent("Por favor, remova o meu e-mail da lista de envios.")}`
   } : {
     convite: 'Know someone who would like this? 🤝',
     conviteSub: 'Invite a colleague to receive the International Monitoring (but tell them first!).',
@@ -108,7 +108,7 @@ function getFooterHTML(lang: 'pt' | 'en'): string {
     madeBy: 'Made by TAP 💌',
     unsub: 'I no longer wish to receive this',
     indicarLink: config.webUrl,
-    unsubLink: '#'
+    unsubLink: `mailto:${config.smtp.user}?subject=${encodeURIComponent("Unsubscribe — International Monitoring")}&body=${encodeURIComponent("Please remove my email from the mailing list.")}`
   }
 
   return `
