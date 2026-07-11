@@ -53,13 +53,18 @@ export async function runPipeline() {
     // Sincronizar com GitHub Pages
     console.log('[git] Fazendo push do novo Dashboard para o GitHub Pages...')
     try {
-      execSync('git add docs/', { stdio: 'ignore' })
-      execSync(`git commit -m "docs: adicionar dashboard de ${dataHoje}"`, { stdio: 'ignore' })
-      execSync('git push', { stdio: 'ignore' })
+      if (process.env.GITHUB_ACTIONS) {
+        execSync('git config user.name "github-actions[bot]"')
+        execSync('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"')
+      }
+      execSync('git add docs/')
+      execSync(`git commit -m "docs: adicionar dashboard de ${dataHoje}"`)
+      execSync('git push')
       console.log('[git] Push concluído com sucesso.')
     } catch (err: any) {
-      // Ignorar erros caso não haja nada para comitar
-      console.log('[git] Nenhuma alteração detectada ou erro no push.')
+      console.log('[git] Erro no push ou nenhuma alteração:')
+      if (err.stdout) console.log(err.stdout.toString())
+      if (err.stderr) console.error(err.stderr.toString())
     }
 
     await enviarEmail(topicosPt, topicosEn, dataHoje)
