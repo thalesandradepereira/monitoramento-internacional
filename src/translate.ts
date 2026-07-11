@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { config } from './config'
 import { Topico } from './summarize'
+import { generateContentWithRetry } from './geminiHelper'
 
 const genAI = new GoogleGenerativeAI(config.gemini.apiKey)
 
@@ -21,7 +22,7 @@ Output strictly in JSON:
 `
 
   console.log(`[translate] Traduzindo ${topicos.length} tópicos para o inglês...`)
-  const result = await model.generateContent(prompt)
+  const result = await generateContentWithRetry(model, prompt)
   const text = result.response.text() || '[]'
   
   const limpo = text.replace(/```json/g, '').replace(/```/g, '').trim()
