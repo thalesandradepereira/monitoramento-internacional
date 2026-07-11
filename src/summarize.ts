@@ -10,6 +10,7 @@ export interface Topico {
   titulo: string
   resumo: string
   link: string
+  categoria?: string
 }
 
 interface Candidato {
@@ -129,6 +130,7 @@ Tarefa:
 1. Compare rigorosamente todos os artigos e ESCOLHA APENAS OS 8 MELHORES e mais importantes focados em Tecnologia, Ciência e Trending Topics. Se houver menos de 8 artigos no total, utilize todos.
 2. Para os finalistas escolhidos, TRADUZA O TÍTULO para Português do Brasil.
 3. Para os finalistas escolhidos, escreva um resumo de altíssima qualidade em Português do Brasil contendo exatamente entre 3 e 5 linhas para sintetizar o contexto e impacto.
+4. Adicione um campo "categoria" em MAIÚSCULAS contendo de 1 a 2 palavras que classifique a notícia (ex: LANÇAMENTO, MERCADO, TECNOLOGIA, CIÊNCIA, POLÍTICA).
 
 Retorne ESTRITAMENTE em JSON com a estrutura:
 [
@@ -137,7 +139,8 @@ Retorne ESTRITAMENTE em JSON com a estrutura:
     "titulo": "Título traduzido",
     "resumo": "O resumo elaborado...",
     "link": "URL original",
-    "fonte": "Nome da fonte"
+    "fonte": "Nome da fonte",
+    "categoria": "CATEGORIA"
   }
 ]
 

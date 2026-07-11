@@ -1,45 +1,14 @@
 import nodemailer from 'nodemailer'
 import { config } from './config'
 import { Topico } from './summarize'
+import { gerarLinkDescadastro } from './unsubscribe'
 
 function esc(s: string): string {
   return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
-const flags: Record<string, string> = {
-  'Brasil': '🇧🇷', 'Brazil': '🇧🇷',
-  'Estados Unidos': '🇺🇸', 'United States': '🇺🇸', 'USA': '🇺🇸', 'US': '🇺🇸',
-  'França': '🇫🇷', 'France': '🇫🇷',
-  'Inglaterra': '🇬🇧', 'England': '🇬🇧', 'UK': '🇬🇧', 'Reino Unido': '🇬🇧',
-  'Espanha': '🇪🇸', 'Spain': '🇪🇸',
-  'Alemanha': '🇩🇪', 'Germany': '🇩🇪',
-  'Japão': '🇯🇵', 'Japan': '🇯🇵',
-  'China': '🇨🇳',
-  'Índia': '🇮🇳', 'India': '🇮🇳',
-  'Portugal': '🇵🇹'
-}
-
-function renderToC(topicos: Topico[], lang: 'pt' | 'en'): string {
-  const title = lang === 'pt' ? 'Ir para o país:' : 'Jump to country:'
-  
-  const countries = Array.from(new Set(topicos.map(t => t.pais)))
-  
-  const links = countries.map(pais => {
-    const flag = flags[pais] || ''
-    const anchorId = `${lang}-${pais.toLowerCase().replace(/[^a-z0-9]/g, '')}`
-    return `<a href="#${anchorId}" style="display: inline-block; background: #f3f4f6; color: #374151; text-decoration: none; font-size: 13px; font-weight: 500; padding: 6px 12px; border-radius: 16px; margin: 0 6px 8px 0; border: 1px solid #e5e7eb;">${flag} ${esc(pais)}</a>`
-  }).join('')
-
-  return `
-    <div style="margin-bottom: 32px; padding: 16px; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px;">
-      <div style="font-size: 13px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-bottom: 12px;">${title}</div>
-      ${links}
-    </div>
-  `
-}
-
 function renderNewsBlock(topicos: Topico[], lang: 'pt' | 'en'): string {
-  const readMore = lang === 'pt' ? 'Ler a reportagem original' : 'Read original report'
+  const readMore = lang === 'pt' ? 'Ler mais' : 'Read more'
   
   const groups: Record<string, Topico[]> = {}
   for (const t of topicos) {
@@ -49,26 +18,29 @@ function renderNewsBlock(topicos: Topico[], lang: 'pt' | 'en'): string {
 
   let html = ''
   for (const [pais, items] of Object.entries(groups)) {
-    const flag = flags[pais] || ''
-    const anchorId = `${lang}-${pais.toLowerCase().replace(/[^a-z0-9]/g, '')}`
-    
     html += `
-      <a name="${anchorId}"></a>
-      <div id="${anchorId}" style="margin-top: 32px; margin-bottom: 16px;">
-        <h3 style="font-size: 18px; color: #1f2937; margin: 0; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px;">
-          ${flag} ${esc(pais)}
+      <div style="margin-top: 32px; margin-bottom: 16px;">
+        <h3 style="font-size: 18px; color: #111827; margin: 0; border-bottom: 2px solid #111827; padding-bottom: 8px; text-transform: uppercase;">
+          📍 ${esc(pais)}
         </h3>
       </div>
     `
     
     for (const t of items) {
+      const bulletList = esc(t.resumo).split('\n').filter(Boolean).map(line => `<li style="margin-bottom: 4px; color: #374151;">${line.replace(/^- /, '')}</li>`).join('')
+      
+      const categoriaHTML = t.categoria ? `<div style="font-size: 12px; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">${esc(t.categoria)}</div>` : ''
+      
       html += `
         <div style="margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid #eaeaea;">
-          <div style="font-size: 18px; font-weight: 700; color: #111827; margin: 4px 0 8px;">
+          ${categoriaHTML}
+          <div style="font-size: 16px; font-weight: 700; color: #111827; margin: 4px 0 8px;">
             ${esc(t.titulo)}
           </div>
           <div style="font-size: 15px; line-height: 1.6; color: #374151; margin-bottom: 12px;">
-            ${esc(t.resumo).replace(/\n/g, '<br/>')}
+            <ul style="margin: 0; padding-left: 20px;">
+              ${bulletList}
+            </ul>
           </div>
           <div>
             <a href="${esc(t.link)}" style="color: #2563eb; text-decoration: none; font-weight: 500; font-size: 14px;">
@@ -83,39 +55,47 @@ function renderNewsBlock(topicos: Topico[], lang: 'pt' | 'en'): string {
   return html
 }
 
-function getHeaderHTML(): string {
+function getHeaderHTML(numNoticias: number, lang: 'pt' | 'en', dataStr: string): string {
+  const title = lang === 'pt' ? 'Monitoramento Internacional' : 'International Monitoring'
+  const subTitle = lang === 'pt' ? `As ${numNoticias} principais novidades das últimas 24h · Internacional` : `The top ${numNoticias} news from the last 24h · International`
+  
   return `
-    <div style="text-align: center; margin-bottom: 30px;">
-      <h1 style="font-size: 28px; margin: 0; color: #111827; font-weight: 900; letter-spacing: -0.5px;">🌎 Monitoramento Internacional</h1>
-      <p style="color: #6b7280; font-size: 14px; margin-top: 4px;">Resumo Diário de Notícias</p>
+    <div style="margin-bottom: 30px;">
+      <h1 style="font-size: 24px; margin: 0; color: #111827; font-weight: 800; letter-spacing: -0.5px;">🌎 ${title} — ${dataStr}</h1>
+      <p style="color: #6b7280; font-size: 14px; margin-top: 8px;">${subTitle}</p>
     </div>
   `
 }
 
-function getFooterHTML(lang: 'pt' | 'en'): string {
+function getFooterHTML(lang: 'pt' | 'en', destEmail: string): string {
+  const unsubLink = gerarLinkDescadastro(destEmail)
+  const inviteLink = config.unsubscribeWorkerUrl 
+    ? `${config.unsubscribeWorkerUrl}/invite` 
+    : `mailto:${config.smtp.user}?subject=${encodeURIComponent("Indicar um colega — Monitoramento Internacional")}&body=${encodeURIComponent("Olá! Quero indicar o e-mail: \\n\\n(digite o e-mail do seu colega aqui)")}`
+
   const t = lang === 'pt' ? {
     convite: 'Conhece alguém que curtiria? 🤝',
     conviteSub: 'Indique um colega para receber o Monitoramento Internacional (ah, mas avisa ele antes!).',
     btnIndicar: 'Indicar Colega',
     madeBy: 'Made by TAP 💌',
     unsub: 'Não quero mais receber',
-    indicarLink: `mailto:${config.smtp.user}?subject=${encodeURIComponent("Indicar um colega — Monitoramento Internacional")}&body=${encodeURIComponent("Olá! Quero indicar o e-mail: \\n\\n(digite o e-mail do seu colega aqui)")}`,
-    unsubLink: `mailto:${config.smtp.user}?subject=${encodeURIComponent("Descadastrar — Monitoramento Internacional")}&body=${encodeURIComponent("Por favor, remova o meu e-mail da lista de envios.")}`
+    indicarLink: inviteLink,
+    unsubLink: unsubLink
   } : {
     convite: 'Know someone who would like this? 🤝',
     conviteSub: 'Invite a colleague to receive the International Monitoring (but tell them first!).',
     btnIndicar: 'Invite Colleague',
     madeBy: 'Made by TAP 💌',
     unsub: 'I no longer wish to receive this',
-    indicarLink: `mailto:${config.smtp.user}?subject=${encodeURIComponent("Invite a colleague — International Monitoring")}&body=${encodeURIComponent("Hello! I want to invite the following email: \\n\\n(type your colleague's email here)")}`,
-    unsubLink: `mailto:${config.smtp.user}?subject=${encodeURIComponent("Unsubscribe — International Monitoring")}&body=${encodeURIComponent("Please remove my email from the mailing list.")}`
+    indicarLink: inviteLink,
+    unsubLink: unsubLink
   }
 
   return `
     <div style="margin-top: 32px; padding: 24px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; text-align: center;">
       <div style="font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 8px;">${esc(t.convite)}</div>
       <div style="font-size: 14px; color: #4b5563; margin-bottom: 20px;">${esc(t.conviteSub)}</div>
-      <a href="${t.indicarLink}" style="display: inline-block; background: #111827; color: #fff; text-decoration: none; font-size: 14px; font-weight: 600; padding: 12px 24px; border-radius: 6px; letter-spacing: 0.3px;">${esc(t.btnIndicar)}</a>
+      <a href="${t.indicarLink}" style="display: inline-block; background: #ffffff; color: #9ca3af; border: 1px solid #e5e7eb; text-decoration: none; font-size: 14px; font-weight: 600; padding: 10px 24px; border-radius: 6px; letter-spacing: 0.3px;">${esc(t.btnIndicar)}</a>
     </div>
     <div style="font-size: 12px; color: #9ca3af; margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
       <span>${esc(t.madeBy)}</span>
@@ -158,28 +138,6 @@ export async function enviarEmail(
     return
   }
 
-  const html = `
-    <div style="background: #f3f4f6; padding: 40px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-      <div style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-        ${getHeaderHTML()}
-        
-        <!-- Bloco PT-BR -->
-        <h2 style="font-size: 20px; color: #111827; margin-bottom: 16px; border-bottom: 2px solid #111827; padding-bottom: 8px;">Notícias do Dia</h2>
-        ${renderToC(topicosPt, 'pt')}
-        ${renderNewsBlock(topicosPt, 'pt')}
-        ${getFooterHTML('pt')}
-
-        <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 48px 0;" />
-
-        <!-- Bloco EN-US -->
-        <h2 style="font-size: 20px; color: #111827; margin-bottom: 16px; border-bottom: 2px solid #111827; padding-bottom: 8px;">Daily News</h2>
-        ${renderToC(topicosEn, 'en')}
-        ${renderNewsBlock(topicosEn, 'en')}
-        ${getFooterHTML('en')}
-      </div>
-    </div>
-  `
-
   const transporter = nodemailer.createTransport({
     host: config.smtp.host,
     port: config.smtp.port,
@@ -188,6 +146,26 @@ export async function enviarEmail(
   })
 
   for (const email of emails) {
+    const html = `
+    <div style="background: #ffffff; padding: 40px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+      <div style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+        
+        <!-- Bloco PT-BR -->
+        ${getHeaderHTML(topicosPt.length, 'pt', dataStr)}
+        ${renderNewsBlock(topicosPt, 'pt')}
+        ${getFooterHTML('pt', email)}
+
+        <hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 48px 0;" />
+
+        <!-- Bloco EN-US -->
+        ${getHeaderHTML(topicosEn.length, 'en', dataStr)}
+        ${renderNewsBlock(topicosEn, 'en')}
+        ${getFooterHTML('en', email)}
+        
+      </div>
+    </div>
+  `
+
     try {
       const info = await transporter.sendMail({
         from: `"${config.fromName}" <${config.smtp.user}>`,

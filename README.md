@@ -9,9 +9,10 @@ O sistema opera de forma totalmente automatizada executando um pipeline robusto 
 1. **Agregação Global (RSS):** Conecta-se aos feeds RSS das maiores mídias de 10 nações (Brasil, EUA, França, Inglaterra, Espanha, Alemanha, Japão, China, Índia e Portugal).
 2. **Janela Temporal e Deduplicação:** Filtra estritamente as notícias publicadas nas últimas 24 horas. O sistema possui memória (`state/news-history.json`) para impedir que uma notícia repetida seja reenviada em dias subsequentes.
 3. **Arquitetura Diamante de 2 Passos (Gemini 2.5 Flash):** Em vez de enviar todas as notícias de uma vez (estourando tokens), a IA realiza uma **Triagem Rápida (Map)** nos lotes para separar links crus de Tecnologia e Ciência. Depois, realiza uma **Decisão Qualitativa (Reduce)** agrupando por país e filtrando cirurgicamente os top 8 finalistas absolutos.
-4. **Localização Bilíngue:** Após gerar os (até) 80 resumos em português, um segundo agente de IA entra em ação para espelhar todo o conteúdo para o inglês nativo (EN-US).
-5. **Composição Visual (E-mail):** Gera um e-mail HTML dinâmico, organizado com "Table of Contents" (índice âncora) e agrupado por país com suporte automático às bandeiras locais (ex: 🇯🇵 Japão).
-6. **Servidor Web de Inscrição:** Roda simultaneamente um micro-serviço (Express) na rota principal, entregando uma *Landing Page* clean para novos usuários digitarem seus e-mails e se inscreverem no boletim, alimentando o banco de destinatários (`recipients.txt`).
+4. **Localização Bilíngue e Categorização:** Após gerar os resumos em português com uma tag de **Categoria** (ex: MERCADO, TECNOLOGIA), um segundo agente de IA entra em ação para espelhar todo o conteúdo e a tag para o inglês nativo (EN-US).
+5. **Composição Visual (E-mail):** Gera um e-mail HTML dinâmico, agrupado por país com suporte a bandeiras locais e as tags de categoria formatadas acima do título da matéria.
+6. **Descadastro e Indicações (Cloudflare Worker):** Incorpora botões dinâmicos no rodapé de cada e-mail com links criptografados via HMAC-SHA256, servidos por um Worker Serverless na Cloudflare que edita autonomamente o arquivo `recipients.txt` via API do GitHub caso o usuário decida sair da lista.
+7. **Servidor Web de Inscrição:** Roda simultaneamente um micro-serviço (Express) na rota principal para cadastro manual de novos leitores.
 
 ## 🛠 Tecnologias Utilizadas
 
@@ -29,8 +30,9 @@ O sistema opera de forma totalmente automatizada executando um pipeline robusto 
 - `src/run.ts`: O maestro do Pipeline. Invoca passo-a-passo a coleta, resumo, tradução e disparo.
 - `src/fetchNews.ts` e `src/sources.ts`: Catálogo de mídias globais e o robô extrator de dados.
 - `src/history.ts`: Memória da IA. Previne redundância lendo e gravando o banco de histórico json.
-- `src/summarize.ts` e `src/translate.ts`: Módulos de Prompt Engineering e comunicação via API com o Gemini.
-- `src/email.ts`: O Front-End do E-mail. Responsável pelas marcações âncora, mapeamento de bandeiras visuais e junção do banco de dados (ENV + TXT) para o disparo em massa.
+- `src/summarize.ts` e `src/translate.ts`: Módulos de Prompt Engineering e comunicação via API com o Gemini. Adicionam e traduzem as categorias da notícia.
+- `src/email.ts`: O Front-End do E-mail. Responsável pelas marcações HTML e rodapés criptografados com o `unsubscribeSecret`.
+- `worker/index.js`: O servidor da Cloudflare que gerencia os cliques nos botões do e-mail.
 
 ## 📦 Como Instalar e Rodar
 
@@ -71,10 +73,12 @@ O projeto já vem equipado com uma integração Contínua (CI) nativa para o Git
 1. **Agendamento Cron (Automático):** O servidor do GitHub acordará todos os dias às 07:00 UTC (04:00 Horário de Brasília) para executar toda a coleta, IA e disparo sem nenhuma intervenção humana.
 2. **Disparo Manual (Workflow Dispatch):** Na aba "Actions" do GitHub, existe um botão azul chamado "Run workflow". Ao clicar nele, você força a geração de um boletim extraordinário instantaneamente.
 
-**⚠️ Importante:** O GitHub não tem acesso ao arquivo `.env` do seu computador. Para a automação em nuvem funcionar, você **precisa** entrar na página do seu repositório no GitHub -> **Settings -> Secrets and variables -> Actions** e cadastrar três senhas vitais:
+**⚠️ Importante:** O GitHub não tem acesso ao arquivo `.env` do seu computador. Para a automação em nuvem funcionar, você **precisa** entrar na página do seu repositório no GitHub -> **Settings -> Secrets and variables -> Actions** e cadastrar as senhas vitais:
 - `GEMINI_API_KEY`
 - `SMTP_USER`
 - `SMTP_PASS`
+- `UNSUBSCRIBE_SECRET` (A chave criptográfica para o rodapé)
+- `UNSUBSCRIBE_WORKER_URL` (O link da cloudflare do seu worker)
 
 ## 📬 Cadastrando Usuários
 
