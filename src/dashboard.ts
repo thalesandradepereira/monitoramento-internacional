@@ -50,13 +50,19 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
       align-items: center;
       gap: 1rem;
     }
-    .logo {
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
       font-weight: 700;
       font-size: 1.5rem;
       letter-spacing: -0.5px;
       color: #fff;
     }
-    .logo span {
+    .logo-text span {
       color: var(--accent);
     }
     .date-badge {
@@ -237,8 +243,8 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
 
 <header>
   <div class="logo-container">
-    <!-- Espaço reservado para logo em anexo (se houver, será atualizado) -->
-    <div class="logo">Monitoramento<span>Internacional</span></div>
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img" onerror="this.style.display='none'">
+    <div class="logo-text">Monitoramento<span>Internacional</span></div>
   </div>
   <div class="date-badge">${dataStr}</div>
 </header>

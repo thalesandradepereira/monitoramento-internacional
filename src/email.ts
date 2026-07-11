@@ -146,9 +146,9 @@ export async function enviarEmail(
     auth: { user: config.smtp.user, pass: config.smtp.pass },
   })
 
-  // Gera o HTML do anexo
-  const dashboardHtml = gerarDashboardHTML(topicosPt, topicosEn, dataStr)
-  const filename = `Dashboard-Monitoramento-${dataStr.replace(/\//g, '-')}.html`
+  // URL gerada para o GH Pages
+  const dashFilename = `Dashboard-Monitoramento-${dataStr.replace(/\//g, '-')}.html`
+  const dashUrl = `https://thalesandradepereira.github.io/monitoramento-internacional/docs/${dashFilename}`
 
   for (const email of emails) {
     const html = `
@@ -156,9 +156,18 @@ export async function enviarEmail(
       <div style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
         
         <!-- Aviso sobre o anexo -->
-        <div style="background: #0B0F19; padding: 16px; border-radius: 8px; margin-bottom: 32px; color: #E2E8F0; text-align: center;">
-          <strong style="color: #D4AF37;">📊 NOVIDADE:</strong> Você pode visualizar estas notícias num painel interativo. 
-          <br />Baixe e abra o anexo <strong>${filename}</strong> no seu navegador!
+        <div style="background: #0B0F19; padding: 24px; border-radius: 8px; margin-bottom: 32px; color: #E2E8F0; text-align: center; border: 1px solid #1a202c;">
+          <div style="margin-bottom: 12px;">
+            <strong style="color: #D4AF37; font-size: 16px;">📊 DASHBOARD INTERATIVO ONLINE</strong>
+          </div>
+          <div style="font-size: 14px; margin-bottom: 20px; line-height: 1.5; color: #94A3B8;">
+            Você pode visualizar estas notícias, buscar e filtrar por país no nosso painel exclusivo.
+            <br/><br/>
+            You can view, search and filter these news by country in our exclusive panel.
+          </div>
+          <a href="${dashUrl}" target="_blank" style="display: inline-block; background-color: #D4AF37; color: #0B0F19; font-weight: bold; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-size: 14px; letter-spacing: 0.5px; transition: opacity 0.2s;">
+            ACESSAR PAINEL / ACCESS DASHBOARD
+          </a>
         </div>
 
         <!-- Bloco PT-BR -->
@@ -183,15 +192,8 @@ export async function enviarEmail(
         to: email,
         subject: assunto,
         html,
-        attachments: [
-          {
-            filename,
-            content: dashboardHtml,
-            contentType: 'text/html'
-          }
-        ]
       })
-      console.log(`[email] Enviado para ${email} com anexo | id=${info.messageId}`)
+      console.log(`[email] Enviado para ${email} | id=${info.messageId}`)
     } catch (err: any) {
       console.error(`[email] Erro ao enviar para ${email}:`, err?.message || err)
     }
