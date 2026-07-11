@@ -8,7 +8,10 @@ const genAI = new GoogleGenerativeAI(config.gemini.apiKey)
 export async function traduzirParaIngles(topicos: Topico[]): Promise<Topico[]> {
   if (topicos.length === 0) return []
 
-  const model = genAI.getGenerativeModel({ model: config.gemini.model })
+  const model = genAI.getGenerativeModel({ 
+    model: config.gemini.model,
+    generationConfig: { responseMimeType: "application/json" }
+  })
   const topicosEn: Topico[] = []
   const TAMANHO_LOTE = 15
 
@@ -33,12 +36,8 @@ Output strictly in JSON array format:
 
     try {
       const result = await generateContentWithRetry(model, prompt)
-      let text = result.response.text() || '[]'
-      
-      const limpo = text.replace(/```json/gi, '').replace(/```/g, '').trim()
-      const match = limpo.match(/\[[\s\S]*\]/)
-      
-      const parsedText = match ? match[0] : limpo
+      const text = result.response.text() || '[]'
+      const parsedText = text
       const arr = JSON.parse(parsedText)
       
       if (Array.isArray(arr)) {

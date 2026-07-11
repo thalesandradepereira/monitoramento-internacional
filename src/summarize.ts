@@ -29,7 +29,10 @@ const paisesPermitidos = [
 export async function resumirNoticias(noticias: Noticia[]): Promise<Topico[]> {
   if (noticias.length === 0) return []
   
-  const model = genAI.getGenerativeModel({ model: config.gemini.model })
+  const model = genAI.getGenerativeModel({ 
+    model: config.gemini.model,
+    generationConfig: { responseMimeType: "application/json" }
+  })
   
   // ==========================================
   // PASSO 1: TRIAGEM DE CANDIDATOS (MAP)
@@ -74,9 +77,7 @@ ${JSON.stringify(lote, null, 2)}
 
     try {
       const result = await generateContentWithRetry(model, promptTriagem)
-      let limpo = (result.response.text() || '[]').replace(/```json/gi, '').replace(/```/g, '').trim()
-      const match = limpo.match(/\[[\s\S]*\]/)
-      if (match) limpo = match[0]
+      const limpo = result.response.text() || '[]'
       
       const arr: Candidato[] = JSON.parse(limpo)
       if (Array.isArray(arr)) {
@@ -151,9 +152,7 @@ ${JSON.stringify(candidatosDoPais, null, 2)}
 
     try {
       const result = await generateContentWithRetry(model, promptResumo)
-      let limpo = (result.response.text() || '[]').replace(/```json/gi, '').replace(/```/g, '').trim()
-      const match = limpo.match(/\[[\s\S]*\]/)
-      if (match) limpo = match[0]
+      const limpo = result.response.text() || '[]'
       
       const arr: Topico[] = JSON.parse(limpo)
       if (Array.isArray(arr)) {
