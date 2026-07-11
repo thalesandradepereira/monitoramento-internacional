@@ -99,7 +99,7 @@ function getFooterHTML(lang: 'pt' | 'en'): string {
     btnIndicar: 'Indicar Colega',
     madeBy: 'Made by TAP 💌',
     unsub: 'Não quero mais receber',
-    indicarLink: config.webUrl,
+    indicarLink: `mailto:${config.smtp.user}?subject=${encodeURIComponent("Indicar um colega — Monitoramento Internacional")}&body=${encodeURIComponent("Olá! Quero indicar o e-mail: \\n\\n(digite o e-mail do seu colega aqui)")}`,
     unsubLink: `mailto:${config.smtp.user}?subject=${encodeURIComponent("Descadastrar — Monitoramento Internacional")}&body=${encodeURIComponent("Por favor, remova o meu e-mail da lista de envios.")}`
   } : {
     convite: 'Know someone who would like this? 🤝',
@@ -107,7 +107,7 @@ function getFooterHTML(lang: 'pt' | 'en'): string {
     btnIndicar: 'Invite Colleague',
     madeBy: 'Made by TAP 💌',
     unsub: 'I no longer wish to receive this',
-    indicarLink: config.webUrl,
+    indicarLink: `mailto:${config.smtp.user}?subject=${encodeURIComponent("Invite a colleague — International Monitoring")}&body=${encodeURIComponent("Hello! I want to invite the following email: \\n\\n(type your colleague's email here)")}`,
     unsubLink: `mailto:${config.smtp.user}?subject=${encodeURIComponent("Unsubscribe — International Monitoring")}&body=${encodeURIComponent("Please remove my email from the mailing list.")}`
   }
 
