@@ -68,7 +68,7 @@ app.post('/subscribe', (req, res) => {
   const recipients = current.split('\n').map(e => e.trim()).filter(Boolean)
   
   if (!recipients.includes(cleanEmail)) {
-    fs.appendFileSync(RECIPIENTS_FILE, \`\${cleanEmail}\\n\`, 'utf8')
+    fs.appendFileSync(RECIPIENTS_FILE, `${cleanEmail}\n`, 'utf8')
   }
 
   const successHtml = `
@@ -99,6 +99,6 @@ app.post('/subscribe', (req, res) => {
 
 export function startServer() {
   app.listen(config.port, () => {
-    console.log(\`[Web] Servidor rodando em \${config.webUrl} (porta \${config.port})\`)
+    console.log(`[Web] Servidor rodando em ${config.webUrl} (porta ${config.port})`)
   })
 }
