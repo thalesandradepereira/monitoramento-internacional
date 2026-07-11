@@ -49,6 +49,7 @@ graph TD
 - `src/run.ts`: Maestro do Pipeline (Coleta -> Resumo -> Tradução -> Disparo).
 - `src/fetchNews.ts` / `src/sources.ts`: Catálogo de mídias globais e motor extrator de RSS.
 - `src/history.ts`: Memória da IA, persistida localmente e no Git, para evitar duplicidades de matérias entre dias.
+- `src/geminiHelper.ts`: Utilitário central para chamadas à API do Gemini, incorporando resiliência (Exponential Backoff Retries) para mitigar eventuais instabilidades de conexão ("fetch failed").
 - `src/summarize.ts` / `src/translate.ts`: Engenharia de Prompt para o Google Gemini.
 - `src/email.ts`: Geração de e-mail e injeção do sistema de segurança (HMAC) no rodapé.
 - `worker/`: Pasta contendo a infraestrutura Serverless Cloudflare para descadastramento autônomo.
@@ -87,9 +88,9 @@ graph TD
 O projeto é 100% nativo para nuvem, garantindo estabilidade e zero necessidade de servidores ligados.
 
 ### 1. Rotina de Envio Diária (GitHub Actions)
-Todas as madrugadas, às **04:00 BRT**, o GitHub Actions rodará o arquivo `.github/workflows/daily.yml`, executará as funções de IA e disparará as campanhas, salvando o estado de memória novamente no repositório (`state/news-history.json`). 
+Todas as madrugadas, às **04:00 BRT**, o GitHub Actions rodará o arquivo `.github/workflows/monitoramento.yml`, executará as funções de IA e disparará as campanhas, salvando o estado de memória novamente no repositório (`state/news-history.json`). 
 **Atenção:** Cadastre suas credenciais no painel `Settings -> Secrets and variables -> Actions` do seu repositório:
-- `GEMINI_API_KEY`, `SMTP_USER`, `SMTP_PASS`, `UNSUBSCRIBE_SECRET`, `UNSUBSCRIBE_WORKER_URL`.
+- `GEMINI_API_KEY`, `SMTP_USER`, `SMTP_PASS`, `UNSUBSCRIBE_SECRET`.
 
 ### 2. Infraestrutura de Cancelamento de Inscrição (Cloudflare Workers)
 Para garantir que a base de dados de destinatários (`recipients.txt`) seja higienizada sem intervenção manual e de maneira segura:
