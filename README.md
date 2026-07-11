@@ -23,6 +23,7 @@ O sistema opera de forma totalmente automatizada executando um pipeline robusto 
 5. **Composição Visual Dinâmica:** Gera um e-mail HTML "State of the Art", organizado com "Table of Contents" (índice âncora), estruturado por país (com suporte automático às bandeiras locais) e tags de categorias.
 6. **Descadastro e Indicações (Cloudflare Worker):** Incorpora botões dinâmicos no rodapé de cada e-mail com links únicos, assinados com criptografia `HMAC-SHA256`. Quando clicados, acionam um Worker Serverless na Cloudflare que **edita autonomamente o arquivo `recipients.txt` via API do GitHub**, removendo o usuário sem intervenção humana.
 7. **Servidor Web de Inscrição:** Roda simultaneamente um micro-serviço web (Express) para captura de novos e-mails (Landing Page).
+8. **Dashboard Interativo Online (GitHub Pages):** A cada disparo, o sistema gera e versiona um painel visual estático (`.html`) e o empurra (push) automaticamente para a pasta `docs/` do repositório. O painel é publicado imediatamente de forma gratuita e vitalícia através do GitHub Pages, cujo link de acesso é injetado no topo de cada e-mail.
 
 ---
 
@@ -35,9 +36,10 @@ graph TD
     C --> D[Lotes Gemini Map]
     D --> E[Filtro Gemini Reduce]
     E --> F[Categorização & Tradução]
-    F --> G[Renderização HTML]
-    G --> H((Disparo Nodemailer))
-    H --> I[E-mail com Botões Cloudflare HMAC]
+    F --> G[Renderização E-mail & Dashboard]
+    G --> H[Upload GitHub Pages docs/]
+    H --> I((Disparo Nodemailer))
+    I --> J[E-mail com Link do Painel + Botões Cloudflare]
 ```
 
 ---
