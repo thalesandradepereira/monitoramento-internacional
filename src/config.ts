@@ -21,7 +21,8 @@ export const config = {
   timezone: process.env.TIMEZONE || 'America/Sao_Paulo',
   maxTopicos: Number(process.env.MAX_TOPICOS || 50),
   janelaHoras: Number(process.env.JANELA_HORAS || 24),
-  unsubscribeWorkerUrl: process.env.UNSUBSCRIBE_WORKER_URL || '',
+  unsubscribeSecret: process.env.UNSUBSCRIBE_SECRET || '',
+  unsubscribeWorkerUrl: (process.env.UNSUBSCRIBE_WORKER_URL || '').replace(/\/$/, ''),
   port: Number(process.env.PORT || 3000),
   webUrl: process.env.WEB_URL || 'http://localhost:3000'
 }

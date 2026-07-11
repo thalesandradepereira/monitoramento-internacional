@@ -12,7 +12,7 @@ export async function traduzirParaIngles(topicos: Topico[]): Promise<Topico[]> {
   const prompt = `
 Please translate the following array of news topics from Portuguese to US English.
 Maintain the exact same JSON structure. Do NOT change the links or the source names. 
-Translate the 'pais', 'titulo' and 'resumo' to natural, journalistic US English.
+Translate the 'pais', 'titulo', 'resumo' and 'categoria' to natural, journalistic US English.
 
 Input JSON:
 ${JSON.stringify(topicos, null, 2)}
