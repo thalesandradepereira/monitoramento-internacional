@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { config } from './config'
 import { Noticia } from './fetchNews'
+import { generateContentWithRetry } from './geminiHelper'
 
 const genAI = new GoogleGenerativeAI(config.gemini.apiKey)
 
@@ -72,7 +73,7 @@ ${JSON.stringify(lote, null, 2)}
 `
 
     try {
-      const result = await model.generateContent(promptTriagem)
+      const result = await generateContentWithRetry(model, promptTriagem)
       let limpo = (result.response.text() || '[]').replace(/```json/gi, '').replace(/```/g, '').trim()
       const match = limpo.match(/\[[\s\S]*\]/)
       if (match) limpo = match[0]
@@ -149,7 +150,7 @@ ${JSON.stringify(candidatosDoPais, null, 2)}
 `
 
     try {
-      const result = await model.generateContent(promptResumo)
+      const result = await generateContentWithRetry(model, promptResumo)
       let limpo = (result.response.text() || '[]').replace(/```json/gi, '').replace(/```/g, '').trim()
       const match = limpo.match(/\[[\s\S]*\]/)
       if (match) limpo = match[0]
