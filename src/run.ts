@@ -1,3 +1,5 @@
+import dns from 'dns'
+dns.setDefaultResultOrder('ipv4first')
 import { buscarNoticias } from './fetchNews'
 import { resumirNoticias } from './summarize'
 import { traduzirParaIngles } from './translate'
