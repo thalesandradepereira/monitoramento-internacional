@@ -148,7 +148,7 @@ export async function enviarEmail(
 
   // URL gerada para o GH Pages
   const dashFilename = `Dashboard-Monitoramento-${dataStr.replace(/\//g, '-')}.html`
-  const dashUrl = `https://thalesandradepereira.github.io/monitoramento-internacional/docs/${dashFilename}`
+  const dashUrl = `https://thalesandradepereira.github.io/monitoramento-internacional/${dashFilename}`
 
   for (const email of emails) {
     const html = `
