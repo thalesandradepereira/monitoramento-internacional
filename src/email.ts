@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer'
 import { config } from './config'
 import { Topico } from './summarize'
 import { gerarLinkDescadastro } from './unsubscribe'
+import { gerarDashboardHTML } from './dashboard'
 
 function esc(s: string): string {
   return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -145,11 +146,21 @@ export async function enviarEmail(
     auth: { user: config.smtp.user, pass: config.smtp.pass },
   })
 
+  // Gera o HTML do anexo
+  const dashboardHtml = gerarDashboardHTML(topicosPt, topicosEn, dataStr)
+  const filename = `Dashboard-Monitoramento-${dataStr.replace(/\//g, '-')}.html`
+
   for (const email of emails) {
     const html = `
     <div style="background: #ffffff; padding: 40px 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
       <div style="max-width: 600px; margin: 0 auto; background: #ffffff; padding: 40px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
         
+        <!-- Aviso sobre o anexo -->
+        <div style="background: #0B0F19; padding: 16px; border-radius: 8px; margin-bottom: 32px; color: #E2E8F0; text-align: center;">
+          <strong style="color: #D4AF37;">📊 NOVIDADE:</strong> Você pode visualizar estas notícias num painel interativo. 
+          <br />Baixe e abra o anexo <strong>${filename}</strong> no seu navegador!
+        </div>
+
         <!-- Bloco PT-BR -->
         ${getHeaderHTML(topicosPt.length, 'pt', dataStr)}
         ${renderNewsBlock(topicosPt, 'pt')}
@@ -172,8 +183,15 @@ export async function enviarEmail(
         to: email,
         subject: assunto,
         html,
+        attachments: [
+          {
+            filename,
+            content: dashboardHtml,
+            contentType: 'text/html'
+          }
+        ]
       })
-      console.log(`[email] Enviado para ${email} | id=${info.messageId}`)
+      console.log(`[email] Enviado para ${email} com anexo | id=${info.messageId}`)
     } catch (err: any) {
       console.error(`[email] Erro ao enviar para ${email}:`, err?.message || err)
     }
