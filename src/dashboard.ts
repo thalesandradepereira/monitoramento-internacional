@@ -307,8 +307,17 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
   }
 
   function populateSelects() {
-    const countries = [...new Set(data.map(d => d.pais))].filter(Boolean).sort();
-    const categories = [...new Set(data.map(d => d.categoria))].filter(Boolean).sort();
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
 
     countries.forEach(c => {
       const opt = document.createElement('option');
@@ -323,6 +332,13 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
       opt.textContent = c;
       categorySelect.appendChild(opt);
     });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
   }
 
   function render(items) {
@@ -380,7 +396,10 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
 
   // Binds
   searchInput.addEventListener('input', filterData);
-  langSelect.addEventListener('change', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
   countrySelect.addEventListener('change', filterData);
   categorySelect.addEventListener('change', filterData);
 
