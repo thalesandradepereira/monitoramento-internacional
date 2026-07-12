@@ -2,8 +2,11 @@ import Parser from 'rss-parser'
 import { config } from './config'
 import { FONTES_RSS } from './sources'
 import { getSentNewsHistory } from './history'
+import { GoogleDecoder } from 'google-news-url-decoder'
+import pLimit from 'p-limit'
 
 const parser = new Parser({ timeout: 15000 })
+const decoder = new GoogleDecoder()
 
 export interface Noticia {
   fonte: string
@@ -59,5 +62,26 @@ export async function buscarNoticias(): Promise<Noticia[]> {
     })
 
   console.log(`[fetch] ${unicas.length} notícias únicas nas últimas ${config.janelaHoras}h (de ${FONTES_RSS.length} fontes)`)
-  return unicas
+
+  console.log(`[fetch] Decodificando URLs do Google News (isso pode levar alguns minutos)...`)
+  const limit = pLimit(5) // Limit concurrency to avoid being blocked completely
+  const decodedNoticias = await Promise.all(
+    unicas.map((n) =>
+      limit(async () => {
+        try {
+          // Some urls might not be google news CBMs, decoder returns status:false gracefully
+          const result = await decoder.decode(n.link)
+          if (result && result.status && result.decoded_url) {
+            return { ...n, link: result.decoded_url }
+          }
+        } catch (error) {
+          // Silently fail and use original
+        }
+        return n
+      })
+    )
+  )
+
+  console.log(`[fetch] Decodificação concluída!`)
+  return decodedNoticias
 }
