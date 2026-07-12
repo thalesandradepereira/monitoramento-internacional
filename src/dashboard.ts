@@ -220,6 +220,26 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
       font-size: 0.8rem;
       color: var(--text-muted);
     }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
     /* Simple CSS reset/scrollbar */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg-main); }
@@ -277,6 +297,8 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
         <option value="all">Todas / All</option>
       </select>
     </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
   </aside>
 
   <main class="results">
@@ -300,6 +322,7 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
   const categorySelect = document.getElementById('category');
   const grid = document.getElementById('grid');
   const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
 
   // Utility de escape HTML simples para prevenir injections em propriedades sem tratamento
   function esc(s) {
@@ -402,6 +425,12 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
   });
   countrySelect.addEventListener('change', filterData);
   categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
 
   // Initialization
   populateSelects();
