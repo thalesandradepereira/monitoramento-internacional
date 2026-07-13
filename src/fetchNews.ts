@@ -10,6 +10,7 @@ const decoder = new GoogleDecoder()
 
 export interface Noticia {
   fonte: string
+  pais: string
   titulo: string
   link: string
   data: Date
@@ -33,9 +34,22 @@ export async function buscarNoticias(): Promise<Noticia[]> {
         const data = iso ? new Date(iso) : null
         if (!data || isNaN(data.getTime()) || data.getTime() < corte) continue
         if (!item.title || !item.link) continue
+        
+        // Extrai a fonte verdadeira (geralmente vem no creator ou no final do título após " - ")
+        let fonteReal = item.creator || 'Notícias'
+        let tituloLimpo = item.title.trim()
+        const lastDash = tituloLimpo.lastIndexOf(' - ')
+        if (lastDash !== -1 && !item.creator) {
+           fonteReal = tituloLimpo.substring(lastDash + 3).trim()
+           tituloLimpo = tituloLimpo.substring(0, lastDash).trim()
+        } else if (lastDash !== -1) {
+           tituloLimpo = tituloLimpo.substring(0, lastDash).trim()
+        }
+
         itens.push({
-          fonte: f.nome,
-          titulo: item.title.trim(),
+          fonte: fonteReal,
+          pais: f.nome,
+          titulo: tituloLimpo,
           link: item.link.trim(),
           data,
         })
