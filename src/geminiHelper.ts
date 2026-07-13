@@ -16,9 +16,18 @@ export async function generateContentWithRetry(model: GenerativeModel, prompt: s
       if (attempt >= retries) {
         throw err;
       }
-      // Se for um erro 429 (Too Many Requests), vamos ser mais generosos e esperar 15 segundos
-      const isRateLimit = err.message && err.message.includes('429');
-      const waitTime = isRateLimit ? 15000 : Math.pow(2, attempt) * 1000;
+      // Se for um erro 429 (Too Many Requests), vamos ler o tempo que o Google pede para esperar
+      let waitTime = Math.pow(2, attempt) * 1000;
+      if (err.message && err.message.includes('429')) {
+        const match = err.message.match(/retry in (\d+(?:\.\d+)?)s/);
+        if (match) {
+          // Google informou o tempo exato (ex: 34.6s). Adicionamos 2s de margem de segurança.
+          waitTime = (parseFloat(match[1]) + 2) * 1000;
+        } else {
+          // Se não tiver o tempo, esperamos 40s (quase 1 minuto) para garantir que a janela de RPM resete
+          waitTime = 40000;
+        }
+      }
       
       console.log(`[geminiHelper] Aguardando ${waitTime}ms antes da próxima tentativa...`);
       await new Promise(resolve => setTimeout(resolve, waitTime));
