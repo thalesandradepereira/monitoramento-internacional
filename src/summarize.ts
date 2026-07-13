@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { config } from './config'
 import { Noticia } from './fetchNews'
-import { generateContentWithRetry } from './geminiHelper'
+import { generateContentWithRetry, cleanGeminiJson } from './geminiHelper'
 
 const genAI = new GoogleGenerativeAI(config.gemini.apiKey)
 
@@ -14,17 +14,31 @@ export interface Topico {
   categoria?: string
 }
 
-interface Candidato {
-  fonte: string
+interface Candidato extends Noticia {
+  id: string
   pais: string
-  titulo: string
-  link: string
 }
 
 const paisesPermitidos = [
   'Brasil', 'Estados Unidos', 'França', 'Inglaterra', 'Espanha', 
   'Alemanha', 'Japão', 'China', 'Índia', 'Portugal'
 ]
+
+function normalizarPais(pais: string): string | null {
+  if (!pais) return null;
+  const p = pais.toLowerCase().trim();
+  if (p === 'eua' || p === 'usa' || p === 'estados unidos' || p === 'us' || p === 'united states') return 'Estados Unidos';
+  if (p === 'br' || p === 'brasil' || p === 'brazil') return 'Brasil';
+  if (p === 'uk' || p === 'inglaterra' || p === 'reino unido' || p === 'england' || p === 'united kingdom') return 'Inglaterra';
+  if (p === 'frança' || p === 'france' || p === 'franca') return 'França';
+  if (p === 'espanha' || p === 'spain') return 'Espanha';
+  if (p === 'alemanha' || p === 'germany' || p === 'deutschland') return 'Alemanha';
+  if (p === 'japão' || p === 'japao' || p === 'japan') return 'Japão';
+  if (p === 'china') return 'China';
+  if (p === 'índia' || p === 'india') return 'Índia';
+  if (p === 'portugal') return 'Portugal';
+  return null;
+}
 
 export async function resumirNoticias(noticias: Noticia[]): Promise<Topico[]> {
   if (noticias.length === 0) return []
@@ -38,9 +52,10 @@ export async function resumirNoticias(noticias: Noticia[]): Promise<Topico[]> {
   // PASSO 1: TRIAGEM DE CANDIDATOS (MAP)
   // ==========================================
   const TAMANHO_LOTE_TRIAGEM = 150 // Podemos usar um lote maior porque o output será curto (baixo uso de tokens)
-  const lotes: Noticia[][] = []
-  for (let i = 0; i < noticias.length; i += TAMANHO_LOTE_TRIAGEM) {
-    lotes.push(noticias.slice(i, i + TAMANHO_LOTE_TRIAGEM))
+  const noticiasComId = noticias.map((n, idx) => ({ ...n, id: idx.toString() }))
+  const lotes: typeof noticiasComId[] = []
+  for (let i = 0; i < noticiasComId.length; i += TAMANHO_LOTE_TRIAGEM) {
+    lotes.push(noticiasComId.slice(i, i + TAMANHO_LOTE_TRIAGEM))
   }
 
   console.log(`[summarize] PASSO 1: Triagem barata. Extraindo candidatos de ${noticias.length} notícias em ${lotes.length} lotes.`)
@@ -64,25 +79,31 @@ Regras:
 Retorne ESTRITAMENTE em JSON com a estrutura:
 [
   {
-    "pais": "Nome do País",
-    "titulo": "Título original",
-    "link": "URL original",
-    "fonte": "Nome da fonte"
+    "id": "id original",
+    "pais": "Nome do País"
   }
 ]
 
 NOTÍCIAS:
-${JSON.stringify(lote, null, 2)}
+${JSON.stringify(lote.map(n => ({ id: n.id, titulo: n.titulo, fonte: n.fonte })), null, 2)}
 `
 
     try {
       const result = await generateContentWithRetry(model, promptTriagem)
-      const limpo = result.response.text() || '[]'
+      const limpo = cleanGeminiJson(result.response.text() || '[]')
       
-      const arr: Candidato[] = JSON.parse(limpo)
+      const arr: { id: string, pais: string }[] = JSON.parse(limpo)
       if (Array.isArray(arr)) {
-        todosCandidatos.push(...arr)
-        console.log(`[summarize] Lote ${i + 1} encontrou ${arr.length} candidatos relevantes.`)
+        for (const item of arr) {
+          const original = lote.find(n => n.id === item.id)
+          if (original) {
+            const paisNorm = normalizarPais(item.pais)
+            if (paisNorm) {
+              todosCandidatos.push({ ...original, pais: paisNorm })
+            }
+          }
+        }
+        console.log(`[summarize] Lote ${i + 1} encontrou ${todosCandidatos.length} candidatos válidos até agora.`)
       }
     } catch (err) {
       console.error(`[summarize] Erro no JSON do lote de triagem ${i + 1}:`, err)
@@ -99,8 +120,8 @@ ${JSON.stringify(lote, null, 2)}
   }
 
   for (const c of todosCandidatos) {
-    // Normalizar nome do país
-    const paisEncontrado = paisesPermitidos.find(p => p.toLowerCase() === c.pais.toLowerCase()) || c.pais
+    // Aqui c.pais já está normalizado
+    const paisEncontrado = c.pais
     if (candidatosPorPais[paisEncontrado]) {
       // Evitar candidatos duplicados via link
       if (!candidatosPorPais[paisEncontrado].some(ex => ex.link === c.link)) {
@@ -137,27 +158,37 @@ Tarefa:
 Retorne ESTRITAMENTE em JSON com a estrutura:
 [
   {
-    "pais": "${pais}",
+    "id": "id original",
     "titulo": "Título traduzido",
     "resumo": "O resumo elaborado...",
-    "link": "URL original",
-    "fonte": "Nome da fonte",
     "categoria": "CATEGORIA"
   }
 ]
 
 CANDIDATOS:
-${JSON.stringify(candidatosDoPais, null, 2)}
+${JSON.stringify(candidatosDoPais.map(c => ({ id: c.id, titulo: c.titulo })), null, 2)}
 `
 
     try {
       const result = await generateContentWithRetry(model, promptResumo)
-      const limpo = result.response.text() || '[]'
+      const limpo = cleanGeminiJson(result.response.text() || '[]')
       
-      const arr: Topico[] = JSON.parse(limpo)
+      const arr: { id: string, titulo: string, resumo: string, categoria?: string }[] = JSON.parse(limpo)
       if (Array.isArray(arr)) {
         // Garantir que a IA respeitou o limite de 8 por segurança matemática
-        const aprovados = arr.slice(0, 8)
+        const aprovados = arr.slice(0, 8).map(item => {
+          const original = candidatosDoPais.find(c => c.id === item.id)
+          if (!original) return null
+          return {
+            fonte: original.fonte,
+            pais: original.pais,
+            titulo: item.titulo,
+            resumo: item.resumo,
+            link: original.link,
+            categoria: item.categoria
+          } as Topico
+        }).filter(Boolean) as Topico[]
+        
         topicosFinais.push(...aprovados)
         console.log(`[summarize] ${pais} consolidou ${aprovados.length} super notícias "Diamante".`)
       }
