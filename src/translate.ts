@@ -1,7 +1,7 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { config } from './config'
 import { Topico } from './summarize'
-import { generateContentWithRetry } from './geminiHelper'
+import { generateContentWithRetry, cleanGeminiJson } from './geminiHelper'
 
 const genAI = new GoogleGenerativeAI(config.gemini.apiKey)
 
@@ -37,7 +37,7 @@ Output strictly in JSON array format:
     try {
       const result = await generateContentWithRetry(model, prompt)
       const text = result.response.text() || '[]'
-      const parsedText = text
+      const parsedText = cleanGeminiJson(text)
       const arr = JSON.parse(parsedText)
       
       if (Array.isArray(arr)) {
