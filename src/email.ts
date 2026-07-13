@@ -44,7 +44,7 @@ function renderNewsBlock(topicos: Topico[], lang: 'pt' | 'en'): string {
             </ul>
           </div>
           <div>
-            <a href="${esc(t.link)}" style="color: #2563eb; text-decoration: none; font-weight: 500; font-size: 14px;">
+            <a href="${esc(t.link)}" style="color: #dc2626; text-decoration: none; font-weight: 500; font-size: 14px;">
               🔗 ${readMore}
             </a>
             <span style="color: #9ca3af; font-size: 13px;"> · ${esc(t.fonte)}</span>
