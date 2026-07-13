@@ -51,7 +51,9 @@ export async function resumirNoticias(noticias: Noticia[]): Promise<Topico[]> {
   // ==========================================
   // PASSO 1: TRIAGEM DE CANDIDATOS (MAP)
   // ==========================================
-  const TAMANHO_LOTE_TRIAGEM = 150 // Podemos usar um lote maior porque o output será curto (baixo uso de tokens)
+  // O Gemini 2.5 Flash tem 1 Milhão de tokens de contexto.
+  // Vamos usar um lote gigante (1000) para processar todas as ~800 notícias em 1 única chamada!
+  const TAMANHO_LOTE_TRIAGEM = 1000 
   const noticiasComId = noticias.map((n, idx) => ({ ...n, id: idx.toString() }))
   const lotes: typeof noticiasComId[] = []
   for (let i = 0; i < noticiasComId.length; i += TAMANHO_LOTE_TRIAGEM) {
@@ -133,29 +135,36 @@ ${JSON.stringify(lote.map(n => ({ id: n.id, titulo: n.titulo, fonte: n.fonte }))
   // ==========================================
   // PASSO 2: ESCOLHA E RESUMO (REDUCE)
   // ==========================================
-  console.log(`[summarize] PASSO 2: Decisão Qualitativa. Traduzindo e resumindo os melhores finalistas por país.`)
+  console.log(`[summarize] PASSO 2: Decisão Qualitativa. Resumindo TODOS os países em uma única chamada.`)
   const topicosFinais: Topico[] = []
 
+  // Prepara o objeto com apenas o essencial (id e titulo) para economizar tokens
+  const payloadResumo: Record<string, {id: string, titulo: string}[]> = {}
+  let totalCandidatos = 0
   for (const pais of paisesPermitidos) {
-    const candidatosDoPais = candidatosPorPais[pais]
-    
-    if (candidatosDoPais.length === 0) {
-      console.log(`[summarize] Nenhum candidato finalista para ${pais}. Pulando.`)
-      continue
+    if (candidatosPorPais[pais].length > 0) {
+      payloadResumo[pais] = candidatosPorPais[pais].map(c => ({ id: c.id, titulo: c.titulo }))
+      totalCandidatos += payloadResumo[pais].length
     }
+  }
 
-    console.log(`[summarize] Avaliando ${candidatosDoPais.length} candidatos de ${pais}...`)
+  if (totalCandidatos === 0) {
+    console.log(`[summarize] Nenhum candidato finalista encontrado no total.`)
+    return []
+  }
 
-    const promptResumo = `
-Abaixo estão os ${candidatosDoPais.length} melhores artigos candidatos hoje para o país: ${pais}.
+  console.log(`[summarize] Enviando ${totalCandidatos} candidatos agrupados por país para a decisão final...`)
+
+  const promptResumo = `
+Abaixo estão os melhores artigos candidatos hoje, separados por país.
 
 Tarefa:
-1. Compare rigorosamente todos os artigos e ESCOLHA APENAS OS 8 MELHORES e mais importantes focados em Tecnologia, Ciência e Trending Topics. Se houver menos de 8 artigos no total, utilize todos.
-2. Para os finalistas escolhidos, TRADUZA O TÍTULO para Português do Brasil.
-3. Para os finalistas escolhidos, escreva um resumo de altíssima qualidade em Português do Brasil contendo exatamente entre 3 e 5 linhas para sintetizar o contexto e impacto.
-4. Adicione um campo "categoria" em MAIÚSCULAS contendo de 1 a 2 palavras que classifique a notícia (ex: LANÇAMENTO, MERCADO, TECNOLOGIA, CIÊNCIA, POLÍTICA).
+1. Para CADA PAÍS listado, compare rigorosamente os artigos e ESCOLHA APENAS OS 8 MELHORES focados em Tecnologia, Ciência e Trending Topics. Se o país tiver menos de 8 artigos, utilize todos.
+2. TRADUZA O TÍTULO para Português do Brasil.
+3. Escreva um resumo em Português do Brasil contendo exatamente entre 3 e 5 linhas para sintetizar o contexto e impacto.
+4. Adicione um campo "categoria" em MAIÚSCULAS contendo de 1 a 2 palavras (ex: LANÇAMENTO, TECNOLOGIA, NEGÓCIOS).
 
-Retorne ESTRITAMENTE em JSON com a estrutura:
+Retorne ESTRITAMENTE em JSON com uma única lista contendo as notícias aprovadas de TODOS os países juntos, seguindo esta estrutura:
 [
   {
     "id": "id original",
@@ -165,36 +174,41 @@ Retorne ESTRITAMENTE em JSON com a estrutura:
   }
 ]
 
-CANDIDATOS:
-${JSON.stringify(candidatosDoPais.map(c => ({ id: c.id, titulo: c.titulo })), null, 2)}
+CANDIDATOS POR PAÍS:
+${JSON.stringify(payloadResumo, null, 2)}
 `
 
-    try {
-      const result = await generateContentWithRetry(model, promptResumo)
-      const limpo = cleanGeminiJson(result.response.text() || '[]')
-      
-      const arr: { id: string, titulo: string, resumo: string, categoria?: string }[] = JSON.parse(limpo)
-      if (Array.isArray(arr)) {
-        // Garantir que a IA respeitou o limite de 8 por segurança matemática
-        const aprovados = arr.slice(0, 8).map(item => {
-          const original = candidatosDoPais.find(c => c.id === item.id)
-          if (!original) return null
-          return {
-            fonte: original.fonte,
-            pais: original.pais,
-            titulo: item.titulo,
-            resumo: item.resumo,
-            link: original.link,
-            categoria: item.categoria
-          } as Topico
-        }).filter(Boolean) as Topico[]
+  try {
+    const result = await generateContentWithRetry(model, promptResumo)
+    const limpo = cleanGeminiJson(result.response.text() || '[]')
+    
+    const arr: { id: string, titulo: string, resumo: string, categoria?: string }[] = JSON.parse(limpo)
+    if (Array.isArray(arr)) {
+      // Reconstroi os dados recuperando o link e a fonte original
+      const aprovados = arr.map(item => {
+        // Encontra o candidato original buscando em todas as listas de países
+        let original: Candidato | undefined
+        for (const lista of Object.values(candidatosPorPais)) {
+          original = lista.find(c => c.id === item.id)
+          if (original) break
+        }
         
-        topicosFinais.push(...aprovados)
-        console.log(`[summarize] ${pais} consolidou ${aprovados.length} super notícias "Diamante".`)
-      }
-    } catch (err) {
-      console.error(`[summarize] Erro no JSON de consolidação de ${pais}:`, err)
+        if (!original) return null
+        return {
+          fonte: original.fonte,
+          pais: original.pais,
+          titulo: item.titulo,
+          resumo: item.resumo,
+          link: original.link,
+          categoria: item.categoria
+        } as Topico
+      }).filter(Boolean) as Topico[]
+      
+      topicosFinais.push(...aprovados)
+      console.log(`[summarize] IA retornou ${aprovados.length} super notícias no total consolidado.`)
     }
+  } catch (err) {
+    console.error(`[summarize] Erro no JSON de consolidação do Passo 2:`, err)
   }
 
   console.log(`[summarize] Processamento Diamante concluído. Retornando ${topicosFinais.length} tópicos supremos.`)
