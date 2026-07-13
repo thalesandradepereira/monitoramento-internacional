@@ -6,7 +6,7 @@ dotenv.config({ path: path.resolve(__dirname, '..', '.env') })
 export const config = {
   gemini: {
     apiKey: process.env.GEMINI_API_KEY || '',
-    model: process.env.GEMINI_MODEL || 'gemini-1.5-flash',
+    model: 'gemini-1.5-flash', // Forçando versão 1.5 para evitar limite restrito de 20/dia do 2.5
   },
   smtp: {
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
