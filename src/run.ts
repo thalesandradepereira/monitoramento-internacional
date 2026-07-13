@@ -21,8 +21,7 @@ export async function runPipeline() {
 
     const topicosPt = await resumirNoticias(noticias)
     if (!topicosPt.length) {
-      console.log('Não foi possível gerar tópicos PT-BR.')
-      return
+      throw new Error('Não foi possível gerar tópicos PT-BR. (Verifique limites da API ou se existem notícias disponíveis).')
     }
 
     const topicosEn = await traduzirParaIngles(topicosPt)
@@ -75,6 +74,7 @@ export async function runPipeline() {
     console.log('=== Execução finalizada com sucesso ===')
   } catch (err) {
     console.error('Erro fatal no pipeline:', err)
+    process.exit(1) // Garante que o processo Node termine com falha (código vermelho no GitHub Action)
   }
 }
 
