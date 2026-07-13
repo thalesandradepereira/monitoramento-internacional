@@ -52,8 +52,9 @@ export async function resumirNoticias(noticias: Noticia[]): Promise<Topico[]> {
   // PASSO 1: TRIAGEM DE CANDIDATOS (MAP)
   // ==========================================
   // O Gemini 2.5 Flash tem 1 Milhão de tokens de contexto.
-  // Vamos usar um lote gigante (1000) para processar todas as ~800 notícias em 1 única chamada!
-  const TAMANHO_LOTE_TRIAGEM = 1000 
+  // Vamos usar um lote de 200 (gera 4 chamadas seguras contra truncation) 
+  // já que agora temos o gemini-1.5-flash com limite gigante de requisições.
+  const TAMANHO_LOTE_TRIAGEM = 200 
   const noticiasComId = noticias.map((n, idx) => ({ ...n, id: idx.toString() }))
   const lotes: typeof noticiasComId[] = []
   for (let i = 0; i < noticiasComId.length; i += TAMANHO_LOTE_TRIAGEM) {
