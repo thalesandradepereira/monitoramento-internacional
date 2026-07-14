@@ -134,19 +134,14 @@ ${JSON.stringify(lote.map(n => ({ id: n.id, titulo: n.titulo, fonte: n.fonte }))
   }
 
   // ==========================================
-  // PASSO 2: ESCOLHA E RESUMO (REDUCE)
+  // PASSO 2: ESCOLHA E RESUMO (REDUCE POR PAÍS)
   // ==========================================
-  console.log(`[summarize] PASSO 2: Decisão Qualitativa. Resumindo TODOS os países em uma única chamada.`)
+  console.log(`[summarize] PASSO 2: Decisão Qualitativa. Resumindo cada país separadamente para evitar truncamento.`)
   const topicosFinais: Topico[] = []
 
-  // Prepara o objeto com apenas o essencial (id e titulo) para economizar tokens
-  const payloadResumo: Record<string, {id: string, titulo: string}[]> = {}
   let totalCandidatos = 0
   for (const pais of paisesPermitidos) {
-    if (candidatosPorPais[pais].length > 0) {
-      payloadResumo[pais] = candidatosPorPais[pais].map(c => ({ id: c.id, titulo: c.titulo }))
-      totalCandidatos += payloadResumo[pais].length
-    }
+    totalCandidatos += candidatosPorPais[pais].length
   }
 
   if (totalCandidatos === 0) {
@@ -154,18 +149,25 @@ ${JSON.stringify(lote.map(n => ({ id: n.id, titulo: n.titulo, fonte: n.fonte }))
     return []
   }
 
-  console.log(`[summarize] Enviando ${totalCandidatos} candidatos agrupados por país para a decisão final...`)
+  console.log(`[summarize] Processando ${totalCandidatos} candidatos totais país por país...`)
 
-  const promptResumo = `
-Abaixo estão os melhores artigos candidatos hoje, separados por país.
+  for (const pais of paisesPermitidos) {
+    const candidatosDoPais = candidatosPorPais[pais]
+    if (candidatosDoPais.length === 0) continue
+
+    const payloadPais = candidatosDoPais.map(c => ({ id: c.id, titulo: c.titulo }))
+    console.log(`[summarize] Resumindo ${payloadPais.length} candidatos para: ${pais}...`)
+
+    const promptResumo = `
+Abaixo estão os melhores artigos candidatos hoje para o país: ${pais}.
 
 Tarefa:
-1. Para CADA PAÍS listado, compare rigorosamente os artigos e ESCOLHA APENAS OS 8 MELHORES focados em Tecnologia, Ciência e Trending Topics. Se o país tiver menos de 8 artigos, utilize todos.
+1. Compare rigorosamente os artigos e ESCOLHA APENAS OS 8 MELHORES focados em Tecnologia, Ciência e Trending Topics. Se tiver menos de 8 artigos, utilize todos.
 2. TRADUZA O TÍTULO para Português do Brasil.
 3. Escreva um resumo em Português do Brasil contendo exatamente entre 3 e 5 linhas para sintetizar o contexto e impacto.
 4. Adicione um campo "categoria" em MAIÚSCULAS contendo de 1 a 2 palavras (ex: LANÇAMENTO, TECNOLOGIA, NEGÓCIOS).
 
-Retorne ESTRITAMENTE em JSON com uma única lista contendo as notícias aprovadas de TODOS os países juntos, seguindo esta estrutura:
+Retorne ESTRITAMENTE em JSON com uma única lista contendo as notícias aprovadas para ${pais}, seguindo esta estrutura:
 [
   {
     "id": "id original",
@@ -175,41 +177,35 @@ Retorne ESTRITAMENTE em JSON com uma única lista contendo as notícias aprovada
   }
 ]
 
-CANDIDATOS POR PAÍS:
-${JSON.stringify(payloadResumo, null, 2)}
+CANDIDATOS PARA ${pais.toUpperCase()}:
+${JSON.stringify(payloadPais, null, 2)}
 `
 
-  try {
-    const result = await generateContentWithRetry(model, promptResumo)
-    const limpo = cleanGeminiJson(result.response.text() || '[]')
-    
-    const arr: { id: string, titulo: string, resumo: string, categoria?: string }[] = JSON.parse(limpo)
-    if (Array.isArray(arr)) {
-      // Reconstroi os dados recuperando o link e a fonte original
-      const aprovados = arr.map(item => {
-        // Encontra o candidato original buscando em todas as listas de países
-        let original: Candidato | undefined
-        for (const lista of Object.values(candidatosPorPais)) {
-          original = lista.find(c => c.id === item.id)
-          if (original) break
-        }
-        
-        if (!original) return null
-        return {
-          fonte: original.fonte,
-          pais: original.pais,
-          titulo: item.titulo,
-          resumo: item.resumo,
-          link: original.link,
-          categoria: item.categoria
-        } as Topico
-      }).filter(Boolean) as Topico[]
+    try {
+      const result = await generateContentWithRetry(model, promptResumo)
+      const limpo = cleanGeminiJson(result.response.text() || '[]')
       
-      topicosFinais.push(...aprovados)
-      console.log(`[summarize] IA retornou ${aprovados.length} super notícias no total consolidado.`)
+      const arr: { id: string, titulo: string, resumo: string, categoria?: string }[] = JSON.parse(limpo)
+      if (Array.isArray(arr)) {
+        const aprovados = arr.map(item => {
+          const original = candidatosDoPais.find(c => c.id === item.id)
+          if (!original) return null
+          return {
+            fonte: original.fonte,
+            pais: original.pais,
+            titulo: item.titulo,
+            resumo: item.resumo,
+            link: original.link,
+            categoria: item.categoria
+          } as Topico
+        }).filter(Boolean) as Topico[]
+        
+        topicosFinais.push(...aprovados)
+        console.log(`[summarize] IA retornou ${aprovados.length} notícias para ${pais}.`)
+      }
+    } catch (err) {
+      console.error(`[summarize] Erro no JSON de consolidação do Passo 2 para o país ${pais}:`, err)
     }
-  } catch (err) {
-    console.error(`[summarize] Erro no JSON de consolidação do Passo 2:`, err)
   }
 
   console.log(`[summarize] Processamento Diamante concluído. Retornando ${topicosFinais.length} tópicos supremos.`)

@@ -58,7 +58,7 @@ export async function runPipeline() {
       }
       execSync('git add docs/')
       execSync(`git commit -m "docs: adicionar dashboard de ${dataHoje}"`)
-      execSync('git push')
+      execSync('git push origin HEAD:main')
       console.log('[git] Push concluído com sucesso.')
     } catch (err: any) {
       console.log('[git] Erro no push ou nenhuma alteração:')
