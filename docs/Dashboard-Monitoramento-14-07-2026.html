@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - International Monitoring</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: 1.5rem;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+    .logo-text span {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img" onerror="this.style.display='none'">
+    <div class="logo-text">Monitoramento<span>Internacional</span></div>
+  </div>
+  <div class="date-badge">14/07/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 style="margin: 0; font-size: 1.5rem; color: #fff;">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script>
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"China apresenta primeiro motor a hidrogênio para veículos pesados e aposta em alternativa ao diesel; entenda","resumo":"A China avança na descarbonização do transporte pesado ao revelar um motor a hidrogênio inovador. A tecnologia surge como uma alternativa viável ao diesel, visando reduzir emissões poluentes em larga escala. O movimento marca um passo decisivo na transição energética global para veículos de carga.","link":"https://oglobo.globo.com/economia/epoca/noticia/2026/07/14/china-apresenta-primeiro-motor-a-hidrogenio-para-veiculos-pesados-e-aposta-em-alternativa-ao-diesel-entenda.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"IA acelerará países, Brasil está perdido e pode 'ficar em 1500', diz brasileiro que liderou Google","resumo":"Especialistas alertam que a Inteligência Artificial será o principal motor de crescimento econômico nas próximas décadas. Existe uma preocupação de que o Brasil não esteja preparado para integrar essas tecnologias de forma estratégica. O país corre o risco de estagnação caso não adote políticas agressivas de inovação e educação.","link":"https://www1.folha.uol.com.br/tec/2026/07/ia-acelerara-paises-brasil-esta-perdido-e-pode-ficar-em-1500-diz-brasileiro-que-liderou-google.shtml","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"'Necromancia digital': como a IA está recriando pessoas mortas e dividindo opiniões","resumo":"A capacidade da IA de recriar avatares realistas de pessoas falecidas levanta profundos dilemas éticos. Enquanto a tecnologia oferece conforto para famílias enlutadas, críticos apontam riscos de consentimento e manipulação digital. O fenômeno reacende o debate sobre os limites da tecnologia na preservação da memória humana.","link":"https://g1.globo.com/tecnologia/noticia/2026/07/14/necromancia-digital-como-a-ia-esta-recriando-pessoas-mortas-e-dividindo-opinioes.ghtml","categoria":"TRENDING","lang":"pt"},{"fonte":"Pplware","pais":"Brasil","titulo":"BYD SHARK: estreia da tecnologia Super Híbrida na primeira pick-up da marca","resumo":"A BYD expande seu portfólio no Brasil com o lançamento da pick-up SHARK, equipada com a avançada tecnologia Super Híbrida. O modelo busca unir a robustez necessária para o trabalho pesado com a eficiência energética dos motores elétricos. Este lançamento sinaliza a eletrificação acelerada do mercado automotivo nacional.","link":"https://pplware.sapo.pt/motores/byd-shark-estreia-da-tecnologia-super-hibrida-na-primeira-pick-up-da-marca/","categoria":"LANÇAMENTO","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"IA pode transformar a economia mais rápido que a Revolução Industrial, alertam especialistas","resumo":"Líderes de tecnologia e economistas convergem para a ideia de que a IA causará uma ruptura sistêmica sem precedentes. Diferente de transições passadas, a velocidade de adoção da inteligência artificial exige preparação imediata dos governos. O impacto deve redefinir produtividade, emprego e a estrutura global de mercado.","link":"https://g1.globo.com/tecnologia/noticia/2026/07/13/ia-pode-transformar-a-economia-mais-rapido-que-a-revolucao-industrial-alertam-especialistas.ghtml","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Technology Networks","pais":"Estados Unidos","titulo":"Co-cientista de IA criado para acelerar a pesquisa biomédica","resumo":"Cientistas dos EUA desenvolveram um sistema de Inteligência Artificial projetado para atuar como um assistente de pesquisa biomédica. A ferramenta automatiza a análise de dados complexos, prometendo reduzir anos de trabalho em laboratório para meses. Esse avanço pode acelerar significativamente a descoberta de novos fármacos e curas.","link":"https://www.technologynetworks.com/tn/news/ai-co-scientist-created-to-accelerate-biomedical-research-414635","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ScienceDaily","pais":"Estados Unidos","titulo":"NASA seleciona quatro novas missões lunares para construir uma base lunar permanente","resumo":"A NASA anunciou um novo pacote de missões focadas na infraestrutura de exploração lunar sustentável. O objetivo é estabelecer uma presença humana de longo prazo na Lua, servindo como trampolim para futuras missões a Marte. O projeto mobilizará tecnologias de ponta em robótica e sistemas de suporte à vida.","link":"https://www.sciencedaily.com/releases/2026/07/260713084853.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"MarketsandMarkets","pais":"Estados Unidos","titulo":"Futura tecnologia de IA física: principais tendências, motores de crescimento e oportunidades","resumo":"O mercado se prepara para a integração da IA em ambientes físicos, indo além dos softwares e chegando à robótica industrial. A tendência aponta para o crescimento de sistemas autônomos que aprendem e operam em tempo real. Especialistas destacam essa evolução como o próximo grande ciclo de investimento tecnológico.","link":"https://www.marketsandmarkets.com/blog/SE/future-physical-ai-technology","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"China unveils first hydrogen engine for heavy-duty vehicles, betting on diesel alternative; here is why","resumo":"China is making strides in decarbonizing heavy transport by unveiling an innovative hydrogen engine. This technology emerges as a viable alternative to diesel, aiming to reduce pollutant emissions on a large scale. The move marks a decisive step in the global energy transition for freight vehicles.","link":"https://oglobo.globo.com/economia/epoca/noticia/2026/07/14/china-apresenta-primeiro-motor-a-hidrogenio-para-veiculos-pesados-e-aposta-em-alternativa-ao-diesel-entenda.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"AI will accelerate nations, but Brazil is lost and risks 'remaining in the 1500s,' says Brazilian former Google executive","resumo":"Experts warn that Artificial Intelligence will be the primary engine of economic growth in the coming decades. There is concern that Brazil is not prepared to strategically integrate these technologies. The country risks stagnation if it fails to adopt aggressive innovation and education policies.","link":"https://www1.folha.uol.com.br/tec/2026/07/ia-acelerara-paises-brasil-esta-perdido-e-pode-ficar-em-1500-diz-brasileiro-que-liderou-google.shtml","categoria":"BUSINESS","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"'Digital necromancy': how AI is recreating the deceased and dividing opinions","resumo":"The ability of AI to recreate realistic avatars of deceased individuals raises profound ethical dilemmas. While the technology offers comfort to grieving families, critics point to risks regarding consent and digital manipulation. The phenomenon has reignited the debate on the limits of technology in preserving human memory.","link":"https://g1.globo.com/tecnologia/noticia/2026/07/14/necromancia-digital-como-a-ia-esta-recriando-pessoas-mortas-e-dividindo-opinioes.ghtml","categoria":"TRENDING","lang":"en"},{"fonte":"Pplware","pais":"Brazil","titulo":"BYD SHARK: Super Hybrid technology debuts in the brand's first pickup truck","resumo":"BYD is expanding its portfolio in Brazil with the launch of the SHARK pickup, equipped with advanced Super Hybrid technology. The model aims to combine the durability required for heavy work with the energy efficiency of electric motors. This launch signals the accelerated electrification of the national automotive market.","link":"https://pplware.sapo.pt/motores/byd-shark-estreia-da-tecnologia-super-hibrida-na-primeira-pick-up-da-marca/","categoria":"LAUNCH","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"AI could transform the economy faster than the Industrial Revolution, experts warn","resumo":"Tech leaders and economists agree that AI will cause an unprecedented systemic disruption. Unlike past transitions, the speed of AI adoption demands immediate preparation from governments. The impact is expected to redefine productivity, employment, and the global market structure.","link":"https://g1.globo.com/tecnologia/noticia/2026/07/13/ia-pode-transformar-a-economia-mais-rapido-que-a-revolucao-industrial-alertam-especialistas.ghtml","categoria":"ECONOMY","lang":"en"},{"fonte":"Technology Networks","pais":"United States","titulo":"AI co-scientist created to accelerate biomedical research","resumo":"US scientists have developed an Artificial Intelligence system designed to act as a biomedical research assistant. The tool automates complex data analysis, promising to reduce years of laboratory work to months. This breakthrough could significantly accelerate the discovery of new drugs and cures.","link":"https://www.technologynetworks.com/tn/news/ai-co-scientist-created-to-accelerate-biomedical-research-414635","categoria":"SCIENCE","lang":"en"},{"fonte":"ScienceDaily","pais":"United States","titulo":"NASA selects four new lunar missions to build a permanent moon base","resumo":"NASA has announced a new set of missions focused on sustainable lunar exploration infrastructure. The goal is to establish a long-term human presence on the Moon, serving as a stepping stone for future missions to Mars. The project will mobilize cutting-edge technologies in robotics and life-support systems.","link":"https://www.sciencedaily.com/releases/2026/07/260713084853.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"MarketsandMarkets","pais":"United States","titulo":"Future physical AI technology: key trends, growth drivers, and opportunities","resumo":"The market is preparing for the integration of AI into physical environments, moving beyond software and into industrial robotics. The trend points to the growth of autonomous systems that learn and operate in real-time. Experts highlight this evolution as the next major cycle of technological investment.","link":"https://www.marketsandmarkets.com/blog/SE/future-physical-ai-technology","categoria":"TECHNOLOGY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Utility de escape HTML simples para prevenir injections em propriedades sem tratamento
+  function esc(s) {
+    return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(item.link)}" target="_blank" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+</script>
+</body>
+</html>
