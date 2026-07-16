@@ -436,6 +436,18 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
   populateSelects();
   filterData(); // trigger first render
 </script>
+
+<script>
+// Analytics: contador de visitas (Abacus CountAPI - gratuito, sem conta)
+(function(){
+  try {
+    var page = location.pathname.split('/').pop().replace('.html','');
+    if (page && page.indexOf('Dashboard') === 0) {
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(page)).catch(function(){});
+    }
+  } catch(e){}
+})();
+</script>
 </body>
 </html>`
 }
