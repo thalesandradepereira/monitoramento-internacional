@@ -4,7 +4,15 @@ compatibility_date = "2024-09-01"
 
 [vars]
 GH_REPO = "thalesandradepereira/monitoramento-internacional"
+# Primeira fase da migração: preservar o comportamento público legado.
+# Trocar para "d1" somente depois de criar o banco, aplicar migrations e validar a importação privada.
+RECIPIENTS_STORAGE = "github"
+
+# O binding D1 fica fora do arquivo principal até existir um database_id real,
+# para que deploys legados com RECIPIENTS_STORAGE=github continuem funcionando.
+# Use worker/wrangler.d1.example.toml como referência na etapa manual futura.
 
 # Secrets (configurar via `wrangler secret put`):
-#   UNSUBSCRIBE_SECRET  — chave HMAC compartilhada com o gerador de e-mails
-#   GH_PAT_UNSUB        — Personal Access Token do GitHub (contents:write)
+#   UNSUBSCRIBE_SECRET     — chave HMAC compartilhada com o gerador de e-mails
+#   GH_PAT_UNSUB           — Personal Access Token do GitHub (contents:write), enquanto RECIPIENTS_STORAGE=github
+#   RECIPIENTS_API_TOKEN   — token Bearer do endpoint administrativo interno de destinatários
