@@ -27,5 +27,12 @@ export const config = {
   webUrl: process.env.WEB_URL || 'http://localhost:3000',
   dryRun: process.env.DRY_RUN !== 'false',
   executionMode: (process.env.EXECUTION_MODE || 'local') as 'scheduled' | 'manual' | 'local',
-  dailyExecutionLogPath: process.env.DAILY_EXECUTION_LOG_PATH || 'state/daily-executions.json'
+  dailyExecutionLogPath: process.env.DAILY_EXECUTION_LOG_PATH || 'state/daily-executions.json',
+  recipients: {
+    source: (process.env.RECIPIENTS_SOURCE || 'github') as 'github' | 'd1',
+    apiUrl: process.env.RECIPIENTS_API_URL || 'https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients',
+    apiToken: process.env.RECIPIENTS_API_TOKEN || '',
+    timeoutMs: Number(process.env.RECIPIENTS_API_TIMEOUT_MS || 5000),
+    maxRecipients: Number(process.env.RECIPIENTS_MAX_RECIPIENTS || 500),
+  }
 }
