@@ -105,11 +105,25 @@ function getFooterHTML(lang: 'pt' | 'en', destEmail: string): string {
   `
 }
 
+export interface EmailSendReport {
+  attempted: number
+  sent: number
+  failed: number
+}
+
+function maskEmail(email: string): string {
+  const [local, domain = ''] = email.split('@')
+  const visibleLocal = local.slice(0, 2)
+  const domainParts = domain.split('.')
+  const domainSuffix = domainParts.length > 1 ? domainParts.slice(1).join('.') : domain
+  return `${visibleLocal}${'*'.repeat(Math.max(local.length - 2, 3))}@***${domainSuffix ? `.${domainSuffix}` : ''}`
+}
+
 export async function enviarEmail(
   topicosPt: Topico[],
   topicosEn: Topico[],
   dataStr: string
-): Promise<void> {
+): Promise<EmailSendReport> {
   const assunto = `Notícias do Dia - ${dataStr} / Daily News - ${dataStr}`
   
   // Lê do ENV
@@ -136,7 +150,7 @@ export async function enviarEmail(
   
   if (!emails.length) {
     console.log('[email] Nenhum destinatário configurado.')
-    return
+    return { attempted: 0, sent: 0, failed: 0 }
   }
 
   const transporter = nodemailer.createTransport({
@@ -149,6 +163,8 @@ export async function enviarEmail(
   // URL gerada para o GH Pages
   const dashFilename = `Dashboard-Monitoramento-${dataStr.replace(/\//g, '-')}.html`
   const dashUrl = `https://thalesandradepereira.github.io/monitoramento-internacional/${dashFilename}`
+
+  const report: EmailSendReport = { attempted: 0, sent: 0, failed: 0 }
 
   for (const email of emails) {
     const html = `
@@ -193,9 +209,16 @@ export async function enviarEmail(
         subject: assunto,
         html,
       })
-      console.log(`[email] Enviado para ${email} | id=${info.messageId}`)
+      report.attempted += 1
+      report.sent += 1
+      console.log(`[email] Enviado para destinatário ${maskEmail(email)} | id=${info.messageId}`)
     } catch (err: any) {
-      console.error(`[email] Erro ao enviar para ${email}:`, err?.message || err)
+      report.attempted += 1
+      report.failed += 1
+      console.error(`[email] Erro ao enviar para destinatário ${maskEmail(email)}:`, err?.message || err)
     }
   }
+
+  console.log(`[email] Relatório: tentativas=${report.attempted}; enviados=${report.sent}; falhas=${report.failed}`)
+  return report
 }
