@@ -101,11 +101,13 @@ O projeto é 100% nativo para nuvem, garantindo estabilidade e zero necessidade 
 
 ### 1. Rotina de Envio Diária (GitHub Actions)
 
-Todas as madrugadas, às **02:00 no horário de Brasília** (`America/Sao_Paulo`), o GitHub Actions roda o arquivo `.github/workflows/monitoramento.yml`, executa as funções de IA e dispara a campanha. Como o cron do GitHub Actions usa UTC, o workflow está configurado como `0 5 * * *`: **05:00 UTC corresponde a 02:00 em Brasília**.
+Todas as madrugadas, às **02:00 no horário de Brasília** (`America/Sao_Paulo`), o GitHub Actions roda o arquivo `.github/workflows/monitoramento.yml`, executa as funções de IA e dispara a campanha. Como o `schedule` do GitHub Actions usa UTC, o workflow está configurado como `0 5 * * *`: **05:00 UTC corresponde a 02:00 em Brasília**.
+
+A aplicação Node também pode usar cron local via `CRON_EXPR` + `TIMEZONE`. Nesse caso, o cron é interpretado pelo `node-cron` com `TIMEZONE=America/Sao_Paulo`, portanto o valor correto para 02:00 em Brasília é `CRON_EXPR=0 2 * * *`. Em resumo: **GitHub Actions = `0 5 * * *` em UTC; aplicação local = `0 2 * * *` em `America/Sao_Paulo`**.
 
 | Tipo de execução | Como inicia | `DRY_RUN` efetivo | Pode enviar e-mails? | Pode publicar dashboard? | Registra envio concluído? |
 | --- | --- | --- | --- | --- | --- |
-| Agendada | `schedule` diário (`0 5 * * *`) | `false` | Sim | Sim | Sim |
+| Agendada | `schedule` diário do GitHub (`0 5 * * *` em UTC) | `false` | Sim | Sim | Sim |
 | Manual padrão | `workflow_dispatch` sem alterar opções | `true` | Não | Não | Não |
 | Manual real | `workflow_dispatch` com `dry_run=false` escolhido explicitamente | `false` | Sim | Sim | Sim, se passar pela idempotência |
 
@@ -173,6 +175,7 @@ Para alterações futuras no projeto, rode pelo menos:
 npm ci
 npx tsc --noEmit
 ruby -e "require 'yaml'; YAML.load_file('.github/workflows/monitoramento.yml'); puts 'ok'"
+npm test
 git diff --check
 ```
 

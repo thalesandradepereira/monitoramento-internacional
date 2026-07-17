@@ -80,15 +80,25 @@ export function syncPersistentExecutionLog(): void {
   }
 }
 
+function getEffectiveRealRecord(date: string): DailyExecutionRecord | undefined {
+  return readDailyExecutionLog().records
+    .filter(record => record.date === date && record.timezone === config.timezone && record.state !== 'dry_run')
+    .sort((a, b) => `${b.date}T${b.time}`.localeCompare(`${a.date}T${a.time}`))[0]
+}
+
 export function assertCanStartRealExecution(date: string): void {
-  const log = readDailyExecutionLog()
-  const sameDay = log.records.find(record => record.date === date && record.timezone === config.timezone && record.state !== 'dry_run')
-  if (sameDay?.state === 'completed') {
+  const sameDay = getEffectiveRealRecord(date)
+  if (!sameDay) return
+
+  if (sameDay.state === 'completed') {
     throw new AlreadyCompletedExecutionError(`[idempotencia] Envio real de ${date} (${config.timezone}) já registrado como concluído. Encerrando sem novo envio.`)
   }
-  if (sameDay) {
-    throw new Error(`[idempotencia] Já existe registro real ${sameDay.state} para ${date} (${config.timezone}). Estado incerto; envio bloqueado.`)
+
+  if (sameDay.state === 'failed') {
+    throw new Error(`[idempotencia] Envio real de ${date} (${config.timezone}) já registrado com falha. Reenvio automático bloqueado para evitar duplicidade.`)
   }
+
+  throw new Error(`[idempotencia] Existe execução real em andamento para ${date} (${config.timezone}). Estado incerto; envio bloqueado.`)
 }
 
 export class AlreadyCompletedExecutionError extends Error {}
@@ -96,7 +106,7 @@ export class AlreadyCompletedExecutionError extends Error {}
 export function persistExecutionRecord(record: DailyExecutionRecord): void {
   const log = readDailyExecutionLog()
   const filtered = log.records.filter(existing => !(
-    existing.date === record.date && existing.timezone === record.timezone && existing.mode === record.mode && existing.state === record.state
+    existing.date === record.date && existing.timezone === record.timezone
   ))
   filtered.push(record)
   filtered.sort((a, b) => `${a.date}T${a.time}`.localeCompare(`${b.date}T${b.time}`))

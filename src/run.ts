@@ -102,6 +102,10 @@ export async function runPipeline() {
         failed: emailReport.failed,
       })
       commitAndPushPersistentState(`chore: registrar execução do monitoramento de ${zonedNow.date}`)
+
+      if (emailReport.failed > 0) {
+        throw new Error(`[email] Execução encerrada com falha: ${emailReport.failed} entrega(s) falharam de ${emailReport.attempted} tentativa(s).`)
+      }
     }
 
     console.log('=== Execução finalizada com sucesso ===')
