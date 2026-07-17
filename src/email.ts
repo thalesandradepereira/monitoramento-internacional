@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer'
 import { config } from './config'
 import { Topico } from './summarize'
 import { gerarLinkDescadastro } from './unsubscribe'
-import { gerarDashboardHTML } from './dashboard'
+import { loadRecipients, maskEmail } from './recipients'
 
 function esc(s: string): string {
   return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -111,14 +111,6 @@ export interface EmailSendReport {
   failed: number
 }
 
-function maskEmail(email: string): string {
-  const [local, domain = ''] = email.split('@')
-  const visibleLocal = local.slice(0, 2)
-  const domainParts = domain.split('.')
-  const domainSuffix = domainParts.length > 1 ? domainParts.slice(1).join('.') : domain
-  return `${visibleLocal}${'*'.repeat(Math.max(local.length - 2, 3))}@***${domainSuffix ? `.${domainSuffix}` : ''}`
-}
-
 export async function enviarEmail(
   topicosPt: Topico[],
   topicosEn: Topico[],
@@ -126,30 +118,10 @@ export async function enviarEmail(
 ): Promise<EmailSendReport> {
   const assunto = `Notícias do Dia - ${dataStr} / Daily News - ${dataStr}`
   
-  // Lê do ENV
-  const envEmails = config.destEmail.split(',').map(e => e.trim()).filter(Boolean)
-  
-  // Lê do TXT
-  let txtEmails: string[] = []
-  try {
-    const fs = require('fs')
-    const path = require('path')
-    const file = path.resolve(__dirname, '..', 'recipients.txt')
-    if (fs.existsSync(file)) {
-      txtEmails = fs.readFileSync(file, 'utf8')
-        .split('\n')
-        .map((e: string) => e.trim())
-        .filter((e: string) => e && !e.startsWith('#'))
-    }
-  } catch (err) {
-    console.warn('[email] Erro ao ler recipients.txt:', err)
-  }
-
-  // Junta, remove duplicados e vazios
-  const emails = Array.from(new Set([...envEmails, ...txtEmails]))
-  
+  const { source, recipients: emails } = await loadRecipients()
+  console.log(`[email] Destinatários carregados; fonte=${source}; total=${emails.length}`)
   if (!emails.length) {
-    console.log('[email] Nenhum destinatário configurado.')
+    console.log(`[email] Nenhum destinatário configurado; fonte=${source}.`)
     return { attempted: 0, sent: 0, failed: 0 }
   }
 
