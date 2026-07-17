@@ -24,6 +24,7 @@ function loadRunPipeline(options: {
   delete process.env.GITHUB_ACTIONS
 
   const calls = {
+    loadRecipients: 0,
     persist: [] as unknown[],
     commit: [] as string[],
     email: 0,
@@ -139,4 +140,24 @@ test('destinatários não são enviados ao fluxo Gemini/sumarização e só são
   assert.equal(serializedSummarizeArgs.includes('@'), false)
   assert.equal(serializedTranslateArgs.includes('@'), false)
   assert.equal(calls.email, 1)
+})
+
+
+test('dry run com RECIPIENTS_SOURCE=d1 não carrega destinatários nem consulta API', async () => {
+  process.env.RECIPIENTS_SOURCE = 'd1'
+  process.env.RECIPIENTS_API_TOKEN = 'token-for-test'
+  const originalFetch = globalThis.fetch
+  let fetchCalls = 0
+  globalThis.fetch = (async () => { fetchCalls += 1; throw new Error('unexpected fetch') }) as typeof fetch
+  const { runPipeline, calls, restore } = loadRunPipeline({ dryRun: 'true' })
+  try {
+    await runPipeline()
+  } finally {
+    globalThis.fetch = originalFetch
+    delete process.env.RECIPIENTS_SOURCE
+    delete process.env.RECIPIENTS_API_TOKEN
+    restore()
+  }
+  assert.equal(calls.email, 0)
+  assert.equal(fetchCalls, 0)
 })

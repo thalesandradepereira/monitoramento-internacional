@@ -45,7 +45,7 @@ test('logs de envio não expõem e-mails completos nem token', async () => {
 
   const output = logs.join('\n')
   assert.equal(output.includes('alice.private@example.com'), false)
-  assert.equal(output.includes('thalesandrade@yahoo.com'), false)
+  assert.equal(output.includes('owner.private@example.test'), false)
   assert.equal(output.includes(token), false)
   assert.match(output, /[a-z]{2}\*+@\*\*\*\.com/)
 })

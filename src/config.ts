@@ -3,6 +3,17 @@ import path from 'path'
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') })
 
+
+function positiveIntegerFromEnv(name: string, defaultValue: number): number {
+  const raw = process.env[name]
+  if (raw === undefined || raw === '') return defaultValue
+  const value = Number(raw)
+  if (!Number.isInteger(value) || value <= 0) {
+    throw new Error(`[config] ${name} deve ser um número inteiro positivo.`)
+  }
+  return value
+}
+
 export const config = {
   gemini: {
     apiKey: process.env.GEMINI_API_KEY || '',
@@ -32,7 +43,7 @@ export const config = {
     source: (process.env.RECIPIENTS_SOURCE || 'github') as 'github' | 'd1',
     apiUrl: process.env.RECIPIENTS_API_URL || 'https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients',
     apiToken: process.env.RECIPIENTS_API_TOKEN || '',
-    timeoutMs: Number(process.env.RECIPIENTS_API_TIMEOUT_MS || 5000),
-    maxRecipients: Number(process.env.RECIPIENTS_MAX_RECIPIENTS || 500),
+    timeoutMs: positiveIntegerFromEnv('RECIPIENTS_API_TIMEOUT_MS', 5000),
+    maxRecipients: positiveIntegerFromEnv('RECIPIENTS_MAX_RECIPIENTS', 500),
   }
 }

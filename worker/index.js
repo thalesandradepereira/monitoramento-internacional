@@ -380,7 +380,7 @@ async function handleInvite(url) {
     <p>Conhece alguém que curtiria o Monitoramento Auto? Adicione o e-mail abaixo (ah, mas avisa a pessoa antes!).</p>
     <form action="/subscribe" method="GET">
       <label for="email">E-mail do colega:</label>
-      <input type="email" id="email" name="email" placeholder="email@exemplo.com" required>
+      <input type="email" id="email" name="email" placeholder="owner.private@example.test" required>
       <button type="submit">Cadastrar Colega</button>
     </form>
 
