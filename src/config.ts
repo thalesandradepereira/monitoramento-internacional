@@ -17,12 +17,15 @@ export const config = {
   },
   fromName: process.env.FROM_NAME || 'Monitoramento Internacional',
   destEmail: process.env.DEST_EMAIL || '',
-  cron: process.env.CRON_EXPR || '45 2 * * *',
+  cron: process.env.CRON_EXPR || '0 5 * * *',
   timezone: process.env.TIMEZONE || 'America/Sao_Paulo',
   maxTopicos: Number(process.env.MAX_TOPICOS || 50),
   janelaHoras: Number(process.env.JANELA_HORAS || 24),
   unsubscribeSecret: process.env.UNSUBSCRIBE_SECRET || '',
   unsubscribeWorkerUrl: (process.env.UNSUBSCRIBE_WORKER_URL || '').replace(/\/$/, ''),
   port: Number(process.env.PORT || 3000),
-  webUrl: process.env.WEB_URL || 'http://localhost:3000'
+  webUrl: process.env.WEB_URL || 'http://localhost:3000',
+  dryRun: process.env.DRY_RUN === 'true',
+  executionMode: (process.env.EXECUTION_MODE || 'local') as 'scheduled' | 'manual' | 'local',
+  dailyExecutionLogPath: process.env.DAILY_EXECUTION_LOG_PATH || 'state/daily-executions.json'
 }

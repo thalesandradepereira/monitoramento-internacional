@@ -1,25 +1,38 @@
 name: Disparo Monitoramento Internacional
 
 on:
-  # Permite que você dispare um teste manualmente clicando no botão no GitHub
   workflow_dispatch:
-  
-  # Roda todos os dias às 04h00 Horário de Brasília (BRT)
-  # Como o GitHub usa horário de Londres (UTC), 04h00 BRT = 07h00 UTC
+    inputs:
+      dry_run:
+        description: 'Executar sem enviar e-mails, publicar dashboard ou registrar envio concluído'
+        required: true
+        type: boolean
+        default: true
+
+  # Roda todos os dias às 02:00 no horário de Brasília (America/Sao_Paulo).
+  # O cron do GitHub Actions usa UTC: 05:00 UTC corresponde a 02:00 em Brasília.
   schedule:
-    - cron: '0 7 * * *'
+    - cron: '0 5 * * *'
+
+concurrency:
+  group: monitoramento-internacional-diario
+  cancel-in-progress: false
 
 jobs:
   rodar-monitoramento:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
+    env:
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == true && 'true' || 'false' }}
+      EXECUTION_MODE: ${{ github.event_name == 'schedule' && 'scheduled' || 'manual' }}
+
     steps:
       - name: 📥 Clonar Código do Repositório
         uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
 
       - name: ⚙️ Preparar Ambiente Node.js
         uses: actions/setup-node@v4
@@ -31,22 +44,22 @@ jobs:
 
       - name: 🚀 Executar Disparo
         env:
-          # Segredos (Você precisa cadastrar na aba Settings do repositório no GitHub)
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           UNSUBSCRIBE_SECRET: ${{ secrets.UNSUBSCRIBE_SECRET }}
-          
-          # Variáveis padrões e públicas
+
           GEMINI_MODEL: 'gemini-2.5-flash'
           DEST_EMAIL: 'thalesandrade@yahoo.com'
           SMTP_HOST: 'smtp.gmail.com'
           SMTP_PORT: '465'
           SMTP_SECURE: 'true'
           FROM_NAME: 'Monitoramento Internacional'
+          CRON_EXPR: '0 5 * * *'
+          TIMEZONE: 'America/Sao_Paulo'
+          DAILY_EXECUTION_LOG_PATH: 'state/daily-executions.json'
           MAX_TOPICOS: '50'
           JANELA_HORAS: '24'
           WEB_URL: 'http://localhost:3000'
           UNSUBSCRIBE_WORKER_URL: 'https://monitoramento-internacional-unsub.thalesandrade.workers.dev'
-        
         run: npm run once
