@@ -1,0 +1,101 @@
+name: Verify D1 Recipients
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: temporary-verify-recipients-d1
+  cancel-in-progress: false
+
+jobs:
+  verify-recipients:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      RECIPIENTS_API_URL: https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients
+      EXPECTED_ACTIVE_RECIPIENTS: '4'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Verify active D1 recipient count
+        env:
+          RECIPIENTS_API_TOKEN: ${{ secrets.RECIPIENTS_API_TOKEN }}
+        run: |
+          set +x
+          set -euo pipefail
+          umask 077
+
+          response_file="$(mktemp)"
+          headers_file="$(mktemp)"
+          cleanup() {
+            rm -f "$response_file" "$headers_file"
+          }
+          trap cleanup EXIT
+
+          if [ -z "${RECIPIENTS_API_TOKEN:-}" ]; then
+            echo "Required recipients API token secret is not configured."
+            exit 1
+          fi
+
+          http_status="$(curl --silent --show-error --location --output "$response_file" --dump-header "$headers_file" --write-out '%{http_code}' \
+            --request GET \
+            --header "Authorization: Bearer ${RECIPIENTS_API_TOKEN}" \
+            --header 'Accept: application/json' \
+            "$RECIPIENTS_API_URL")"
+
+          node - "$http_status" "$headers_file" "$response_file" "$EXPECTED_ACTIVE_RECIPIENTS" <<'NODE'
+          const [status, headersPath, responsePath, expectedRaw] = process.argv.slice(2)
+          const { readFileSync } = require('node:fs')
+
+          if (status !== '200') {
+            console.error(`Recipients verification failed: HTTP ${status}.`)
+            process.exit(1)
+          }
+
+          const rawHeaders = readFileSync(headersPath, 'utf8')
+          const headerBlocks = rawHeaders.trim().split(/\r?\n\r?\n/).filter(Boolean)
+          const finalHeaders = headerBlocks.at(-1) || ''
+          const contentTypeLine = finalHeaders.split(/\r?\n/).find((line) => /^content-type:/i.test(line)) || ''
+          const contentType = contentTypeLine.split(':').slice(1).join(':').trim().toLowerCase()
+
+          if (!/^application\/(?:[\w.+-]*\+)?json(?:\s*;|$)/.test(contentType)) {
+            console.error('Recipients verification failed: Content-Type is not JSON.')
+            process.exit(1)
+          }
+
+          let body
+          try {
+            body = JSON.parse(readFileSync(responsePath, 'utf8'))
+          } catch {
+            console.error('Recipients verification failed: response JSON is invalid.')
+            process.exit(1)
+          }
+
+          const recipients = Array.isArray(body) ? body : body?.recipients
+          if (!Array.isArray(recipients)) {
+            console.error('Recipients verification failed: JSON recipients list is missing.')
+            process.exit(1)
+          }
+
+          const activeCount = recipients.length
+          if (activeCount === 0) {
+            console.error('Recipients verification failed: active recipients list is empty.')
+            process.exit(1)
+          }
+
+          const expected = Number.parseInt(expectedRaw, 10)
+          if (activeCount !== expected) {
+            console.error(`Recipients verification failed: expected ${expected} active recipients, received ${activeCount}.`)
+            process.exit(1)
+          }
+
+          console.log(`Active recipients received: ${activeCount}`)
+          NODE
