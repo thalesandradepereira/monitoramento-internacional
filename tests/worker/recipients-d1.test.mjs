@@ -1,5 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
+import { readFile } from 'node:fs/promises'
 import worker, {
   listActiveRecipients,
   normalizeEmail,
@@ -177,4 +178,94 @@ test('RECIPIENTS_STORAGE defaults to github and d1 fails explicitly without DB',
 
   const d1Res = await worker.fetch(new Request('https://worker.test/subscribe?email=novo@example.com'), { RECIPIENTS_STORAGE: 'd1' })
   assert.equal(d1Res.status, 500)
+})
+
+test('import accepts body without Content-Length when real size is within limit', async () => {
+  const e = env()
+  const req = new Request('https://worker.test/internal/recipients/import', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer test-secret-token', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ recipients: ['sem-length@example.com'] }),
+  })
+  assert.equal(req.headers.has('Content-Length'), false)
+  const res = await worker.fetch(req, e)
+  assert.equal(res.status, 200)
+  assert.deepEqual(await json(res), { received: 1, imported: 1, reactivated: 0, invalid: 0 })
+})
+
+test('import rejects body without Content-Length when real size exceeds limit', async () => {
+  const body = JSON.stringify({ recipients: ['grande@example.com'], padding: 'x'.repeat(33 * 1024) })
+  const req = new Request('https://worker.test/internal/recipients/import', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer test-secret-token', 'Content-Type': 'application/json' },
+    body,
+  })
+  assert.equal(req.headers.has('Content-Length'), false)
+  const res = await worker.fetch(req, env())
+  assert.equal(res.status, 413)
+  assert.deepEqual(await json(res), { error: 'Request too large' })
+})
+
+test('import rejects body when Content-Length is smaller than the real body', async () => {
+  const body = JSON.stringify({ recipients: ['menor@example.com'], padding: 'x'.repeat(33 * 1024) })
+  const req = new Request('https://worker.test/internal/recipients/import', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer test-secret-token', 'Content-Type': 'application/json', 'Content-Length': '10' },
+    body,
+  })
+  const res = await worker.fetch(req, env())
+  assert.equal(res.status, 413)
+})
+
+test('import rejects recipient batches above the conservative D1 operation limit', async () => {
+  const recipients = Array.from({ length: 101 }, (_, index) => `pessoa-${index}@example.com`)
+  const req = new Request('https://worker.test/internal/recipients/import', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer test-secret-token', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ recipients }),
+  })
+  const res = await worker.fetch(req, env())
+  assert.equal(res.status, 400)
+  assert.deepEqual(await json(res), { error: 'Invalid recipients payload' })
+})
+
+test('import fails generically when DB binding is absent', async () => {
+  const req = new Request('https://worker.test/internal/recipients/import', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer test-secret-token', 'Content-Type': 'application/json' },
+    body: JSON.stringify({ recipients: ['sem-db@example.com'] }),
+  })
+  const res = await worker.fetch(req, { RECIPIENTS_API_TOKEN: 'test-secret-token' })
+  assert.equal(res.status, 500)
+  assert.deepEqual(await json(res), { error: 'Internal error' })
+})
+
+test('unsubscribe fails safely when UNSUBSCRIBE_SECRET is absent without writes', async () => {
+  const originalFetch = globalThis.fetch
+  let githubWrites = 0
+  globalThis.fetch = async () => {
+    githubWrites += 1
+    return new Response('{}', { status: 500 })
+  }
+  try {
+    const e = env({ RECIPIENTS_STORAGE: 'd1', UNSUBSCRIBE_SECRET: '' })
+    let d1Calls = 0
+    e.DB.prepare = () => {
+      d1Calls += 1
+      throw new Error('DB should not be called without unsubscribe secret')
+    }
+    const res = await worker.fetch(new Request('https://worker.test/unsubscribe?email=ausente@example.com&token=qualquer'), e)
+    assert.equal(res.status, 500)
+    assert.equal(githubWrites, 0)
+    assert.equal(d1Calls, 0)
+  } finally {
+    globalThis.fetch = originalFetch
+  }
+})
+
+test('primary wrangler.toml keeps legacy github mode without fictitious D1 database_id', async () => {
+  const config = await readFile(new URL('../../worker/wrangler.toml', import.meta.url), 'utf8')
+  assert.match(config, /RECIPIENTS_STORAGE = "github"/)
+  assert.doesNotMatch(config, /\[\[d1_databases\]\]/)
+  assert.doesNotMatch(config, /database_id\s*=/)
 })

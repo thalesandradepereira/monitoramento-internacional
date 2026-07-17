@@ -12,11 +12,11 @@ Esta primeira fase prepara o Worker para usar Cloudflare D1 como fonte privada d
 
 ## Banco e binding
 
-A migration `worker/migrations/0001_create_recipients.sql` cria a tabela `recipients` com `email` único, `status`, datas UTC, origem de consentimento e data de descadastro. A configuração do Worker declara:
+A migration `worker/migrations/0001_create_recipients.sql` cria a tabela `recipients` com `email` único, `status`, datas UTC, origem de consentimento e data de descadastro. O `worker/wrangler.toml` principal permanece sem bloco D1 para continuar válido antes da criação do banco real e preservar o modo legado `RECIPIENTS_STORAGE=github`. O arquivo `worker/wrangler.d1.example.toml` documenta o futuro binding:
 
 - binding D1: `DB`;
 - `database_name`: `monitoramento-internacional-recipients`;
-- `database_id`: placeholder `00000000-0000-0000-0000-000000000000`, que deve ser substituído apenas depois da criação manual do banco.
+- `database_id`: placeholder textual `SUBSTITUA_PELO_DATABASE_ID_REAL`, que não deve ser usado em deploy.
 
 Nenhum token, segredo, ID real ou e-mail real deve ser registrado no repositório.
 
@@ -27,9 +27,9 @@ Não execute estes comandos nesta fase. Eles são referência para uma etapa ope
 ```bash
 npx wrangler d1 create monitoramento-internacional-recipients
 # Copiar o database_id retornado e atualizar worker/wrangler.toml em uma alteração controlada.
-npx wrangler d1 migrations apply monitoramento-internacional-recipients --local --config worker/wrangler.toml
-npx wrangler d1 migrations apply monitoramento-internacional-recipients --remote --config worker/wrangler.toml
-npx wrangler secret put RECIPIENTS_API_TOKEN --config worker/wrangler.toml
+npx wrangler d1 migrations apply monitoramento-internacional-recipients --local --config worker/wrangler.d1.example.toml
+npx wrangler d1 migrations apply monitoramento-internacional-recipients --remote --config worker/wrangler.d1.example.toml
+npx wrangler secret put RECIPIENTS_API_TOKEN --config worker/wrangler.d1.example.toml
 ```
 
 ## Variáveis e secrets
@@ -56,7 +56,7 @@ O exemplo usa domínio reservado para documentação e não deve ser inserido em
 
 ### `POST /internal/recipients/import`
 
-Endpoint administrativo autenticado para importação privada controlada. Aceita uma lista JSON ou objeto com `recipients`, normaliza, remove duplicidades, cadastra ou reativa de forma idempotente e retorna apenas contagens:
+Endpoint administrativo autenticado para importação privada controlada. Aceita uma lista JSON ou objeto com `recipients`, normaliza, remove duplicidades, cadastra ou reativa de forma idempotente e retorna apenas contagens. O Worker limita o corpo real a 32 KiB e usa um limite conservador de 100 destinatários por requisição para evitar excesso de operações D1 em uma única invocação:
 
 ```json
 {
@@ -72,7 +72,7 @@ Não retorna a lista completa e não deve registrar endereços recebidos em logs
 ## Sequência segura de implantação
 
 1. Criar o D1 manualmente.
-2. Atualizar o `database_id` em alteração revisada.
+2. Copiar `worker/wrangler.d1.example.toml` ou mover o bloco D1 para `worker/wrangler.toml` com o `database_id` real em alteração revisada.
 3. Aplicar migrations localmente e validar com dados fictícios.
 4. Configurar `RECIPIENTS_API_TOKEN` como secret do Worker.
 5. Fazer deploy controlado do Worker, ainda com `RECIPIENTS_STORAGE=github`.

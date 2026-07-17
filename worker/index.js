@@ -8,7 +8,8 @@
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' }
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const MAX_IMPORT_BYTES = 32 * 1024
-const MAX_IMPORT_RECIPIENTS = 1000
+// Conservador para evitar excesso de operações D1 em uma única invocação.
+const MAX_IMPORT_RECIPIENTS = 100
 
 export default {
   async fetch(request, env) {
@@ -182,16 +183,34 @@ async function handleInternalRecipients(request, env) {
   }
 }
 
+
+async function readLimitedTextBody(request, maxBytes) {
+  const body = await request.arrayBuffer()
+  if (body.byteLength > maxBytes) {
+    const err = new Error('Request body too large')
+    err.name = 'RequestBodyTooLarge'
+    throw err
+  }
+  return new TextDecoder().decode(body)
+}
+
 async function handleImportRecipients(request, env) {
   if (request.method !== 'POST') return jsonResponse({ error: 'Method not allowed' }, 405)
   if (!(await verifyBearer(request, env))) return jsonResponse({ error: 'Unauthorized' }, 401, { 'Cache-Control': 'no-store' })
 
-  const length = Number(request.headers.get('Content-Length') || '0')
-  if (length > MAX_IMPORT_BYTES) return jsonResponse({ error: 'Request too large' }, 413, { 'Cache-Control': 'no-store' })
+  let bodyText
+  try {
+    bodyText = await readLimitedTextBody(request, MAX_IMPORT_BYTES)
+  } catch (err) {
+    if (err?.name === 'RequestBodyTooLarge') {
+      return jsonResponse({ error: 'Request too large' }, 413, { 'Cache-Control': 'no-store' })
+    }
+    return jsonResponse({ error: 'Invalid request body' }, 400, { 'Cache-Control': 'no-store' })
+  }
 
   let payload
   try {
-    payload = await request.json()
+    payload = JSON.parse(bodyText)
   } catch (_err) {
     return jsonResponse({ error: 'Invalid JSON' }, 400, { 'Cache-Control': 'no-store' })
   }
@@ -253,6 +272,14 @@ async function handleUnsubscribe(url, env) {
     return htmlResponse(400,
       { pt: 'Parâmetros inválidos', en: 'Invalid parameters' },
       { pt: 'O link está incompleto. Tente usar o link original do e-mail.', en: 'The link is incomplete. Try using the original link from the email.' }
+    )
+  }
+
+  if (!env.UNSUBSCRIBE_SECRET) {
+    console.error('Unsubscribe secret unavailable')
+    return htmlResponse(500,
+      { pt: 'Erro interno', en: 'Internal error' },
+      { pt: 'Não foi possível processar o descadastro. Tente novamente mais tarde.', en: 'Could not process the unsubscription. Try again later.' }
     )
   }
 
