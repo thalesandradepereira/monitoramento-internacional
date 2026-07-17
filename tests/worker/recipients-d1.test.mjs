@@ -263,9 +263,12 @@ test('unsubscribe fails safely when UNSUBSCRIBE_SECRET is absent without writes'
   }
 })
 
-test('primary wrangler.toml keeps legacy github mode without fictitious D1 database_id', async () => {
+test('primary wrangler.toml keeps legacy github mode with real D1 binding declared', async () => {
   const config = await readFile(new URL('../../worker/wrangler.toml', import.meta.url), 'utf8')
   assert.match(config, /RECIPIENTS_STORAGE = "github"/)
-  assert.doesNotMatch(config, /\[\[d1_databases\]\]/)
-  assert.doesNotMatch(config, /database_id\s*=/)
+  assert.match(config, /\[\[d1_databases\]\]/)
+  assert.match(config, /binding = "DB"/)
+  assert.match(config, /database_name = "monitoramento-internacional-recipients"/)
+  assert.match(config, /database_id = "f979bfbd-a68d-4fa6-b566-ac3150370737"/)
+  assert.match(config, /migrations_dir = "migrations"/)
 })
