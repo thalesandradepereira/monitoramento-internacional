@@ -89,9 +89,8 @@ async function loadD1Recipients(): Promise<string[]> {
 
   const controller = new AbortController()
   const timeout = setTimeout(() => controller.abort(), config.recipients.timeoutMs)
-  let response: Response
   try {
-    response = await fetch(url.toString(), {
+    const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${config.recipients.apiToken}`,
@@ -99,31 +98,37 @@ async function loadD1Recipients(): Promise<string[]> {
       },
       signal: controller.signal,
     })
+
+    if (!response.ok) {
+      throw new Error(`[recipients] API privada retornou HTTP ${response.status}; fonte=d1.`)
+    }
+
+    const contentType = response.headers.get('content-type') || ''
+    if (!contentType.toLowerCase().includes('application/json')) {
+      throw new Error('[recipients] API privada retornou Content-Type inválido; fonte=d1.')
+    }
+
+    let body: unknown
+    try {
+      body = await response.json()
+    } catch (err: any) {
+      if (err?.name === 'AbortError') {
+        throw new Error(`[recipients] Timeout ao consultar API privada; fonte=d1; timeoutMs=${config.recipients.timeoutMs}.`)
+      }
+      throw new Error('[recipients] API privada retornou JSON inválido; fonte=d1.')
+    }
+
+    const list = Array.isArray(body) ? body : (body && typeof body === 'object' ? (body as { recipients?: unknown }).recipients : undefined)
+    return normalizeAndValidateRecipients(list, config.recipients.maxRecipients)
   } catch (err: any) {
     if (err?.name === 'AbortError') {
       throw new Error(`[recipients] Timeout ao consultar API privada; fonte=d1; timeoutMs=${config.recipients.timeoutMs}.`)
+    }
+    if (err instanceof Error && err.message.startsWith('[recipients]')) {
+      throw err
     }
     throw new Error('[recipients] Falha ao consultar API privada; fonte=d1.')
   } finally {
     clearTimeout(timeout)
   }
-
-  if (!response.ok) {
-    throw new Error(`[recipients] API privada retornou HTTP ${response.status}; fonte=d1.`)
-  }
-
-  const contentType = response.headers.get('content-type') || ''
-  if (!contentType.toLowerCase().includes('application/json')) {
-    throw new Error('[recipients] API privada retornou Content-Type inválido; fonte=d1.')
-  }
-
-  let body: unknown
-  try {
-    body = await response.json()
-  } catch {
-    throw new Error('[recipients] API privada retornou JSON inválido; fonte=d1.')
-  }
-
-  const list = Array.isArray(body) ? body : (body && typeof body === 'object' ? (body as { recipients?: unknown }).recipients : undefined)
-  return normalizeAndValidateRecipients(list, config.recipients.maxRecipients)
 }

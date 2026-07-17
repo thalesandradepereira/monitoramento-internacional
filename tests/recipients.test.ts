@@ -91,6 +91,31 @@ test('modo d1 aplica timeout', async () => {
   try { await assert.rejects(mod.loadRecipients(), /Timeout/) } finally { restore() }
 })
 
+test('modo d1 aplica timeout quando headers chegam mas corpo JSON trava', async () => {
+  let jsonStarted = false
+  let abortedDuringBody = false
+  const fetchMock = (async (_url: string | URL | Request, init?: RequestInit) => ({
+    ok: true,
+    status: 200,
+    headers: new Headers({ 'content-type': 'application/json' }),
+    json: async () => {
+      jsonStarted = true
+      return new Promise<unknown>((_resolve, reject) => {
+        init?.signal?.addEventListener('abort', () => {
+          abortedDuringBody = true
+          reject(Object.assign(new Error('aborted body'), { name: 'AbortError' }))
+        })
+      })
+    },
+  } as unknown as Response)) as typeof fetch
+  const { mod, restore } = await loadWithEnv({ RECIPIENTS_SOURCE: 'd1', RECIPIENTS_API_TOKEN: 'token', RECIPIENTS_API_TIMEOUT_MS: '5' }, fetchMock)
+  try {
+    await assert.rejects(mod.loadRecipients(), /Timeout/)
+    assert.equal(jsonStarted, true)
+    assert.equal(abortedDuringBody, true)
+  } finally { restore() }
+})
+
 test('modo d1 rejeita resposta não JSON', async () => {
   const { mod, restore } = await loadWithEnv({ RECIPIENTS_SOURCE: 'd1', RECIPIENTS_API_TOKEN: 'token' }, (async () => new Response('ok', { status: 200, headers: { 'content-type': 'text/plain' } })) as typeof fetch)
   try { await assert.rejects(mod.loadRecipients(), /Content-Type inválido/) } finally { restore() }
