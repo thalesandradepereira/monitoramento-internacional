@@ -24,10 +24,13 @@ function loadRunPipeline(options: {
   delete process.env.GITHUB_ACTIONS
 
   const calls = {
+    loadRecipients: 0,
     persist: [] as unknown[],
     commit: [] as string[],
     email: 0,
     history: 0,
+    summarizeArgs: [] as unknown[][],
+    translateArgs: [] as unknown[][],
     fsWrites: 0,
   }
 
@@ -53,10 +56,10 @@ function loadRunPipeline(options: {
     buscarNoticias: async () => [{ fonte: 'Fonte', pais: 'Brasil', titulo: 'Título', link: 'https://example.test/noticia', data: new Date('2099-01-01T05:00:00Z') }],
   })
   mockModule('../src/summarize', {
-    resumirNoticias: async () => [{ pais: 'Brasil', titulo: 'Título', resumo: '- resumo', link: 'https://example.test/noticia', fonte: 'Fonte', categoria: 'GERAL' }],
+    resumirNoticias: async (...args: unknown[]) => { calls.summarizeArgs.push(args); return [{ pais: 'Brasil', titulo: 'Título', resumo: '- resumo', link: 'https://example.test/noticia', fonte: 'Fonte', categoria: 'GERAL' }] },
   })
   mockModule('../src/translate', {
-    traduzirParaIngles: async () => [{ pais: 'Brazil', titulo: 'Title', resumo: '- summary', link: 'https://example.test/noticia', fonte: 'Source', categoria: 'GENERAL' }],
+    traduzirParaIngles: async (...args: unknown[]) => { calls.translateArgs.push(args); return [{ pais: 'Brazil', titulo: 'Title', resumo: '- summary', link: 'https://example.test/noticia', fonte: 'Source', categoria: 'GENERAL' }] },
   })
   mockModule('../src/dashboard', {
     gerarDashboardHTML: () => '<html>dashboard</html>',
@@ -122,4 +125,39 @@ test('falha parcial de e-mail persiste failed, sincroniza estado e termina com e
   assert.equal((calls.persist[1] as { state: string; attempted: number; sent: number; failed: number }).sent, 2)
   assert.equal((calls.persist[1] as { state: string; attempted: number; sent: number; failed: number }).failed, 1)
   assert.equal(calls.commit.length, 2)
+})
+
+
+test('destinatários não são enviados ao fluxo Gemini/sumarização e só são carregados pelo módulo de e-mail', async () => {
+  const { runPipeline, calls, restore } = loadRunPipeline({ dryRun: 'false' })
+  try {
+    await runPipeline()
+  } finally {
+    restore()
+  }
+  const serializedSummarizeArgs = JSON.stringify(calls.summarizeArgs)
+  const serializedTranslateArgs = JSON.stringify(calls.translateArgs)
+  assert.equal(serializedSummarizeArgs.includes('@'), false)
+  assert.equal(serializedTranslateArgs.includes('@'), false)
+  assert.equal(calls.email, 1)
+})
+
+
+test('dry run com RECIPIENTS_SOURCE=d1 não carrega destinatários nem consulta API', async () => {
+  process.env.RECIPIENTS_SOURCE = 'd1'
+  process.env.RECIPIENTS_API_TOKEN = 'token-for-test'
+  const originalFetch = globalThis.fetch
+  let fetchCalls = 0
+  globalThis.fetch = (async () => { fetchCalls += 1; throw new Error('unexpected fetch') }) as typeof fetch
+  const { runPipeline, calls, restore } = loadRunPipeline({ dryRun: 'true' })
+  try {
+    await runPipeline()
+  } finally {
+    globalThis.fetch = originalFetch
+    delete process.env.RECIPIENTS_SOURCE
+    delete process.env.RECIPIENTS_API_TOKEN
+    restore()
+  }
+  assert.equal(calls.email, 0)
+  assert.equal(fetchCalls, 0)
 })
