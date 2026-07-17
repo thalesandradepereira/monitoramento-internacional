@@ -4,7 +4,18 @@ compatibility_date = "2024-09-01"
 
 [vars]
 GH_REPO = "thalesandradepereira/monitoramento-internacional"
+# Primeira fase da migração: preservar o comportamento público legado.
+# Trocar para "d1" somente depois de criar o banco, aplicar migrations e validar a importação privada.
+RECIPIENTS_STORAGE = "github"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "monitoramento-internacional-recipients"
+# Placeholder intencional: substitua pelo database_id real retornado pelo Wrangler na etapa manual futura.
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
 
 # Secrets (configurar via `wrangler secret put`):
-#   UNSUBSCRIBE_SECRET  — chave HMAC compartilhada com o gerador de e-mails
-#   GH_PAT_UNSUB        — Personal Access Token do GitHub (contents:write)
+#   UNSUBSCRIBE_SECRET     — chave HMAC compartilhada com o gerador de e-mails
+#   GH_PAT_UNSUB           — Personal Access Token do GitHub (contents:write), enquanto RECIPIENTS_STORAGE=github
+#   RECIPIENTS_API_TOKEN   — token Bearer do endpoint administrativo interno de destinatários
