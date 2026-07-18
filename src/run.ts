@@ -6,6 +6,7 @@ import { traduzirParaIngles } from './translate'
 import { enviarEmail, EmailSendReport } from './email'
 import { addSentNewsToHistory } from './history'
 import { gerarDashboardHTML } from './dashboard'
+import { aplicarIdentidadeDashboard } from './branding'
 import { config } from './config'
 import { loadRecipients, type RecipientLoadResult } from './recipients'
 import {
@@ -73,7 +74,7 @@ export async function runPipeline() {
     const topicosEn = await traduzirParaIngles(topicosPt)
 
     console.log('[docs] Gerando HTML do Dashboard...')
-    const dashboardHtml = gerarDashboardHTML(topicosPt, topicosEn, dataHoje)
+    const dashboardHtml = aplicarIdentidadeDashboard(gerarDashboardHTML(topicosPt, topicosEn, dataHoje))
     const docsDir = path.resolve(__dirname, '..', 'docs')
     const dashFilename = `Dashboard-Monitoramento-${dataHoje.replace(/\//g, '-')}.html`
     const dashPath = path.join(docsDir, dashFilename)
