@@ -21,7 +21,7 @@ O sistema opera de forma totalmente automatizada executando um pipeline robusto 
    - **Decisão Qualitativa (Reduce):** Filtra cirurgicamente os tópicos finalistas, garantindo alta densidade de informação, aplicando **Categorização Automática** (ex: MERCADO, CIÊNCIA, TECNOLOGIA).
 4. **Localização Bilíngue:** Após gerar os resumos e as tags em português, um segundo agente de IA espelha todo o conteúdo perfeitamente para o inglês nativo (EN-US).
 5. **Composição Visual Dinâmica:** Gera um e-mail HTML "State of the Art", organizado com "Table of Contents" (índice âncora), estruturado por país (com suporte automático às bandeiras locais) e tags de categorias.
-6. **Descadastro e Indicações (Cloudflare Worker):** Incorpora botões dinâmicos no rodapé de cada e-mail com links únicos, assinados com criptografia `HMAC-SHA256`. Quando clicados, acionam um Worker Serverless na Cloudflare que **edita autonomamente o arquivo `recipients.txt` via API do GitHub**, removendo o usuário sem intervenção humana.
+6. **Destinatários, Descadastro e Indicações (Cloudflare D1 + Worker):** A produção usa o Cloudflare D1 como fonte oficial dos destinatários por meio do endpoint privado do Worker (`/internal/recipients`) autenticado com `RECIPIENTS_API_TOKEN`. Os endereços ficam fora do Gemini e de qualquer outro componente de IA, e os logs não devem exibir e-mails completos. O arquivo legado `recipients.txt` permanece no repositório nesta etapa, mas não é fallback automático quando `RECIPIENTS_SOURCE=d1`.
 7. **Servidor Web de Inscrição:** Roda simultaneamente um micro-serviço web (Express) para captura de novos e-mails (Landing Page).
 8. **Dashboard Interativo Online (GitHub Pages):** A cada disparo real, o sistema gera e versiona um painel visual estático (`.html`) e o empurra (push) automaticamente para a pasta `docs/` do repositório. O painel é publicado imediatamente de forma gratuita e vitalícia através do GitHub Pages, cujo link de acesso é injetado no topo de cada e-mail.
 9. **Segurança operacional:** O workflow possui execução manual segura por padrão (`dry_run=true`), proteção contra concorrência e registro persistente de idempotência diária para evitar reenvios reais na mesma data operacional.
@@ -114,7 +114,8 @@ A aplicação Node também pode usar cron local via `CRON_EXPR` + `TIMEZONE`. Ne
 O workflow possui `concurrency` com grupo estável (`monitoramento-internacional-diario`) e `cancel-in-progress: false`, impedindo execuções simultâneas sem cancelar uma execução já iniciada. Essa proteção atua no nível do GitHub Actions; a idempotência persistente atua no nível da data operacional para evitar reenvio real no mesmo dia.
 
 **Atenção:** cadastre suas credenciais no painel `Settings -> Secrets and variables -> Actions` do repositório:
-- `GEMINI_API_KEY`, `SMTP_USER`, `SMTP_PASS`, `UNSUBSCRIBE_SECRET`.
+- `GEMINI_API_KEY`, `SMTP_USER`, `SMTP_PASS`, `UNSUBSCRIBE_SECRET`;
+- `RECIPIENTS_API_TOKEN`, usado exclusivamente a partir de `secrets.RECIPIENTS_API_TOKEN` para consultar o endpoint privado de destinatários no D1.
 
 ### Execução manual segura (`dry_run`)
 
@@ -147,14 +148,16 @@ Antes de qualquer envio real, o workflow sincroniza o repositório, lê esse reg
 Além disso, um disparo real bem-sucedido atualiza o dashboard em `docs/`, envia os e-mails e salva o estado de memória novamente no repositório (`state/news-history.json`).
 
 ### 2. Infraestrutura de Cancelamento de Inscrição (Cloudflare Workers)
-Para garantir que a base de dados de destinatários (`recipients.txt`) seja higienizada sem intervenção manual e de maneira segura:
+O Cloudflare D1 é a fonte oficial dos destinatários em produção. O workflow principal usa `RECIPIENTS_SOURCE=d1` e consulta somente o endpoint privado atual do Worker com `Authorization: Bearer` vindo de `secrets.RECIPIENTS_API_TOKEN`. Se a API D1 falhar, a execução deve falhar fechada: não use `recipients.txt`, `DEST_EMAIL` ou GitHub como fallback automático.
+
+O arquivo `recipients.txt` ainda permanece no repositório nesta tarefa por compatibilidade operacional e auditoria da migração, mas não deve ser removido nem exposto em logs. Para manter a infraestrutura de cancelamento de inscrição:
 ```bash
 cd worker
 npx wrangler deploy
 npx wrangler secret put UNSUBSCRIBE_SECRET
 npx wrangler secret put GH_PAT_UNSUB
 ```
-*O `GH_PAT_UNSUB` (Personal Access Token) autorizará o Worker a entrar no seu GitHub de maneira autônoma e remover o e-mail solicitado.*
+*O `GH_PAT_UNSUB` (Personal Access Token) ainda pode ser necessário para rotas legadas do Worker enquanto a migração não remove o suporte a GitHub/`recipients.txt`, mas a fonte oficial de destinatários do envio de produção é o D1.*
 
 
 ## ✅ Checklist operacional antes de um envio real manual
