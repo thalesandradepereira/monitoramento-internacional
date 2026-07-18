@@ -10,10 +10,11 @@ on:
 
 concurrency:
   group: rollout-worker-d1-production
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 permissions:
   contents: read
+  issues: write
 
 jobs:
   rollout:
@@ -193,3 +194,27 @@ jobs:
       - name: Report rollout commit
         run: |
           echo "Cloudflare Worker rollout completed for commit $(git rev-parse HEAD)."
+
+      - name: Publish rollout success on PR
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 7,
+              body: `✅ **[worker-rollout] Sucesso**\n\nWorker Cloudflare implantado e validado com D1.\n\n- Commit: \`${context.sha}\`\n- GitHub Actions run: \`${context.runId}\`\n- Migrations remotas aplicadas/verificadas\n- Secrets obrigatórios sincronizados e confirmados\n- Endpoint público: HTTP 200\n- Endpoint privado sem token: HTTP 401\n- Endpoint privado autenticado: HTTP 200 com 4 destinatários ativos\n\nNenhum endereço ou valor de secret foi publicado.`
+            })
+
+      - name: Publish rollout failure on PR
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 7,
+              body: `❌ **[worker-rollout] Falha**\n\nO rollout do Worker foi interrompido antes da validação completa.\n\n- Commit: \`${context.sha}\`\n- GitHub Actions run: \`${context.runId}\`\n\nConsulte os logs da execução. Nenhum valor de secret foi publicado.`
+            })
