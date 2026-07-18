@@ -7,7 +7,7 @@ import { enviarEmail, EmailSendReport } from './email'
 import { addSentNewsToHistory } from './history'
 import { gerarDashboardHTML } from './dashboard'
 import { config } from './config'
-import { loadRecipients } from './recipients'
+import { loadRecipients, RecipientLoadResult } from './recipients'
 import {
   AlreadyCompletedExecutionError,
   assertCanStartRealExecution,
@@ -29,6 +29,7 @@ export async function runPipeline() {
   const mode = config.executionMode
   const zonedNow = getZonedNow(config.timezone)
   const dataHoje = formatDisplayDate(zonedNow.date)
+  let prevalidatedRecipients: RecipientLoadResult | undefined
 
   console.log('=== Iniciando Monitoramento Internacional ===')
   console.log(`[modo] ${dryRun ? 'DRY RUN - nenhuma ação externa irreversível será executada' : 'ENVIO REAL'}`)
@@ -37,7 +38,7 @@ export async function runPipeline() {
   try {
     if (!dryRun) {
       syncBeforeRealExecution(zonedNow.date)
-      await verifyRecipientsBeforeRealExecution()
+      prevalidatedRecipients = await verifyRecipientsBeforeRealExecution()
       persistExecutionRecord({
         ...zonedNow,
         state: 'in_progress',
@@ -92,7 +93,16 @@ export async function runPipeline() {
     if (dryRun) {
       console.log('[dry_run] Envio de e-mails ignorado. Nenhum destinatário foi acionado e a data não será registrada como concluída.')
     } else {
-      emailReport = await enviarEmail(topicosPt, topicosEn, dataHoje)
+      if (!prevalidatedRecipients) {
+        throw new Error('[recipients] Envio real bloqueado sem pré-validação de destinatários.')
+      }
+      emailReport = await enviarEmail(
+        topicosPt,
+        topicosEn,
+        dataHoje,
+        prevalidatedRecipients.recipients,
+        prevalidatedRecipients.source,
+      )
       addSentNewsToHistory(topicosPt.map(t => t.titulo))
       persistExecutionRecord({
         ...getZonedNow(config.timezone),
@@ -121,9 +131,10 @@ export async function runPipeline() {
   }
 }
 
-async function verifyRecipientsBeforeRealExecution(): Promise<void> {
-  const { source, recipients } = await loadRecipients()
-  console.log(`[recipients] Pré-validação concluída; fonte=${source}; total=${recipients.length}`)
+async function verifyRecipientsBeforeRealExecution(): Promise<RecipientLoadResult> {
+  const result = await loadRecipients()
+  console.log(`[recipients] Pré-validação concluída; fonte=${result.source}; total=${result.recipients.length}`)
+  return result
 }
 
 function syncBeforeRealExecution(date: string): void {
