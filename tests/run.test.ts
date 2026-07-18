@@ -16,6 +16,7 @@ function loadRunPipeline(options: {
   dryRun?: string
   emailReport?: { attempted: number; sent: number; failed: number }
   recipientsError?: Error
+  fetchNewsError?: Error
 }) {
   clearSrcModules()
   if (options.dryRun === undefined) delete process.env.DRY_RUN
@@ -55,7 +56,10 @@ function loadRunPipeline(options: {
   }
 
   mockModule('../src/fetchNews', {
-    buscarNoticias: async () => [{ fonte: 'Fonte', pais: 'Brasil', titulo: 'Título', link: 'https://example.test/noticia', data: new Date('2099-01-01T05:00:00Z') }],
+    buscarNoticias: async () => {
+      if (options.fetchNewsError) throw options.fetchNewsError
+      return [{ fonte: 'Fonte', pais: 'Brasil', titulo: 'Título', link: 'https://example.test/noticia', data: new Date('2099-01-01T05:00:00Z') }]
+    },
   })
   mockModule('../src/summarize', {
     resumirNoticias: async (...args: unknown[]) => { calls.summarizeArgs.push(args); return [{ pais: 'Brasil', titulo: 'Título', resumo: '- resumo', link: 'https://example.test/noticia', fonte: 'Fonte', categoria: 'GERAL' }] },
@@ -162,6 +166,36 @@ test('falha ao carregar destinatários D1 antes do envio não persiste in_progre
   assert.equal(calls.commit.length, 0)
   assert.equal(calls.email, 0)
   assert.equal(calls.history, 0)
+})
+
+test('falha após in_progress substitui o estado por failed e libera diagnóstico consistente', async () => {
+  const { runPipeline, calls, restore } = loadRunPipeline({ dryRun: 'false', fetchNewsError: new Error('falha simulada na coleta') })
+  const originalExit = process.exit
+  let exitCode: string | number | null | undefined
+  ;(process.exit as unknown) = ((code?: string | number | null | undefined) => {
+    exitCode = code
+    throw new Error(`process.exit:${code}`)
+  }) as typeof process.exit
+
+  try {
+    await assert.rejects(runPipeline(), /process\.exit:1/)
+  } finally {
+    process.exit = originalExit
+    restore()
+  }
+
+  assert.equal(exitCode, 1)
+  assert.equal(calls.recipients, 1)
+  assert.equal(calls.email, 0)
+  assert.equal(calls.history, 0)
+  assert.equal(calls.persist.length, 2)
+  assert.equal((calls.persist[0] as { state: string }).state, 'in_progress')
+  assert.equal((calls.persist[1] as { state: string; attempted: number; sent: number; failed: number }).state, 'failed')
+  assert.equal((calls.persist[1] as { attempted: number }).attempted, 0)
+  assert.equal((calls.persist[1] as { sent: number }).sent, 0)
+  assert.equal((calls.persist[1] as { failed: number }).failed, 0)
+  assert.equal(calls.commit.length, 2)
+  assert.match(calls.commit[1], /registrar falha/)
 })
 
 test('destinatários são carregados uma vez, ficam fora da IA e são repassados ao e-mail', async () => {
