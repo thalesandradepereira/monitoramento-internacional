@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer'
 import { config } from './config'
 import { Topico } from './summarize'
 import { gerarLinkDescadastro } from './unsubscribe'
-import { loadRecipients, maskEmail } from './recipients'
+import { maskEmail, type RecipientsSource } from './recipients'
 
 function esc(s: string): string {
   return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -114,14 +114,18 @@ export interface EmailSendReport {
 export async function enviarEmail(
   topicosPt: Topico[],
   topicosEn: Topico[],
-  dataStr: string
+  dataStr: string,
+  emails?: string[],
+  recipientsSource?: RecipientsSource,
 ): Promise<EmailSendReport> {
+  if (!Array.isArray(emails) || !recipientsSource) {
+    throw new Error('[email] Envio bloqueado: destinatários não foram pré-validados.')
+  }
+
   const assunto = `Notícias do Dia - ${dataStr} / Daily News - ${dataStr}`
-  
-  const { source, recipients: emails } = await loadRecipients()
-  console.log(`[email] Destinatários carregados; fonte=${source}; total=${emails.length}`)
+  console.log(`[email] Destinatários pré-validados recebidos; fonte=${recipientsSource}; total=${emails.length}`)
   if (!emails.length) {
-    console.log(`[email] Nenhum destinatário configurado; fonte=${source}.`)
+    console.log(`[email] Nenhum destinatário configurado; fonte=${recipientsSource}.`)
     return { attempted: 0, sent: 0, failed: 0 }
   }
 
