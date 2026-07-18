@@ -26,7 +26,7 @@ export const config = {
     user: process.env.SMTP_USER || '',
     pass: process.env.SMTP_PASS || '',
   },
-  fromName: process.env.FROM_NAME || 'Monitoramento Internacional',
+  fromName: process.env.FROM_NAME || 'Monitoramento Mídia Internacional',
   destEmail: process.env.DEST_EMAIL || '',
   cron: process.env.CRON_EXPR || '0 2 * * *',
   timezone: process.env.TIMEZONE || 'America/Sao_Paulo',

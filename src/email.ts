@@ -57,7 +57,7 @@ function renderNewsBlock(topicos: Topico[], lang: 'pt' | 'en'): string {
 }
 
 function getHeaderHTML(numNoticias: number, lang: 'pt' | 'en', dataStr: string): string {
-  const title = lang === 'pt' ? 'Monitoramento Internacional' : 'International Monitoring'
+  const title = lang === 'pt' ? 'Monitoramento Mídia Internacional' : 'Global Media Monitoring'
   const subTitle = lang === 'pt' ? `As ${numNoticias} principais novidades das últimas 24h · Internacional` : `The top ${numNoticias} news from the last 24h · International`
   
   return `
@@ -72,11 +72,11 @@ function getFooterHTML(lang: 'pt' | 'en', destEmail: string): string {
   const unsubLink = gerarLinkDescadastro(destEmail)
   const inviteLink = config.unsubscribeWorkerUrl 
     ? `${config.unsubscribeWorkerUrl}/invite` 
-    : `mailto:${config.smtp.user}?subject=${encodeURIComponent("Indicar um colega — Monitoramento Internacional")}&body=${encodeURIComponent("Olá! Quero indicar o e-mail: \\n\\n(digite o e-mail do seu colega aqui)")}`
+    : `mailto:${config.smtp.user}?subject=${encodeURIComponent("Indicar um colega — Monitoramento Mídia Internacional")}&body=${encodeURIComponent("Olá! Quero indicar o e-mail: \n\n(digite o e-mail do seu colega aqui)")}`
 
   const t = lang === 'pt' ? {
     convite: 'Conhece alguém que curtiria? 🤝',
-    conviteSub: 'Indique um colega para receber o Monitoramento Internacional (ah, mas avisa ele antes!).',
+    conviteSub: 'Indique um colega para receber o Monitoramento Mídia Internacional (ah, mas avisa ele antes!).',
     btnIndicar: 'Indicar Colega',
     madeBy: 'Made by TAP 💌',
     unsub: 'Não quero mais receber',
@@ -84,7 +84,7 @@ function getFooterHTML(lang: 'pt' | 'en', destEmail: string): string {
     unsubLink: unsubLink
   } : {
     convite: 'Know someone who would like this? 🤝',
-    conviteSub: 'Invite a colleague to receive the International Monitoring (but tell them first!).',
+    conviteSub: 'Invite a colleague to receive Global Media Monitoring (but tell them first!).',
     btnIndicar: 'Invite Colleague',
     madeBy: 'Made by TAP 💌',
     unsub: 'I no longer wish to receive this',
@@ -122,7 +122,7 @@ export async function enviarEmail(
     throw new Error('[email] Envio bloqueado: destinatários não foram pré-validados.')
   }
 
-  const assunto = `Notícias do Dia - ${dataStr} / Daily News - ${dataStr}`
+  const assunto = `Monitoramento Mídia Internacional - ${dataStr} | Global Media Monitoring - ${dataStr}`
   console.log(`[email] Destinatários pré-validados recebidos; fonte=${recipientsSource}; total=${emails.length}`)
   if (!emails.length) {
     console.log(`[email] Nenhum destinatário configurado; fonte=${recipientsSource}.`)
