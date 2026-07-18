@@ -15,6 +15,7 @@ function clearSrcModules() {
 function loadRunPipeline(options: {
   dryRun?: string
   emailReport?: { attempted: number; sent: number; failed: number }
+  recipientsError?: Error
 }) {
   clearSrcModules()
   if (options.dryRun === undefined) delete process.env.DRY_RUN
@@ -32,6 +33,7 @@ function loadRunPipeline(options: {
     summarizeArgs: [] as unknown[][],
     translateArgs: [] as unknown[][],
     fsWrites: 0,
+    recipients: 0,
   }
 
   const fs = require('node:fs') as typeof import('node:fs')
@@ -67,6 +69,13 @@ function loadRunPipeline(options: {
   mockModule('../src/history', {
     addSentNewsToHistory: () => { calls.history += 1 },
   })
+  mockModule('../src/recipients', {
+    loadRecipients: async () => {
+      calls.recipients += 1
+      if (options.recipientsError) throw options.recipientsError
+      return { source: 'd1', recipients: ['masked@example.test'] }
+    },
+  })
   mockModule('../src/email', {
     enviarEmail: async () => {
       calls.email += 1
@@ -98,6 +107,7 @@ test('dry run ausente não envia e não altera persistência', async () => {
   assert.equal(calls.persist.length, 0)
   assert.equal(calls.commit.length, 0)
   assert.equal(calls.fsWrites, 0)
+  assert.equal(calls.recipients, 0)
 })
 
 test('falha parcial de e-mail persiste failed, sincroniza estado e termina com erro', async () => {
@@ -117,6 +127,7 @@ test('falha parcial de e-mail persiste failed, sincroniza estado e termina com e
   }
 
   assert.equal(exitCode, 1)
+  assert.equal(calls.recipients, 1)
   assert.equal(calls.email, 1)
   assert.equal(calls.history, 1)
   assert.equal(calls.persist.length, 2)
@@ -128,7 +139,32 @@ test('falha parcial de e-mail persiste failed, sincroniza estado e termina com e
 })
 
 
-test('destinatários não são enviados ao fluxo Gemini/sumarização e só são carregados pelo módulo de e-mail', async () => {
+
+test('falha ao carregar destinatários D1 antes do envio não persiste in_progress', async () => {
+  const { runPipeline, calls, restore } = loadRunPipeline({ dryRun: 'false', recipientsError: new Error('[recipients] API privada retornou HTTP 401; fonte=d1.') })
+  const originalExit = process.exit
+  let exitCode: string | number | null | undefined
+  ;(process.exit as unknown) = ((code?: string | number | null | undefined) => {
+    exitCode = code
+    throw new Error(`process.exit:${code}`)
+  }) as typeof process.exit
+
+  try {
+    await assert.rejects(runPipeline(), /process\.exit:1/)
+  } finally {
+    process.exit = originalExit
+    restore()
+  }
+
+  assert.equal(exitCode, 1)
+  assert.equal(calls.recipients, 1)
+  assert.equal(calls.persist.length, 0)
+  assert.equal(calls.commit.length, 0)
+  assert.equal(calls.email, 0)
+  assert.equal(calls.history, 0)
+})
+
+test('destinatários não são enviados ao fluxo Gemini/sumarização e são pré-validados antes do envio', async () => {
   const { runPipeline, calls, restore } = loadRunPipeline({ dryRun: 'false' })
   try {
     await runPipeline()
@@ -139,6 +175,7 @@ test('destinatários não são enviados ao fluxo Gemini/sumarização e só são
   const serializedTranslateArgs = JSON.stringify(calls.translateArgs)
   assert.equal(serializedSummarizeArgs.includes('@'), false)
   assert.equal(serializedTranslateArgs.includes('@'), false)
+  assert.equal(calls.recipients, 1)
   assert.equal(calls.email, 1)
 })
 
@@ -159,5 +196,6 @@ test('dry run com RECIPIENTS_SOURCE=d1 não carrega destinatários nem consulta 
     restore()
   }
   assert.equal(calls.email, 0)
+  assert.equal(calls.recipients, 0)
   assert.equal(fetchCalls, 0)
 })

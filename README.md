@@ -148,9 +148,9 @@ Antes de qualquer envio real, o workflow sincroniza o repositório, lê esse reg
 Além disso, um disparo real bem-sucedido atualiza o dashboard em `docs/`, envia os e-mails e salva o estado de memória novamente no repositório (`state/news-history.json`).
 
 ### 2. Infraestrutura de Cancelamento de Inscrição (Cloudflare Workers)
-O Cloudflare D1 é a fonte oficial dos destinatários em produção. O workflow principal usa `RECIPIENTS_SOURCE=d1` e consulta somente o endpoint privado atual do Worker com `Authorization: Bearer` vindo de `secrets.RECIPIENTS_API_TOKEN`. Se a API D1 falhar, a execução deve falhar fechada: não use `recipients.txt`, `DEST_EMAIL` ou GitHub como fallback automático.
+O Cloudflare D1 é a fonte oficial dos destinatários em produção. O workflow principal usa `RECIPIENTS_SOURCE=d1` e consulta somente o endpoint privado atual do Worker com `Authorization: Bearer` vindo de `secrets.RECIPIENTS_API_TOKEN`. Antes de persistir `in_progress`, a aplicação faz uma pré-validação autenticada dessa API de destinatários. Se a API D1 falhar, a execução deve falhar fechada antes de envio: não use `recipients.txt`, `DEST_EMAIL` ou GitHub como fallback automático.
 
-O arquivo `recipients.txt` ainda permanece no repositório nesta tarefa por compatibilidade operacional e auditoria da migração, mas não deve ser removido nem exposto em logs. Para manter a infraestrutura de cancelamento de inscrição:
+No mesmo rollout, o Worker usa `RECIPIENTS_STORAGE=d1` para inscrições e descadastros públicos; `/unsubscribe` atualiza o status no D1 e a lista interna retorna apenas destinatários ativos. O arquivo `recipients.txt` ainda permanece no repositório nesta tarefa como rollback temporário, mas não deve ser removido nem exposto em logs. Para manter a infraestrutura de cancelamento de inscrição:
 ```bash
 cd worker
 npx wrangler deploy

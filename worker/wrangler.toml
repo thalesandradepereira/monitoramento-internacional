@@ -4,12 +4,11 @@ compatibility_date = "2024-09-01"
 
 [vars]
 GH_REPO = "thalesandradepereira/monitoramento-internacional"
-# Primeira fase da migração: preservar o comportamento público legado.
-# Trocar para "d1" somente depois de criar o banco, aplicar migrations e validar a importação privada.
-RECIPIENTS_STORAGE = "github"
+# Produção usa D1 para inscrições e descadastros no mesmo rollout do envio.
+# recipients.txt permanece apenas como rollback temporário; não há fallback silencioso quando D1 está selecionado.
+RECIPIENTS_STORAGE = "d1"
 
-# Binding D1 real declarado para a próxima etapa privada da migração.
-# O comportamento público segue usando GitHub enquanto RECIPIENTS_STORAGE=github.
+# Binding D1 real usado pela fonte oficial de destinatários.
 
 [[d1_databases]]
 binding = "DB"
@@ -19,5 +18,5 @@ migrations_dir = "migrations"
 
 # Secrets (configurar via `wrangler secret put`):
 #   UNSUBSCRIBE_SECRET     — chave HMAC compartilhada com o gerador de e-mails
-#   GH_PAT_UNSUB           — Personal Access Token do GitHub (contents:write), enquanto RECIPIENTS_STORAGE=github
+#   GH_PAT_UNSUB           — Personal Access Token do GitHub (contents:write), apenas para rollback temporário com RECIPIENTS_STORAGE=github
 #   RECIPIENTS_API_TOKEN   — token Bearer do endpoint administrativo interno de destinatários

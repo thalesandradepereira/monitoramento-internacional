@@ -7,6 +7,7 @@ import { enviarEmail, EmailSendReport } from './email'
 import { addSentNewsToHistory } from './history'
 import { gerarDashboardHTML } from './dashboard'
 import { config } from './config'
+import { loadRecipients } from './recipients'
 import {
   AlreadyCompletedExecutionError,
   assertCanStartRealExecution,
@@ -36,6 +37,7 @@ export async function runPipeline() {
   try {
     if (!dryRun) {
       syncBeforeRealExecution(zonedNow.date)
+      await verifyRecipientsBeforeRealExecution()
       persistExecutionRecord({
         ...zonedNow,
         state: 'in_progress',
@@ -117,6 +119,11 @@ export async function runPipeline() {
     console.error('Erro fatal no pipeline:', err)
     process.exit(1)
   }
+}
+
+async function verifyRecipientsBeforeRealExecution(): Promise<void> {
+  const { source, recipients } = await loadRecipients()
+  console.log(`[recipients] Pré-validação concluída; fonte=${source}; total=${recipients.length}`)
 }
 
 function syncBeforeRealExecution(date: string): void {
