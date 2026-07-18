@@ -1,0 +1,191 @@
+name: One-time Cloudflare Worker D1 Rollout
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/rollout-worker-d1-production.yml'
+
+concurrency:
+  group: one-time-worker-d1-production-rollout
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  rollout:
+    name: Deploy reviewed PR Worker to production
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN || secrets.CF_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID || secrets.CF_ACCOUNT_ID }}
+      UNSUBSCRIBE_SECRET: ${{ secrets.UNSUBSCRIBE_SECRET }}
+      RECIPIENTS_API_TOKEN: ${{ secrets.RECIPIENTS_API_TOKEN }}
+      WORKER_URL: https://monitoramento-internacional-unsub.thalesandrade.workers.dev
+      EXPECTED_ACTIVE_RECIPIENTS: '4'
+      WRANGLER_VERSION: '4.112.0'
+      ROLLOUT_COMMIT: e179bc91aa91a24b840d64b2bd450a93a8dbc17e
+
+    steps:
+      - name: Checkout reviewed rollout commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.ROLLOUT_COMMIT }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Validate required deployment secrets
+        run: |
+          set +x
+          set -euo pipefail
+          for name in CLOUDFLARE_API_TOKEN UNSUBSCRIBE_SECRET RECIPIENTS_API_TOKEN; do
+            if [ -z "${!name:-}" ]; then
+              echo "Required GitHub Actions secret is not configured: ${name}"
+              exit 1
+            fi
+          done
+          echo "Required deployment secrets are configured."
+
+      - name: Run complete validation
+        run: |
+          set -euo pipefail
+          npm ci
+          npm test
+          npx tsc --noEmit
+          node --check worker/index.js
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} deploy --dry-run
+
+      - name: Verify Cloudflare authentication and D1 binding
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@${WRANGLER_VERSION} whoami
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} d1 info DB
+
+      - name: Apply remote D1 migrations
+        run: |
+          set -euo pipefail
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} d1 migrations list DB --remote
+          npx --yes wrangler@${WRANGLER_VERSION} d1 migrations apply DB --remote
+
+      - name: Synchronize required Worker secrets
+        run: |
+          set +x
+          set -euo pipefail
+          umask 077
+          secrets_file="$(mktemp)"
+          cleanup() { rm -f "$secrets_file"; }
+          trap cleanup EXIT
+          node - "$secrets_file" <<'NODE'
+          const { writeFileSync } = require('node:fs')
+          const [file] = process.argv.slice(2)
+          const payload = {
+            UNSUBSCRIBE_SECRET: process.env.UNSUBSCRIBE_SECRET,
+            RECIPIENTS_API_TOKEN: process.env.RECIPIENTS_API_TOKEN,
+          }
+          if (!payload.UNSUBSCRIBE_SECRET || !payload.RECIPIENTS_API_TOKEN) throw new Error('Required Worker secret value is missing')
+          writeFileSync(file, JSON.stringify(payload), { mode: 0o600 })
+          NODE
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} secret bulk "$secrets_file"
+
+      - name: Verify Worker secret names
+        run: |
+          set +x
+          set -euo pipefail
+          secrets_file="$(mktemp)"
+          cleanup() { rm -f "$secrets_file"; }
+          trap cleanup EXIT
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} secret list --format=json > "$secrets_file"
+          node - "$secrets_file" <<'NODE'
+          const { readFileSync } = require('node:fs')
+          const [file] = process.argv.slice(2)
+          const entries = JSON.parse(readFileSync(file, 'utf8'))
+          const names = new Set(entries.map((entry) => entry.name))
+          for (const required of ['UNSUBSCRIBE_SECRET', 'RECIPIENTS_API_TOKEN']) {
+            if (!names.has(required)) throw new Error(`Worker secret is missing: ${required}`)
+          }
+          console.log('Required Worker secret names are present.')
+          NODE
+
+      - name: Deploy production Worker
+        run: |
+          set -euo pipefail
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} deploy
+
+      - name: Verify production endpoints and active count
+        run: |
+          set +x
+          set -euo pipefail
+          umask 077
+          response_file="$(mktemp)"
+          headers_file="$(mktemp)"
+          cleanup() { rm -f "$response_file" "$headers_file"; }
+          trap cleanup EXIT
+
+          public_status="$(curl --silent --show-error --location --output /dev/null --write-out '%{http_code}' "${WORKER_URL}/")"
+          [ "$public_status" = '200' ] || { echo "Worker health check failed: HTTP ${public_status}."; exit 1; }
+
+          unauthorized_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "${WORKER_URL}/internal/recipients")"
+          [ "$unauthorized_status" = '401' ] || { echo "Protected endpoint returned HTTP ${unauthorized_status} without token."; exit 1; }
+
+          authorized_status="$(curl --silent --show-error --location --output "$response_file" --dump-header "$headers_file" --write-out '%{http_code}' \
+            --request GET \
+            --header "Authorization: Bearer ${RECIPIENTS_API_TOKEN}" \
+            --header 'Accept: application/json' \
+            "${WORKER_URL}/internal/recipients")"
+
+          node - "$authorized_status" "$headers_file" "$response_file" "$EXPECTED_ACTIVE_RECIPIENTS" <<'NODE'
+          const [status, headersPath, responsePath, expectedRaw] = process.argv.slice(2)
+          const { readFileSync } = require('node:fs')
+          if (status !== '200') throw new Error(`Authenticated endpoint returned HTTP ${status}`)
+          const rawHeaders = readFileSync(headersPath, 'utf8')
+          const blocks = rawHeaders.trim().split(/\r?\n\r?\n/).filter(Boolean)
+          const finalHeaders = blocks.at(-1) || ''
+          const contentType = (finalHeaders.split(/\r?\n/).find((line) => /^content-type:/i.test(line)) || '').toLowerCase()
+          const cacheControl = (finalHeaders.split(/\r?\n/).find((line) => /^cache-control:/i.test(line)) || '').toLowerCase()
+          if (!contentType.includes('application/json')) throw new Error('Content-Type is not JSON')
+          if (!cacheControl.includes('no-store')) throw new Error('Cache-Control no-store is missing')
+          const body = JSON.parse(readFileSync(responsePath, 'utf8'))
+          if (!Array.isArray(body.recipients)) throw new Error('Recipients array is missing')
+          if (!Number.isInteger(body.count) || body.count !== body.recipients.length) throw new Error('Recipients count is inconsistent')
+          const expected = Number.parseInt(expectedRaw, 10)
+          if (body.count !== expected) throw new Error(`Expected ${expected} active recipients, received ${body.count}`)
+          console.log(`Production Worker verified with ${body.count} active recipients.`)
+          NODE
+
+      - name: Publish rollout success on PR
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 7,
+              body: `✅ **[worker-rollout] Sucesso**\n\nWorker Cloudflare implantado e validado com D1.\n\n- Commit implantado: \`${process.env.ROLLOUT_COMMIT}\`\n- GitHub Actions run: \`${context.runId}\`\n- Migrations remotas verificadas/aplicadas\n- Secrets obrigatórios sincronizados e confirmados\n- Endpoint público: HTTP 200\n- Endpoint privado sem token: HTTP 401\n- Endpoint privado autenticado: HTTP 200 com 4 destinatários ativos\n\nNenhum endereço ou valor de secret foi publicado.`
+            })
+
+      - name: Publish rollout failure on PR
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 7,
+              body: `❌ **[worker-rollout] Falha**\n\nO rollout do Worker foi interrompido antes da validação completa.\n\n- Commit previsto: \`${process.env.ROLLOUT_COMMIT}\`\n- GitHub Actions run: \`${context.runId}\`\n\nConsulte os logs da execução. Nenhum valor de secret foi publicado.`
+            })
