@@ -7,6 +7,7 @@ import { enviarEmail, EmailSendReport } from './email'
 import { addSentNewsToHistory } from './history'
 import { gerarDashboardHTML } from './dashboard'
 import { config } from './config'
+import { loadRecipients, type RecipientLoadResult } from './recipients'
 import {
   AlreadyCompletedExecutionError,
   assertCanStartRealExecution,
@@ -28,6 +29,10 @@ export async function runPipeline() {
   const mode = config.executionMode
   const zonedNow = getZonedNow(config.timezone)
   const dataHoje = formatDisplayDate(zonedNow.date)
+  let prevalidatedRecipients: RecipientLoadResult | undefined
+  let realExecutionStarted = false
+  let executionFinalized = false
+  let emailReport: EmailSendReport = { attempted: 0, sent: 0, failed: 0 }
 
   console.log('=== Iniciando Monitoramento Internacional ===')
   console.log(`[modo] ${dryRun ? 'DRY RUN - nenhuma ação externa irreversível será executada' : 'ENVIO REAL'}`)
@@ -36,6 +41,7 @@ export async function runPipeline() {
   try {
     if (!dryRun) {
       syncBeforeRealExecution(zonedNow.date)
+      prevalidatedRecipients = await verifyRecipientsBeforeRealExecution()
       persistExecutionRecord({
         ...zonedNow,
         state: 'in_progress',
@@ -44,6 +50,7 @@ export async function runPipeline() {
         sent: 0,
         failed: 0,
       })
+      realExecutionStarted = true
       commitAndPushPersistentState(`chore: registrar início do monitoramento de ${zonedNow.date}`)
     }
 
@@ -53,6 +60,7 @@ export async function runPipeline() {
       if (!dryRun) {
         persistExecutionRecord({ ...getZonedNow(config.timezone), date: zonedNow.date, state: 'completed', mode, attempted: 0, sent: 0, failed: 0 })
         commitAndPushPersistentState(`chore: registrar monitoramento sem envios em ${zonedNow.date}`)
+        executionFinalized = true
       }
       return
     }
@@ -86,11 +94,19 @@ export async function runPipeline() {
       }
     }
 
-    let emailReport: EmailSendReport = { attempted: 0, sent: 0, failed: 0 }
     if (dryRun) {
       console.log('[dry_run] Envio de e-mails ignorado. Nenhum destinatário foi acionado e a data não será registrada como concluída.')
     } else {
-      emailReport = await enviarEmail(topicosPt, topicosEn, dataHoje)
+      if (!prevalidatedRecipients) {
+        throw new Error('[recipients] Envio real bloqueado sem pré-validação de destinatários.')
+      }
+      emailReport = await enviarEmail(
+        topicosPt,
+        topicosEn,
+        dataHoje,
+        prevalidatedRecipients.recipients,
+        prevalidatedRecipients.source,
+      )
       addSentNewsToHistory(topicosPt.map(t => t.titulo))
       persistExecutionRecord({
         ...getZonedNow(config.timezone),
@@ -102,6 +118,7 @@ export async function runPipeline() {
         failed: emailReport.failed,
       })
       commitAndPushPersistentState(`chore: registrar execução do monitoramento de ${zonedNow.date}`)
+      executionFinalized = true
 
       if (emailReport.failed > 0) {
         throw new Error(`[email] Execução encerrada com falha: ${emailReport.failed} entrega(s) falharam de ${emailReport.attempted} tentativa(s).`)
@@ -114,9 +131,34 @@ export async function runPipeline() {
       console.log(err.message)
       return
     }
+
+    if (!dryRun && realExecutionStarted && !executionFinalized) {
+      try {
+        persistExecutionRecord({
+          ...getZonedNow(config.timezone),
+          date: zonedNow.date,
+          state: 'failed',
+          mode,
+          attempted: emailReport.attempted,
+          sent: emailReport.sent,
+          failed: emailReport.failed,
+        })
+        commitAndPushPersistentState(`chore: registrar falha do monitoramento de ${zonedNow.date}`)
+        executionFinalized = true
+      } catch (stateErr) {
+        console.error('[idempotencia] Falha adicional ao registrar estado failed após erro fatal:', stateErr)
+      }
+    }
+
     console.error('Erro fatal no pipeline:', err)
     process.exit(1)
   }
+}
+
+async function verifyRecipientsBeforeRealExecution(): Promise<RecipientLoadResult> {
+  const result = await loadRecipients()
+  console.log(`[recipients] Pré-validação concluída; fonte=${result.source}; total=${result.recipients.length}`)
+  return result
 }
 
 function syncBeforeRealExecution(date: string): void {
