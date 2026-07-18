@@ -1,0 +1,45 @@
+name: One-time D1 repair dispatcher
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: one-time-d1-repair-dispatcher
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    if: >-
+      github.repository == 'thalesandradepereira/monitoramento-internacional' &&
+      github.actor == 'thalesandradepereira' &&
+      github.event.issue.title == 'Autorização para reparo seguro do D1' &&
+      github.event.comment.body == '/repair-approved-d1-set-20260718'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Dispatch the reviewed administrative workflow
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'import-recipients-d1.yml',
+              ref: 'main',
+              inputs: {
+                dry_run: 'true',
+                repair_approved_set: 'true'
+              }
+            })
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '🔐 O reparo privado do conjunto de destinatários foi despachado. O workflow validará exatamente 4 destinatários ativos e nenhum endereço de teste, sem publicar a lista.'
+            })
