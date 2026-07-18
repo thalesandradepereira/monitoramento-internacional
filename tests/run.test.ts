@@ -25,10 +25,10 @@ function loadRunPipeline(options: {
   delete process.env.GITHUB_ACTIONS
 
   const calls = {
-    loadRecipients: 0,
     persist: [] as unknown[],
     commit: [] as string[],
     email: 0,
+    emailArgs: [] as unknown[][],
     history: 0,
     summarizeArgs: [] as unknown[][],
     translateArgs: [] as unknown[][],
@@ -77,8 +77,9 @@ function loadRunPipeline(options: {
     },
   })
   mockModule('../src/email', {
-    enviarEmail: async () => {
+    enviarEmail: async (...args: unknown[]) => {
       calls.email += 1
+      calls.emailArgs.push(args)
       return options.emailReport ?? { attempted: 1, sent: 1, failed: 0 }
     },
   })
@@ -129,6 +130,7 @@ test('falha parcial de e-mail persiste failed, sincroniza estado e termina com e
   assert.equal(exitCode, 1)
   assert.equal(calls.recipients, 1)
   assert.equal(calls.email, 1)
+  assert.deepEqual(calls.emailArgs[0]?.slice(3), [['masked@example.test'], 'd1'])
   assert.equal(calls.history, 1)
   assert.equal(calls.persist.length, 2)
   assert.equal((calls.persist[1] as { state: string; attempted: number; sent: number; failed: number }).state, 'failed')
@@ -137,8 +139,6 @@ test('falha parcial de e-mail persiste failed, sincroniza estado e termina com e
   assert.equal((calls.persist[1] as { state: string; attempted: number; sent: number; failed: number }).failed, 1)
   assert.equal(calls.commit.length, 2)
 })
-
-
 
 test('falha ao carregar destinatários D1 antes do envio não persiste in_progress', async () => {
   const { runPipeline, calls, restore } = loadRunPipeline({ dryRun: 'false', recipientsError: new Error('[recipients] API privada retornou HTTP 401; fonte=d1.') })
@@ -164,7 +164,7 @@ test('falha ao carregar destinatários D1 antes do envio não persiste in_progre
   assert.equal(calls.history, 0)
 })
 
-test('destinatários não são enviados ao fluxo Gemini/sumarização e são pré-validados antes do envio', async () => {
+test('destinatários são carregados uma vez, ficam fora da IA e são repassados ao e-mail', async () => {
   const { runPipeline, calls, restore } = loadRunPipeline({ dryRun: 'false' })
   try {
     await runPipeline()
@@ -177,8 +177,8 @@ test('destinatários não são enviados ao fluxo Gemini/sumarização e são pr�
   assert.equal(serializedTranslateArgs.includes('@'), false)
   assert.equal(calls.recipients, 1)
   assert.equal(calls.email, 1)
+  assert.deepEqual(calls.emailArgs[0]?.slice(3), [['masked@example.test'], 'd1'])
 })
-
 
 test('dry run com RECIPIENTS_SOURCE=d1 não carrega destinatários nem consulta API', async () => {
   process.env.RECIPIENTS_SOURCE = 'd1'
