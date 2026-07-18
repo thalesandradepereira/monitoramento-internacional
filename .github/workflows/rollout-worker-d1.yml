@@ -1,0 +1,195 @@
+name: Rollout Cloudflare Worker D1
+
+on:
+  push:
+    branches:
+      - codex/alterar-fonte-de-destinatarios-para-cloudflare-d1
+    paths:
+      - '.github/workflows/rollout-worker-d1.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: rollout-worker-d1-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  rollout:
+    name: Deploy and verify production Worker
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      UNSUBSCRIBE_SECRET: ${{ secrets.UNSUBSCRIBE_SECRET }}
+      RECIPIENTS_API_TOKEN: ${{ secrets.RECIPIENTS_API_TOKEN }}
+      WORKER_URL: https://monitoramento-internacional-unsub.thalesandrade.workers.dev
+      EXPECTED_ACTIVE_RECIPIENTS: '4'
+      WRANGLER_VERSION: '4.112.0'
+
+    steps:
+      - name: Checkout exact rollout commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Validate required GitHub secrets
+        run: |
+          set +x
+          set -euo pipefail
+          for name in CLOUDFLARE_API_TOKEN CLOUDFLARE_ACCOUNT_ID UNSUBSCRIBE_SECRET RECIPIENTS_API_TOKEN; do
+            if [ -z "${!name:-}" ]; then
+              echo "Required GitHub Actions secret is not configured: ${name}"
+              exit 1
+            fi
+          done
+          echo "Required deployment secrets are configured."
+
+      - name: Run repository validation
+        run: |
+          set -euo pipefail
+          npm ci
+          npm test
+          npx tsc --noEmit
+          node --check worker/index.js
+
+      - name: Validate Wrangler configuration
+        run: |
+          set -euo pipefail
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} --version
+          npx --yes wrangler@${WRANGLER_VERSION} deploy --dry-run
+
+      - name: Verify Cloudflare authentication and D1 binding
+        run: |
+          set -euo pipefail
+          npx --yes wrangler@${WRANGLER_VERSION} whoami
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} d1 info DB
+
+      - name: Apply remote D1 migrations
+        run: |
+          set -euo pipefail
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} d1 migrations list DB --remote
+          npx --yes wrangler@${WRANGLER_VERSION} d1 migrations apply DB --remote
+
+      - name: Synchronize required Worker secrets
+        run: |
+          set +x
+          set -euo pipefail
+          umask 077
+          secrets_file="$(mktemp)"
+          cleanup() {
+            rm -f "$secrets_file"
+          }
+          trap cleanup EXIT
+
+          node - "$secrets_file" <<'NODE'
+          const { writeFileSync } = require('node:fs')
+          const [file] = process.argv.slice(2)
+          const required = ['UNSUBSCRIBE_SECRET', 'RECIPIENTS_API_TOKEN']
+          const payload = {}
+          for (const name of required) {
+            const value = process.env[name]
+            if (!value) throw new Error(`Missing secret: ${name}`)
+            payload[name] = value
+          }
+          writeFileSync(file, JSON.stringify(payload), { mode: 0o600 })
+          NODE
+
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} secret bulk "$secrets_file"
+
+      - name: Verify Worker secret names
+        run: |
+          set +x
+          set -euo pipefail
+          secrets_file="$(mktemp)"
+          cleanup() {
+            rm -f "$secrets_file"
+          }
+          trap cleanup EXIT
+
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} secret list --format=json > "$secrets_file"
+          node - "$secrets_file" <<'NODE'
+          const { readFileSync } = require('node:fs')
+          const [file] = process.argv.slice(2)
+          const entries = JSON.parse(readFileSync(file, 'utf8'))
+          const names = new Set(entries.map((entry) => entry.name))
+          for (const required of ['UNSUBSCRIBE_SECRET', 'RECIPIENTS_API_TOKEN']) {
+            if (!names.has(required)) throw new Error(`Worker secret is missing: ${required}`)
+          }
+          console.log('Required Worker secret names are present.')
+          NODE
+
+      - name: Deploy production Worker
+        run: |
+          set -euo pipefail
+          cd worker
+          npx --yes wrangler@${WRANGLER_VERSION} deploy
+
+      - name: Verify public and protected endpoints
+        run: |
+          set +x
+          set -euo pipefail
+          umask 077
+          response_file="$(mktemp)"
+          headers_file="$(mktemp)"
+          cleanup() {
+            rm -f "$response_file" "$headers_file"
+          }
+          trap cleanup EXIT
+
+          public_status="$(curl --silent --show-error --location --output /dev/null --write-out '%{http_code}' "${WORKER_URL}/")"
+          if [ "$public_status" != '200' ]; then
+            echo "Worker health check failed: HTTP ${public_status}."
+            exit 1
+          fi
+
+          unauthorized_status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "${WORKER_URL}/internal/recipients")"
+          if [ "$unauthorized_status" != '401' ]; then
+            echo "Protected endpoint did not reject unauthenticated access: HTTP ${unauthorized_status}."
+            exit 1
+          fi
+
+          authorized_status="$(curl --silent --show-error --location --output "$response_file" --dump-header "$headers_file" --write-out '%{http_code}' \
+            --request GET \
+            --header "Authorization: Bearer ${RECIPIENTS_API_TOKEN}" \
+            --header 'Accept: application/json' \
+            "${WORKER_URL}/internal/recipients")"
+
+          node - "$authorized_status" "$headers_file" "$response_file" "$EXPECTED_ACTIVE_RECIPIENTS" <<'NODE'
+          const [status, headersPath, responsePath, expectedRaw] = process.argv.slice(2)
+          const { readFileSync } = require('node:fs')
+          if (status !== '200') throw new Error(`Authenticated endpoint returned HTTP ${status}`)
+
+          const rawHeaders = readFileSync(headersPath, 'utf8')
+          const blocks = rawHeaders.trim().split(/\r?\n\r?\n/).filter(Boolean)
+          const finalHeaders = blocks.at(-1) || ''
+          const contentType = (finalHeaders.split(/\r?\n/).find((line) => /^content-type:/i.test(line)) || '').toLowerCase()
+          const cacheControl = (finalHeaders.split(/\r?\n/).find((line) => /^cache-control:/i.test(line)) || '').toLowerCase()
+          if (!contentType.includes('application/json')) throw new Error('Authenticated endpoint Content-Type is not JSON')
+          if (!cacheControl.includes('no-store')) throw new Error('Authenticated endpoint is missing Cache-Control: no-store')
+
+          const body = JSON.parse(readFileSync(responsePath, 'utf8'))
+          if (!Array.isArray(body.recipients)) throw new Error('Recipients array is missing')
+          if (!Number.isInteger(body.count) || body.count !== body.recipients.length) throw new Error('Recipients count is inconsistent')
+          const expected = Number.parseInt(expectedRaw, 10)
+          if (body.count !== expected) throw new Error(`Expected ${expected} active recipients, received ${body.count}`)
+          if (!body.recipients.every((item) => typeof item === 'string' && item.includes('@'))) throw new Error('Recipients response contains invalid entries')
+          console.log(`Production Worker verified with ${body.count} active recipients.`)
+          NODE
+
+      - name: Report rollout commit
+        run: |
+          echo "Cloudflare Worker rollout completed for commit $(git rev-parse HEAD)."
