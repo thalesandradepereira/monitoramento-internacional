@@ -14,12 +14,20 @@ on:
   schedule:
     - cron: '0 5 * * *'
 
+  # Gatilho temporário e restrito para a prévia de identidade.
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/branding-preview-trigger.txt'
+
 concurrency:
   group: monitoramento-internacional-diario
   cancel-in-progress: false
 
 jobs:
   rodar-monitoramento:
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -66,3 +74,79 @@ jobs:
           RECIPIENTS_API_URL: 'https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients'
           RECIPIENTS_API_TOKEN: ${{ secrets.RECIPIENTS_API_TOKEN }}
         run: npm run once
+
+  branding-preview:
+    if: github.event_name == 'push' && contains(github.event.head_commit.message, '[send-brand-preview]')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout do modelo aprovado
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Aplicar identidade e gerar página de teste
+        run: |
+          node scripts/apply-branding-preview.mjs
+          sed -i 's|<img src="logo.jpg"|<img src="https://thalesandradepereira.github.io/monitoramento-internacional/logo.jpg"|' docs/Teste-Global-Media-Monitoring.html
+
+      - name: Executar testes
+        run: npm test
+
+      - name: Validar TypeScript
+        run: npx tsc --noEmit
+
+      - name: Confirmar texto final
+        run: |
+          grep -F 'Monitoramento Mídia Internacional | Global Media Monitoring' src/dashboard.ts
+          grep -F 'Monitoramento Mídia Internacional | Global Media Monitoring' docs/Teste-Global-Media-Monitoring.html
+          grep -F 'Global Media Monitoring' src/email.ts
+
+      - name: Versionar modelo e página validados
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/dashboard.ts src/email.ts src/config.ts .github/workflows/monitoramento.yml docs/Teste-Global-Media-Monitoring.html
+          git commit -m 'feat: atualizar identidade para Global Media Monitoring [skip ci]'
+          git push origin HEAD:main
+
+      - name: Aguardar publicação no GitHub Pages
+        env:
+          PREVIEW_URL: https://thalesandradepereira.github.io/monitoramento-internacional/Teste-Global-Media-Monitoring.html
+        run: |
+          for tentativa in $(seq 1 30); do
+            status=$(curl -L -sS -o /tmp/branding-preview.html -w '%{http_code}' "$PREVIEW_URL" || true)
+            if [ "$status" = '200' ] && grep -Fq 'Monitoramento Mídia Internacional | Global Media Monitoring' /tmp/branding-preview.html; then
+              echo 'Página de teste publicada e validada.'
+              exit 0
+            fi
+            echo "Aguardando GitHub Pages: tentativa $tentativa/30, HTTP $status"
+            sleep 10
+          done
+          echo 'A página de teste não ficou disponível no prazo esperado.' >&2
+          exit 1
+
+      - name: Enviar prévia somente ao destinatário autorizado
+        env:
+          RECIPIENTS_API_URL: https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients
+          RECIPIENTS_API_TOKEN: ${{ secrets.RECIPIENTS_API_TOKEN }}
+          SMTP_HOST: smtp.gmail.com
+          SMTP_PORT: '465'
+          SMTP_SECURE: 'true'
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          PREVIEW_URL: https://thalesandradepereira.github.io/monitoramento-internacional/Teste-Global-Media-Monitoring.html
+          TARGET_EMAIL_SHA256: c0d0bdcc897f0ddc2be38792731cb238deed7fef46f869f6f1b70fdfb63cc38e
+        run: node scripts/send-branding-preview.mjs
