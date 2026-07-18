@@ -15,6 +15,8 @@ function clearSrcModules() {
 function loadRunPipeline(options: {
   dryRun?: string
   emailReport?: { attempted: number; sent: number; failed: number }
+  recipientsError?: Error
+  fetchNewsError?: Error
 }) {
   clearSrcModules()
   if (options.dryRun === undefined) delete process.env.DRY_RUN
@@ -24,14 +26,15 @@ function loadRunPipeline(options: {
   delete process.env.GITHUB_ACTIONS
 
   const calls = {
-    loadRecipients: 0,
     persist: [] as unknown[],
     commit: [] as string[],
     email: 0,
+    emailArgs: [] as unknown[][],
     history: 0,
     summarizeArgs: [] as unknown[][],
     translateArgs: [] as unknown[][],
     fsWrites: 0,
+    recipients: 0,
   }
 
   const fs = require('node:fs') as typeof import('node:fs')
@@ -53,7 +56,10 @@ function loadRunPipeline(options: {
   }
 
   mockModule('../src/fetchNews', {
-    buscarNoticias: async () => [{ fonte: 'Fonte', pais: 'Brasil', titulo: 'Título', link: 'https://example.test/noticia', data: new Date('2099-01-01T05:00:00Z') }],
+    buscarNoticias: async () => {
+      if (options.fetchNewsError) throw options.fetchNewsError
+      return [{ fonte: 'Fonte', pais: 'Brasil', titulo: 'Título', link: 'https://example.test/noticia', data: new Date('2099-01-01T05:00:00Z') }]
+    },
   })
   mockModule('../src/summarize', {
     resumirNoticias: async (...args: unknown[]) => { calls.summarizeArgs.push(args); return [{ pais: 'Brasil', titulo: 'Título', resumo: '- resumo', link: 'https://example.test/noticia', fonte: 'Fonte', categoria: 'GERAL' }] },
@@ -67,9 +73,17 @@ function loadRunPipeline(options: {
   mockModule('../src/history', {
     addSentNewsToHistory: () => { calls.history += 1 },
   })
+  mockModule('../src/recipients', {
+    loadRecipients: async () => {
+      calls.recipients += 1
+      if (options.recipientsError) throw options.recipientsError
+      return { source: 'd1', recipients: ['masked@example.test'] }
+    },
+  })
   mockModule('../src/email', {
-    enviarEmail: async () => {
+    enviarEmail: async (...args: unknown[]) => {
       calls.email += 1
+      calls.emailArgs.push(args)
       return options.emailReport ?? { attempted: 1, sent: 1, failed: 0 }
     },
   })
@@ -98,6 +112,7 @@ test('dry run ausente não envia e não altera persistência', async () => {
   assert.equal(calls.persist.length, 0)
   assert.equal(calls.commit.length, 0)
   assert.equal(calls.fsWrites, 0)
+  assert.equal(calls.recipients, 0)
 })
 
 test('falha parcial de e-mail persiste failed, sincroniza estado e termina com erro', async () => {
@@ -117,7 +132,9 @@ test('falha parcial de e-mail persiste failed, sincroniza estado e termina com e
   }
 
   assert.equal(exitCode, 1)
+  assert.equal(calls.recipients, 1)
   assert.equal(calls.email, 1)
+  assert.deepEqual(calls.emailArgs[0]?.slice(3), [['masked@example.test'], 'd1'])
   assert.equal(calls.history, 1)
   assert.equal(calls.persist.length, 2)
   assert.equal((calls.persist[1] as { state: string; attempted: number; sent: number; failed: number }).state, 'failed')
@@ -127,8 +144,61 @@ test('falha parcial de e-mail persiste failed, sincroniza estado e termina com e
   assert.equal(calls.commit.length, 2)
 })
 
+test('falha ao carregar destinatários D1 antes do envio não persiste in_progress', async () => {
+  const { runPipeline, calls, restore } = loadRunPipeline({ dryRun: 'false', recipientsError: new Error('[recipients] API privada retornou HTTP 401; fonte=d1.') })
+  const originalExit = process.exit
+  let exitCode: string | number | null | undefined
+  ;(process.exit as unknown) = ((code?: string | number | null | undefined) => {
+    exitCode = code
+    throw new Error(`process.exit:${code}`)
+  }) as typeof process.exit
 
-test('destinatários não são enviados ao fluxo Gemini/sumarização e só são carregados pelo módulo de e-mail', async () => {
+  try {
+    await assert.rejects(runPipeline(), /process\.exit:1/)
+  } finally {
+    process.exit = originalExit
+    restore()
+  }
+
+  assert.equal(exitCode, 1)
+  assert.equal(calls.recipients, 1)
+  assert.equal(calls.persist.length, 0)
+  assert.equal(calls.commit.length, 0)
+  assert.equal(calls.email, 0)
+  assert.equal(calls.history, 0)
+})
+
+test('falha após in_progress substitui o estado por failed e libera diagnóstico consistente', async () => {
+  const { runPipeline, calls, restore } = loadRunPipeline({ dryRun: 'false', fetchNewsError: new Error('falha simulada na coleta') })
+  const originalExit = process.exit
+  let exitCode: string | number | null | undefined
+  ;(process.exit as unknown) = ((code?: string | number | null | undefined) => {
+    exitCode = code
+    throw new Error(`process.exit:${code}`)
+  }) as typeof process.exit
+
+  try {
+    await assert.rejects(runPipeline(), /process\.exit:1/)
+  } finally {
+    process.exit = originalExit
+    restore()
+  }
+
+  assert.equal(exitCode, 1)
+  assert.equal(calls.recipients, 1)
+  assert.equal(calls.email, 0)
+  assert.equal(calls.history, 0)
+  assert.equal(calls.persist.length, 2)
+  assert.equal((calls.persist[0] as { state: string }).state, 'in_progress')
+  assert.equal((calls.persist[1] as { state: string; attempted: number; sent: number; failed: number }).state, 'failed')
+  assert.equal((calls.persist[1] as { attempted: number }).attempted, 0)
+  assert.equal((calls.persist[1] as { sent: number }).sent, 0)
+  assert.equal((calls.persist[1] as { failed: number }).failed, 0)
+  assert.equal(calls.commit.length, 2)
+  assert.match(calls.commit[1], /registrar falha/)
+})
+
+test('destinatários são carregados uma vez, ficam fora da IA e são repassados ao e-mail', async () => {
   const { runPipeline, calls, restore } = loadRunPipeline({ dryRun: 'false' })
   try {
     await runPipeline()
@@ -139,9 +209,10 @@ test('destinatários não são enviados ao fluxo Gemini/sumarização e só são
   const serializedTranslateArgs = JSON.stringify(calls.translateArgs)
   assert.equal(serializedSummarizeArgs.includes('@'), false)
   assert.equal(serializedTranslateArgs.includes('@'), false)
+  assert.equal(calls.recipients, 1)
   assert.equal(calls.email, 1)
+  assert.deepEqual(calls.emailArgs[0]?.slice(3), [['masked@example.test'], 'd1'])
 })
-
 
 test('dry run com RECIPIENTS_SOURCE=d1 não carrega destinatários nem consulta API', async () => {
   process.env.RECIPIENTS_SOURCE = 'd1'
@@ -159,5 +230,6 @@ test('dry run com RECIPIENTS_SOURCE=d1 não carrega destinatários nem consulta 
     restore()
   }
   assert.equal(calls.email, 0)
+  assert.equal(calls.recipients, 0)
   assert.equal(fetchCalls, 0)
 })

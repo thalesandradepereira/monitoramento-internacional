@@ -1,12 +1,12 @@
 # Migração privada de destinatários para Cloudflare D1
 
-Esta primeira fase prepara o Worker para usar Cloudflare D1 como fonte privada de destinatários sem alterar o envio atual, sem remover `recipients.txt` e sem importar destinatários reais.
+Esta etapa promove o Cloudflare D1 a fonte oficial dos destinatários em produção, sem remover `recipients.txt` nesta tarefa e sem importar ou registrar destinatários reais na documentação.
 
 ## Arquitetura
 
-- O D1 será a fonte privada dos destinatários.
-- O Worker acessará o banco pelo binding `DB`.
-- Em fase posterior, o monitoramento consultará `GET /internal/recipients` com `Authorization: Bearer <token>` para receber somente destinatários ativos.
+- O D1 é a fonte privada e oficial dos destinatários em produção.
+- O Worker acessa o banco pelo binding `DB` e usa `RECIPIENTS_STORAGE=d1` para inscrições e descadastros no mesmo rollout do envio.
+- O monitoramento consulta `GET /internal/recipients` com `Authorization: Bearer <token>` para receber somente destinatários ativos e pré-valida essa API antes de persistir `in_progress`.
 - Gemini e demais componentes de IA não devem receber a lista de endereços.
 - Logs administrativos não devem conter e-mails completos nem tokens.
 
@@ -34,9 +34,9 @@ npx wrangler secret put RECIPIENTS_API_TOKEN --config worker/wrangler.d1.example
 
 ## Variáveis e secrets
 
-- `RECIPIENTS_STORAGE=github`: padrão desta fase, preserva inscrição e descadastro via `recipients.txt`.
-- `RECIPIENTS_STORAGE=d1`: usa D1 para inscrição e descadastro públicos. Se o binding `DB` estiver indisponível, deve falhar explicitamente, sem fallback silencioso para GitHub.
-- `RECIPIENTS_API_TOKEN`: secret do Worker para os endpoints internos administrativos.
+- `RECIPIENTS_STORAGE=d1`: modo de produção para inscrição e descadastro públicos no mesmo rollout do envio. Se o binding `DB` estiver indisponível, deve falhar explicitamente, sem fallback silencioso para GitHub.
+- `RECIPIENTS_STORAGE=github`: modo legado preservado apenas para rollback temporário controlado com `recipients.txt`.
+- `RECIPIENTS_API_TOKEN`: secret do Worker para os endpoints internos administrativos; no workflow principal, deve vir exclusivamente de `secrets.RECIPIENTS_API_TOKEN`.
 - `GH_PAT_UNSUB`: ainda necessário enquanto `RECIPIENTS_STORAGE=github`; deve ser revogado em fase futura após a migração completa.
 
 ## Endpoints internos
@@ -78,12 +78,12 @@ Não retorna a lista completa e não deve registrar endereços recebidos em logs
 5. Fazer deploy controlado do Worker, ainda com `RECIPIENTS_STORAGE=github`.
 6. Importar destinatários de forma privada pelo endpoint administrativo, sem expor a lista a IA.
 7. Validar contagens, descadastros e listagem de ativos.
-8. Trocar `RECIPIENTS_STORAGE=d1` em janela controlada.
-9. Atualizar o pipeline de monitoramento em fase posterior para consultar o endpoint interno.
+8. Trocar `RECIPIENTS_STORAGE=d1` em janela controlada no mesmo rollout que promove o workflow principal para D1.
+9. Configurar o workflow principal com `RECIPIENTS_SOURCE=d1`, mantendo o endpoint privado atual, pré-validação autenticada antes de `in_progress` e o token vindo exclusivamente de secret.
 
 ## Rollback
 
-Enquanto `recipients.txt` continuar preservado, o rollback operacional é retornar `RECIPIENTS_STORAGE=github` e reimplantar o Worker. Não deve haver fallback automático quando `d1` estiver selecionado, para evitar divergência silenciosa entre fontes.
+Enquanto `recipients.txt` continuar preservado, ele não deve ser removido nesta tarefa e serve apenas para rollback temporário controlado. O rollback operacional do Worker é retornar `RECIPIENTS_STORAGE=github` e reimplantar o Worker em alteração controlada. Não deve haver fallback automático quando `d1` estiver selecionado no monitoramento ou no Worker: se a API/binding D1 falhar, não usar `recipients.txt`, `DEST_EMAIL` ou GitHub como fallback, para evitar divergência silenciosa entre fontes.
 
 ## Remoções futuras
 

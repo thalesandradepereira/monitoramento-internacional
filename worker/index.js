@@ -1,8 +1,8 @@
 /**
  * Cloudflare Worker — inscrição, descadastro e endpoints internos de destinatários.
  *
- * A primeira fase da migração mantém RECIPIENTS_STORAGE=github por padrão e
- * prepara o caminho para Cloudflare D1 sem expor a lista de destinatários para IA.
+ * Produção usa RECIPIENTS_STORAGE=d1 para inscrições, descadastros e listagem
+ * interna, sem expor a lista de destinatários para IA.
  */
 
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' }
@@ -58,7 +58,7 @@ async function hmacSign(email, secret) {
 // ─── Recipient storage selection ────────────────────────────────────────────
 
 function recipientsStorage(env) {
-  return env.RECIPIENTS_STORAGE || 'github'
+  return env.RECIPIENTS_STORAGE || 'd1'
 }
 
 function requireD1(env) {

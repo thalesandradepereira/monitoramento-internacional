@@ -131,6 +131,23 @@ test('internal recipients endpoint returns active recipients only with no-store 
   assert.deepEqual(await json(res), { recipients: ['ativo@example.com'], count: 1 })
 })
 
+
+test('public unsubscribe persists status in D1 and removes recipient from active endpoint', async () => {
+  const e = env({ RECIPIENTS_STORAGE: 'd1', UNSUBSCRIBE_SECRET: 'unsubscribe-secret' })
+  await upsertRecipient(e, 'descadastrar@example.com')
+  const enc = new TextEncoder()
+  const key = await crypto.subtle.importKey('raw', enc.encode('unsubscribe-secret'), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'])
+  const sig = await crypto.subtle.sign('HMAC', key, enc.encode('descadastrar@example.com'))
+  const token = Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, '0')).join('')
+
+  const res = await worker.fetch(new Request(`https://worker.test/unsubscribe?email=DESCADASTRAR@example.com&token=${token}`), e)
+  assert.equal(res.status, 200)
+  assert.equal(e.DB.rows.get('descadastrar@example.com').status, 'unsubscribed')
+
+  const listRes = await worker.fetch(new Request('https://worker.test/internal/recipients', { headers: { Authorization: 'Bearer test-secret-token' } }), e)
+  assert.deepEqual(await json(listRes), { recipients: [], count: 0 })
+})
+
 test('import endpoint is idempotent, normalizes duplicates and counts invalid recipients', async () => {
   const e = env()
   await upsertRecipient(e, 'reativar@example.com')
@@ -161,7 +178,7 @@ test('internal handlers do not log email addresses on D1 errors', async () => {
   }
 })
 
-test('RECIPIENTS_STORAGE defaults to github and d1 fails explicitly without DB', async () => {
+test('RECIPIENTS_STORAGE defaults to d1 and fails explicitly without DB instead of falling back to github', async () => {
   const originalFetch = globalThis.fetch
   let githubCalled = false
   globalThis.fetch = async () => {
@@ -169,15 +186,19 @@ test('RECIPIENTS_STORAGE defaults to github and d1 fails explicitly without DB',
     return new Response(JSON.stringify({ content: btoa(''), sha: 'sha' }), { status: 200 })
   }
   try {
-    const githubRes = await worker.fetch(new Request('https://worker.test/subscribe?email=novo@example.com'), { GH_PAT_UNSUB: 'fake', GH_REPO: 'owner/repo' })
-    assert.equal(githubRes.status, 200)
+    const d1DefaultRes = await worker.fetch(new Request('https://worker.test/subscribe?email=novo@example.com'), { GH_PAT_UNSUB: 'fake', GH_REPO: 'owner/repo' })
+    assert.equal(d1DefaultRes.status, 500)
+    assert.equal(githubCalled, false)
+
+    const d1ExplicitRes = await worker.fetch(new Request('https://worker.test/subscribe?email=novo@example.com'), { RECIPIENTS_STORAGE: 'd1' })
+    assert.equal(d1ExplicitRes.status, 500)
+
+    const githubRollbackRes = await worker.fetch(new Request('https://worker.test/subscribe?email=novo@example.com'), { RECIPIENTS_STORAGE: 'github', GH_PAT_UNSUB: 'fake', GH_REPO: 'owner/repo' })
+    assert.equal(githubRollbackRes.status, 200)
     assert.equal(githubCalled, true)
   } finally {
     globalThis.fetch = originalFetch
   }
-
-  const d1Res = await worker.fetch(new Request('https://worker.test/subscribe?email=novo@example.com'), { RECIPIENTS_STORAGE: 'd1' })
-  assert.equal(d1Res.status, 500)
 })
 
 test('import accepts body without Content-Length when real size is within limit', async () => {
@@ -263,9 +284,9 @@ test('unsubscribe fails safely when UNSUBSCRIBE_SECRET is absent without writes'
   }
 })
 
-test('primary wrangler.toml keeps legacy github mode with real D1 binding declared', async () => {
+test('primary wrangler.toml enables d1 mode with real D1 binding declared', async () => {
   const config = await readFile(new URL('../../worker/wrangler.toml', import.meta.url), 'utf8')
-  assert.match(config, /RECIPIENTS_STORAGE = "github"/)
+  assert.match(config, /RECIPIENTS_STORAGE = "d1"/)
   assert.match(config, /\[\[d1_databases\]\]/)
   assert.match(config, /binding = "DB"/)
   assert.match(config, /database_name = "monitoramento-internacional-recipients"/)
