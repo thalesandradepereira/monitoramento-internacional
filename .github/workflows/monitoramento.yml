@@ -66,3 +66,32 @@ jobs:
           RECIPIENTS_API_URL: 'https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients'
           RECIPIENTS_API_TOKEN: ${{ secrets.RECIPIENTS_API_TOKEN }}
         run: npm run once
+
+  disparar-publicacao-social:
+    name: Acionar publicador social privado
+    needs: rodar-monitoramento
+    if: ${{ github.event_name == 'schedule' || inputs.dry_run == false }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: 📥 Atualizar checkout após publicação do dashboard
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: ⚙️ Preparar Ambiente Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🔗 Validar GitHub Pages e acionar repositório privado
+        env:
+          TIMEZONE: 'America/Sao_Paulo'
+          DAILY_EXECUTION_LOG_PATH: 'state/daily-executions.json'
+          GITHUB_PAGES_BASE_URL: 'https://thalesandradepereira.github.io/monitoramento-internacional'
+          SOCIAL_PUBLISHER_REPOSITORY: ${{ vars.SOCIAL_PUBLISHER_REPOSITORY }}
+          SOCIAL_PUBLISHER_TOKEN: ${{ secrets.SOCIAL_PUBLISHER_TOKEN }}
+        run: node scripts/dispatch-social-publisher.mjs
