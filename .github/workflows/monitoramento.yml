@@ -14,7 +14,7 @@ on:
   schedule:
     - cron: '0 5 * * *'
 
-  # Gatilho temporário e restrito para a prévia de identidade.
+  # Gatilho temporário e restrito para gerar a prévia de identidade.
   push:
     branches:
       - main
@@ -137,16 +137,3 @@ jobs:
           done
           echo 'A página de teste não ficou disponível no prazo esperado.' >&2
           exit 1
-
-      - name: Enviar prévia somente ao destinatário autorizado
-        env:
-          RECIPIENTS_API_URL: https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients
-          RECIPIENTS_API_TOKEN: ${{ secrets.RECIPIENTS_API_TOKEN }}
-          SMTP_HOST: smtp.gmail.com
-          SMTP_PORT: '465'
-          SMTP_SECURE: 'true'
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASS: ${{ secrets.SMTP_PASS }}
-          PREVIEW_URL: https://thalesandradepereira.github.io/monitoramento-internacional/Teste-Global-Media-Monitoring.html
-          TARGET_EMAIL_SHA256: c0d0bdcc897f0ddc2be38792731cb238deed7fef46f869f6f1b70fdfb63cc38e
-        run: node scripts/send-branding-preview.mjs
