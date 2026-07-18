@@ -70,6 +70,9 @@ function loadRunPipeline(options: {
   mockModule('../src/dashboard', {
     gerarDashboardHTML: () => '<html>dashboard</html>',
   })
+  mockModule('../src/branding', {
+    aplicarIdentidadeDashboard: (html: string) => html,
+  })
   mockModule('../src/history', {
     addSentNewsToHistory: () => { calls.history += 1 },
   })
