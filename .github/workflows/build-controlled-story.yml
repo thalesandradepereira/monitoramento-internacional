@@ -1,0 +1,49 @@
+name: Build Controlled Story Asset
+
+on:
+  push:
+    branches:
+      - codex/controlled-story-2026-07-18
+    paths:
+      - '.controlled-story/READY'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: controlled-story-asset-2026-07-18
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout isolated branch
+        uses: actions/checkout@v4
+        with:
+          ref: codex/controlled-story-2026-07-18
+          fetch-depth: 0
+
+      - name: Reconstruct approved image
+        run: |
+          mkdir -p docs/social/2026-07-18
+          cat .controlled-story/parts/part-*.txt | tr -d '\n' | base64 --decode > docs/social/2026-07-18/story.jpg
+          test -s docs/social/2026-07-18/story.jpg
+          test "$(sha256sum docs/social/2026-07-18/story.jpg | awk '{print $1}')" = "0630b6f00b0f486364185a4832f6b59b524ab74a4761118d371e4be0d1276f78"
+          python3 - <<'PY'
+          from pathlib import Path
+          data = Path('docs/social/2026-07-18/story.jpg').read_bytes()
+          assert data.startswith(b'\xff\xd8\xff'), 'invalid JPEG header'
+          assert data.endswith(b'\xff\xd9'), 'invalid JPEG trailer'
+          print(f'validated JPEG: {len(data)} bytes')
+          PY
+
+      - name: Commit controlled media
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/social/2026-07-18/story.jpg
+          if ! git diff --cached --quiet; then
+            git commit -m "test: publish controlled Story media for 2026-07-18"
+            git push origin HEAD:codex/controlled-story-2026-07-18
+          fi
