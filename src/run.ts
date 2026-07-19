@@ -7,6 +7,7 @@ import { enviarEmail, EmailSendReport } from './email'
 import { addSentNewsToHistory } from './history'
 import { gerarDashboardHTML } from './dashboard'
 import { aplicarIdentidadeDashboard } from './branding'
+import { atualizarPaginaHoje } from './todayAlias'
 import { config } from './config'
 import { loadRecipients, type RecipientLoadResult } from './recipients'
 import {
@@ -87,6 +88,9 @@ export async function runPipeline() {
       }
       fs.writeFileSync(dashPath, dashboardHtml, 'utf8')
       console.log(`[docs] Salvo em: ${dashPath}`)
+
+      const todayPath = atualizarPaginaHoje(docsDir, dashFilename, dataHoje)
+      console.log(`[docs] Link permanente /hoje atualizado em: ${todayPath}`)
 
       const rootLogoPath = path.resolve(__dirname, '..', 'logo.jpg')
       const docsLogoPath = path.join(docsDir, 'logo.jpg')
