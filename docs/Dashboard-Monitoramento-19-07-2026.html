@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img" onerror="this.style.display='none'">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">19/07/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 style="margin: 0; font-size: 1.5rem; color: #fff;">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script>
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Agenda Capital","pais":"Brasil","titulo":"Robô e tecnologia viabilizam primeira cirurgia remota de tumor renal no Brasil a 2.380 km de distância","resumo":"Uma cirurgia robótica pioneira foi realizada no Brasil, conectando especialistas a milhares de quilômetros de distância do paciente. O procedimento marca um avanço histórico para a medicina brasileira, demonstrando como a conectividade e a robótica podem democratizar o acesso a tratamentos complexos em regiões remotas.","link":"https://agendacapital.com.br/robo-e-tecnologia-viabilizam-primeira-cirurgia-remota-de-tumor-renal-no-brasil-a-2-380-km-de-distancia/","categoria":"SAÚDE TECNOLÓGICA","lang":"pt"},{"fonte":"Portal Você Online","pais":"Brasil","titulo":"Manaus se consolida como polo de tecnologia e Inteligência Artificial no país","resumo":"A cidade de Manaus reafirma seu papel estratégico no ecossistema de inovação nacional ao se consolidar como um hub para o desenvolvimento de Inteligência Artificial. O crescimento atrai investimentos e incentiva a capacitação local, posicionando a região como referência em soluções tecnológicas avançadas.","link":"https://portalvoce.com/manaus-se-consolida-como-polo-de-tecnologia-e-inteligencia-artificial-no-pais/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"InsideEVs Brasil","pais":"Brasil","titulo":"Horse cria tecnologia inédita que elimina gasolina dos motores EREVs","resumo":"A empresa Horse desenvolveu uma tecnologia revolucionária que permite a eliminação total do uso de gasolina em motores EREVs. Esta inovação promete transformar o mercado automotivo, oferecendo uma alternativa sustentável que aumenta significativamente a eficiência e reduz a dependência de combustíveis fósseis no transporte.","link":"https://insideevs.uol.com.br/news/801802/horse-quer-revolucionar-erevs-tecnologia/","categoria":"TECNOLOGIA AUTOMOTIVA","lang":"pt"},{"fonte":"Olá Jornal","pais":"Brasil","titulo":"Tecnologia criada no interior do Rio Grande do Sul coloca o Brasil na vanguarda da inteligência esportiva para atletas amadores","resumo":"Uma solução tecnológica inovadora desenvolvida no interior gaúcho está revolucionando o monitoramento de desempenho esportivo. A ferramenta utiliza análise de dados avançada para oferecer inteligência esportiva de alta performance a atletas amadores, colocando o Brasil em destaque no setor de tecnologias aplicadas ao esporte.","link":"https://olajornal.com.br/tecnologia-criada-no-interior-do-rio-grande-do-sul-coloca-o-brasil-na-vanguarda-da-inteligencia-esportiva-para-atletas-amadores/","categoria":"ESPORTES TECNOLOGIA","lang":"pt"},{"fonte":"Época Negócios","pais":"Brasil","titulo":"No Rio, Nobel de Economia minimiza impacto da IA na redução de empregos: 'Poucos exemplos'","resumo":"Durante evento no Rio de Janeiro, um laureado com o Nobel de Economia apresentou uma visão contraintuitiva sobre o futuro do mercado de trabalho. Segundo o especialista, o medo de demissões em massa causadas pela Inteligência Artificial é superestimado, havendo poucos exemplos reais dessa substituição em larga escala.","link":"https://epocanegocios.globo.com/inteligencia-artificial/noticia/2026/07/no-rio-nobel-de-economia-minimiza-impacto-da-ia-na-reducao-de-empregos-poucos-exemplos.ghtml","categoria":"ECONOMIA IA","lang":"pt"},{"fonte":"Tribuna do Paraná","pais":"Brasil","titulo":"Tecnologia criada no PR pode ajudar a salvar pacientes de doença letal","resumo":"Pesquisadores do Paraná desenvolveram uma nova tecnologia promissora focada no tratamento de uma condição de saúde altamente letal. O avanço científico oferece uma esperança renovada para pacientes que antes possuíam opções terapêuticas limitadas, evidenciando o alto nível da ciência nacional na criação de soluções médicas.","link":"https://www.tribunapr.com.br/noticias/parana/tecnologia-criada-mapear-risco-sepse-parana/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"RADAR DIGITAL BRASÍLIA","pais":"Brasil","titulo":"Energia solar abre novo mercado para integradores de tecnologia no Brasil","resumo":"O setor de energia solar está criando oportunidades significativas para integradores de tecnologia em todo o país. Com a necessidade crescente de monitoramento e eficiência energética, empresas especializadas estão integrando hardwares e softwares para otimizar a geração e distribuição de energia limpa em residências e indústrias.","link":"https://radardigitalbrasilia.com.br/tecnologia/energia-solar-abre-novo-mercado-para-integradores-de-tecnologia-no-brasil/","categoria":"NEGÓCIOS TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Brasil vai buscar título 'olímpico' no futebol de robôs humanoides","resumo":"O Brasil se prepara para competir em uma das áreas mais desafiadoras da robótica: o futebol de robôs humanoides. A iniciativa não apenas promove a pesquisa acadêmica em engenharia e inteligência artificial, mas também demonstra o crescente interesse e competência do país em robótica de nível internacional.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/07/18/chateado-com-a-selecao-brasil-vai-buscar-titulo-olimpico-no-futebol-de-robos-humanoides.ghtml","categoria":"TRENDING TOPICS","lang":"pt"},{"fonte":"yourweather.co.uk","pais":"Inglaterra","titulo":"Por que o Wi-Fi em aviões e trens sempre foi ruim — e como uma nova tecnologia pode resolver isso","resumo":"A conexão de internet em transportes públicos frequentemente sofre com instabilidade e baixa velocidade devido a limitações de infraestrutura. Uma nova tecnologia está sendo desenvolvida para otimizar a recepção de sinais e garantir uma experiência de navegação contínua aos passageiros. Essa inovação promete transformar o acesso à conectividade em viagens de longa distância.","link":"https://www.yourweather.co.uk/news/leisure/why-wi-fi-on-planes-and-trains-has-always-been-so-bad-and-how-a-new-technology-could-fix-it.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Daily Echo","pais":"Inglaterra","titulo":"Tecnologia de reconhecimento facial em tempo real será implantada em Eastleigh","resumo":"A cidade de Eastleigh se prepara para implementar sistemas de reconhecimento facial em tempo real, visando fortalecer a segurança pública e o monitoramento urbano. A medida levanta importantes debates sobre o equilíbrio entre a proteção dos cidadãos e a privacidade individual. Especialistas acompanham a eficácia e os desdobramentos éticos desta nova estratégia de vigilância.","link":"https://www.dailyecho.co.uk/news/26285269.facial-recognition-technology-deployed-eastleigh/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Defensores da tecnologia no Reino Unido alarmados com plano de Burnham de extinguir departamento","resumo":"A proposta política de extinguir o departamento focado em tecnologia no Reino Unido gerou preocupações significativas entre líderes do setor. Especialistas alertam que a desarticulação de um órgão dedicado pode prejudicar a inovação, a competitividade econômica e o desenvolvimento estratégico do país. O debate reflete a tensão entre políticas públicas e o crescimento acelerado da indústria tecnológica.","link":"https://www.theguardian.com/politics/2026/jul/18/burnham-plan-to-scrap-technology-department-triggers-backlash","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Diario de Santiago","pais":"Espanha","titulo":"Santiago sedia o XXVII Encontro Nacional de Estudantes de Matemática com especialistas em IA, divulgação e ciência","resumo":"O evento em Santiago reúne estudantes e especialistas de renome para discutir os avanços da matemática aplicada. A programação destaca o impacto da Inteligência Artificial e a importância da divulgação científica no cenário acadêmico atual. O encontro visa fomentar novas conexões entre a academia e a inovação tecnológica.","link":"https://www.diariodesantiago.es/santiago/santiago-acoge-el-xxvii-encuentro-nacional-de-estudiantes-de-matematicas-con-expertos-en-ia-divulgacion-y-ciencia/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"OkDiario","pais":"Espanha","titulo":"O projeto Chrysalis já é uma realidade: uma nave de 50 km para nos levar a outro sistema solar","resumo":"O projeto Chrysalis apresenta um conceito audacioso de exploração espacial com uma estrutura de proporções monumentais. Desenvolvido para superar distâncias interplanetárias, o projeto promete revolucionar nossa capacidade de chegar a outros sistemas. Este marco representa um avanço significativo na engenharia aeroespacial e no futuro da humanidade.","link":"https://okdiario.com/ciencia/proyecto-chrysalis-realidad-nave-50-km-llevarnos-otro-sistema-solar-18955756","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ABC","pais":"Espanha","titulo":"Sevilha reúne mais de 500 especialistas em física, a ciência que «está por trás da tecnologia que usamos»","resumo":"Sevilha tornou-se o centro global para físicos renomados, destacando a importância da ciência fundamental na vida moderna. O congresso reforça como as teorias físicas sustentam toda a tecnologia digital e de infraestrutura contemporânea. O debate foca em aproximar o conhecimento científico dos desafios tecnológicos atuais.","link":"https://www.abc.es/sevilla/ciudad/sevilla-reune-500-expertos-fisica-ciencia-detras-20260719193316-nts_amp.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"La Vanguardia","pais":"Espanha","titulo":"ANCO, da máquina de escrever à IA: “45 anos em tecnologia ensinam uma coisa: tudo muda, mas o importante continua sendo o mesmo”","resumo":"A empresa ANCO celebra sua trajetória de 45 anos, refletindo sobre a drástica transição tecnológica ocorrida desde o uso de máquinas de escrever até a era da IA. O relato oferece uma perspectiva valiosa sobre a adaptabilidade necessária para sobreviver no mercado tecnológico. A essência do atendimento e da qualidade permanece como o pilar central.","link":"https://www.lavanguardia.com/empresas-de-vanguardia/historias-de-exito/20260719/11493247/anco-maquina-escribir-ia-45-anos-tecnologia-ensenan-cosa-cambia-importante-sigue-siendo.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"farodevigo.es","pais":"Espanha","titulo":"Galiza eleva em 7,5% o gasto em I+D em tecnologia e chega a quase 347 milhões","resumo":"O governo da Galiza anunciou um aumento expressivo no investimento em pesquisa, desenvolvimento e tecnologia. Com o montante aproximado de 347 milhões de euros, o objetivo é impulsionar a competitividade regional no setor tecnológico. Esta medida visa fortalecer a inovação industrial e a criação de soluções locais de alto impacto.","link":"https://www.farodevigo.es/economia/2026/07/19/galicia-eleva-7-5-gasto-i-d-tecnologia-2023-2024-132559346.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Yahoo en Español Vida y Estilo","pais":"Espanha","titulo":"8 sedãs elétricos que chegam com uma tecnologia alucinante e prometem mudar o futuro do automóvel","resumo":"Uma nova geração de veículos elétricos está prestes a chegar ao mercado, trazendo inovações tecnológicas de ponta em autonomia e conectividade. Esses modelos não apenas prometem maior eficiência, mas também redefinem a experiência de dirigir. A indústria automotiva avança rapidamente para um futuro sustentável e totalmente digitalizado.","link":"https://es-us.vida-estilo.yahoo.com/8-berlinas-el%C3%A9ctricas-llegan-tecnolog%C3%ADa-020005363.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Xataka","pais":"Espanha","titulo":"A ciência revelou como a sauna \"hackeia\" o cérebro: reduz em 65% o risco de desenvolver Alzheimer no futuro","resumo":"Pesquisas científicas recentes apontam um benefício surpreendente do uso regular da sauna para a saúde neurológica. O hábito atua de forma preventiva, reduzindo drasticamente a incidência de doenças degenerativas como o Alzheimer. A descoberta abre portas para novos tratamentos não invasivos focados na longevidade e proteção cerebral.","link":"https://www.xataka.com/medicina-y-salud/ciencia-revela-como-sauna-hackea-cerebro-apunta-a-que-reduce-65-riesgo-alzheimer","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"farodevigo.es","pais":"Espanha","titulo":"Suas fezes pela ciência: Galicia Sur pede colaboração cidadã para criar o primeiro observatório de microbiota","resumo":"O instituto de pesquisa Galicia Sur lançou um projeto inovador que busca a participação da população para mapear a microbiota local. A coleta de dados servirá para a criação do primeiro observatório especializado na área. Essa iniciativa científica é fundamental para entender melhor o impacto do ecossistema intestinal na saúde pública.","link":"https://www.farodevigo.es/gran-vigo/2026/07/18/heces-ciencia-galicia-sur-pide-132578105.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Börse Express","pais":"Alemanha","titulo":"Tecnologia EBO da Microsoft: instalação de fibra óptica reduzida para uma hora","resumo":"A Microsoft desenvolveu uma nova abordagem tecnológica para acelerar drasticamente a implementação de infraestrutura de rede. Com o método EBO, o tempo necessário para a instalação de fibra óptica cai para apenas uma hora, prometendo revolucionar a conectividade digital na Alemanha e otimizar custos operacionais de expansão de banda larga.","link":"https://www.boerse-express.com/news/articles/microsoft-ebo-technologie-glasfaser-installation-sinkt-auf-eine-stunde-929741","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"PZ-news","pais":"Alemanha","titulo":"O que a nova obrigatoriedade de câmeras em carros significa para nós","resumo":"A introdução de novas regulamentações que tornam obrigatória a instalação de câmeras em veículos visa aumentar a segurança viária na Alemanha. Esta medida reflete uma tendência crescente de monitoramento tecnológico automotivo, impactando tanto a privacidade dos motoristas quanto o desenvolvimento de novos sistemas de assistência à condução.","link":"https://www.pz-news.de/wirtschaft/wirtschaft-weltweit_artikel,-Was-die-neue-Kamera-Pflicht-im-Auto-fuer-uns-bedeutet-_arid,2360669.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Pplware","pais":"Alemanha","titulo":"“Tecnologia não é madura”: Lamborghini adia novamente a chegada do seu carro elétrico","resumo":"A Lamborghini decidiu postergar o lançamento do seu primeiro modelo totalmente elétrico, citando a falta de maturidade tecnológica atual. A decisão sublinha os desafios enfrentados por fabricantes de carros de luxo na transição para a eletrificação total sem comprometer o desempenho e a identidade da marca.","link":"https://pplware.sapo.pt/motores/tecnologia-nao-e-madura-lamborghini-adia-outra-vez-a-chegada-do-seu-eletrico/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Vietnam.vn","pais":"Japão","titulo":"Citizen AQ4090-08A: Uma combinação de papel Washi artesanal e tecnologia Eco-Drive de ultraprecisão","resumo":"O novo Citizen AQ4090-08A destaca-se por integrar o tradicional papel artesanal japonês Washi ao seu mostrador. Equipado com a tecnologia Eco-Drive, o relógio garante ultraprecisão alimentado por luz solar. Esta fusão equilibra perfeitamente a estética cultural clássica com a inovação técnica de ponta da relojoaria japonesa.","link":"https://www.vietnam.vn/pt/citizen-aq4090-08a-su-ket-hop-giua-giay-washi-thu-cong-va-cong-nghe-eco-drive-sieu-chinh-xac","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"KAB 熊本朝日放送","pais":"Japão","titulo":"Tecnologia de resfriamento por névoa: Bicos de precisão de 0,1 mm que não molham","resumo":"O Japão desenvolveu uma tecnologia avançada de nebulização para combater o calor extremo nas cidades. Utilizando bicos de precisão com abertura de apenas 0,1 milímetros, o sistema cria névoa que evapora instantaneamente no ar. Essa inovação reduz a temperatura ambiente de forma eficaz sem molhar as pessoas ou as superfícies ao redor.","link":"https://www.kab.co.jp/news/article/16739168","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"新浪网","pais":"China","titulo":"A IA está evoluindo de uma 'ferramenta de aplicação' para uma 'mudança de paradigma' que reconstrói a lógica econômica fundamental.","resumo":"A inteligência artificial está deixando de ser apenas um recurso auxiliar para se tornar o motor central das transformações econômicas globais. Este salto tecnológico redefine a infraestrutura produtiva e exige novas abordagens estratégicas para o desenvolvimento industrial e a inovação tecnológica na China.","link":"https://k.sina.com.cn/article_5952915705_162d248f906703e3ty.html?from=tech","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"新浪财经","pais":"China","titulo":"Xangai inicia a construção de clusters de equipamentos eVTOL de baixa altitude, criando oito cenários de aplicação típicos.","resumo":"Xangai está acelerando o desenvolvimento da economia de baixa altitude ao investir na infraestrutura de veículos elétricos de decolagem e pouso vertical. Com a implementação de oito cenários práticos, a cidade busca liderar a inovação logística e de transporte aéreo urbano no país.","link":"https://finance.sina.cn/stock/jdts/2026-07-19/detail-iniiimti0300100.d.html?vt=4&wm=1224?pagetag&cid=76993&node_id=76993","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"新浪网","pais":"China","titulo":"Agentes inteligentes impulsionam a economia de tokens: o volume diário de chamadas de tokens na China cresce mais de mil vezes.","resumo":"O surgimento de agentes inteligentes causou uma explosão na utilização de modelos de linguagem e ecossistemas de tokens no mercado chinês. Esse crescimento exponencial reflete a rápida integração da IA nos fluxos de trabalho digitais e a alta demanda por soluções automatizadas avançadas.","link":"https://k.sina.com.cn/article_2258727970_m86a1742203302gxb4.html?from=tech","categoria":"ECONOMIA DIGITAL","lang":"pt"},{"fonte":"The Times of India","pais":"China","titulo":"O Presidente chinês Xi Jinping envia uma mensagem forte às empresas de tecnologia americanas sobre IA.","resumo":"Em um pronunciamento estratégico, o governo chinês reafirmou seu compromisso com o desenvolvimento da inteligência artificial dentro de um marco de soberania tecnológica. A mensagem sublinha a intenção da China de competir globalmente enquanto estabelece suas próprias diretrizes regulatórias e de inovação.","link":"https://timesofindia.indiatimes.com/technology/tech-news/chinese-president-xi-jinping-sends-a-strong-message-to-american-technology-companies-on-ai-says-china-is-ready-to/articleshow/132489964.cms","categoria":"POLÍTICA TECNOLÓGICA","lang":"pt"},{"fonte":"新华网","pais":"China","titulo":"Tecnologia tátil capacita a inteligência incorporada: as soluções tecnológicas full-stack da Qianjue Robot brilham na WAIC 2026.","resumo":"A robótica avançada deu um passo significativo com a apresentação de soluções táteis que conferem maior precisão e interação física às máquinas inteligentes. A exibição na conferência WAIC destaca a liderança chinesa na integração de hardware e sensores sensoriais para o futuro dos robôs autônomos.","link":"http://www.news.cn/tech/20260719/971094583dbc40f9a0864c3270c18f65/c.html","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"中国经济网","pais":"China","titulo":"Discurso principal de Zhou Bowen na WAIC: saudando o 'momento de metacognição científica' da IA e lançando a plataforma 'Shusheng-Duanyan'.","resumo":"O anúncio da nova plataforma de IA Shusheng-Duanyan marca um avanço na capacidade de raciocínio lógico e cognitivo das máquinas inteligentes chinesas. Este desenvolvimento propõe uma nova fronteira para a compreensão científica assistida por computador e o processamento complexo de dados.","link":"http://www.ce.cn/xwzx/gnsz/gdxw/202607/t20260719_3094796.shtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Vero Notícias","pais":"China","titulo":"Modelo chinês de IA desafia gigantes da tecnologia dos EUA.","resumo":"A nova geração de modelos de linguagem chineses demonstra uma capacidade competitiva que coloca em xeque a hegemonia americana no setor. Com avanços em eficiência e processamento, as empresas locais estão atraindo atenção global e reduzindo a brecha tecnológica com os líderes do Vale do Silício.","link":"https://veronoticias.com/economia/modelo-chines-de-ia-desafia-gigantes-da-tecnologia-dos-eua/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Estadão","pais":"China","titulo":"Novo modelo de IA chinês surpreende a indústria de tecnologia dos EUA e rivaliza com Claude e ChatGPT.","resumo":"A indústria tecnológica foi impactada pelo surgimento de um modelo de IA chinês que iguala o desempenho de referências globais como Claude e ChatGPT. Essa evolução sinaliza uma aceleração sem precedentes na capacidade chinesa de criar sistemas de linguagem natural altamente eficazes e competitivos.","link":"https://www.estadao.com.br/em-alta/economia/negocios/kimi-ia-china-tecnologia-eua-rivaliza-claude-chatgpt/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Myanmar International TV","pais":"Índia","titulo":"Índia e Estônia realizam conversas para impulsionar o comércio e a cooperação tecnológica","resumo":"Índia e Estônia estabeleceram um diálogo estratégico focado em fortalecer laços econômicos e colaboração tecnológica. A parceria visa explorar sinergias entre os setores de inovação de ambos os países, promovendo um intercâmbio de conhecimento que pode acelerar a transformação digital e abrir novas portas para empresas indianas no mercado europeu.","link":"https://www.myanmaritv.com/news/india-estonia-hold-talks-boost-trade-and-technology-cooperation","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Moneycontrol.com","pais":"Índia","titulo":"Barreiras que antes pareciam intransponíveis estão caindo: Sridhar Vembu da Zoho sobre o crescimento tecnológico da Índia","resumo":"Sridhar Vembu, CEO da Zoho, destaca o notável progresso tecnológico da Índia ao superar desafios históricos que limitavam o desenvolvimento do país. O executivo enfatiza como a resiliência e a inovação local estão transformando o cenário nacional, posicionando a Índia como um player global competitivo e capaz de criar soluções tecnológicas de alto impacto.","link":"https://www.moneycontrol.com/technology/barriers-that-once-seemed-insurmountable-are-falling-zoho-s-sridhar-vembu-on-india-s-technology-growth-article-13977657.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"PIB","pais":"Índia","titulo":"O reconhecimento antecipado do TDB-DST à excelência tecnológica da Skyroot pelo Prêmio Nacional de Start-ups de Tecnologia 2022 é validado","resumo":"O sucesso contínuo da Skyroot Aerospace valida a decisão do TDB-DST de premiar a empresa em 2022 por sua excelência em tecnologia. Este reconhecimento destaca o papel crucial do suporte governamental no fortalecimento do setor espacial privado na Índia, provando que investimentos estratégicos em startups de alta tecnologia são fundamentais para o avanço aeroespacial do país.","link":"https://www.pib.gov.in/PressReleasePage.aspx?PRID=2286239","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Swarajya","pais":"Índia","titulo":"White Rabbit Technology impulsiona o esforço da Índia por uma sincronização de tempo segura e uniforme em todo o país","resumo":"A implementação da tecnologia White Rabbit representa um avanço significativo para a infraestrutura crítica da Índia. Ao garantir uma sincronização de tempo extremamente precisa e segura em escala nacional, o país aumenta a eficiência de suas redes de comunicações, sistemas de energia e operações financeiras, mantendo a soberania tecnológica.","link":"https://swarajyamag.com/amp/story/science%2Fwhite-rabbit-technology-powers-indias-push-for-secure-and-uniform-time-synchronisation-nationwide","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ScienceBlog.com","pais":"Índia","titulo":"Em 1991, as reservas cambiais da Índia caíram a tal ponto que o governo transportou secretamente 47 toneladas de ouro para o exterior como garantia, e em uma década a economia se tornou uma gigante exportadora de software","resumo":"O artigo traça uma retrospectiva impressionante sobre a recuperação econômica da Índia, partindo de uma crise cambial em 1991 até a ascensão global como potência de software. Esta trajetória ilustra a resiliência do modelo econômico indiano e como a aposta estratégica na indústria de tecnologia transformou o país em um hub global de exportação de serviços digitais.","link":"https://scienceblog.com/d-in-1991-indias-foreign-exchange-reserves-had-fallen-so-low-the-government-secretly-airlifted-47-tonnes-of-gold-abroad-as-collateral-for-an-emergency-loan-and-within-a-decade-the-same-economy-would/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"The Arunachal Times","pais":"Índia","titulo":"Liga de Ciência de Arunachal torna-se evento anual do calendário","resumo":"A decisão de tornar a Liga de Ciência de Arunachal um evento anual visa fomentar o interesse por disciplinas científicas e tecnológicas na região nordeste da Índia. A iniciativa busca engajar estudantes e jovens pesquisadores, cultivando uma base sólida de talentos científicos que contribuirá para o desenvolvimento técnico e acadêmico de toda a nação a longo prazo.","link":"https://arunachaltimes.in/index.php/2026/07/19/arunachal-science-league-to-become-annual-calendar-event/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Hindu","pais":"Índia","titulo":"Amit Shah inspeciona tecnologia indígena de segurança de fronteira em Bengala Ocidental","resumo":"O ministro Amit Shah realizou uma inspeção focada no uso de tecnologias de vigilância desenvolvidas localmente para a segurança das fronteiras indianas. A iniciativa sublinha o compromisso do governo em reduzir a dependência externa e fortalecer a defesa nacional através da inovação autóctone, integrando equipamentos de ponta para proteger as áreas territoriais estratégicas do país.","link":"https://www.thehindu.com/news/national/amit-shah-inspects-indigenous-border-security-technology-in-west-bengal/article71238297.ece/amp/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Al Jazeera","pais":"Índia","titulo":"Índia alcança marco com o lançamento do primeiro foguete orbital do setor privado","resumo":"A Índia celebrou um avanço histórico com o lançamento bem-sucedido de seu primeiro foguete orbital desenvolvido pelo setor privado. Esse marco consolida o papel das startups espaciais no ecossistema indiano, abrindo novas oportunidades comerciais e demonstrando a capacidade tecnológica do país em realizar missões orbitais de forma independente e competitiva no mercado espacial global.","link":"https://www.aljazeera.com/news/2026/7/18/india-achieves-milestone-with-launch-of-first-private-sector-orbital-rocket","categoria":"LANÇAMENTO","lang":"pt"},{"fonte":"dnoticias.pt","pais":"Portugal","titulo":"Nova tecnologia permite medir umidade florestal na Península Ibérica para prevenir incêndios","resumo":"Uma nova solução tecnológica foi desenvolvida para monitorar os níveis de umidade nas florestas da Península Ibérica. O objetivo principal é atuar na prevenção de incêndios rurais através de dados precisos. Esta inovação promete aumentar a segurança das áreas verdes em Portugal e Espanha.","link":"https://www.dnoticias.pt/app/2026/7/19/499629-nova-tecnologia-permite-medir-humidade-florestal-na-peninsula-iberica-para-prevenir-incendios/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"Conflitos geopolíticos impulsionam nova vaga de ciberespionagem","resumo":"O cenário de tensões geopolíticas globais tem servido como combustível para o crescimento de atividades de ciberespionagem. Especialistas alertam que empresas e infraestruturas críticas enfrentam riscos cada vez mais sofisticados. A segurança digital tornou-se uma prioridade estratégica diante desta escalada de ataques coordenados.","link":"https://pplware.sapo.pt/tag/conflitos/","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"Dinheiro Vivo","pais":"Portugal","titulo":"Após a queda da Unbabel, a IA nacional resiste e prepara 150 milhões em exportações","resumo":"Apesar dos desafios enfrentados pela Unbabel, o ecossistema de Inteligência Artificial em Portugal demonstra resiliência e maturidade. O setor projeta movimentar 150 milhões de euros em exportações nos próximos períodos. Este movimento reafirma a capacidade tecnológica do país em competir no mercado internacional de IA.","link":"http://dinheirovivo.dn.pt/economia/aps-a-queda-da-unbabel-a-ia-nacional-resiste-e-prepara-150-milhes-em-exportaes","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ZAP Notícias","pais":"Portugal","titulo":"Consumidores começam a ver como a IA muda a economia: no bolso","resumo":"A integração da Inteligência Artificial no cotidiano já começa a apresentar impactos visíveis na economia doméstica dos cidadãos. A otimização de serviços e a automação de processos financeiros estão alterando a forma como o dinheiro é gerido. Este fenômeno demonstra que a IA deixou de ser teórica para influenciar diretamente o poder de compra.","link":"https://zap.aeiou.pt/ia-muda-economia-bolso-755090","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Tek Notícias","pais":"Portugal","titulo":"Tatuagens tecnológicas podem transformar a sua pele em um dispositivo médico","resumo":"Pesquisadores estão desenvolvendo tatuagens inteligentes que funcionam como sensores para monitoramento de saúde em tempo real. Essa tecnologia inovadora promete facilitar o rastreio de sinais vitais de forma não invasiva e contínua. O avanço representa um passo significativo para a medicina personalizada e o diagnóstico preventivo.","link":"https://tek.sapo.pt/noticias/ciencia/artigos/adepto-de-tatuagens-ou-nem-por-isso-estas-podem-transformar-a-sua-pele-em-tecnologia-medica/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Jornal de Negócios","pais":"Portugal","titulo":"Plataforma de visitas virtuais a museus e monumentos já está disponível","resumo":"Foi lançada uma nova plataforma digital que permite a exploração de museus e monumentos históricos de forma totalmente imersiva. A iniciativa visa democratizar o acesso à cultura, superando barreiras geográficas através de tecnologias de visualização. É uma solução importante para a digitalização do patrimônio histórico nacional.","link":"https://www.jornaldenegocios.pt/economia/detalhe/plataforma-de-visitas-virtuais-a-museus-e-monumentos-ja-esta-disponivel","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Tecnologia portuguesa vai rastrear sinais precoces de fragilidade em 1.650 habitantes do Tâmega e Sousa","resumo":"Um projeto tecnológico inovador será implementado na região de Tâmega e Sousa para identificar precocemente sinais de fragilidade em idosos. Através de monitoramento especializado, será possível intervir mais cedo, melhorando a qualidade de vida da população. Este é um exemplo prático de como a tecnologia social serve à saúde pública.","link":"https://sapo.pt/artigo/tecnologia-portuguesa-vai-rastrear-sinais-precoces-de-fragilidade-em-1-650-habitantes-do-tamega-e-sousa-6a5b4a3dd1e0d1e7a909563f","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Notícias de Coimbra","pais":"Portugal","titulo":"O futuro da informática: EPTOLIVA mostra a tecnologia que está a mudar o ensino","resumo":"A EPTOLIVA está a implementar novas soluções tecnológicas que estão a transformar a experiência de aprendizagem e o ensino profissional. Estas ferramentas modernas preparam os estudantes para os desafios reais do mercado de trabalho atual. A instituição reafirma o seu papel como um laboratório de inovação educativa em Portugal.","link":"https://www.noticiasdecoimbra.pt/o-futuro-da-informatica-ja-se-constroi-eptoliva-mostra-a-tecnologia-que-esta-a-mudar-o-ensino/","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"Agenda Capital","pais":"Brazil","titulo":"Robot and technology enable first remote kidney tumor surgery in Brazil at a distance of 2,380 km","resumo":"A pioneering robotic surgery was performed in Brazil, connecting specialists to a patient thousands of miles away. The procedure marks a historic advancement for Brazilian medicine, demonstrating how connectivity and robotics can democratize access to complex treatments in remote regions.","link":"https://agendacapital.com.br/robo-e-tecnologia-viabilizam-primeira-cirurgia-remota-de-tumor-renal-no-brasil-a-2-380-km-de-distancia/","categoria":"HEALTH TECHNOLOGY","lang":"en"},{"fonte":"Portal Você Online","pais":"Brazil","titulo":"Manaus consolidates itself as the country's hub for technology and Artificial Intelligence","resumo":"The city of Manaus is reaffirming its strategic role in the national innovation ecosystem by establishing itself as a hub for Artificial Intelligence development. The growth is attracting investment and encouraging local skill development, positioning the region as a leader in advanced technological solutions.","link":"https://portalvoce.com/manaus-se-consolida-como-polo-de-tecnologia-e-inteligencia-artificial-no-pais/","categoria":"INNOVATION","lang":"en"},{"fonte":"InsideEVs Brasil","pais":"Brazil","titulo":"Horse creates unprecedented technology that eliminates gasoline in EREV engines","resumo":"The company Horse has developed a revolutionary technology that allows for the total elimination of gasoline usage in EREV engines. This innovation promises to transform the automotive market by offering a sustainable alternative that significantly increases efficiency and reduces dependence on fossil fuels in transportation.","link":"https://insideevs.uol.com.br/news/801802/horse-quer-revolucionar-erevs-tecnologia/","categoria":"AUTOMOTIVE TECHNOLOGY","lang":"en"},{"fonte":"Olá Jornal","pais":"Brazil","titulo":"Technology created in the interior of Rio Grande do Sul puts Brazil at the forefront of sports intelligence for amateur athletes","resumo":"An innovative technological solution developed in the interior of Rio Grande do Sul is revolutionizing sports performance tracking. The tool uses advanced data analysis to provide high-performance sports intelligence to amateur athletes, placing Brazil at the forefront of the sports technology sector.","link":"https://olajornal.com.br/tecnologia-criada-no-interior-do-rio-grande-do-sul-coloca-o-brasil-na-vanguarda-da-inteligencia-esportiva-para-atletas-amadores/","categoria":"SPORTS TECHNOLOGY","lang":"en"},{"fonte":"Época Negócios","pais":"Brazil","titulo":"In Rio, Nobel laureate in Economics minimizes impact of AI on job reduction: 'Few examples'","resumo":"During an event in Rio de Janeiro, a Nobel Prize winner in Economics presented a counterintuitive view on the future of the job market. According to the expert, fears of mass layoffs caused by Artificial Intelligence are overestimated, with few real examples of large-scale replacement.","link":"https://epocanegocios.globo.com/inteligencia-artificial/noticia/2026/07/no-rio-nobel-de-economia-minimiza-impacto-da-ia-na-reducao-de-empregos-poucos-exemplos.ghtml","categoria":"AI ECONOMY","lang":"en"},{"fonte":"Tribuna do Paraná","pais":"Brazil","titulo":"Technology created in Paraná may help save patients from lethal disease","resumo":"Researchers in Paraná have developed a promising new technology focused on treating a highly lethal medical condition. The scientific breakthrough offers renewed hope for patients who previously had limited therapeutic options, highlighting the high standard of national science in creating medical solutions.","link":"https://www.tribunapr.com.br/noticias/parana/tecnologia-criada-mapear-risco-sepse-parana/","categoria":"SCIENCE","lang":"en"},{"fonte":"RADAR DIGITAL BRASÍLIA","pais":"Brazil","titulo":"Solar energy opens new market for technology integrators in Brazil","resumo":"The solar energy sector is creating significant opportunities for technology integrators across the country. With the growing need for monitoring and energy efficiency, specialized companies are integrating hardware and software to optimize the generation and distribution of clean energy in homes and industries.","link":"https://radardigitalbrasilia.com.br/tecnologia/energia-solar-abre-novo-mercado-para-integradores-de-tecnologia-no-brasil/","categoria":"BUSINESS TECHNOLOGY","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Brazil to seek 'Olympic' title in humanoid robot soccer","resumo":"Brazil is preparing to compete in one of the most challenging areas of robotics: humanoid robot soccer. The initiative not only promotes academic research in engineering and artificial intelligence but also demonstrates the country's growing interest and competence in world-class robotics.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/07/18/chateado-com-a-selecao-brasil-vai-buscar-titulo-olimpico-no-futebol-de-robos-humanoides.ghtml","categoria":"TRENDING TOPICS","lang":"en"},{"fonte":"yourweather.co.uk","pais":"England","titulo":"Why Wi-Fi on planes and trains has always been poor — and how new technology could fix it","resumo":"Internet connections on public transport often suffer from instability and low speeds due to infrastructure limitations. New technology is being developed to optimize signal reception and ensure a seamless browsing experience for passengers. This innovation promises to transform connectivity access on long-distance travel.","link":"https://www.yourweather.co.uk/news/leisure/why-wi-fi-on-planes-and-trains-has-always-been-so-bad-and-how-a-new-technology-could-fix-it.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Daily Echo","pais":"England","titulo":"Real-time facial recognition technology to be deployed in Eastleigh","resumo":"The town of Eastleigh is preparing to implement real-time facial recognition systems, aiming to strengthen public safety and urban monitoring. The measure raises important debates about the balance between citizen protection and individual privacy. Experts are monitoring the effectiveness and ethical implications of this new surveillance strategy.","link":"https://www.dailyecho.co.uk/news/26285269.facial-recognition-technology-deployed-eastleigh/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"UK tech advocates alarmed by Burnham's plan to scrap department","resumo":"The political proposal to eliminate the department focused on technology in the UK has sparked significant concerns among industry leaders. Experts warn that disbanding a dedicated body could hinder innovation, economic competitiveness, and the country's strategic development. The debate reflects the tension between public policy and the rapid growth of the technology industry.","link":"https://www.theguardian.com/politics/2026/jul/18/burnham-plan-to-scrap-technology-department-triggers-backlash","categoria":"BUSINESS","lang":"en"},{"fonte":"Diario de Santiago","pais":"Spain","titulo":"Santiago hosts the XXVII National Meeting of Mathematics Students with experts in AI, science communication, and science","resumo":"The event in Santiago brings together students and renowned experts to discuss advances in applied mathematics. The program highlights the impact of Artificial Intelligence and the importance of scientific outreach in the current academic landscape. The meeting aims to foster new connections between academia and technological innovation.","link":"https://www.diariodesantiago.es/santiago/santiago-acoge-el-xxvii-encuentro-nacional-de-estudiantes-de-matematicas-con-expertos-en-ia-divulgacion-y-ciencia/","categoria":"SCIENCE","lang":"en"},{"fonte":"OkDiario","pais":"Spain","titulo":"The Chrysalis project is now a reality: a 50 km spacecraft to take us to another solar system","resumo":"The Chrysalis project presents a daring concept for space exploration with a structure of monumental proportions. Developed to overcome interplanetary distances, the project promises to revolutionize our ability to reach other systems. This milestone represents a significant leap in aerospace engineering and the future of humanity.","link":"https://okdiario.com/ciencia/proyecto-chrysalis-realidad-nave-50-km-llevarnos-otro-sistema-solar-18955756","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ABC","pais":"Spain","titulo":"Seville brings together more than 500 physics experts, the science that 'is behind the technology we use'","resumo":"Seville has become a global hub for renowned physicists, highlighting the importance of fundamental science in modern life. The congress reinforces how physical theories underpin all contemporary digital and infrastructure technology. The debate focuses on bridging scientific knowledge with current technological challenges.","link":"https://www.abc.es/sevilla/ciudad/sevilla-reune-500-expertos-fisica-ciencia-detras-20260719193316-nts_amp.html","categoria":"SCIENCE","lang":"en"},{"fonte":"La Vanguardia","pais":"Spain","titulo":"ANCO, from typewriter to AI: '45 years in technology teach you one thing: everything changes, but the important thing remains the same'","resumo":"The company ANCO celebrates its 45-year journey, reflecting on the drastic technological transition that occurred from the use of typewriters to the AI era. The account offers a valuable perspective on the adaptability required to survive in the technology market. The essence of service and quality remains the central pillar.","link":"https://www.lavanguardia.com/empresas-de-vanguardia/historias-de-exito/20260719/11493247/anco-maquina-escribir-ia-45-anos-tecnologia-ensenan-cosa-cambia-importante-sigue-siendo.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"farodevigo.es","pais":"Spain","titulo":"Galicia increases R&D spending on technology by 7.5%, reaching nearly 347 million","resumo":"The Galician government has announced a significant increase in investment for research, development, and technology. With approximately 347 million euros, the goal is to boost regional competitiveness in the tech sector. This measure aims to strengthen industrial innovation and the creation of high-impact local solutions.","link":"https://www.farodevigo.es/economia/2026/07/19/galicia-eleva-7-5-gasto-i-d-tecnologia-2023-2024-132559346.html","categoria":"BUSINESS","lang":"en"},{"fonte":"Yahoo en Español Vida y Estilo","pais":"Spain","titulo":"8 electric sedans arriving with mind-blowing technology that promise to change the future of the automobile","resumo":"A new generation of electric vehicles is about to hit the market, bringing cutting-edge technological innovations in range and connectivity. These models not only promise greater efficiency but are also redefining the driving experience. The automotive industry is advancing rapidly toward a sustainable and fully digital future.","link":"https://es-us.vida-estilo.yahoo.com/8-berlinas-el%C3%A9ctricas-llegan-tecnolog%C3%ADa-020005363.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Xataka","pais":"Spain","titulo":"Science has revealed how the sauna 'hacks' the brain: it reduces the future risk of developing Alzheimer's by 65%","resumo":"Recent scientific research points to a surprising benefit of regular sauna use for neurological health. The habit acts as a preventative measure, drastically reducing the incidence of degenerative diseases like Alzheimer's. The discovery opens doors to new non-invasive treatments focused on longevity and brain protection.","link":"https://www.xataka.com/medicina-y-salud/ciencia-revela-como-sauna-hackea-cerebro-apunta-a-que-reduce-65-riesgo-alzheimer","categoria":"SCIENCE","lang":"en"},{"fonte":"farodevigo.es","pais":"Spain","titulo":"Your stool for science: Galicia Sur requests citizen collaboration to create the first microbiota observatory","resumo":"The Galicia Sur research institute has launched an innovative project seeking public participation to map the local microbiota. The data collection will serve to create the first observatory specialized in the area. This scientific initiative is fundamental for better understanding the impact of the intestinal ecosystem on public health.","link":"https://www.farodevigo.es/gran-vigo/2026/07/18/heces-ciencia-galicia-sur-pide-132578105.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Börse Express","pais":"Germany","titulo":"Microsoft's EBO technology: fiber optic installation reduced to one hour","resumo":"Microsoft has developed a new technological approach to drastically speed up the deployment of network infrastructure. With the EBO method, the time required for fiber optic installation falls to just one hour, promising to revolutionize digital connectivity in Germany and optimize operational costs for broadband expansion.","link":"https://www.boerse-express.com/news/articles/microsoft-ebo-technologie-glasfaser-installation-sinkt-auf-eine-stunde-929741","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"PZ-news","pais":"Germany","titulo":"What the new mandatory car camera rule means for us","resumo":"The introduction of new regulations making the installation of cameras in vehicles mandatory aims to improve road safety in Germany. This measure reflects a growing trend in automotive technological monitoring, impacting both driver privacy and the development of new driver-assistance systems.","link":"https://www.pz-news.de/wirtschaft/wirtschaft-weltweit_artikel,-Was-die-neue-Kamera-Pflicht-im-Auto-fuer-uns-bedeutet-_arid,2360669.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Pplware","pais":"Germany","titulo":"'Technology is not mature': Lamborghini delays the arrival of its electric car again","resumo":"Lamborghini has decided to postpone the launch of its first fully electric model, citing a lack of current technological maturity. The decision highlights the challenges faced by luxury car manufacturers in the transition to full electrification without compromising performance and the brand's identity.","link":"https://pplware.sapo.pt/motores/tecnologia-nao-e-madura-lamborghini-adia-outra-vez-a-chegada-do-seu-eletrico/","categoria":"BUSINESS","lang":"en"},{"fonte":"Vietnam.vn","pais":"Japan","titulo":"Citizen AQ4090-08A: A combination of handcrafted Washi paper and ultra-precision Eco-Drive technology","resumo":"The new Citizen AQ4090-08A stands out for integrating traditional Japanese Washi paper into its dial. Equipped with Eco-Drive technology, the watch ensures ultra-precision powered by sunlight. This fusion perfectly balances classic cultural aesthetics with the cutting-edge technical innovation of Japanese watchmaking.","link":"https://www.vietnam.vn/pt/citizen-aq4090-08a-su-ket-hop-giua-giay-washi-thu-cong-va-cong-nghe-eco-drive-sieu-chinh-xac","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"KAB 熊本朝日放送","pais":"Japan","titulo":"Mist cooling technology: 0.1mm precision nozzles that don't get you wet","resumo":"Japan has developed advanced misting technology to combat extreme heat in cities. Using precision nozzles with an opening of just 0.1 millimeters, the system creates a mist that evaporates instantly in the air. This innovation effectively reduces the ambient temperature without getting people or surrounding surfaces wet.","link":"https://www.kab.co.jp/news/article/16739168","categoria":"SCIENCE","lang":"en"},{"fonte":"新浪网","pais":"China","titulo":"AI is evolving from an 'application tool' into a 'paradigm shift' that rebuilds the fundamental economic logic.","resumo":"Artificial intelligence is moving beyond being just an auxiliary resource to becoming the central engine of global economic transformations. This technological leap redefines productive infrastructure and demands new strategic approaches for industrial development and technological innovation in China.","link":"https://k.sina.com.cn/article_5952915705_162d248f906703e3ty.html?from=tech","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"新浪财经","pais":"China","titulo":"Shanghai begins construction of low-altitude eVTOL equipment clusters, creating eight typical application scenarios.","resumo":"Shanghai is accelerating the development of the low-altitude economy by investing in infrastructure for electric vertical take-off and landing (eVTOL) vehicles. By implementing eight practical scenarios, the city seeks to lead the country in urban air transportation and logistics innovation.","link":"https://finance.sina.cn/stock/jdts/2026-07-19/detail-iniiimti0300100.d.html?vt=4&wm=1224?pagetag&cid=76993&node_id=76993","categoria":"INNOVATION","lang":"en"},{"fonte":"新浪网","pais":"China","titulo":"Intelligent agents drive the token economy: daily token call volume in China grows over a thousandfold.","resumo":"The emergence of intelligent agents has triggered an explosion in the use of language models and token ecosystems in the Chinese market. This exponential growth reflects the rapid integration of AI into digital workflows and the high demand for advanced automated solutions.","link":"https://k.sina.com.cn/article_2258727970_m86a1742203302gxb4.html?from=tech","categoria":"DIGITAL ECONOMY","lang":"en"},{"fonte":"The Times of India","pais":"China","titulo":"Chinese President Xi Jinping sends a strong message to American technology companies regarding AI.","resumo":"In a strategic statement, the Chinese government reaffirmed its commitment to the development of artificial intelligence within a framework of technological sovereignty. The message underscores China's intention to compete globally while establishing its own regulatory and innovation guidelines.","link":"https://timesofindia.indiatimes.com/technology/tech-news/chinese-president-xi-jinping-sends-a-strong-message-to-american-technology-companies-on-ai-says-china-is-ready-to/articleshow/132489964.cms","categoria":"TECHNOLOGY POLICY","lang":"en"},{"fonte":"新华网","pais":"China","titulo":"Tactile technology empowers embodied intelligence: Qianjue Robot's full-stack tech solutions shine at WAIC 2026.","resumo":"Advanced robotics has taken a significant step forward with the presentation of tactile solutions that provide greater precision and physical interaction to intelligent machines. The display at the WAIC conference highlights Chinese leadership in integrating hardware and sensory sensors for the future of autonomous robots.","link":"http://www.news.cn/tech/20260719/971094583dbc40f9a0864c3270c18f65/c.html","categoria":"ROBOTICS","lang":"en"},{"fonte":"中国经济网","pais":"China","titulo":"Zhou Bowen's keynote speech at WAIC: hailing AI's 'moment of scientific metacognition' and launching the 'Shusheng-Duanyan' platform.","resumo":"The announcement of the new Shusheng-Duanyan AI platform marks a breakthrough in the logical and cognitive reasoning capabilities of Chinese intelligent machines. This development proposes a new frontier for computer-assisted scientific understanding and complex data processing.","link":"http://www.ce.cn/xwzx/gnsz/gdxw/202607/t20260719_3094796.shtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Vero Notícias","pais":"China","titulo":"Chinese AI model challenges US tech giants.","resumo":"The new generation of Chinese language models is demonstrating competitive capabilities that challenge US hegemony in the sector. With advances in efficiency and processing, local firms are drawing global attention and closing the technological gap with Silicon Valley leaders.","link":"https://veronoticias.com/economia/modelo-chines-de-ia-desafia-gigantes-da-tecnologia-dos-eua/","categoria":"BUSINESS","lang":"en"},{"fonte":"Estadão","pais":"China","titulo":"New Chinese AI model surprises US tech industry, rivaling Claude and ChatGPT.","resumo":"The tech industry has been impacted by the emergence of a Chinese AI model that matches the performance of global benchmarks like Claude and ChatGPT. This evolution signals an unprecedented acceleration in China's capacity to create highly effective and competitive natural language systems.","link":"https://www.estadao.com.br/em-alta/economia/negocios/kimi-ia-china-tecnologia-eua-rivaliza-claude-chatgpt/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Myanmar International TV","pais":"India","titulo":"India and Estonia hold talks to boost trade and technology cooperation","resumo":"India and Estonia have established a strategic dialogue focused on strengthening economic ties and technological collaboration. The partnership aims to explore synergies between both nations' innovation sectors, promoting a knowledge exchange that could accelerate digital transformation and open new doors for Indian companies in the European market.","link":"https://www.myanmaritv.com/news/india-estonia-hold-talks-boost-trade-and-technology-cooperation","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Moneycontrol.com","pais":"India","titulo":"Barriers that once seemed insurmountable are falling: Zoho's Sridhar Vembu on India's technology growth","resumo":"Zoho CEO Sridhar Vembu highlights India's remarkable technological progress in overcoming historical challenges that limited the country's development. The executive emphasizes how local resilience and innovation are transforming the national landscape, positioning India as a competitive global player capable of creating high-impact technological solutions.","link":"https://www.moneycontrol.com/technology/barriers-that-once-seemed-insurmountable-are-falling-zoho-s-sridhar-vembu-on-india-s-technology-growth-article-13977657.html","categoria":"BUSINESS","lang":"en"},{"fonte":"PIB","pais":"India","titulo":"TDB-DST's early recognition of Skyroot's technological excellence via the 2022 National Technology Startup Award is validated","resumo":"Skyroot Aerospace's continued success validates the TDB-DST's decision to award the company in 2022 for its technological excellence. This recognition highlights the crucial role of government support in strengthening India's private space sector, proving that strategic investments in high-tech startups are fundamental to the country's aerospace advancement.","link":"https://www.pib.gov.in/PressReleasePage.aspx?PRID=2286239","categoria":"SCIENCE","lang":"en"},{"fonte":"Swarajya","pais":"India","titulo":"White Rabbit Technology powers India's push for secure and uniform time synchronization nationwide","resumo":"The implementation of White Rabbit technology represents a significant advance for India's critical infrastructure. By ensuring extremely precise and secure time synchronization on a national scale, the country increases the efficiency of its communications networks, power systems, and financial operations while maintaining technological sovereignty.","link":"https://swarajyamag.com/amp/story/science%2Fwhite-rabbit-technology-powers-indias-push-for-secure-and-uniform-time-synchronisation-nationwide","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ScienceBlog.com","pais":"India","titulo":"In 1991, India's foreign exchange reserves fell so low that the government secretly airlifted 47 tonnes of gold abroad as collateral, and within a decade the economy became a software export giant","resumo":"The article provides an impressive retrospective on India's economic recovery, starting from a 1991 currency crisis to its global rise as a software powerhouse. This trajectory illustrates the resilience of the Indian economic model and how a strategic bet on the tech industry transformed the country into a global hub for digital service exports.","link":"https://scienceblog.com/d-in-1991-indias-foreign-exchange-reserves-had-fallen-so-low-the-government-secretly-airlifted-47-tonnes-of-gold-abroad-as-collateral-for-an-emergency-loan-and-within-a-decade-the-same-economy-would/","categoria":"BUSINESS","lang":"en"},{"fonte":"The Arunachal Times","pais":"India","titulo":"Arunachal Science League to become annual calendar event","resumo":"The decision to make the Arunachal Science League an annual event aims to foster interest in science and technology disciplines in India's northeast region. The initiative seeks to engage students and young researchers, cultivating a solid foundation of scientific talent that will contribute to the nation's long-term technical and academic development.","link":"https://arunachaltimes.in/index.php/2026/07/19/arunachal-science-league-to-become-annual-calendar-event/","categoria":"SCIENCE","lang":"en"},{"fonte":"The Hindu","pais":"India","titulo":"Amit Shah inspects indigenous border security technology in West Bengal","resumo":"Minister Amit Shah conducted an inspection focused on the use of locally developed surveillance technologies for Indian border security. The initiative underscores the government's commitment to reducing foreign dependence and strengthening national defense through homegrown innovation, integrating cutting-edge equipment to protect the country's strategic territorial areas.","link":"https://www.thehindu.com/news/national/amit-shah-inspects-indigenous-border-security-technology-in-west-bengal/article71238297.ece/amp/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Al Jazeera","pais":"India","titulo":"India reaches milestone with launch of first private sector orbital rocket","resumo":"India celebrated a historic breakthrough with the successful launch of its first privately developed orbital rocket. This milestone cements the role of space startups in the Indian ecosystem, opening new commercial opportunities and demonstrating the country's technological capability to conduct orbital missions independently and competitively in the global space market.","link":"https://www.aljazeera.com/news/2026/7/18/india-achieves-milestone-with-launch-of-first-private-sector-orbital-rocket","categoria":"LAUNCH","lang":"en"},{"fonte":"dnoticias.pt","pais":"Portugal","titulo":"New technology allows monitoring of forest humidity in the Iberian Peninsula to prevent fires","resumo":"A new technological solution has been developed to monitor moisture levels in the forests of the Iberian Peninsula. The main objective is to help prevent rural wildfires using precise data. This innovation promises to increase the safety of green spaces in Portugal and Spain.","link":"https://www.dnoticias.pt/app/2026/7/19/499629-nova-tecnologia-permite-medir-humidade-florestal-na-peninsula-iberica-para-prevenir-incendios/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"Geopolitical conflicts fuel new wave of cyber espionage","resumo":"The landscape of global geopolitical tensions has fueled the growth of cyber espionage activities. Experts warn that companies and critical infrastructure face increasingly sophisticated risks. Digital security has become a strategic priority in the face of this escalation of coordinated attacks.","link":"https://pplware.sapo.pt/tag/conflitos/","categoria":"DIGITAL SECURITY","lang":"en"},{"fonte":"Dinheiro Vivo","pais":"Portugal","titulo":"After Unbabel's decline, national AI stands firm and prepares for 150 million in exports","resumo":"Despite the challenges faced by Unbabel, the Artificial Intelligence ecosystem in Portugal demonstrates resilience and maturity. The sector is projected to generate 150 million euros in exports in the coming periods. This move reaffirms the country's technological capability to compete in the international AI market.","link":"http://dinheirovivo.dn.pt/economia/aps-a-queda-da-unbabel-a-ia-nacional-resiste-e-prepara-150-milhes-em-exportaes","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ZAP Notícias","pais":"Portugal","titulo":"Consumers begin to see how AI changes the economy: in their pockets","resumo":"The integration of Artificial Intelligence into daily life is starting to show visible impacts on citizens' household economies. Service optimization and financial automation are changing how money is managed. This phenomenon demonstrates that AI is no longer just theoretical but directly influencing purchasing power.","link":"https://zap.aeiou.pt/ia-muda-economia-bolso-755090","categoria":"ECONOMY","lang":"en"},{"fonte":"Tek Notícias","pais":"Portugal","titulo":"Technological tattoos could turn your skin into a medical device","resumo":"Researchers are developing smart tattoos that function as sensors for real-time health monitoring. This innovative technology promises to facilitate non-invasive and continuous tracking of vital signs. The advance represents a significant step toward personalized medicine and preventive diagnostics.","link":"https://tek.sapo.pt/noticias/ciencia/artigos/adepto-de-tatuagens-ou-nem-por-isso-estas-podem-transformar-a-sua-pele-em-tecnologia-medica/","categoria":"SCIENCE","lang":"en"},{"fonte":"Jornal de Negócios","pais":"Portugal","titulo":"Virtual tour platform for museums and monuments is now live","resumo":"A new digital platform has been launched, allowing for fully immersive exploration of museums and historic monuments. The initiative aims to democratize access to culture by overcoming geographic barriers through visualization technologies. It represents a significant solution for the digitization of national historical heritage.","link":"https://www.jornaldenegocios.pt/economia/detalhe/plataforma-de-visitas-virtuais-a-museus-e-monumentos-ja-esta-disponivel","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Portuguese technology to track early signs of frailty in 1,650 residents of Tâmega e Sousa","resumo":"An innovative technological project will be implemented in the Tâmega e Sousa region to identify early signs of frailty in the elderly. Through specialized monitoring, earlier intervention will be possible, improving the quality of life for the population. This is a practical example of how social technology serves public health.","link":"https://sapo.pt/artigo/tecnologia-portuguesa-vai-rastrear-sinais-precoces-de-fragilidade-em-1-650-habitantes-do-tamega-e-sousa-6a5b4a3dd1e0d1e7a909563f","categoria":"SCIENCE","lang":"en"},{"fonte":"Notícias de Coimbra","pais":"Portugal","titulo":"The future of computing: EPTOLIVA showcases technology transforming education","resumo":"EPTOLIVA is implementing new technological solutions that are transforming the learning experience and professional training. These modern tools prepare students for the real-world challenges of the current job market. The institution reaffirms its role as a laboratory for educational innovation in Portugal.","link":"https://www.noticiasdecoimbra.pt/o-futuro-da-informatica-ja-se-constroi-eptoliva-mostra-a-tecnologia-que-esta-a-mudar-o-ensino/","categoria":"EDUCATION","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Utility de escape HTML simples para prevenir injections em propriedades sem tratamento
+  function esc(s) {
+    return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(item.link)}" target="_blank" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+</script>
+
+<script>
+// Analytics: contador de visitas (Abacus CountAPI - gratuito, sem conta)
+(function(){
+  try {
+    var page = location.pathname.split('/').pop().replace('.html','');
+    if (page && page.indexOf('Dashboard') === 0) {
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(page)).catch(function(){});
+    }
+  } catch(e){}
+})();
+</script>
+</body>
+</html>
