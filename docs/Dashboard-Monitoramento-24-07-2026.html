@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img" onerror="this.style.display='none'">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">24/07/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 style="margin: 0; font-size: 1.5rem; color: #fff;">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script>
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"A IA sabe mais sobre você do que parece: veja 4 perguntas para fazer ao ChatGPT e descobrir","resumo":"Este artigo explora como a inteligência artificial processa e retém dados sobre os usuários, destacando questões de privacidade. O conteúdo oferece quatro perguntas práticas para interagir com o ChatGPT e revelar o quanto a ferramenta compreende sobre o perfil do utilizador. A discussão é essencial para promover a literacia digital e o uso consciente da tecnologia no dia a dia.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/07/24/a-ia-sabe-mais-sobre-voce-do-que-parece-veja-4-perguntas-para-fazer-ao-chatgpt-e-descobrir.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Ex-presidente do Fed diz que IA pressiona inflação e pode impedir corte de juros","resumo":"A análise aponta como a rápida adoção da inteligência artificial pode influenciar a economia global e o cenário de inflação. Segundo o ex-presidente do Fed, os custos associados a essa inovação podem limitar a flexibilidade monetária dos bancos centrais. O impacto direto dessa dinâmica é o possível adiamento de cortes nas taxas de juros, afetando mercados financeiros.","link":"https://www1.folha.uol.com.br/mercado/2026/07/ex-presidente-do-fed-diz-que-ia-pressiona-inflacao-e-pode-impedir-corte-de-juros.shtml","categoria":"ECONOMIA DIGITAL","lang":"pt"},{"fonte":"AEPET","pais":"Brasil","titulo":"A nova guerra invisível: tecnologia, poder e soberania","resumo":"O texto aborda a crescente disputa geopolítica travada através de avanços tecnológicos, como semicondutores e inteligência artificial. Com foco na soberania nacional, o artigo analisa como potências mundiais utilizam a inovação como ferramenta estratégica de controle. É uma reflexão profunda sobre como a tecnologia dita as novas regras de poder no cenário global.","link":"https://aepet.org.br/artigo/a-nova-guerra-invisivel-tecnologia-poder-e-soberania/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Finsiders Brasil","pais":"Brasil","titulo":"B3 contrata Eduardo Neves, ex-Itaú Chile, como novo VP de Tecnologia","resumo":"A B3, bolsa de valores do Brasil, oficializou a contratação de Eduardo Neves para assumir a vice-presidência de Tecnologia. A movimentação estratégica visa fortalecer a infraestrutura digital e a inovação tecnológica da instituição perante os desafios do mercado financeiro. A liderança de Neves será fundamental para a modernização dos sistemas e serviços oferecidos pela bolsa.","link":"https://finsidersbrasil.com.br/gente-em-fintechs/b3-recruta-eduardo-neves-ex-itau-chile-para-comandar-tecnologia/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Graphic News","pais":"Brasil","titulo":"TECNOLOGIA: Países que proíbem redes sociais a crianças","resumo":"Este infográfico apresenta um panorama global sobre as crescentes restrições ao uso de redes sociais por menores de idade. A análise sintetiza como diferentes governos estão implementando políticas para proteger jovens dos impactos das plataformas digitais. O conteúdo é um alerta sobre a segurança online e a regulação da tecnologia em escala internacional.","link":"https://www.graphicnews.com/pt/pages/48250/tech-nations-banning-social-media-for-kids","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Embrapa","pais":"Brasil","titulo":"Tecnologia Social Sisteminha recebe Prêmio FORTEC de Inovação 2026","resumo":"A tecnologia social intitulada 'Sisteminha' foi reconhecida pelo Prêmio FORTEC de Inovação 2026, destacando seu impacto no desenvolvimento sustentável. Esse modelo promove soluções práticas e replicáveis para a segurança alimentar e inclusão produtiva no campo. O reconhecimento reforça a importância da inovação de base para o progresso socioeconômico do país.","link":"https://www.embrapa.br/web/alimentos-e-territorios/busca-de-noticias/-/noticia/146135226/tecnologia-social-sisteminha-recebe-premio-fortec-de-inovacao-2026","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Jornal da USP","pais":"Brasil","titulo":"Parque de Inovação e Tecnologia da USP recebe 12 novas startups para programa de incubação","resumo":"O Parque de Inovação e Tecnologia da USP deu início ao ciclo de incubação de 12 novas startups focadas em soluções disruptivas. O programa visa conectar o conhecimento acadêmico ao mercado, impulsionando a pesquisa científica aplicada e o empreendedorismo nacional. Esta iniciativa fortalece o ecossistema de inovação brasileiro ao acelerar ideias promissoras.","link":"https://jornal.usp.br/universidade/parque-de-inovacao-e-tecnologia-da-usp-recebe-12-novas-startups-para-programa-de-incubacao/","categoria":"STARTUPS","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Caminhos da inovação na saúde: o que a ciência está preparando para os pacientes","resumo":"O artigo detalha os avanços científicos mais recentes que prometem transformar o cuidado e o tratamento de diversas condições médicas. Entre as inovações, destacam-se terapias genéticas, diagnósticos precoces auxiliados por IA e medicina personalizada. Estas descobertas apontam para um futuro onde a tecnologia será o pilar central da longevidade e da qualidade de vida.","link":"https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-sudeste/huse-unirio/comunicacao/noticias/caminhos-da-inovacao-na-saude-o-que-a-ciencia-esta-preparando-para-os-pacientes-1","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Challenges","pais":"França","titulo":"Colesterol: quando a ciência abre caminho para novas soluções naturais","resumo":"Pesquisadores exploram novas abordagens científicas para o controle do colesterol através de métodos naturais. A descoberta promete oferecer alternativas eficazes aos tratamentos convencionais, reduzindo efeitos colaterais. O avanço representa um passo importante na medicina preventiva cardiovascular.","link":"https://www.challenges.fr/partenaires/le-cholesterol-quand-la-science-ouvre-la-voie-a-de-nouvelles-solutions-naturelles_644992","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Euronews.com","pais":"França","titulo":"Europa: maioria dos empregos de IA fora da tecnologia","resumo":"Um estudo recente revela que a implementação da Inteligência Artificial no mercado europeu está ocorrendo majoritariamente em setores tradicionais fora do nicho tecnológico. Essa tendência demonstra a integração profunda da automação em áreas operacionais da economia. O impacto reflete uma mudança significativa na estrutura de contratação e habilidades exigidas.","link":"https://pt.euronews.com/business/2026/07/24/europa-maioria-dos-empregos-de-ia-fora-da-tecnologia","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Yahoo Finance France","pais":"França","titulo":"Amkor Technology salta 16% com acordo de US$ 1,5 bilhão com a Nvidia","resumo":"As ações da Amkor dispararam após o anúncio de um contrato estratégico de grande escala com a gigante Nvidia. A parceria visa fortalecer a cadeia de suprimentos de semicondutores para impulsionar o avanço dos chips de IA. Este movimento consolida a posição da empresa no mercado global de tecnologia.","link":"https://fr.finance.yahoo.com/actualites/amkor-technologie-bondit-16-gr%C3%A2ce-215534583.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"MobiHealthNews","pais":"França","titulo":"Science Corp lança implante PRIMA de restauração da visão na Europa","resumo":"A Science Corp iniciou a comercialização do implante PRIMA na Europa, uma tecnologia inovadora desenhada para restaurar a visão em pacientes com degeneração macular. O dispositivo interage diretamente com o sistema neural, oferecendo uma nova perspectiva para tratamentos oftalmológicos. A implementação marca um marco histórico na convergência entre medicina e engenharia biônica.","link":"https://www.mobihealthnews.com/news/science-corp-launches-vision-restoring-prima-implant-europe","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Construction Enquirer","pais":"Inglaterra","titulo":"Crown Estate avança com polo de ciência de £2 bilhões em Cambridge","resumo":"O Crown Estate deu um passo importante no desenvolvimento de um centro tecnológico e científico de grande escala em Cambridge. O investimento bilionário visa fortalecer a infraestrutura de pesquisa do Reino Unido, atraindo empresas inovadoras e consolidando a região como um polo de referência global para descobertas científicas e avanço tecnológico.","link":"https://www.constructionenquirer.com/2026/07/24/crown-estate-pushes-ahead-with-2bn-cambridge-science-hub/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Retail Technology Innovation Hub","pais":"Inglaterra","titulo":"Varejista de tecnologia seminova CeX combate crimes no varejo com plataforma Auror no Reino Unido","resumo":"A rede de varejo CeX está implementando a plataforma Auror em suas lojas britânicas para monitorar e prevenir atividades criminosas. A tecnologia auxilia a equipe na gestão de incidentes em tempo real, aumentando a segurança operacional e protegendo o inventário de tecnologia seminova contra furtos e fraudes recorrentes no setor.","link":"https://retailtechinnovationhub.com/home/2026/7/23/pre-owned-technology-retailer-cex-tackles-retail-crime-with-roll-out-of-auror-platform-in-uk-stores","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Retail Technology Innovation Hub","pais":"Inglaterra","titulo":"Inovação tecnológica da semana: Circ e Lenzing entregam solução de reciclagem para lojas H&M","resumo":"Uma nova parceria tecnológica entre a Circ e a Lenzing introduziu um método avançado de reciclagem têxtil aplicado nas lojas da H&M. A solução promete transformar o setor de moda ao otimizar a reutilização de materiais, atendendo à crescente demanda por práticas sustentáveis e economia circular através da inovação aplicada ao varejo.","link":"https://retailtechinnovationhub.com/home/2026/7/23/retail-technology-innovation-of-the-week-circ-and-lenzing-deliver-recycling-solution-to-hm-store-shelves","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Infodefensa","pais":"Inglaterra","titulo":"Hydra Space colabora com duas empresas britânicas na validação de tecnologia em órbita","resumo":"A empresa Hydra Space firmou uma parceria estratégica com companhias britânicas para realizar testes e validação de tecnologias diretamente no ambiente espacial. Este projeto visa impulsionar a infraestrutura de satélites e sistemas aeroespaciais, consolidando a colaboração internacional no desenvolvimento de soluções críticas para exploração e comunicações espaciais modernas.","link":"https://www.infodefensa.com/texto-diario/mostrar/5963856/hydra-space-trabaja-companias-britanicas-validacion-tecnologia-orbita","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Today's Conveyancer","pais":"Inglaterra","titulo":"Geovation busca a próxima turma de inovadores para sua incubadora de tecnologia","resumo":"A incubadora Geovation abriu processo de seleção para novos talentos e startups focadas em tecnologia disruptiva. O programa oferece suporte estratégico, mentoria e infraestrutura para empreendedores que buscam desenvolver soluções escaláveis, visando transformar o mercado de dados e tecnologia aplicada no ecossistema de inovação britânico.","link":"https://todaysconveyancer.co.uk/geovation-invites-next-cohort-of-innovators-to-technology-incubator/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Daily Echo","pais":"Inglaterra","titulo":"Empresa de tecnologia de rápido crescimento em Southampton expande para nova sede","resumo":"Uma empresa tecnológica de Southampton anunciou sua mudança para uma sede maior, refletindo um período de expansão acentuada em seus negócios. O investimento em novas instalações visa aumentar a capacidade produtiva e atrair talentos qualificados, fortalecendo a presença da marca no competitivo mercado de tecnologia do sul da Inglaterra.","link":"https://www.dailyecho.co.uk/news/26402934.labl-moves-headquarters-southampton-science-park/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"RailAdvent","pais":"Inglaterra","titulo":"Indústria ferroviária publica estratégia de tecnologia de vídeo para aumentar a segurança","resumo":"O setor ferroviário britânico estabeleceu novas diretrizes para a implementação de sistemas avançados de monitoramento por vídeo. A estratégia visa integrar inteligência e vigilância tecnológica para prevenir acidentes, aumentar a segurança dos passageiros e otimizar a gestão operacional em toda a rede nacional de transportes sobre trilhos.","link":"https://www.railadvent.co.uk/2026/07/rail-industry-publishes-video-technology-strategy-to-enhance-safety.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Lancaster University","pais":"Inglaterra","titulo":"Empresa derivada de Lancaster ganha prestigioso prêmio de tecnologia emergente","resumo":"Uma empresa spin-out da Universidade de Lancaster foi reconhecida por seu trabalho pioneiro no setor de tecnologias emergentes. O prêmio destaca o impacto significativo da organização no desenvolvimento de soluções científicas de ponta, reafirmando o papel das instituições acadêmicas britânicas na criação de inovações com alto potencial de mercado.","link":"https://www.lancaster.ac.uk/sci-tech/about-us/news/lancaster-spin-out-scoops-prestigious-emerging-technology-award","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"COPE","pais":"Espanha","titulo":"San Sadurniño investe 290 mil euros na modernização de 666 pontos de luz com tecnologia LED","resumo":"O município de San Sadurniño iniciou um projeto de renovação urbana com foco na eficiência energética. A substituição da iluminação antiga por tecnologia LED visa reduzir o consumo elétrico e melhorar a qualidade da iluminação pública, alinhando a cidade às políticas sustentáveis atuais.","link":"https://www.cope.es/emisoras/galicia/a-coruna-provincia/ferrol/noticias/san-sadurnino-adjudica-290-000-euros-renovacion-666-puntos-luz-tecnologia-led-20260724_3409900.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Diario Montañés","pais":"Espanha","titulo":"Startup Airway Shield expande venda de tecnologia hospitalar para Espanha e Portugal","resumo":"A startup de Cantábria, Airway Shield, consolidou sua presença no mercado ibérico ao fornecer tecnologia hospitalar inovadora. O sistema, voltado para aumentar a segurança em procedimentos médicos, já está sendo adotado por diversas instituições de saúde, demonstrando um impacto significativo na precisão clínica.","link":"https://www.eldiariomontanes.es/economia/empresas/startup-cantabra-airway-shield-vende-tecnologia-hospitales-20260724070537-nt.html","categoria":"SAÚDE TECNOLÓGICA","lang":"pt"},{"fonte":"GYM FACTORY Revista","pais":"Espanha","titulo":"Do laboratório à academia: a tecnologia que está redefinindo os equipamentos esportivos","resumo":"A inovação tecnológica aplicada ao esporte evoluiu drasticamente, integrando sensores e materiais avançados em equipamentos convencionais. Essa transformação permite um monitoramento de desempenho mais preciso e personalizado, elevando a experiência do usuário e otimizando os resultados de treinos em academias modernas.","link":"https://gymfactory.net/2026/07/24/del-laboratorio-al-gimnasio-la-tecnologia-que-esta-redefiniendo-el-equipamiento-deportivo/","categoria":"ESPORTES TECNOLOGIA","lang":"pt"},{"fonte":"Motor16","pais":"Espanha","titulo":"BMW iX3 40: o SUV elétrico que aproxima a tecnologia Neue Klasse do grande público","resumo":"A BMW revelou o novo SUV elétrico iX3 40, projetado para democratizar os avanços da plataforma Neue Klasse. Com foco em sustentabilidade e conectividade, o veículo marca uma transição importante da marca alemã rumo à mobilidade eletrificada acessível, integrando tecnologias de ponta em um segmento popular.","link":"https://www.motor16.com/las-ultimas-noticias/bmw-ix3-suv-electrico/","categoria":"LANÇAMENTO AUTOMOTIVO","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"Impactos, água, areia e calor: por que a tecnologia agora ostenta superação de testes militares","resumo":"O mercado de dispositivos tecnológicos tem apostado na certificação de nível militar para garantir durabilidade extrema. Dispositivos que suportam condições ambientais severas, como calor intenso e umidade, tornaram-se o novo padrão de qualidade para consumidores que buscam resistência e confiabilidade em ambientes adversos.","link":"https://www.eldebate.com/tecnologia/20260724/golpes-agua-arena-calor-tecnologia-presume-ahora-superar-pruebas-militares_442755.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"Da ficção científica à realidade: como a literatura e o cinema previram uma IA capaz de agir por conta própria","resumo":"O rápido avanço da inteligência artificial autônoma traz à tona paralelos fascinantes com visões clássicas da cultura pop e literária. Especialistas analisam como essas previsões moldaram as expectativas éticas e o desenvolvimento técnico atual, destacando o desafio de controlar sistemas que possuem cada vez mais agência própria.","link":"https://www.eldebate.com/cultura/20260724/ciencia-ficcion-realidad-asi-anticipo-literatura-cine-ia-capaz-actuar-sola_442944.html","categoria":"TRENDING TOPICS","lang":"pt"},{"fonte":"El Español","pais":"Espanha","titulo":"La Rioja reorganiza seu ecossistema de ciência e tecnologia com estratégia de excelência","resumo":"A região de La Rioja anunciou uma nova estratégia estrutural focada em fortalecer seu ecossistema científico e tecnológico. O plano prioriza a atração de talentos qualificados e a busca pela excelência acadêmica e empresarial, visando posicionar a província como um polo regional de inovação e desenvolvimento econômico.","link":"https://www.elespanol.com/invertia/disruptores/autonomias/la-rioja/20260724/rioja-reordena-ecosistema-ciencia-tecnologia-estrategia-prioriza-excelencia-talento/1003744331428_0.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Plan de Recuperación, Transformación y Resiliencia","pais":"Espanha","titulo":"Economia e BEI financiarão Naturgy em 870 milhões de euros para modernizar redes elétricas na Espanha","resumo":"O governo espanhol e o Banco Europeu de Investimento fecharam um acordo bilionário para impulsionar a digitalização da infraestrutura da Naturgy. Este investimento é crucial para a transição energética nacional, garantindo redes mais inteligentes, estáveis e capacitadas para integrar fontes de energia renovável em larga escala.","link":"https://planderecuperacion.gob.es/noticias/economia-bei-financiar%C3%A1n-870-millones-naturgy-reforzar-redes-electricas-espana-fra-prtr","categoria":"NEGÓCIOS TECNOLOGIA","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Sistema de escoamento inédito descoberto no olho humano","resumo":"Cientistas identificaram uma via de drenagem microscópica anteriormente desconhecida no sistema ocular humano. Essa descoberta crucial promete revolucionar tratamentos para doenças oculares crônicas, como o glaucoma, ao oferecer novas formas de controlar a pressão intraocular através de intervenções médicas mais precisas e eficazes.","link":"https://www.wissenschaft.de/artikel/unerkanntes-abwassersystem-im-auge-entdeckt","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"kpmg.com","pais":"Alemanha","titulo":"Relatório tecnológico global 2026","resumo":"O relatório detalha as principais tendências tecnológicas que moldarão a economia digital global até 2026. O documento enfatiza o avanço acelerado da inteligência artificial generativa e da infraestrutura de computação quântica, destacando os impactos competitivos que as empresas alemãs enfrentarão ao adotar essas novas tecnologias disruptivas.","link":"https://kpmg.com/ie/en/insights/technology/global-tech-report-2026-technology-and-telecommunications.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"tagesschau.de","pais":"Alemanha","titulo":"Consequências econômicas das mudanças climáticas e eventos extremos","resumo":"Este estudo analisa o impacto financeiro severo que eventos climáticos extremos exercem sobre a infraestrutura e a produtividade industrial na Alemanha. O relatório sublinha a urgência de adaptações sistêmicas e investimentos em resiliência para mitigar perdas econômicas significativas decorrentes das instabilidades ambientais previstas para as próximas décadas.","link":"https://www.tagesschau.de/video/video-1619196.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"21财经","pais":"China","titulo":"Relatório semestral de Guangdong: crescimento recorde e a revolução da IA na competitividade industrial","resumo":"A província de Guangdong registrou seu maior crescimento semestral dos últimos três anos, impulsionada por uma forte integração de inteligência artificial na infraestrutura industrial. Esta mudança estratégica visa redefinir a produtividade local e consolidar a região como um polo global de inovação tecnológica de alta eficiência.","link":"https://m.21jingji.com/article/20260723/herald/0b0ecb1badc0ee6d9b0b4db31225cb52_zaker.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"新华网客户端","pais":"China","titulo":"Empresa chinesa de IA embarcada apresenta práticas de serviços públicos no palco internacional da APEC","resumo":"A startup de IA embarcada Ziyibianliang representou a China no fórum APEC, destacando soluções de tecnologia aplicada para melhorar a vida cotidiana dos cidadãos. O caso ressalta como a robótica inteligente e a automação podem ser integradas em serviços públicos para otimizar a eficiência social.","link":"https://app.xinhuanet.com/news/article.html?articleId=20260724bab5a4f643c249ce9cefaeefed033e3f","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"BBC","pais":"China","titulo":"Guerra tecnológica de IA entre EUA e China: Casa Branca acusa o modelo Kimi K3 da MoonshotAI de roubo de tecnologia","resumo":"Tensões geopolíticas escalam com acusações da Casa Branca alegando que o modelo Kimi K3 da startup chinesa MoonshotAI teria se apropriado indevidamente de tecnologias da Anthropic. O episódio intensifica a disputa global pelo domínio em inteligência artificial e reforça a vigilância sobre a propriedade intelectual.","link":"https://www.bbc.com/zhongwen/articles/c62vqpqdqjwo/simp","categoria":"GEOPOLÍTICA","lang":"pt"},{"fonte":"Bloomberg.com","pais":"China","titulo":"Menina de 6 anos morre após tratamento experimental de edição genética na China: Ciência","resumo":"Um incidente fatal envolvendo um tratamento experimental de edição genética em uma criança de seis anos reacendeu debates éticos urgentes sobre o uso de tecnologias de CRISPR na China. A comunidade científica global monitora o caso, questionando a segurança, a regulamentação clínica e os limites da biotecnologia avançada.","link":"https://www.bloomberg.com/news/articles/2026-07-24/patient-death-in-china-gene-editing-trial-draws-fire-science","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"东方财富","pais":"China","titulo":"Pequim: Governo incentiva a economia de tokens e aumenta apoio com subsídios de computação","resumo":"O governo de Pequim anunciou novas medidas para fomentar a economia baseada em tokens (palavras-chave de IA), visando fortalecer o ecossistema local de inteligência artificial. O plano inclui subsídios e maior oferta de poder computacional para startups e empresas de tecnologia instaladas na capital.","link":"https://wap.eastmoney.com/a/202607233818963524.html","categoria":"POLÍTICA PÚBLICA","lang":"pt"},{"fonte":"SECIHTI","pais":"China","titulo":"México e China impulsionam projetos conjuntos em IA, robótica, eletromobilidade e semicondutores","resumo":"México e China fortaleceram laços estratégicos focados em parcerias tecnológicas de ponta, abrangendo robótica, semicondutores e veículos elétricos. Essa cooperação bilateral busca promover a transferência de conhecimento técnico e acelerar a inovação industrial em setores cruciais para a economia global futura.","link":"https://secihti.mx/sala-de-prensa/mexico-y-china-impulsan-proyectos-de-inteligencia-artificial-robotica-electromovilidad-y-semiconductores-rosaura-ruiz/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Lenovo StoryHub","pais":"China","titulo":"Lenovo entrega com sucesso tecnologia para a maior Copa do Mundo da FIFA de 2026","resumo":"A Lenovo desempenhou um papel fundamental como parceira tecnológica na Copa do Mundo FIFA 2026, fornecendo infraestrutura de TI de alta performance para o maior evento da história do futebol. A empresa reforça sua marca global através da excelência em suporte tecnológico e processamento de dados em larga escala.","link":"https://news.lenovo.com/pressroom/press-releases/lenovo-successfully-delivers-technology-at-biggest-ever-fifa-world-cup-2026/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Brasil de Fato","pais":"China","titulo":"Do combate à desertificação à economia verde: China quer 26% de cobertura florestal até 2030","resumo":"A China estabeleceu metas ambiciosas de sustentabilidade, visando atingir 26% de cobertura florestal até 2030 para combater a desertificação e promover a economia verde. O projeto utiliza tecnologia de monitoramento ambiental e reflorestamento massivo para mitigar os impactos das mudanças climáticas no território chinês.","link":"https://www.brasildefato.com.br/2026/07/23/do-combate-a-desertificacao-a-economia-verde-china-apresenta-plano-para-ter-26-de-cobertura-florestal-ate-2030/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"intlbm","pais":"Índia","titulo":"Anjali Precious Metals lança Anjali Digital Metals para oferecer tecnologia moderna","resumo":"A Anjali Precious Metals expande seu portfólio com o lançamento da plataforma Anjali Digital Metals. A iniciativa visa integrar tecnologia avançada ao setor de metais preciosos, modernizando o acesso e a experiência do consumidor indiano no mercado financeiro e de ativos digitais.","link":"https://intlbm.com/2026/07/24/anjali-precious-metals-launches-anjali-digital-metals-to-offer-modern-technology/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Bisinfotech","pais":"Índia","titulo":"Indústria de autopeças da Índia expande para setores de tecnologia","resumo":"O setor de autopeças na Índia está passando por uma transformação estratégica ao migrar para novas áreas tecnológicas. Esta mudança visa atender às demandas globais por inovação automotiva, impulsionando a competitividade industrial do país e a modernização da cadeia de suprimentos local.","link":"https://www.bisinfotech.com/india-auto-parts-sector-poised-for-strong-growth-on-semiconductor-and-defence-push/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"aamaadmiparty.org","pais":"Índia","titulo":"Arvind Kejriwal inaugurará laboratório de ciência em realidade virtual em Carmona","resumo":"O político Arvind Kejriwal inaugurará um novo laboratório de ciência focado em Realidade Virtual (VR) em Carmona. O projeto busca democratizar o aprendizado científico, oferecendo experiências imersivas para estudantes locais e incentivando a adoção de tecnologias educacionais de ponta na região.","link":"https://aamaadmiparty.org/event/arvind-kejriwal-to-inaugurate-vr-science-lab-in-carmona/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"CNBC TV18","pais":"Índia","titulo":"De bicicletas a unicórnios: como a economia espacial da Índia decolou","resumo":"A indústria espacial indiana apresenta um crescimento notável, evoluindo de iniciativas básicas para um ecossistema robusto de startups de tecnologia espacial. Este avanço posiciona a Índia como um player estratégico no mercado global, demonstrando a inovação tecnológica no setor aeroespacial.","link":"https://www.cnbctv18.com/technology/indian-space-economy-private-sector-startups-unicorns-skyroot-aerospace-isro-global-industry-view-19952281.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Northeast Today","pais":"Índia","titulo":"‘AI Maa’ para unir tecnologia e humanidade, diz presidente da TSMCH, Malay Pit","resumo":"O presidente da TSMCH, Malay Pit, introduziu o conceito de 'AI Maa', uma iniciativa focada em alinhar o desenvolvimento de Inteligência Artificial com valores humanos. O objetivo é criar ferramentas tecnológicas que sejam éticas, acessíveis e capazes de resolver problemas sociais complexos.","link":"https://northeasttoday.in/northeast/ai-maa-to-bridge-technology-and-humanity-says-tsmch-president-malay-pit/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Water Magazine","pais":"Índia","titulo":"Transformando águas residuais em combustível verde - Neel Shah discute tecnologia de gaseificação hidrotérmica","resumo":"Neel Shah apresenta a tecnologia de gaseificação hidrotérmica como uma solução inovadora para converter resíduos líquidos em energia limpa. Este método promete revolucionar a gestão de águas residuais na Índia, oferecendo uma alternativa sustentável para a produção de combustível renovável.","link":"https://www.watermagazine.co.uk/2026/07/24/turning-wastewater-into-green-fuel-neel-shah-discusses-hydrothermal-gasification-technology/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"News On AIR","pais":"Índia","titulo":"CM de Andhra Pradesh pede um policiamento voltado para a tecnologia e amigável ao cidadão","resumo":"O Ministro-Chefe de Andhra Pradesh defende a implementação de tecnologias modernas para tornar a atuação policial mais eficiente e próxima da população. A proposta enfatiza o uso de ferramentas digitais para garantir maior transparência, agilidade no atendimento e segurança pública integrada.","link":"https://newsonair.gov.in/andhra-pradesh-cm-calls-for-technology-driven-people-friendly-policing/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"News On AIR","pais":"Índia","titulo":"Índia e Romênia assinam três acordos nas áreas de Ciência e Tecnologia, Educação e Esportes","resumo":"Índia e Romênia firmaram parcerias bilaterais para fomentar a colaboração em ciência e tecnologia, educação e esportes. Estes acordos visam fortalecer a cooperação estratégica entre as nações, promovendo o intercâmbio de conhecimentos científicos e inovações tecnológicas para benefício mútuo.","link":"https://newsonair.gov.in/india-and-romania-sign-three-agreements-in-the-fields-of-science-and-technology-education-and-sports/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Link To Leaders","pais":"Portugal","titulo":"ULisboa investe mais de 20 milhões em infraestruturas digitais para ciência e inovação","resumo":"A Universidade de Lisboa está a aplicar um investimento superior a 20 milhões de euros para modernizar as suas infraestruturas digitais. Este projeto visa impulsionar a capacidade de investigação científica e promover um ecossistema mais robusto de inovação tecnológica no país.","link":"https://linktoleaders.com/ulisboa-investe-mais-de-20-milhoes-em-infraestruturas-digitais-para-ciencia-e-inovacao/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Diario Montañés","pais":"Portugal","titulo":"A startup cántabra Airway Shield já vende a sua tecnologia em hospitais de Espanha e Portugal","resumo":"A startup Airway Shield expandiu a comercialização da sua tecnologia hospitalar para o mercado português. A solução, focada em segurança clínica, representa um avanço significativo na proteção de pacientes durante procedimentos médicos complexos em unidades de saúde.","link":"https://www.eldiariomontanes.es/economia/empresas/startup-cantabra-airway-shield-vende-tecnologia-hospitales-20260724070537-nt.html","categoria":"SAÚDE TECNOLÓGICA","lang":"pt"},{"fonte":"O Atual","pais":"Portugal","titulo":"IPBeja acolhe Conferência Internacional sobre Criação Digital em Artes, Media e Tecnologia","resumo":"O Instituto Politécnico de Beja organiza um evento internacional focado na convergência entre artes, meios de comunicação e tecnologia digital. O encontro reúne especialistas para debater como a criação artística está a ser transformada pelas novas ferramentas digitais e o seu impacto cultural.","link":"https://www.oatual.pt/noticias/ipbeja-recebe-conferencia-internacional-em-novembro","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Diário dos Açores","pais":"Portugal","titulo":"Santa Maria recebe especialistas internacionais para debater o futuro da economia espacial","resumo":"A ilha de Santa Maria torna-se palco de um debate crucial sobre o desenvolvimento da economia espacial em Portugal. Especialistas internacionais reúnem-se para analisar o potencial estratégico do território e as oportunidades de investimento que o setor aeroespacial oferece para a região.","link":"https://diariodosacores.pt/2026/07/23/santa-maria-recebe-especialistas-internacionais-para-debater-o-futuro-da-economia-espacial/","categoria":"CIÊNCIA ESPACIAL","lang":"pt"},{"fonte":"Expresso","pais":"Portugal","titulo":"Amparo desenvolve próteses na Maia que fazem a diferença em Gaza","resumo":"A empresa Amparo, sediada na Maia, tem vindo a desenvolver próteses inovadoras que estão a impactar positivamente vidas em zonas de conflito como Gaza. Este exemplo destaca como a engenharia portuguesa aplicada à saúde pode oferecer soluções acessíveis e de alta qualidade em contextos humanitários.","link":"https://expresso.pt/economia/2026-07-23-amparo-desenvolve-proteses-na-maia-que-fazem-a-diferenca-em-gaza-d32f2406?utm_source=expresso&utm_medium=content&utm_campaign=WEB&utm_content=/economia/2026-07-23-amparo-desenvolve-proteses-na-maia-que-fazem-a-diferenca-em-gaza-d32f2406","categoria":"TECNOLOGIA MÉDICA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Deteção de seres vivos. A tecnologia que pode salvar crianças esquecidas no carro","resumo":"Foi desenvolvida uma tecnologia inovadora capaz de detetar seres vivos no interior de veículos, visando evitar tragédias como o esquecimento de crianças. Este sistema representa um passo importante na segurança automotiva, utilizando sensores avançados para salvar vidas em situações críticas.","link":"https://sapo.pt/artigo/detecao-de-seres-vivos-a-tecnologia-que-pode-salvar-criancas-esquecidas-no-carro-6a6263c49c9f29b5ce1c221b","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Jornal de Negócios","pais":"Portugal","titulo":"Portugal quer transformar ciência do mar em negócio","resumo":"Portugal está a implementar estratégias para valorizar a sua extensa zona económica exclusiva através da transição da ciência marinha para o setor empresarial. O objetivo é criar valor económico sustentável através da exploração tecnológica e investigação científica focada nos oceanos.","link":"https://www.jornaldenegocios.pt/negocios-iniciativas/premio-nacional-de-inovacao/detalhe/portugal-quer-transformar-ciencia-do-mar-em-negocio","categoria":"ECONOMIA AZUL","lang":"pt"},{"fonte":"AICEP","pais":"Portugal","titulo":"Infraspeak: tecnologia portuguesa com alcance global","resumo":"A Infraspeak, startup tecnológica portuguesa, continua a expandir a sua influência no mercado global com plataformas focadas na gestão de instalações. O sucesso da empresa reforça a capacidade das tecnológicas nacionais em escalar soluções digitais complexas para clientes internacionais de grande porte.","link":"https://portugalglobal.pt/noticias/2026/agosto/infraspeak-tecnologia-portuguesa-com-alcance-global/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"AI knows more about you than you think: 4 questions to ask ChatGPT to find out","resumo":"This article explores how artificial intelligence processes and retains user data, highlighting privacy concerns. It provides four practical questions to ask ChatGPT to reveal how much the tool actually understands about your user profile. This discussion is essential for promoting digital literacy and the conscious use of technology in everyday life.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/07/24/a-ia-sabe-mais-sobre-voce-do-que-parece-veja-4-perguntas-para-fazer-ao-chatgpt-e-descobrir.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"Former Fed president says AI pressures inflation and may block interest rate cuts","resumo":"The analysis points out how the rapid adoption of artificial intelligence could influence the global economy and the inflation landscape. According to the former Fed president, the costs associated with this innovation could limit central banks' monetary flexibility. The direct impact of this dynamic is the potential delay in interest rate cuts, affecting financial markets.","link":"https://www1.folha.uol.com.br/mercado/2026/07/ex-presidente-do-fed-diz-que-ia-pressiona-inflacao-e-pode-impedir-corte-de-juros.shtml","categoria":"DIGITAL ECONOMY","lang":"en"},{"fonte":"AEPET","pais":"Brazil","titulo":"The new invisible war: technology, power, and sovereignty","resumo":"The text addresses the growing geopolitical dispute being fought through technological advancements such as semiconductors and artificial intelligence. Focusing on national sovereignty, the article analyzes how world powers use innovation as a strategic tool for control. It offers a deep reflection on how technology dictates the new rules of power on the global stage.","link":"https://aepet.org.br/artigo/a-nova-guerra-invisivel-tecnologia-poder-e-soberania/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Finsiders Brasil","pais":"Brazil","titulo":"B3 hires Eduardo Neves, formerly of Itaú Chile, as new VP of Technology","resumo":"B3, Brazil's stock exchange, has officially hired Eduardo Neves to take on the role of Vice President of Technology. This strategic move aims to strengthen the institution's digital infrastructure and technological innovation in the face of financial market challenges. Neves' leadership will be fundamental to modernizing the systems and services offered by the exchange.","link":"https://finsidersbrasil.com.br/gente-em-fintechs/b3-recruta-eduardo-neves-ex-itau-chile-para-comandar-tecnologia/","categoria":"BUSINESS","lang":"en"},{"fonte":"Graphic News","pais":"Brazil","titulo":"TECHNOLOGY: Countries banning social media for children","resumo":"This infographic provides a global overview of the growing restrictions on social media use for minors. The analysis summarizes how various governments are implementing policies to protect young people from the impacts of digital platforms. The content serves as a wake-up call regarding online safety and the regulation of technology on an international scale.","link":"https://www.graphicnews.com/pt/pages/48250/tech-nations-banning-social-media-for-kids","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Embrapa","pais":"Brazil","titulo":"Social technology 'Sisteminha' receives 2026 FORTEC Innovation Award","resumo":"The social technology entitled 'Sisteminha' was recognized with the 2026 FORTEC Innovation Award, highlighting its impact on sustainable development. This model promotes practical and replicable solutions for food security and productive inclusion in rural areas. The recognition reinforces the importance of grassroots innovation for the country's socioeconomic progress.","link":"https://www.embrapa.br/web/alimentos-e-territorios/busca-de-noticias/-/noticia/146135226/tecnologia-social-sisteminha-recebe-premio-fortec-de-inovacao-2026","categoria":"INNOVATION","lang":"en"},{"fonte":"Jornal da USP","pais":"Brazil","titulo":"USP Innovation and Technology Park welcomes 12 new startups to incubation program","resumo":"The USP Innovation and Technology Park has launched an incubation cycle for 12 new startups focused on disruptive solutions. The program aims to connect academic knowledge to the market, boosting applied scientific research and national entrepreneurship. This initiative strengthens the Brazilian innovation ecosystem by accelerating promising ideas.","link":"https://jornal.usp.br/universidade/parque-de-inovacao-e-tecnologia-da-usp-recebe-12-novas-startups-para-programa-de-incubacao/","categoria":"STARTUPS","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"Pathways to healthcare innovation: what science is preparing for patients","resumo":"The article details the latest scientific advances that promise to transform the care and treatment of various medical conditions. Key innovations include gene therapies, early AI-assisted diagnostics, and personalized medicine. These discoveries point to a future where technology will be the central pillar of longevity and quality of life.","link":"https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-sudeste/huse-unirio/comunicacao/noticias/caminhos-da-inovacao-na-saude-o-que-a-ciencia-esta-preparando-para-os-pacientes-1","categoria":"SCIENCE","lang":"en"},{"fonte":"Challenges","pais":"France","titulo":"Cholesterol: when science paves the way for new natural solutions","resumo":"Researchers are exploring new scientific approaches to cholesterol management through natural methods. The discovery promises to offer effective alternatives to conventional treatments, reducing side effects. The advancement represents an important step in cardiovascular preventive medicine.","link":"https://www.challenges.fr/partenaires/le-cholesterol-quand-la-science-ouvre-la-voie-a-de-nouvelles-solutions-naturelles_644992","categoria":"SCIENCE","lang":"en"},{"fonte":"Euronews.com","pais":"France","titulo":"Europe: most AI jobs are outside the tech sector","resumo":"A recent study reveals that the implementation of Artificial Intelligence in the European market is occurring primarily in traditional sectors outside of the technology niche. This trend demonstrates the deep integration of automation into the operational areas of the economy. The impact reflects a significant shift in hiring structures and required skill sets.","link":"https://pt.euronews.com/business/2026/07/24/europa-maioria-dos-empregos-de-ia-fora-da-tecnologia","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Yahoo Finance France","pais":"France","titulo":"Amkor Technology jumps 16% on $1.5 billion deal with Nvidia","resumo":"Amkor's stock soared following the announcement of a large-scale strategic contract with tech giant Nvidia. The partnership aims to strengthen the semiconductor supply chain to boost the advancement of AI chips. This move consolidates the company's position in the global technology market.","link":"https://fr.finance.yahoo.com/actualites/amkor-technologie-bondit-16-gr%C3%A2ce-215534583.html","categoria":"BUSINESS","lang":"en"},{"fonte":"MobiHealthNews","pais":"France","titulo":"Science Corp launches PRIMA vision-restoring implant in Europe","resumo":"Science Corp has begun commercializing the PRIMA implant in Europe, an innovative technology designed to restore vision in patients with macular degeneration. The device interacts directly with the neural system, offering a new perspective for ophthalmological treatments. The implementation marks a historic milestone in the convergence of medicine and bionic engineering.","link":"https://www.mobihealthnews.com/news/science-corp-launches-vision-restoring-prima-implant-europe","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Construction Enquirer","pais":"England","titulo":"Crown Estate moves forward with £2 billion science hub in Cambridge","resumo":"The Crown Estate has taken an important step in developing a large-scale technology and science hub in Cambridge. The multi-billion pound investment aims to strengthen the UK's research infrastructure by attracting innovative companies and consolidating the region as a global reference point for scientific discovery and technological advancement.","link":"https://www.constructionenquirer.com/2026/07/24/crown-estate-pushes-ahead-with-2bn-cambridge-science-hub/","categoria":"SCIENCE","lang":"en"},{"fonte":"Retail Technology Innovation Hub","pais":"England","titulo":"Pre-owned tech retailer CeX tackles retail crime with Auror platform in the UK","resumo":"Retail chain CeX is implementing the Auror platform in its UK stores to monitor and prevent criminal activity. The technology assists staff in managing incidents in real-time, increasing operational security and protecting the inventory of pre-owned tech against recurring theft and fraud in the sector.","link":"https://retailtechinnovationhub.com/home/2026/7/23/pre-owned-technology-retailer-cex-tackles-retail-crime-with-roll-out-of-auror-platform-in-uk-stores","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Retail Technology Innovation Hub","pais":"England","titulo":"Tech innovation of the week: Circ and Lenzing deliver recycling solution to H&M stores","resumo":"A new technological partnership between Circ and Lenzing has introduced an advanced textile recycling method applied in H&M stores. The solution promises to transform the fashion industry by optimizing material reuse, meeting the growing demand for sustainable practices and a circular economy through innovation applied to retail.","link":"https://retailtechinnovationhub.com/home/2026/7/23/retail-technology-innovation-of-the-week-circ-and-lenzing-deliver-recycling-solution-to-hm-store-shelves","categoria":"INNOVATION","lang":"en"},{"fonte":"Infodefensa","pais":"England","titulo":"Hydra Space partners with British firms for in-orbit technology validation","resumo":"Hydra Space has formed a strategic partnership with British companies to conduct testing and validation of technologies directly in space. This project aims to bolster satellite infrastructure and aerospace systems, reinforcing international collaboration in developing critical solutions for modern space exploration and communications.","link":"https://www.infodefensa.com/texto-diario/mostrar/5963856/hydra-space-trabaja-companias-britanicas-validacion-tecnologia-orbita","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Today's Conveyancer","pais":"England","titulo":"Geovation seeks next cohort of innovators for its technology incubator","resumo":"The Geovation incubator has opened its selection process for new talent and startups focused on disruptive technology. The program offers strategic support, mentorship, and infrastructure for entrepreneurs looking to develop scalable solutions aimed at transforming the data and technology market within the British innovation ecosystem.","link":"https://todaysconveyancer.co.uk/geovation-invites-next-cohort-of-innovators-to-technology-incubator/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Daily Echo","pais":"England","titulo":"Fast-growing Southampton tech firm expands to new headquarters","resumo":"A Southampton-based tech firm has announced its move to a larger headquarters, reflecting a period of significant business expansion. The investment in new facilities is aimed at increasing production capacity and attracting skilled talent, strengthening the brand's presence in the competitive Southern England tech market.","link":"https://www.dailyecho.co.uk/news/26402934.labl-moves-headquarters-southampton-science-park/","categoria":"BUSINESS","lang":"en"},{"fonte":"RailAdvent","pais":"England","titulo":"Rail industry publishes video technology strategy to enhance safety","resumo":"The British rail sector has established new guidelines for implementing advanced video monitoring systems. The strategy aims to integrate intelligence and technological surveillance to prevent accidents, increase passenger safety, and optimize operational management across the national rail transport network.","link":"https://www.railadvent.co.uk/2026/07/rail-industry-publishes-video-technology-strategy-to-enhance-safety.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Lancaster University","pais":"England","titulo":"Lancaster spin-out company wins prestigious emerging technology award","resumo":"A spin-out company from Lancaster University has been recognized for its pioneering work in the emerging technologies sector. The award highlights the organization's significant impact on developing cutting-edge scientific solutions, reaffirming the role of British academic institutions in creating high-market-potential innovations.","link":"https://www.lancaster.ac.uk/sci-tech/about-us/news/lancaster-spin-out-scoops-prestigious-emerging-technology-award","categoria":"SCIENCE","lang":"en"},{"fonte":"COPE","pais":"Spain","titulo":"San Sadurniño invests 290,000 euros to modernize 666 streetlights with LED technology","resumo":"The municipality of San Sadurniño has launched an urban renewal project focused on energy efficiency. Replacing old lighting with LED technology aims to reduce electricity consumption and improve public lighting quality, aligning the city with current sustainability policies.","link":"https://www.cope.es/emisoras/galicia/a-coruna-provincia/ferrol/noticias/san-sadurnino-adjudica-290-000-euros-renovacion-666-puntos-luz-tecnologia-led-20260724_3409900.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Diario Montañés","pais":"Spain","titulo":"Startup Airway Shield expands hospital technology sales to Spain and Portugal","resumo":"Cantabria-based startup Airway Shield has solidified its footprint in the Iberian market by providing innovative hospital technology. The system, designed to increase safety in medical procedures, is already being adopted by several healthcare institutions, demonstrating a significant impact on clinical precision.","link":"https://www.eldiariomontanes.es/economia/empresas/startup-cantabra-airway-shield-vende-tecnologia-hospitales-20260724070537-nt.html","categoria":"HEALTH TECHNOLOGY","lang":"en"},{"fonte":"GYM FACTORY Revista","pais":"Spain","titulo":"From the lab to the gym: the technology redefining sports equipment","resumo":"Technological innovation in sports has evolved drastically, integrating sensors and advanced materials into conventional equipment. This transformation allows for more precise and personalized performance monitoring, elevating the user experience and optimizing training results in modern gyms.","link":"https://gymfactory.net/2026/07/24/del-laboratorio-al-gimnasio-la-tecnologia-que-esta-redefiniendo-el-equipamiento-deportivo/","categoria":"SPORTS TECHNOLOGY","lang":"en"},{"fonte":"Motor16","pais":"Spain","titulo":"BMW iX3 40: the electric SUV bringing 'Neue Klasse' technology to the mainstream","resumo":"BMW has unveiled the new iX3 40 electric SUV, designed to democratize the advancements of the Neue Klasse platform. Focusing on sustainability and connectivity, the vehicle marks an important transition for the German brand toward accessible electrified mobility, integrating cutting-edge technologies into a popular segment.","link":"https://www.motor16.com/las-ultimas-noticias/bmw-ix3-suv-electrico/","categoria":"AUTOMOTIVE LAUNCH","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"Impact, water, sand, and heat: why technology now prides itself on passing military-grade tests","resumo":"The tech gadget market has increasingly relied on military-grade certification to ensure extreme durability. Devices capable of withstanding harsh environmental conditions, such as intense heat and humidity, have become the new quality standard for consumers seeking resilience and reliability in adverse environments.","link":"https://www.eldebate.com/tecnologia/20260724/golpes-agua-arena-calor-tecnologia-presume-ahora-superar-pruebas-militares_442755.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"From science fiction to reality: how literature and cinema predicted an AI capable of acting on its own","resumo":"The rapid advancement of autonomous artificial intelligence brings to light fascinating parallels with classic visions in pop culture and literature. Experts analyze how these predictions shaped current ethical expectations and technical development, highlighting the challenge of controlling systems that increasingly possess agency of their own.","link":"https://www.eldebate.com/cultura/20260724/ciencia-ficcion-realidad-asi-anticipo-literatura-cine-ia-capaz-actuar-sola_442944.html","categoria":"TRENDING TOPICS","lang":"en"},{"fonte":"El Español","pais":"Spain","titulo":"La Rioja reorganizes its science and technology ecosystem with a strategy for excellence","resumo":"The La Rioja region has announced a new structural strategy focused on strengthening its scientific and technological ecosystem. The plan prioritizes attracting qualified talent and pursuing academic and business excellence, aiming to position the province as a regional hub for innovation and economic development.","link":"https://www.elespanol.com/invertia/disruptores/autonomias/la-rioja/20260724/rioja-reordena-ecosistema-ciencia-tecnologia-estrategia-prioriza-excelencia-talento/1003744331428_0.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Plan de Recuperación, Transformación y Resiliencia","pais":"Spain","titulo":"Economy and EIB to fund Naturgy with 870 million euros to modernize electrical grids in Spain","resumo":"The Spanish government and the European Investment Bank have closed a multi-million euro deal to boost the digitalization of Naturgy's infrastructure. This investment is crucial for the national energy transition, ensuring smarter, more stable grids capable of integrating large-scale renewable energy sources.","link":"https://planderecuperacion.gob.es/noticias/economia-bei-financiar%C3%A1n-870-millones-naturgy-reforzar-redes-electricas-espana-fra-prtr","categoria":"BUSINESS TECHNOLOGY","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"Unprecedented drainage system discovered in the human eye","resumo":"Scientists have identified a previously unknown microscopic drainage path in the human ocular system. This crucial discovery promises to revolutionize treatments for chronic eye diseases like glaucoma by offering new ways to control intraocular pressure through more precise and effective medical interventions.","link":"https://www.wissenschaft.de/artikel/unerkanntes-abwassersystem-im-auge-entdeckt","categoria":"SCIENCE","lang":"en"},{"fonte":"kpmg.com","pais":"Germany","titulo":"Global Tech Report 2026","resumo":"The report details the primary technological trends that will shape the global digital economy through 2026. The document emphasizes the accelerated advancement of generative artificial intelligence and quantum computing infrastructure, highlighting the competitive impacts that German companies will face when adopting these disruptive new technologies.","link":"https://kpmg.com/ie/en/insights/technology/global-tech-report-2026-technology-and-telecommunications.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"tagesschau.de","pais":"Germany","titulo":"Economic Consequences of Climate Change and Extreme Weather Events","resumo":"This study analyzes the severe financial impact that extreme weather events have on Germany's infrastructure and industrial productivity. The report highlights the urgent need for systemic adaptations and investments in resilience to mitigate significant economic losses resulting from environmental instabilities predicted for the coming decades.","link":"https://www.tagesschau.de/video/video-1619196.html","categoria":"BUSINESS","lang":"en"},{"fonte":"21财经","pais":"China","titulo":"Guangdong's Semiannual Report: Record Growth and the AI Revolution in Industrial Competitiveness","resumo":"Guangdong province recorded its highest semiannual growth in the last three years, driven by a strong integration of artificial intelligence into industrial infrastructure. This strategic shift aims to redefine local productivity and consolidate the region as a global hub for high-efficiency technological innovation.","link":"https://m.21jingji.com/article/20260723/herald/0b0ecb1badc0ee6d9b0b4db31225cb52_zaker.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"新华网客户端","pais":"China","titulo":"Chinese Embedded AI Firm Presents Public Service Practices on the International APEC Stage","resumo":"Embedded AI startup Ziyibianliang represented China at the APEC forum, highlighting applied technology solutions to improve citizens' daily lives. The case underscores how intelligent robotics and automation can be integrated into public services to optimize social efficiency.","link":"https://app.xinhuanet.com/news/article.html?articleId=20260724bab5a4f643c249ce9cefaeefed033e3f","categoria":"INNOVATION","lang":"en"},{"fonte":"BBC","pais":"China","titulo":"US-China AI Tech War: White House Accuses MoonshotAI's Kimi K3 Model of Technology Theft","resumo":"Geopolitical tensions escalate with White House accusations alleging that the Kimi K3 model from Chinese startup MoonshotAI misappropriated technology from Anthropic. The incident intensifies the global race for artificial intelligence dominance and reinforces scrutiny over intellectual property.","link":"https://www.bbc.com/zhongwen/articles/c62vqpqdqjwo/simp","categoria":"GEOPOLITICS","lang":"en"},{"fonte":"Bloomberg.com","pais":"China","titulo":"6-Year-Old Girl Dies After Experimental Gene-Editing Treatment in China: Science","resumo":"A fatal incident involving an experimental gene-editing treatment in a six-year-old child has reignited urgent ethical debates about the use of CRISPR technologies in China. The global scientific community is monitoring the case, questioning safety, clinical regulation, and the limits of advanced biotechnology.","link":"https://www.bloomberg.com/news/articles/2026-07-24/patient-death-in-china-gene-editing-trial-draws-fire-science","categoria":"SCIENCE","lang":"en"},{"fonte":"东方财富","pais":"China","titulo":"Beijing: Government Encourages Token Economy and Increases Support with Computing Subsidies","resumo":"The Beijing government has announced new measures to foster a token-based economy (AI keywords), aiming to strengthen the local artificial intelligence ecosystem. The plan includes subsidies and an increased supply of computing power for startups and technology companies based in the capital.","link":"https://wap.eastmoney.com/a/202607233818963524.html","categoria":"PUBLIC POLICY","lang":"en"},{"fonte":"SECIHTI","pais":"China","titulo":"Mexico and China Advance Joint Projects in AI, Robotics, Electromobility, and Semiconductors","resumo":"Mexico and China have strengthened strategic ties focused on cutting-edge technological partnerships, covering robotics, semiconductors, and electric vehicles. This bilateral cooperation seeks to promote technical knowledge transfer and accelerate industrial innovation in sectors crucial to the future global economy.","link":"https://secihti.mx/sala-de-prensa/mexico-y-china-impulsan-proyectos-de-inteligencia-artificial-robotica-electromovilidad-y-semiconductores-rosaura-ruiz/","categoria":"BUSINESS","lang":"en"},{"fonte":"Lenovo StoryHub","pais":"China","titulo":"Lenovo Successfully Delivers Technology for the Biggest FIFA World Cup of 2026","resumo":"Lenovo played a fundamental role as a technology partner for the 2026 FIFA World Cup, providing high-performance IT infrastructure for the largest event in football history. The company reinforces its global brand through excellence in technical support and large-scale data processing.","link":"https://news.lenovo.com/pressroom/press-releases/lenovo-successfully-delivers-technology-at-biggest-ever-fifa-world-cup-2026/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Brasil de Fato","pais":"China","titulo":"From Combating Desertification to Green Economy: China Targets 26% Forest Cover by 2030","resumo":"China has set ambitious sustainability goals, aiming to reach 26% forest cover by 2030 to combat desertification and promote a green economy. The project uses environmental monitoring technology and massive reforestation to mitigate the impacts of climate change within Chinese territory.","link":"https://www.brasildefato.com.br/2026/07/23/do-combate-a-desertificacao-a-economia-verde-china-apresenta-plano-para-ter-26-de-cobertura-florestal-ate-2030/","categoria":"SCIENCE","lang":"en"},{"fonte":"intlbm","pais":"India","titulo":"Anjali Precious Metals Launches Anjali Digital Metals to Offer Modern Technology","resumo":"Anjali Precious Metals expands its portfolio with the launch of the Anjali Digital Metals platform. The initiative aims to integrate advanced technology into the precious metals sector, modernizing access and the experience for Indian consumers in the financial and digital assets market.","link":"https://intlbm.com/2026/07/24/anjali-precious-metals-launches-anjali-digital-metals-to-offer-modern-technology/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Bisinfotech","pais":"India","titulo":"India's Auto Parts Industry Expands into Technology Sectors","resumo":"The auto parts sector in India is undergoing a strategic transformation as it migrates to new technological areas. This shift aims to meet global demands for automotive innovation, boosting the country's industrial competitiveness and modernizing the local supply chain.","link":"https://www.bisinfotech.com/india-auto-parts-sector-poised-for-strong-growth-on-semiconductor-and-defence-push/","categoria":"BUSINESS","lang":"en"},{"fonte":"aamaadmiparty.org","pais":"India","titulo":"Arvind Kejriwal to Inaugurate Virtual Reality Science Lab in Carmona","resumo":"Politician Arvind Kejriwal will inaugurate a new science lab focused on Virtual Reality (VR) in Carmona. The project seeks to democratize scientific learning by offering immersive experiences for local students and encouraging the adoption of cutting-edge educational technologies in the region.","link":"https://aamaadmiparty.org/event/arvind-kejriwal-to-inaugurate-vr-science-lab-in-carmona/","categoria":"SCIENCE","lang":"en"},{"fonte":"CNBC TV18","pais":"India","titulo":"From Bicycles to Unicorns: How India's Space Economy Took Off","resumo":"The Indian space industry shows remarkable growth, evolving from basic initiatives to a robust ecosystem of space technology startups. This advancement positions India as a strategic player in the global market, demonstrating technological innovation in the aerospace sector.","link":"https://www.cnbctv18.com/technology/indian-space-economy-private-sector-startups-unicorns-skyroot-aerospace-isro-global-industry-view-19952281.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"Northeast Today","pais":"India","titulo":"'AI Maa' to Unite Technology and Humanity, Says TSMCH President Malay Pit","resumo":"TSMCH President Malay Pit introduced the concept of 'AI Maa,' an initiative focused on aligning the development of Artificial Intelligence with human values. The goal is to create technological tools that are ethical, accessible, and capable of solving complex social problems.","link":"https://northeasttoday.in/northeast/ai-maa-to-bridge-technology-and-humanity-says-tsmch-president-malay-pit/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Water Magazine","pais":"India","titulo":"Transforming Wastewater into Green Fuel - Neel Shah Discusses Hydrothermal Gasification Technology","resumo":"Neel Shah presents hydrothermal gasification technology as an innovative solution for converting liquid waste into clean energy. This method promises to revolutionize wastewater management in India, offering a sustainable alternative for renewable fuel production.","link":"https://www.watermagazine.co.uk/2026/07/24/turning-wastewater-into-green-fuel-neel-shah-discusses-hydrothermal-gasification-technology/","categoria":"SCIENCE","lang":"en"},{"fonte":"News On AIR","pais":"India","titulo":"Andhra Pradesh CM calls for tech-driven, citizen-friendly policing","resumo":"The Chief Minister of Andhra Pradesh is advocating for the implementation of modern technology to make police operations more efficient and accessible to the public. The proposal emphasizes the use of digital tools to ensure greater transparency, faster response times, and integrated public safety.","link":"https://newsonair.gov.in/andhra-pradesh-cm-calls-for-technology-driven-people-friendly-policing/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"News On AIR","pais":"India","titulo":"India and Romania sign three agreements in the fields of Science and Technology, Education, and Sports","resumo":"India and Romania have established bilateral partnerships to foster collaboration in science, technology, education, and sports. These agreements aim to strengthen strategic cooperation between the nations, promoting the exchange of scientific knowledge and technological innovations for mutual benefit.","link":"https://newsonair.gov.in/india-and-romania-sign-three-agreements-in-the-fields-of-science-and-technology-education-and-sports/","categoria":"SCIENCE","lang":"en"},{"fonte":"Link To Leaders","pais":"Portugal","titulo":"ULisboa invests over 20 million in digital infrastructure for science and innovation","resumo":"The University of Lisbon is investing more than 20 million euros to modernize its digital infrastructure. This project aims to boost scientific research capacity and promote a more robust ecosystem for technological innovation in the country.","link":"https://linktoleaders.com/ulisboa-investe-mais-de-20-milhoes-em-infraestruturas-digitais-para-ciencia-e-inovacao/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Diario Montañés","pais":"Portugal","titulo":"Cantabrian startup Airway Shield is now selling its technology to hospitals in Spain and Portugal","resumo":"The startup Airway Shield has expanded the commercialization of its hospital technology to the Portuguese market. The solution, which focuses on clinical safety, represents a significant advancement in protecting patients during complex medical procedures in healthcare facilities.","link":"https://www.eldiariomontanes.es/economia/empresas/startup-cantabra-airway-shield-vende-tecnologia-hospitales-20260724070537-nt.html","categoria":"HEALTH TECH","lang":"en"},{"fonte":"O Atual","pais":"Portugal","titulo":"IPBeja hosts International Conference on Digital Creation in Arts, Media, and Technology","resumo":"The Polytechnic Institute of Beja is organizing an international event focused on the convergence of arts, media, and digital technology. The meeting brings together experts to discuss how artistic creation is being transformed by new digital tools and its cultural impact.","link":"https://www.oatual.pt/noticias/ipbeja-recebe-conferencia-internacional-em-novembro","categoria":"INNOVATION","lang":"en"},{"fonte":"Diário dos Açores","pais":"Portugal","titulo":"Santa Maria hosts international experts to discuss the future of the space economy","resumo":"The island of Santa Maria has become the stage for a critical debate on the development of the space economy in Portugal. International experts are meeting to analyze the strategic potential of the territory and the investment opportunities that the aerospace sector offers the region.","link":"https://diariodosacores.pt/2026/07/23/santa-maria-recebe-especialistas-internacionais-para-debater-o-futuro-da-economia-espacial/","categoria":"SPACE SCIENCE","lang":"en"},{"fonte":"Expresso","pais":"Portugal","titulo":"Amparo develops prosthetics in Maia that make a difference in Gaza","resumo":"The company Amparo, based in Maia, has been developing innovative prosthetics that are positively impacting lives in conflict zones such as Gaza. This example highlights how Portuguese engineering applied to health can offer accessible and high-quality solutions in humanitarian contexts.","link":"https://expresso.pt/economia/2026-07-23-amparo-desenvolve-proteses-na-maia-que-fazem-a-diferenca-em-gaza-d32f2406?utm_source=expresso&utm_medium=content&utm_campaign=WEB&utm_content=/economia/2026-07-23-amparo-desenvolve-proteses-na-maia-que-fazem-a-diferenca-em-gaza-d32f2406","categoria":"MEDICAL TECHNOLOGY","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Living being detection: The technology that could save children left in cars","resumo":"An innovative technology has been developed to detect living beings inside vehicles, aiming to prevent tragedies such as children being left behind. This system represents an important step in automotive safety, using advanced sensors to save lives in critical situations.","link":"https://sapo.pt/artigo/detecao-de-seres-vivos-a-tecnologia-que-pode-salvar-criancas-esquecidas-no-carro-6a6263c49c9f29b5ce1c221b","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Jornal de Negócios","pais":"Portugal","titulo":"Portugal wants to turn marine science into business","resumo":"Portugal is implementing strategies to leverage its extensive exclusive economic zone by transitioning marine science into the corporate sector. The goal is to create sustainable economic value through technological exploration and scientific research focused on the oceans.","link":"https://www.jornaldenegocios.pt/negocios-iniciativas/premio-nacional-de-inovacao/detalhe/portugal-quer-transformar-ciencia-do-mar-em-negocio","categoria":"BLUE ECONOMY","lang":"en"},{"fonte":"AICEP","pais":"Portugal","titulo":"Infraspeak: Portuguese technology with global reach","resumo":"Infraspeak, a Portuguese tech startup, continues to expand its influence in the global market with platforms focused on facility management. The company's success reinforces the ability of national tech firms to scale complex digital solutions for large international clients.","link":"https://portugalglobal.pt/noticias/2026/agosto/infraspeak-tecnologia-portuguesa-com-alcance-global/","categoria":"TECHNOLOGY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Utility de escape HTML simples para prevenir injections em propriedades sem tratamento
+  function esc(s) {
+    return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(item.link)}" target="_blank" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+</script>
+
+<script>
+// Analytics: contador de visitas (Abacus CountAPI - gratuito, sem conta)
+(function(){
+  try {
+    var page = location.pathname.split('/').pop().replace('.html','');
+    if (page && page.indexOf('Dashboard') === 0) {
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(page)).catch(function(){});
+    }
+  } catch(e){}
+})();
+</script>
+</body>
+</html>
