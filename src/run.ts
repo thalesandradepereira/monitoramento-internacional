@@ -28,7 +28,7 @@ function formatDisplayDate(dateIso: string): string {
 
 function setGitHubOutput(name: string, value: string): void {
   const outputFile = process.env.GITHUB_OUTPUT
-  if (!outputFile) return
+  if (process.env.GITHUB_ACTIONS !== 'true' || !outputFile) return
   fs.appendFileSync(outputFile, `${name}=${value}\n`, 'utf8')
 }
 
