@@ -39,7 +39,7 @@ export const config = {
   },
   fromName: process.env.FROM_NAME || 'Monitoramento Mídia Internacional',
   destEmail: process.env.DEST_EMAIL || '',
-  cron: process.env.CRON_EXPR || '0 5 * * *',
+  cron: process.env.CRON_EXPR || '0 3 * * *',
   timezone: process.env.TIMEZONE || 'America/Sao_Paulo',
   maxTopicos: Number(process.env.MAX_TOPICOS || 50),
   janelaHoras: Number(process.env.JANELA_HORAS || 24),

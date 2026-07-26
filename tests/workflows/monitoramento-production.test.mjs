@@ -14,9 +14,9 @@ test('production workflow uses D1 as the recipients source', () => {
 test('production workflow keeps safe scheduling, dry-run dispatch, and daily idempotence controls', () => {
   assert.match(workflow, /default: true/)
   assert.match(workflow, /DRY_RUN: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.dry_run == true && 'true' \|\| 'false' \}\}/)
-  assert.match(workflow, /cron: '17 5 \* \* \*'/)
+  assert.match(workflow, /cron: '17 3 \* \* \*'/)
   assert.match(workflow, /timezone: 'America\/Sao_Paulo'/)
-  assert.match(workflow, /CRON_EXPR: '0 5 \* \* \*'/)
+  assert.match(workflow, /CRON_EXPR: '0 3 \* \* \*'/)
   assert.match(workflow, /TIMEZONE: 'America\/Sao_Paulo'/)
   assert.match(workflow, /DAILY_EXECUTION_LOG_PATH: 'state\/daily-executions\.json'/)
   assert.match(workflow, /^concurrency:\n  group: monitoramento-internacional-diario\n  cancel-in-progress: false/m)
