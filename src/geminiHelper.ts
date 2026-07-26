@@ -1,40 +1,92 @@
-import { GenerativeModel } from '@google/generative-ai';
+import { ApiError, GoogleGenAI, type GenerateContentResponse } from '@google/genai'
+import { config } from './config'
 
-export async function generateContentWithRetry(model: GenerativeModel, prompt: string, retries = 3): Promise<any> {
-  let attempt = 0;
-  while (attempt < retries) {
+const RETRYABLE_HTTP_STATUSES = new Set([408, 429, 500, 502, 503, 504])
+const MIN_REQUEST_INTERVAL_MS = 4100
+
+let client: GoogleGenAI | undefined
+
+export function getGeminiClient(): GoogleGenAI {
+  if (!config.gemini.apiKey) {
+    throw new Error('[gemini] GEMINI_API_KEY não configurada.')
+  }
+  if (!client) {
+    client = new GoogleGenAI({
+      apiKey: config.gemini.apiKey,
+      httpOptions: {
+        timeout: config.gemini.timeoutMs,
+        retryOptions: { attempts: 1 },
+      },
+    })
+  }
+  return client
+}
+
+function errorStatus(error: unknown): number | undefined {
+  if (error instanceof ApiError) return error.status
+  if (error && typeof error === 'object' && 'status' in error) {
+    const status = Number((error as { status?: unknown }).status)
+    if (Number.isInteger(status)) return status
+  }
+  const message = error instanceof Error ? error.message : String(error)
+  const match = message.match(/\b(408|429|500|502|503|504)\b/)
+  return match ? Number(match[1]) : undefined
+}
+
+export function isRetryableGeminiError(error: unknown): boolean {
+  const status = errorStatus(error)
+  return status !== undefined && RETRYABLE_HTTP_STATUSES.has(status)
+}
+
+function retryDelayMs(error: unknown, attempt: number): number {
+  const message = error instanceof Error ? error.message : String(error)
+  const retryMatch = message.match(/retry(?:\s+in|\s+after)?\s+(\d+(?:\.\d+)?)s/i)
+  if (retryMatch) return Math.ceil((Number(retryMatch[1]) + 2) * 1000)
+  if (errorStatus(error) === 429) return 40000
+  const exponential = Math.min(30000, 2000 * 2 ** Math.max(0, attempt - 1))
+  return exponential + Math.floor(Math.random() * 1000)
+}
+
+export async function generateContentWithRetry(
+  model: string,
+  prompt: string,
+  responseJsonSchema?: unknown,
+  retries = 3,
+): Promise<GenerateContentResponse> {
+  const gemini = getGeminiClient()
+  const apiSchema = responseJsonSchema && typeof responseJsonSchema === 'object'
+    ? Object.fromEntries(Object.entries(responseJsonSchema).filter(([key]) => key !== '$schema'))
+    : responseJsonSchema
+
+  for (let attempt = 1; attempt <= retries; attempt += 1) {
     try {
-      // Free Tier Limit mitigation: 15 RPM. Wait 4s to guarantee < 15 requests per minute
-      console.log(`[geminiHelper] Aguardando 4s para evitar limite de cota da API (Free Tier)...`);
-      await new Promise(resolve => setTimeout(resolve, 4000));
+      console.log(`[gemini] modelo=${model}; tentativa=${attempt}/${retries}; aguardando intervalo preventivo`)
+      await new Promise(resolve => setTimeout(resolve, MIN_REQUEST_INTERVAL_MS))
 
-      const result = await model.generateContent(prompt);
-      return result;
-    } catch (err: any) {
-      attempt++;
-      console.error(`[geminiHelper] Erro ao chamar o Gemini na tentativa ${attempt}: ${err.message || err}`);
-      if (attempt >= retries) {
-        throw err;
-      }
-      // Se for um erro 429 (Too Many Requests), vamos ler o tempo que o Google pede para esperar
-      let waitTime = Math.pow(2, attempt) * 1000;
-      if (err.message && err.message.includes('429')) {
-        const match = err.message.match(/retry in (\d+(?:\.\d+)?)s/);
-        if (match) {
-          // Google informou o tempo exato (ex: 34.6s). Adicionamos 2s de margem de segurança.
-          waitTime = (parseFloat(match[1]) + 2) * 1000;
-        } else {
-          // Se não tiver o tempo, esperamos 40s (quase 1 minuto) para garantir que a janela de RPM resete
-          waitTime = 40000;
-        }
-      }
-      
-      console.log(`[geminiHelper] Aguardando ${waitTime}ms antes da próxima tentativa...`);
-      await new Promise(resolve => setTimeout(resolve, waitTime));
+      return await gemini.models.generateContent({
+        model,
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json',
+          responseJsonSchema: apiSchema,
+        },
+      })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      const retryable = isRetryableGeminiError(error)
+      console.error(`[gemini] Falha; modelo=${model}; tentativa=${attempt}/${retries}; retryable=${retryable}; detalhe=${message}`)
+
+      if (!retryable || attempt >= retries) throw error
+
+      const waitTime = retryDelayMs(error, attempt)
+      console.log(`[gemini] Aguardando ${waitTime}ms antes da próxima tentativa.`)
+      await new Promise(resolve => setTimeout(resolve, waitTime))
     }
   }
+
+  throw new Error('[gemini] Falha inesperada após esgotar as tentativas.')
 }
 
 export function cleanGeminiJson(text: string): string {
-  return text.replace(/```json/gi, '').replace(/```/g, '').trim();
+  return text.replace(/```json/gi, '').replace(/```/g, '').trim()
 }

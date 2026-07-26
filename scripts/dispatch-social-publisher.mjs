@@ -1,5 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import { execFileSync } from 'node:child_process'
 import { pathToFileURL } from 'node:url'
 
 const DEFAULT_TIMEZONE = 'America/Sao_Paulo'
@@ -32,6 +33,15 @@ export function dashboardDescriptor(dateIso, baseUrl = DEFAULT_PAGES_BASE_URL) {
     displayDate,
     filename,
     dashboardUrl: `${baseUrl.replace(/\/$/, '')}/${filename}`,
+  }
+}
+
+export function assertExpectedDashboard(execution, dashboard, expectedMonitoringDate, expectedFilename) {
+  if (!expectedMonitoringDate || execution.date !== expectedMonitoringDate) {
+    throw new Error(`Data completed divergente: esperada=${expectedMonitoringDate || 'ausente'}; encontrada=${execution.date}.`)
+  }
+  if (!expectedFilename || dashboard.filename !== expectedFilename) {
+    throw new Error(`Dashboard divergente: esperado=${expectedFilename || 'ausente'}; calculado=${dashboard.filename}.`)
   }
 }
 
@@ -138,7 +148,10 @@ async function main() {
     throw new Error(`Nenhuma execução completed encontrada para o fuso ${timezone}.`)
   }
 
+  const expectedMonitoringDate = process.env.EXPECTED_MONITORING_DATE?.trim()
   const dashboard = dashboardDescriptor(execution.date, pagesBaseUrl)
+  const expectedFilename = process.env.EXPECTED_DASHBOARD_FILENAME?.trim()
+  assertExpectedDashboard(execution, dashboard, expectedMonitoringDate, expectedFilename)
   const localDashboardPath = path.resolve(process.cwd(), 'docs', dashboard.filename)
   if (!fs.existsSync(localDashboardPath)) {
     throw new Error(`Arquivo do dashboard não encontrado no checkout: ${localDashboardPath}`)
@@ -147,6 +160,7 @@ async function main() {
   console.log(`[social-dispatch] Validando publicação de ${dashboard.dashboardUrl}`)
   const availability = await waitForPublishedDashboard(dashboard)
 
+  const checkedOutSha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
   const payload = {
     schema_version: 1,
     monitoring_date: dashboard.monitoringDate,
@@ -155,7 +169,7 @@ async function main() {
     dashboard_filename: dashboard.filename,
     timezone,
     source_repository: process.env.GITHUB_REPOSITORY || 'thalesandradepereira/monitoramento-internacional',
-    source_sha: process.env.GITHUB_SHA || '',
+    source_sha: checkedOutSha,
     validated_at: new Date().toISOString(),
   }
 

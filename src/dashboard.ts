@@ -1,4 +1,14 @@
+import { randomBytes } from 'crypto'
 import { Topico } from './summarize'
+
+export function serializeForInlineScript(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/&/g, '\\u0026')
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029')
+}
 
 export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dataStr: string): string {
   const allData = [
@@ -6,14 +16,16 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
     ...topicosEn.map(t => ({ ...t, lang: 'en' }))
   ]
 
-  const dataJson = JSON.stringify(allData)
+  const dataJson = serializeForInlineScript(allData)
+  const scriptNonce = randomBytes(18).toString('base64')
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'nonce-${scriptNonce}'; connect-src 'none'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
   <title>Dashboard - International Monitoring</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-main: #0B0F19;
@@ -26,7 +38,7 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
     }
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background-color: var(--bg-main);
       color: var(--text-main);
       min-height: 100vh;
@@ -263,7 +275,7 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
 
 <header>
   <div class="logo-container">
-    <img src="logo.jpg" alt="TAP Logo" class="logo-img" onerror="this.style.display='none'">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
     <div class="logo-text">Monitoramento<span>Internacional</span></div>
   </div>
   <div class="date-badge">${dataStr}</div>
@@ -312,7 +324,7 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
   </main>
 </div>
 
-<script>
+<script nonce="${scriptNonce}">
   // Injeta os dados originais no frontend
   const data = ${dataJson};
 
@@ -324,9 +336,23 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
   const countEl = document.getElementById('count');
   const clearBtn = document.getElementById('clear-filters');
 
-  // Utility de escape HTML simples para prevenir injections em propriedades sem tratamento
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
   function esc(s) {
-    return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
   }
 
   function populateSelects() {
@@ -386,7 +412,7 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
             <ul>\${bulletList}</ul>
           </div>
           <div class="card-footer">
-            <a href="\${esc(item.link)}" target="_blank" class="read-more">
+            <a href="\${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
               \${readMoreTxt} &rarr;
             </a>
             <span class="source">\${esc(item.fonte)}</span>
@@ -435,18 +461,6 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
   // Initialization
   populateSelects();
   filterData(); // trigger first render
-</script>
-
-<script>
-// Analytics: contador de visitas (Abacus CountAPI - gratuito, sem conta)
-(function(){
-  try {
-    var page = location.pathname.split('/').pop().replace('.html','');
-    if (page && page.indexOf('Dashboard') === 0) {
-      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(page)).catch(function(){});
-    }
-  } catch(e){}
-})();
 </script>
 </body>
 </html>`

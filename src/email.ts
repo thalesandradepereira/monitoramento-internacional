@@ -5,7 +5,21 @@ import { gerarLinkDescadastro } from './unsubscribe'
 import { maskEmail, type RecipientsSource } from './recipients'
 
 function esc(s: string): string {
-  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return (s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function safeLink(value: string, protocols: string[]): string {
+  try {
+    const url = new URL(value)
+    return protocols.includes(url.protocol) ? url.toString() : '#'
+  } catch {
+    return '#'
+  }
 }
 
 function renderNewsBlock(topicos: Topico[], lang: 'pt' | 'en'): string {
@@ -44,7 +58,7 @@ function renderNewsBlock(topicos: Topico[], lang: 'pt' | 'en'): string {
             </ul>
           </div>
           <div>
-            <a href="${esc(t.link)}" style="color: #dc2626; text-decoration: none; font-weight: 500; font-size: 14px;">
+            <a href="${esc(safeLink(t.link, ['https:', 'http:']))}" style="color: #dc2626; text-decoration: none; font-weight: 500; font-size: 14px;">
               🔗 ${readMore}
             </a>
             <span style="color: #9ca3af; font-size: 13px;"> · ${esc(t.fonte)}</span>
@@ -73,6 +87,8 @@ function getFooterHTML(lang: 'pt' | 'en', destEmail: string): string {
   const inviteLink = config.unsubscribeWorkerUrl 
     ? `${config.unsubscribeWorkerUrl}/invite` 
     : `mailto:${config.smtp.user}?subject=${encodeURIComponent("Indicar um colega — Monitoramento Mídia Internacional")}&body=${encodeURIComponent("Olá! Quero indicar o e-mail: \n\n(digite o e-mail do seu colega aqui)")}`
+  const safeInviteLink = safeLink(inviteLink, ['https:', 'http:', 'mailto:'])
+  const safeUnsubscribeLink = safeLink(unsubLink, ['https:', 'http:', 'mailto:'])
 
   const t = lang === 'pt' ? {
     convite: 'Conhece alguém que curtiria? 🤝',
@@ -80,27 +96,27 @@ function getFooterHTML(lang: 'pt' | 'en', destEmail: string): string {
     btnIndicar: 'Indicar Colega',
     madeBy: 'Made by TAP 💌',
     unsub: 'Não quero mais receber',
-    indicarLink: inviteLink,
-    unsubLink: unsubLink
+    indicarLink: safeInviteLink,
+    unsubLink: safeUnsubscribeLink
   } : {
     convite: 'Know someone who would like this? 🤝',
     conviteSub: 'Invite a colleague to receive Global Media Monitoring (but tell them first!).',
     btnIndicar: 'Invite Colleague',
     madeBy: 'Made by TAP 💌',
     unsub: 'I no longer wish to receive this',
-    indicarLink: inviteLink,
-    unsubLink: unsubLink
+    indicarLink: safeInviteLink,
+    unsubLink: safeUnsubscribeLink
   }
 
   return `
     <div style="margin-top: 32px; padding: 24px; background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; text-align: center;">
       <div style="font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 8px;">${esc(t.convite)}</div>
       <div style="font-size: 14px; color: #4b5563; margin-bottom: 20px;">${esc(t.conviteSub)}</div>
-      <a href="${t.indicarLink}" style="display: inline-block; background: #ffffff; color: #9ca3af; border: 1px solid #e5e7eb; text-decoration: none; font-size: 14px; font-weight: 600; padding: 10px 24px; border-radius: 6px; letter-spacing: 0.3px;">${esc(t.btnIndicar)}</a>
+      <a href="${esc(t.indicarLink)}" style="display: inline-block; background: #ffffff; color: #9ca3af; border: 1px solid #e5e7eb; text-decoration: none; font-size: 14px; font-weight: 600; padding: 10px 24px; border-radius: 6px; letter-spacing: 0.3px;">${esc(t.btnIndicar)}</a>
     </div>
     <div style="font-size: 12px; color: #9ca3af; margin-top: 24px; display: flex; justify-content: space-between; align-items: center;">
       <span>${esc(t.madeBy)}</span>
-      <a href="${t.unsubLink}" style="color: #9ca3af; text-decoration: none; font-size: 12px; transition: color 0.2s;">${esc(t.unsub)}</a>
+      <a href="${esc(t.unsubLink)}" style="color: #9ca3af; text-decoration: none; font-size: 12px; transition: color 0.2s;">${esc(t.unsub)}</a>
     </div>
   `
 }
