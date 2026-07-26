@@ -8,6 +8,9 @@ let client: GoogleGenAI | undefined
 
 const UNSUPPORTED_GEMINI_SCHEMA_KEYWORDS = new Set([
   '$schema',
+  'additionalProperties',
+  'minItems',
+  'maxItems',
   'minLength',
   'maxLength',
 ])
