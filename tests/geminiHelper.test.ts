@@ -16,7 +16,7 @@ test('retry reconhece status transitório presente na mensagem', () => {
   assert.equal(isRetryableGeminiError(new Error('invalid API key')), false)
 })
 
-test('schema Gemini remove recursivamente palavras não suportadas e preserva limites aceitos', () => {
+test('schema Gemini mantém somente o subconjunto comprovadamente aceito pela API', () => {
   const schema = {
     $schema: 'https://json-schema.org/draft/2020-12/schema',
     type: 'array',
@@ -39,8 +39,6 @@ test('schema Gemini remove recursivamente palavras não suportadas e preserva li
 
   assert.deepEqual(sanitizeGeminiJsonSchema(schema), {
     type: 'array',
-    minItems: 1,
-    maxItems: 10,
     items: {
       type: 'object',
       properties: {
@@ -50,7 +48,6 @@ test('schema Gemini remove recursivamente palavras não suportadas e preserva li
         },
       },
       required: ['titulo'],
-      additionalProperties: false,
     },
   })
 })

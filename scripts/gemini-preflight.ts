@@ -1,4 +1,4 @@
-import { getGeminiClient } from '../src/geminiHelper'
+import { getGeminiClient, sanitizeGeminiJsonSchema } from '../src/geminiHelper'
 
 const MODEL = 'gemini-3.6-flash'
 const INTERVAL_MS = 4_200
@@ -74,7 +74,21 @@ async function main(): Promise<void> {
     })
   )))
 
-  results.push(await runProbe('Interactions com esquema de triagem mínimo', () => (
+  const zodStyleTriageSchema = sanitizeGeminiJsonSchema({
+    type: 'array',
+    maxItems: 200,
+    items: {
+      type: 'object',
+      properties: {
+        id: { type: 'string', minLength: 1, maxLength: 32 },
+        pais: { type: 'string', minLength: 1, maxLength: 80 },
+      },
+      required: ['id', 'pais'],
+      additionalProperties: false,
+    },
+  })
+
+  results.push(await runProbe('Interactions com esquema de triagem higienizado', () => (
     gemini.interactions.create({
       model: MODEL,
       input: 'Retorne uma lista JSON contendo id "1" e pais "Brasil".',
@@ -82,17 +96,7 @@ async function main(): Promise<void> {
       response_format: {
         type: 'text',
         mime_type: 'application/json',
-        schema: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              id: { type: 'string' },
-              pais: { type: 'string' },
-            },
-            required: ['id', 'pais'],
-          },
-        },
+        schema: zodStyleTriageSchema as Record<string, unknown>,
       },
     })
   )))
