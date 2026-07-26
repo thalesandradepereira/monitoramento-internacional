@@ -5,7 +5,12 @@ function loadConfigWithDryRun(value: string | undefined) {
   if (value === undefined) delete process.env.DRY_RUN
   else process.env.DRY_RUN = value
   delete require.cache[require.resolve('../src/config')]
-  return require('../src/config').config as { dryRun: boolean; cron: string; recipients: { source: string; apiUrl: string } }
+  return require('../src/config').config as {
+    dryRun: boolean
+    cron: string
+    gemini: { models: { triage: string; summary: string; translation: string }; timeoutMs: number }
+    recipients: { source: string; apiUrl: string }
+  }
 }
 
 function withEnv(env: Record<string, string | undefined>, fn: () => void) {
@@ -56,10 +61,45 @@ test('RECIPIENTS_SOURCE padrão permanece github com URL privada configurada', (
   assert.equal(config.recipients.apiUrl, 'https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients')
 })
 
+test('modelos Gemini padrão usam 3.6 Flash na síntese editorial', () => {
+  withEnv({
+    GEMINI_MODEL: undefined,
+    GEMINI_MODEL_TRIAGE: undefined,
+    GEMINI_MODEL_SUMMARY: undefined,
+    GEMINI_MODEL_TRANSLATION: undefined,
+    GEMINI_TIMEOUT_MS: undefined,
+  }, () => {
+    const config = loadConfigWithDryRun(undefined)
+    assert.deepEqual(config.gemini.models, {
+      triage: 'gemini-3.5-flash-lite',
+      summary: 'gemini-3.6-flash',
+      translation: 'gemini-3.5-flash-lite',
+    })
+    assert.equal(config.gemini.timeoutMs, 120000)
+  })
+})
+
+test('GEMINI_MODEL funciona como override global e override por etapa tem precedência', () => {
+  withEnv({
+    GEMINI_MODEL: 'gemini-global',
+    GEMINI_MODEL_TRIAGE: undefined,
+    GEMINI_MODEL_SUMMARY: 'gemini-summary',
+    GEMINI_MODEL_TRANSLATION: undefined,
+  }, () => {
+    const config = loadConfigWithDryRun(undefined)
+    assert.deepEqual(config.gemini.models, {
+      triage: 'gemini-global',
+      summary: 'gemini-summary',
+      translation: 'gemini-global',
+    })
+  })
+})
+
 
 for (const [name, envKey] of [
   ['timeout', 'RECIPIENTS_API_TIMEOUT_MS'],
   ['limite máximo', 'RECIPIENTS_MAX_RECIPIENTS'],
+  ['timeout Gemini', 'GEMINI_TIMEOUT_MS'],
 ] as const) {
   for (const value of ['abc', 'NaN', '0', '-1', '1.5']) {
     test(`${name} de destinatários rejeita valor inválido ${value}`, () => {

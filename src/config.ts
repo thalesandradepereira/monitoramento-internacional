@@ -17,7 +17,18 @@ function positiveIntegerFromEnv(name: string, defaultValue: number): number {
 export const config = {
   gemini: {
     apiKey: process.env.GEMINI_API_KEY || '',
-    model: 'gemini-3.1-flash-lite', // Usando 3.1-flash-lite pois 3.5 está sobrecarregado (503) e 2.0 esgotou cota.
+    models: {
+      triage: process.env.GEMINI_MODEL_TRIAGE?.trim()
+        || process.env.GEMINI_MODEL?.trim()
+        || 'gemini-3.5-flash-lite',
+      summary: process.env.GEMINI_MODEL_SUMMARY?.trim()
+        || process.env.GEMINI_MODEL?.trim()
+        || 'gemini-3.6-flash',
+      translation: process.env.GEMINI_MODEL_TRANSLATION?.trim()
+        || process.env.GEMINI_MODEL?.trim()
+        || 'gemini-3.5-flash-lite',
+    },
+    timeoutMs: positiveIntegerFromEnv('GEMINI_TIMEOUT_MS', 120000),
   },
   smtp: {
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -32,6 +43,7 @@ export const config = {
   timezone: process.env.TIMEZONE || 'America/Sao_Paulo',
   maxTopicos: Number(process.env.MAX_TOPICOS || 50),
   janelaHoras: Number(process.env.JANELA_HORAS || 24),
+  minSuccessfulSources: positiveIntegerFromEnv('MIN_SUCCESSFUL_SOURCES', 7),
   unsubscribeSecret: process.env.UNSUBSCRIBE_SECRET || '',
   unsubscribeWorkerUrl: (process.env.UNSUBSCRIBE_WORKER_URL || '').replace(/\/$/, ''),
   port: Number(process.env.PORT || 3000),

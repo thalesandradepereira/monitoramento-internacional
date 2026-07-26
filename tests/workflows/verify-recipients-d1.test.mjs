@@ -19,12 +19,15 @@ test('temporary D1 verification workflow performs one authenticated GET without 
   assert.doesNotMatch(workflow, /cat "?\$response_file|echo .*RECIPIENTS_API_TOKEN|console\.log\([^\n]*(body|recipients\[|recipients\.|JSON\.stringify)/i)
 })
 
-test('temporary D1 verification workflow validates JSON response and exactly four active recipients', () => {
-  assert.match(workflow, /EXPECTED_ACTIVE_RECIPIENTS: '4'/)
+test('temporary D1 verification validates JSON and accepts an optional expected count', () => {
+  assert.match(workflow, /expected_active_recipients:/)
+  assert.match(workflow, /default: 0/)
+  assert.match(workflow, /EXPECTED_ACTIVE_RECIPIENTS: \$\{\{ inputs\.expected_active_recipients \}\}/)
   assert.match(workflow, /status !== '200'/)
   assert.match(workflow, /Content-Type is not JSON/)
   assert.match(workflow, /JSON is invalid|response JSON is invalid/)
   assert.match(workflow, /activeCount === 0/)
-  assert.match(workflow, /activeCount !== expected/)
+  assert.match(workflow, /expected > 0 && activeCount !== expected/)
+  assert.doesNotMatch(workflow, /EXPECTED_ACTIVE_RECIPIENTS: '4'/)
   assert.match(workflow, /Active recipients received: \$\{activeCount\}/)
 })

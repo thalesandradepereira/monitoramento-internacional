@@ -28,7 +28,7 @@ export default {
       return handleInvite(url)
     }
     if (url.pathname === '/subscribe') {
-      return handleSubscribe(url, env)
+      return handleSubscribe(request, env)
     }
     if (url.pathname === '/') {
       return new Response('Monitoramento Auto — Worker ✅', { status: 200 })
@@ -110,6 +110,28 @@ export async function upsertRecipient(env, email, consentSource = 'worker') {
   return { ok: true, status: 'existing' }
 }
 
+export async function subscribeRecipient(env, email) {
+  const normalized = normalizeEmail(email)
+  if (!normalized) return { ok: false, status: 'invalid' }
+
+  const existing = await requireD1(env)
+    .prepare('SELECT status FROM recipients WHERE email = ?1 LIMIT 1')
+    .bind(normalized)
+    .first()
+
+  if (existing?.status === 'unsubscribed') return { ok: false, status: 'unsubscribed' }
+  if (existing) return { ok: true, status: 'existing' }
+
+  await requireD1(env)
+    .prepare(`INSERT INTO recipients (email, status, consent_source, unsubscribed_at)
+      VALUES (?1, 'active', 'public-subscribe', NULL)
+      ON CONFLICT(email) DO NOTHING`)
+    .bind(normalized)
+    .run()
+
+  return { ok: true, status: 'created' }
+}
+
 export async function unsubscribeRecipient(env, email) {
   const normalized = normalizeEmail(email)
   if (!normalized) return false
@@ -131,11 +153,11 @@ export async function listActiveRecipients(env) {
 
 async function addRecipient(env, email) {
   if (recipientsStorage(env) === 'd1') {
-    const result = await upsertRecipient(env, email, 'public-subscribe')
-    return result.status === 'created' || result.status === 'reactivated'
+    return subscribeRecipient(env, email)
   }
   if (recipientsStorage(env) !== 'github') throw new Error('Invalid RECIPIENTS_STORAGE')
-  return addToRecipients(email, env.GH_PAT_UNSUB, env.GH_REPO)
+  const added = await addToRecipients(email, env.GH_PAT_UNSUB, env.GH_REPO)
+  return { ok: true, status: added ? 'created' : 'existing' }
 }
 
 async function removeRecipient(env, email) {
@@ -378,7 +400,7 @@ async function handleInvite(url) {
     
     <h1>Indicar um colega 🤝</h1>
     <p>Conhece alguém que curtiria o Monitoramento Auto? Adicione o e-mail abaixo (ah, mas avisa a pessoa antes!).</p>
-    <form action="/subscribe" method="GET">
+    <form action="/subscribe" method="POST">
       <label for="email">E-mail do colega:</label>
       <input type="email" id="email" name="email" placeholder="owner.private@example.test" required>
       <button type="submit">Cadastrar Colega</button>
@@ -388,7 +410,7 @@ async function handleInvite(url) {
 
     <h1>Invite a colleague 🤝</h1>
     <p>Know someone who would like the Auto Monitoring? Add their email below (but tell them first!).</p>
-    <form action="/subscribe" method="GET">
+    <form action="/subscribe" method="POST">
       <label for="email_en">Colleague's email:</label>
       <input type="email" id="email_en" name="email" placeholder="email@example.com" required>
       <button type="submit">Invite Colleague</button>
@@ -405,8 +427,21 @@ async function handleInvite(url) {
 }
 
 
-async function handleSubscribe(url, env) {
-  const email = normalizeEmail(url.searchParams.get('email'))
+async function handleSubscribe(request, env) {
+  if (request.method !== 'POST') {
+    return htmlResponse(405,
+      { pt: 'Método não permitido', en: 'Method not allowed' },
+      { pt: 'Use o formulário de inscrição para cadastrar um endereço.', en: 'Use the subscription form to register an address.' }
+    )
+  }
+
+  let email
+  try {
+    const form = await request.formData()
+    email = normalizeEmail(form.get('email'))
+  } catch (_err) {
+    email = null
+  }
 
   if (!email) {
     return htmlResponse(400,
@@ -416,11 +451,17 @@ async function handleSubscribe(url, env) {
   }
 
   try {
-    const added = await addRecipient(env, email)
-    if (added) {
+    const result = await addRecipient(env, email)
+    if (result.status === 'created') {
       return htmlResponse(200,
         { pt: 'Sucesso! 🎉', en: 'Success! 🎉' },
         { pt: `O e-mail <strong>${escHtml(email)}</strong> foi cadastrado! O próximo resumo já será enviado para ele.`, en: `The email <strong>${escHtml(email)}</strong> was successfully registered! They will receive the next summary.` }
+      )
+    }
+    if (result.status === 'unsubscribed') {
+      return htmlResponse(409,
+        { pt: 'Inscrição protegida', en: 'Subscription protected' },
+        { pt: `O e-mail <strong>${escHtml(email)}</strong> foi descadastrado anteriormente e não pode ser reativado por um formulário público.`, en: `The email <strong>${escHtml(email)}</strong> was previously unsubscribed and cannot be reactivated by a public form.` }
       )
     }
     return htmlResponse(200,

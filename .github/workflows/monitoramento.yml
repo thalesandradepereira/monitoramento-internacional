@@ -9,10 +9,10 @@ on:
         type: boolean
         default: true
 
-  # Roda todos os dias às 02:00 no horário de Brasília (America/Sao_Paulo).
-  # O cron do GitHub Actions usa UTC: 05:00 UTC corresponde a 02:00 em Brasília.
+  # Minuto fora do início da hora reduz atrasos de fila do GitHub Actions.
   schedule:
-    - cron: '0 5 * * *'
+    - cron: '17 2 * * *'
+      timezone: 'America/Sao_Paulo'
 
 concurrency:
   group: monitoramento-internacional-diario
@@ -21,6 +21,10 @@ concurrency:
 jobs:
   rodar-monitoramento:
     runs-on: ubuntu-latest
+    outputs:
+      dashboard_created: ${{ steps.monitor.outputs.dashboard_created }}
+      dashboard_filename: ${{ steps.monitor.outputs.dashboard_filename }}
+      monitoring_date: ${{ steps.monitor.outputs.monitoring_date }}
     permissions:
       contents: write
     env:
@@ -40,16 +44,20 @@ jobs:
           node-version: '20'
 
       - name: 📦 Instalar Dependências
-        run: npm ci || npm install
+        run: npm ci
 
       - name: 🚀 Executar Disparo
+        id: monitor
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           UNSUBSCRIBE_SECRET: ${{ secrets.UNSUBSCRIBE_SECRET }}
 
-          GEMINI_MODEL: 'gemini-2.5-flash'
+          GEMINI_MODEL_TRIAGE: 'gemini-3.5-flash-lite'
+          GEMINI_MODEL_SUMMARY: 'gemini-3.6-flash'
+          GEMINI_MODEL_TRANSLATION: 'gemini-3.5-flash-lite'
+          GEMINI_TIMEOUT_MS: '120000'
           DEST_EMAIL: ${{ secrets.DEST_EMAIL }}
           SMTP_HOST: 'smtp.gmail.com'
           SMTP_PORT: '465'
@@ -70,7 +78,7 @@ jobs:
   disparar-publicacao-social:
     name: Acionar publicador social privado
     needs: rodar-monitoramento
-    if: ${{ github.event_name == 'schedule' || inputs.dry_run == false }}
+    if: ${{ needs.rodar-monitoramento.outputs.dashboard_created == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -94,4 +102,6 @@ jobs:
           GITHUB_PAGES_BASE_URL: 'https://thalesandradepereira.github.io/monitoramento-internacional'
           SOCIAL_PUBLISHER_REPOSITORY: ${{ vars.SOCIAL_PUBLISHER_REPOSITORY }}
           SOCIAL_PUBLISHER_TOKEN: ${{ secrets.SOCIAL_PUBLISHER_TOKEN }}
+          EXPECTED_MONITORING_DATE: ${{ needs.rodar-monitoramento.outputs.monitoring_date }}
+          EXPECTED_DASHBOARD_FILENAME: ${{ needs.rodar-monitoramento.outputs.dashboard_filename }}
         run: node scripts/dispatch-social-publisher.mjs

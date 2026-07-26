@@ -14,7 +14,7 @@ Pipeline automatizado que coleta notícias internacionais, seleciona e resume os
 | Item | Configuração atual |
 | --- | --- |
 | Identidade | **Monitoramento Mídia Internacional \| Global Media Monitoring** |
-| Execução agendada | Diariamente às **02:00 em Brasília** (`05:00 UTC`) |
+| Execução agendada | Diariamente às **02:17 em Brasília** |
 | Execução manual | `dry_run=true` por padrão |
 | Fonte editorial | Pesquisas RSS localizadas do Google News |
 | Cobertura | 10 países, janela padrão de 24 horas |
@@ -79,12 +79,12 @@ As consultas de origem cobrem economia, ciência, tecnologia, esportes, conflito
 2. **Janela temporal:** elimina itens fora de `JANELA_HORAS`, cujo padrão é 24 horas.
 3. **Deduplicação da execução:** normaliza títulos e remove repetições encontradas no mesmo ciclo.
 4. **Decodificação de links:** tenta converter URLs intermediárias do Google News em links diretos, com concorrência limitada.
-5. **Triagem Map:** envia lotes de até 200 itens ao Gemini para identificar candidatos por país.
-6. **Reduce por país:** escolhe até 8 notícias por país, traduz os títulos para PT-BR, gera resumos e categorias.
-7. **Tradução:** cria a versão equivalente em inglês.
+5. **Triagem Map:** envia lotes de até 200 itens ao Gemini 3.5 Flash-Lite para identificar candidatos por país.
+6. **Reduce por país:** usa Gemini 3.6 Flash para escolher até 8 notícias por país, traduzir os títulos para PT-BR e gerar resumos e categorias.
+7. **Tradução:** usa Gemini 3.5 Flash-Lite para criar a versão equivalente em inglês.
 8. **Renderização:** produz e-mail e dashboard bilíngues.
 
-O modelo utilizado pelo pipeline é obtido de `config.gemini.model` em `src/config.ts`.
+As três etapas usam modelos estáveis configuráveis separadamente. `GEMINI_MODEL` continua disponível como substituição global por compatibilidade.
 
 ## Saídas geradas
 
@@ -111,7 +111,7 @@ Os arquivos ficam em `docs/` e são acessados pelo GitHub Pages:
 https://thalesandradepereira.github.io/monitoramento-internacional/
 ```
 
-O script atual do dashboard também faz uma chamada a um contador externo de visitas. Remova esse trecho de `src/dashboard.ts` caso o projeto não deva usar telemetria de terceiros.
+O dashboard não carrega fontes, scripts ou telemetria de terceiros. Os dados incorporados no HTML são serializados de modo seguro e o documento aplica uma política de segurança de conteúdo com nonce.
 
 ### E-mail
 
@@ -169,6 +169,12 @@ Os logs exibem somente endereços mascarados e um relatório agregado de tentati
 - `Cache-Control: no-store` nos endpoints administrativos;
 - comparação de tokens resistente a diferenças de tempo;
 - links de descadastro assinados com HMAC-SHA256;
+- inscrição pública somente por `POST`, sem reativação pública de endereços descadastrados;
+- CSP com nonce e serialização segura dos dados incorporados no dashboard;
+- links externos restritos a HTTP(S) e proteção contra `window.opener`;
+- respostas estruturadas e validadas por schema nas chamadas à IA;
+- timeout e retentativas seletivas para falhas transitórias do Gemini;
+- exigência de cobertura mínima das fontes RSS;
 - `concurrency` no GitHub Actions;
 - idempotência persistente por data e fuso horário;
 - bloqueio de reenvio automático após estado `completed`, `failed` ou incerto.
@@ -186,10 +192,11 @@ O workflow de produção está em `.github/workflows/monitoramento.yml` e usa:
 
 ```yaml
 schedule:
-  - cron: '0 5 * * *'
+  - cron: '17 2 * * *'
+    timezone: 'America/Sao_Paulo'
 ```
 
-O cron do GitHub Actions é interpretado em UTC. Para a aplicação local, `CRON_EXPR=0 2 * * *` é interpretado com `TIMEZONE=America/Sao_Paulo`.
+O workflow usa o timezone explícito do GitHub Actions. Para a aplicação local, `CRON_EXPR=0 2 * * *` é interpretado com `TIMEZONE=America/Sao_Paulo`.
 
 > O GitHub Actions pode iniciar alguns minutos depois do horário nominal devido à fila da plataforma.
 
@@ -265,6 +272,10 @@ Use somente em uma operação intencional. Fora do GitHub Actions, os commits e 
 | Variável | Finalidade | Padrão relevante |
 | --- | --- | --- |
 | `GEMINI_API_KEY` | Chave da IA | Obrigatória para processar conteúdo |
+| `GEMINI_MODEL_SUMMARY` | Seleção e resumo editorial | `gemini-3.6-flash` |
+| `GEMINI_MODEL_TRIAGE` | Triagem em grande volume | `gemini-3.5-flash-lite` |
+| `GEMINI_MODEL_TRANSLATION` | Tradução em grande volume | `gemini-3.5-flash-lite` |
+| `GEMINI_TIMEOUT_MS` | Timeout por chamada à IA | `120000` |
 | `SMTP_HOST` | Servidor SMTP | `smtp.gmail.com` |
 | `SMTP_PORT` | Porta SMTP | `465` |
 | `SMTP_SECURE` | TLS implícito | Ativo quando igual a `true` |
@@ -276,6 +287,7 @@ Use somente em uma operação intencional. Fora do GitHub Actions, os commits e 
 | `CRON_EXPR` | Cron da aplicação local | `0 2 * * *` |
 | `TIMEZONE` | Fuso da data operacional | `America/Sao_Paulo` |
 | `JANELA_HORAS` | Janela de coleta | `24` |
+| `MIN_SUCCESSFUL_SOURCES` | Cobertura RSS mínima exigida | `7` |
 | `DAILY_EXECUTION_LOG_PATH` | Registro de idempotência | `state/daily-executions.json` |
 | `UNSUBSCRIBE_WORKER_URL` | URL base do Worker | Configurar explicitamente |
 | `UNSUBSCRIBE_SECRET` | Chave HMAC | Obrigatória para links válidos |
@@ -316,7 +328,7 @@ A configuração está em `worker/wrangler.toml` e usa:
 | --- | --- | --- |
 | `GET /` | Público | Health check simples |
 | `GET /invite` | Público | Formulário bilíngue de indicação |
-| `GET /subscribe?email=...` | Público | Cadastra ou reativa um destinatário no D1 |
+| `POST /subscribe` | Público | Cadastra um novo destinatário; não reativa descadastrados |
 | `GET /unsubscribe?email=...&token=...` | Público com HMAC | Descadastra o endereço |
 | `GET /internal/recipients` | Bearer token | Retorna somente destinatários ativos |
 | `POST /internal/recipients/import` | Bearer token | Importação administrativa limitada |
@@ -342,6 +354,7 @@ npm ci
 npm test
 npx tsc --noEmit
 node --check worker/index.js
+npm audit --audit-level=moderate
 ruby -e "require 'yaml'; Dir['.github/workflows/*.{yml,yaml}'].sort.each { |file| YAML.load_file(file); puts \"ok #{file}\" }"
 git diff --check
 ```
@@ -377,14 +390,12 @@ recipients.txt         Marcador público desativado, sem destinatários
 
 Esta seção descreve o comportamento do código atual e evita que a documentação prometa funcionalidades ainda não concluídas:
 
-1. **Histórico de notícias entre execuções:** `state/news-history.json` está no `.gitignore` e não existe na `main`. A deduplicação funciona dentro da execução atual, mas o histórico de títulos não é persistido entre runners efêmeros do GitHub Actions.
-2. **Seleção do modelo Gemini:** `GEMINI_MODEL` aparece no workflow e no `.env.example`, porém o código atual define o modelo diretamente em `src/config.ts` e não lê essa variável.
-3. **Limite global de tópicos:** `MAX_TOPICOS` existe na configuração, mas não é consumido pela seleção atual. O algoritmo escolhe até 8 itens por país.
-4. **Servidor Express legado:** `src/server.ts` grava no `recipients.txt`; o cadastro oficial de produção é o Worker com D1.
-5. **Código legado de destinatários GitHub:** o Worker ainda contém funções para manipular `recipients.txt`, embora `RECIPIENTS_STORAGE=d1` seja o modo de produção.
-6. **Verificação administrativa com quantidade fixa:** o workflow `verify-recipients-d1.yml` espera uma quantidade configurada no próprio arquivo e deve ser ajustado ou tornado dinâmico quando o cadastro mudar.
-7. **Dashboard público e contador externo:** o conteúdo do dashboard é público e o HTML atual chama um serviço externo de contagem de visitas.
-8. **Licença:** o repositório não possui um arquivo `LICENSE`; portanto, não há licença de reutilização explicitamente declarada.
+1. **Confirmação de inscrição:** novos e-mails ainda são ativados diretamente pelo formulário. Double opt-in exige integrar um serviço transacional que envie o link de confirmação ao proprietário do endereço.
+2. **Limite global de tópicos:** `MAX_TOPICOS` existe na configuração, mas não é consumido pela seleção atual. O algoritmo escolhe até 8 itens por país.
+3. **Servidor Express legado:** `src/server.ts` grava no `recipients.txt`; o cadastro oficial de produção é o Worker com D1.
+4. **Código legado de destinatários GitHub:** o Worker ainda contém funções para manipular `recipients.txt`, embora `RECIPIENTS_STORAGE=d1` seja o modo de produção.
+5. **Dashboard público:** as notícias e os resumos publicados em `docs/` são deliberadamente públicos.
+6. **Licença:** o repositório não possui um arquivo `LICENSE`; portanto, não há licença de reutilização explicitamente declarada.
 
 ## Checklist antes de um envio real manual
 

@@ -26,6 +26,12 @@ function formatDisplayDate(dateIso: string): string {
   return `${day}/${month}/${year}`
 }
 
+function setGitHubOutput(name: string, value: string): void {
+  const outputFile = process.env.GITHUB_OUTPUT
+  if (!outputFile) return
+  fs.appendFileSync(outputFile, `${name}=${value}\n`, 'utf8')
+}
+
 export async function runPipeline() {
   const dryRun = config.dryRun
   const mode = config.executionMode
@@ -36,6 +42,8 @@ export async function runPipeline() {
   let executionFinalized = false
   let emailReport: EmailSendReport = { attempted: 0, sent: 0, failed: 0 }
 
+  setGitHubOutput('dashboard_created', 'false')
+  setGitHubOutput('monitoring_date', zonedNow.date)
   console.log('=== Iniciando Monitoramento Internacional ===')
   console.log(`[modo] ${dryRun ? 'DRY RUN - nenhuma ação externa irreversível será executada' : 'ENVIO REAL'}`)
   console.log(`[agenda] Data operacional ${zonedNow.date} ${zonedNow.time} (${zonedNow.timezone}); modo=${mode}`)
@@ -91,6 +99,8 @@ export async function runPipeline() {
 
       const todayPath = atualizarPaginaHoje(docsDir, dashFilename, dataHoje)
       console.log(`[docs] Link permanente /hoje atualizado em: ${todayPath}`)
+      setGitHubOutput('dashboard_created', 'true')
+      setGitHubOutput('dashboard_filename', dashFilename)
 
       const rootLogoPath = path.resolve(__dirname, '..', 'logo.jpg')
       const docsLogoPath = path.join(docsDir, 'logo.jpg')

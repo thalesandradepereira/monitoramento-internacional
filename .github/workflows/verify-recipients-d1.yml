@@ -2,6 +2,12 @@ name: Verify D1 Recipients
 
 on:
   workflow_dispatch:
+    inputs:
+      expected_active_recipients:
+        description: 'Quantidade esperada; use 0 para validar apenas que a lista não está vazia'
+        required: true
+        type: number
+        default: 0
 
 concurrency:
   group: temporary-verify-recipients-d1
@@ -14,7 +20,7 @@ jobs:
       contents: read
     env:
       RECIPIENTS_API_URL: https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients
-      EXPECTED_ACTIVE_RECIPIENTS: '4'
+      EXPECTED_ACTIVE_RECIPIENTS: ${{ inputs.expected_active_recipients }}
 
     steps:
       - name: Checkout repository
@@ -92,7 +98,11 @@ jobs:
           }
 
           const expected = Number.parseInt(expectedRaw, 10)
-          if (activeCount !== expected) {
+          if (!Number.isInteger(expected) || expected < 0) {
+            console.error('Recipients verification failed: expected count is invalid.')
+            process.exit(1)
+          }
+          if (expected > 0 && activeCount !== expected) {
             console.error(`Recipients verification failed: expected ${expected} active recipients, received ${activeCount}.`)
             process.exit(1)
           }

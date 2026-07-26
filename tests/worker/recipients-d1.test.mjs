@@ -5,6 +5,7 @@ import worker, {
   listActiveRecipients,
   normalizeEmail,
   recipientExists,
+  subscribeRecipient,
   unsubscribeRecipient,
   upsertRecipient,
   validateEmail,
@@ -107,6 +108,33 @@ test('creates, detects duplicate, reactivates, unsubscribes and lists only activ
   assert.deepEqual(await listActiveRecipients(e), ['pessoa@example.com'])
 })
 
+test('public subscription never reactivates a previously unsubscribed recipient', async () => {
+  const e = env()
+  assert.deepEqual(await subscribeRecipient(e, 'Pessoa@Example.com'), { ok: true, status: 'created' })
+  assert.deepEqual(await subscribeRecipient(e, 'pessoa@example.com'), { ok: true, status: 'existing' })
+  assert.equal(await unsubscribeRecipient(e, 'pessoa@example.com'), true)
+  assert.deepEqual(await subscribeRecipient(e, 'pessoa@example.com'), { ok: false, status: 'unsubscribed' })
+  assert.deepEqual(await listActiveRecipients(e), [])
+
+  const form = new FormData()
+  form.set('email', 'pessoa@example.com')
+  const res = await worker.fetch(new Request('https://worker.test/subscribe', { method: 'POST', body: form }), e)
+  assert.equal(res.status, 409)
+  assert.equal(e.DB.rows.get('pessoa@example.com').status, 'unsubscribed')
+})
+
+test('public subscription rejects GET mutations and accepts POST form submissions', async () => {
+  const e = env()
+  const getRes = await worker.fetch(new Request('https://worker.test/subscribe?email=novo@example.com'), e)
+  assert.equal(getRes.status, 405)
+
+  const form = new FormData()
+  form.set('email', 'novo@example.com')
+  const postRes = await worker.fetch(new Request('https://worker.test/subscribe', { method: 'POST', body: form }), e)
+  assert.equal(postRes.status, 200)
+  assert.deepEqual(await listActiveRecipients(e), ['novo@example.com'])
+})
+
 test('internal recipients endpoint rejects missing, incorrect and missing secret bearer', async () => {
   const e = env()
   let res = await worker.fetch(new Request('https://worker.test/internal/recipients'), e)
@@ -186,14 +214,19 @@ test('RECIPIENTS_STORAGE defaults to d1 and fails explicitly without DB instead 
     return new Response(JSON.stringify({ content: btoa(''), sha: 'sha' }), { status: 200 })
   }
   try {
-    const d1DefaultRes = await worker.fetch(new Request('https://worker.test/subscribe?email=novo@example.com'), { GH_PAT_UNSUB: 'fake', GH_REPO: 'owner/repo' })
+    const subscribeRequest = () => new Request('https://worker.test/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'email=novo%40example.com',
+    })
+    const d1DefaultRes = await worker.fetch(subscribeRequest(), { GH_PAT_UNSUB: 'fake', GH_REPO: 'owner/repo' })
     assert.equal(d1DefaultRes.status, 500)
     assert.equal(githubCalled, false)
 
-    const d1ExplicitRes = await worker.fetch(new Request('https://worker.test/subscribe?email=novo@example.com'), { RECIPIENTS_STORAGE: 'd1' })
+    const d1ExplicitRes = await worker.fetch(subscribeRequest(), { RECIPIENTS_STORAGE: 'd1' })
     assert.equal(d1ExplicitRes.status, 500)
 
-    const githubRollbackRes = await worker.fetch(new Request('https://worker.test/subscribe?email=novo@example.com'), { RECIPIENTS_STORAGE: 'github', GH_PAT_UNSUB: 'fake', GH_REPO: 'owner/repo' })
+    const githubRollbackRes = await worker.fetch(subscribeRequest(), { RECIPIENTS_STORAGE: 'github', GH_PAT_UNSUB: 'fake', GH_REPO: 'owner/repo' })
     assert.equal(githubRollbackRes.status, 200)
     assert.equal(githubCalled, true)
   } finally {
