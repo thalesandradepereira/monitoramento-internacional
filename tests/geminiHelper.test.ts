@@ -61,3 +61,10 @@ test('helper usa a Interactions API recomendada para saída estruturada', async 
   assert.match(source, /store:\s*false/)
   assert.doesNotMatch(source, /gemini\.models\.generateContent\(/)
 })
+
+test('helper respeita o teto observado de 5 RPM do modelo editorial gratuito', async () => {
+  const source = await import('node:fs/promises')
+    .then(fs => fs.readFile(new URL('../src/geminiHelper.ts', import.meta.url), 'utf8'))
+
+  assert.match(source, /MIN_REQUEST_INTERVAL_MS\s*=\s*13000/)
+})
