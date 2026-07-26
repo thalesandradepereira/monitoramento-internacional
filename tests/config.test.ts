@@ -46,10 +46,10 @@ test('DRY_RUN=false permite execução real explicitamente', () => {
   assert.equal(config.dryRun, false)
 })
 
-test('cron local padrão usa 05:00 no timezone configurado', () => {
+test('cron local padrão usa 03:00 no timezone configurado', () => {
   delete process.env.CRON_EXPR
   const config = loadConfigWithDryRun(undefined)
-  assert.equal(config.cron, '0 5 * * *')
+  assert.equal(config.cron, '0 3 * * *')
 })
 
 
