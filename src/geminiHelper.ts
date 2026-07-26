@@ -6,6 +6,12 @@ const MIN_REQUEST_INTERVAL_MS = 4100
 
 let client: GoogleGenAI | undefined
 
+const UNSUPPORTED_GEMINI_SCHEMA_KEYWORDS = new Set([
+  '$schema',
+  'minLength',
+  'maxLength',
+])
+
 export function getGeminiClient(): GoogleGenAI {
   if (!config.gemini.apiKey) {
     throw new Error('[gemini] GEMINI_API_KEY não configurada.')
@@ -38,6 +44,21 @@ export function isRetryableGeminiError(error: unknown): boolean {
   return status !== undefined && RETRYABLE_HTTP_STATUSES.has(status)
 }
 
+export function sanitizeGeminiJsonSchema(schema: unknown): unknown {
+  if (Array.isArray(schema)) {
+    return schema.map(item => sanitizeGeminiJsonSchema(item))
+  }
+  if (!schema || typeof schema !== 'object') {
+    return schema
+  }
+
+  return Object.fromEntries(
+    Object.entries(schema)
+      .filter(([key]) => !UNSUPPORTED_GEMINI_SCHEMA_KEYWORDS.has(key))
+      .map(([key, value]) => [key, sanitizeGeminiJsonSchema(value)]),
+  )
+}
+
 function retryDelayMs(error: unknown, attempt: number): number {
   const message = error instanceof Error ? error.message : String(error)
   const retryMatch = message.match(/retry(?:\s+in|\s+after)?\s+(\d+(?:\.\d+)?)s/i)
@@ -54,9 +75,7 @@ export async function generateContentWithRetry(
   retries = 3,
 ): Promise<GenerateContentResponse> {
   const gemini = getGeminiClient()
-  const apiSchema = responseJsonSchema && typeof responseJsonSchema === 'object'
-    ? Object.fromEntries(Object.entries(responseJsonSchema).filter(([key]) => key !== '$schema'))
-    : responseJsonSchema
+  const apiSchema = sanitizeGeminiJsonSchema(responseJsonSchema)
 
   for (let attempt = 1; attempt <= retries; attempt += 1) {
     try {
