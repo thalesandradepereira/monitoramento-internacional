@@ -20,13 +20,13 @@ export const config = {
     models: {
       triage: process.env.GEMINI_MODEL_TRIAGE?.trim()
         || process.env.GEMINI_MODEL?.trim()
-        || 'gemini-3.6-flash',
+        || 'gemini-3.5-flash-lite',
       summary: process.env.GEMINI_MODEL_SUMMARY?.trim()
         || process.env.GEMINI_MODEL?.trim()
         || 'gemini-3.6-flash',
       translation: process.env.GEMINI_MODEL_TRANSLATION?.trim()
         || process.env.GEMINI_MODEL?.trim()
-        || 'gemini-3.6-flash',
+        || 'gemini-3.5-flash-lite',
     },
     timeoutMs: positiveIntegerFromEnv('GEMINI_TIMEOUT_MS', 120000),
   },
@@ -39,7 +39,7 @@ export const config = {
   },
   fromName: process.env.FROM_NAME || 'Monitoramento Mídia Internacional',
   destEmail: process.env.DEST_EMAIL || '',
-  cron: process.env.CRON_EXPR || '0 2 * * *',
+  cron: process.env.CRON_EXPR || '0 5 * * *',
   timezone: process.env.TIMEZONE || 'America/Sao_Paulo',
   maxTopicos: Number(process.env.MAX_TOPICOS || 50),
   janelaHoras: Number(process.env.JANELA_HORAS || 24),

@@ -2,7 +2,9 @@ import { ApiError, GoogleGenAI } from '@google/genai'
 import { config } from './config'
 
 const RETRYABLE_HTTP_STATUSES = new Set([408, 429, 500, 502, 503, 504])
-const MIN_REQUEST_INTERVAL_MS = 4100
+// O modelo editorial gratuito admite 5 RPM no projeto atual. Treze segundos
+// preservam margem sobre a janela de 60 segundos e evitam rajadas de 429.
+const MIN_REQUEST_INTERVAL_MS = 13000
 
 let client: GoogleGenAI | undefined
 

@@ -14,7 +14,7 @@ Pipeline automatizado que coleta notícias internacionais, seleciona e resume os
 | Item | Configuração atual |
 | --- | --- |
 | Identidade | **Monitoramento Mídia Internacional \| Global Media Monitoring** |
-| Execução agendada | Diariamente às **02:17 em Brasília** |
+| Execução agendada | Diariamente às **05:17 em Brasília** |
 | Execução manual | `dry_run=true` por padrão |
 | Fonte editorial | Pesquisas RSS localizadas do Google News |
 | Cobertura | 10 países, janela padrão de 24 horas |
@@ -192,11 +192,11 @@ O workflow de produção está em `.github/workflows/monitoramento.yml` e usa:
 
 ```yaml
 schedule:
-  - cron: '17 2 * * *'
+  - cron: '17 5 * * *'
     timezone: 'America/Sao_Paulo'
 ```
 
-O workflow usa o timezone explícito do GitHub Actions. Para a aplicação local, `CRON_EXPR=0 2 * * *` é interpretado com `TIMEZONE=America/Sao_Paulo`.
+O workflow usa o timezone explícito do GitHub Actions. Para a aplicação local, `CRON_EXPR=0 5 * * *` é interpretado com `TIMEZONE=America/Sao_Paulo`. O horário foi posicionado depois da renovação diária da cota gratuita do Gemini, que ocorre à meia-noite no fuso do Pacífico, preservando margem operacional em Brasília.
 
 > O GitHub Actions pode iniciar alguns minutos depois do horário nominal devido à fila da plataforma.
 
@@ -273,8 +273,8 @@ Use somente em uma operação intencional. Fora do GitHub Actions, os commits e 
 | --- | --- | --- |
 | `GEMINI_API_KEY` | Chave da IA | Obrigatória para processar conteúdo |
 | `GEMINI_MODEL_SUMMARY` | Seleção e resumo editorial | `gemini-3.6-flash` |
-| `GEMINI_MODEL_TRIAGE` | Triagem em grande volume | `gemini-3.6-flash` |
-| `GEMINI_MODEL_TRANSLATION` | Tradução em grande volume | `gemini-3.6-flash` |
+| `GEMINI_MODEL_TRIAGE` | Triagem em grande volume | `gemini-3.5-flash-lite` |
+| `GEMINI_MODEL_TRANSLATION` | Tradução em grande volume | `gemini-3.5-flash-lite` |
 | `GEMINI_TIMEOUT_MS` | Timeout por chamada à IA | `120000` |
 | `SMTP_HOST` | Servidor SMTP | `smtp.gmail.com` |
 | `SMTP_PORT` | Porta SMTP | `465` |
@@ -284,7 +284,7 @@ Use somente em uma operação intencional. Fora do GitHub Actions, os commits e 
 | `FROM_NAME` | Nome do remetente | `Monitoramento Mídia Internacional` |
 | `DRY_RUN` | Bloqueia ações irreversíveis | Seguro por padrão; somente `false` envia |
 | `EXECUTION_MODE` | `scheduled`, `manual` ou `local` | `local` |
-| `CRON_EXPR` | Cron da aplicação local | `0 2 * * *` |
+| `CRON_EXPR` | Cron da aplicação local | `0 5 * * *` |
 | `TIMEZONE` | Fuso da data operacional | `America/Sao_Paulo` |
 | `JANELA_HORAS` | Janela de coleta | `24` |
 | `MIN_SUCCESSFUL_SOURCES` | Cobertura RSS mínima exigida | `7` |
