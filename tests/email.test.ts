@@ -31,12 +31,23 @@ test('logs de envio não expõem e-mails completos e o módulo não recarrega de
   console.error = (...args: unknown[]) => { logs.push(args.map(String).join(' ')) }
   try {
     const { enviarEmail } = require('../src/email') as typeof import('../src/email')
-    const report = await enviarEmail([], [], '01/01/2099', ['***REMOVED-RECIPIENT-PII***'], 'd1')
+    const maliciousTopic = [{
+      fonte: '<script>fonte</script>',
+      pais: 'Brasil',
+      titulo: '<script>título</script>',
+      resumo: '- resumo',
+      link: 'javascript:alert("xss")',
+      categoria: 'GERAL',
+    }]
+    const report = await enviarEmail(maliciousTopic, maliciousTopic, '01/01/2099', ['***REMOVED-RECIPIENT-PII***'], 'd1')
     assert.ok(report.attempted > 0)
     assert.equal(report.sent, report.attempted)
     assert.equal(report.failed, 0)
     assert.equal(sendMailCalls.length, report.attempted)
     assert.equal(fetchCalls, 0)
+    const sentHtml = (sendMailCalls[0] as { html: string }).html
+    assert.equal(sentHtml.includes('href="javascript:'), false)
+    assert.match(sentHtml, /&lt;script&gt;título&lt;\/script&gt;/)
   } finally {
     console.log = originalLog
     console.error = originalError

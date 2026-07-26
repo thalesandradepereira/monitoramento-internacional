@@ -1,17 +1,20 @@
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import { z } from 'zod'
 import { config } from './config'
 import { Topico } from './summarize'
 import { generateContentWithRetry, cleanGeminiJson } from './geminiHelper'
 
-const genAI = new GoogleGenerativeAI(config.gemini.apiKey)
+const translatedTopicSchema = z.object({
+  fonte: z.string().min(1).max(300),
+  pais: z.string().min(1).max(100),
+  titulo: z.string().min(1).max(500),
+  resumo: z.string().min(1).max(3000),
+  link: z.string().min(1).max(4000),
+  categoria: z.string().min(1).max(100).optional(),
+}).strict()
 
 export async function traduzirParaIngles(topicos: Topico[]): Promise<Topico[]> {
   if (topicos.length === 0) return []
 
-  const model = genAI.getGenerativeModel({ 
-    model: config.gemini.model,
-    generationConfig: { responseMimeType: "application/json" }
-  })
   const topicosEn: Topico[] = []
   const TAMANHO_LOTE = 15
 
@@ -35,17 +38,23 @@ Output strictly in JSON array format:
 `
 
     try {
-      const result = await generateContentWithRetry(model, prompt)
-      const text = result.response.text() || '[]'
+      const loteSchema = z.array(translatedTopicSchema).length(lote.length)
+      const result = await generateContentWithRetry(
+        config.gemini.models.translation,
+        prompt,
+        z.toJSONSchema(loteSchema),
+      )
+      const text = result.text || '[]'
       const parsedText = cleanGeminiJson(text)
-      const arr = JSON.parse(parsedText)
+      const arr = loteSchema.parse(JSON.parse(parsedText))
       
-      if (Array.isArray(arr)) {
-        topicosEn.push(...arr)
-      } else {
-        console.warn(`[translate] Lote não retornou array, usando original (PT-BR) como fallback.`)
-        topicosEn.push(...lote)
+      const preservesImmutableFields = arr.every((item, index) => (
+        item.link === lote[index].link && item.fonte === lote[index].fonte
+      ))
+      if (!preservesImmutableFields) {
+        throw new Error('A tradução alterou link ou fonte imutável.')
       }
+      topicosEn.push(...arr)
     } catch (err) {
       console.error('[translate] erro ao parsear JSON do Gemini para um lote:', err)
       // Fallback para o português para este lote específico

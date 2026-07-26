@@ -16,13 +16,21 @@ export interface Noticia {
   data: Date
 }
 
-function normalizeTitle(title: string): string {
-  return title.toLowerCase().replace(/[^a-z0-9]/gi, '').trim()
+export function normalizeTitle(title: string): string {
+  return title
+    .normalize('NFKC')
+    .toLocaleLowerCase()
+    .replace(/[\p{P}\p{S}\s]+/gu, '')
+    .trim()
+}
+
+export function newsHistoryKey(title: string): string {
+  return normalizeTitle(title).slice(0, 160)
 }
 
 export async function buscarNoticias(): Promise<Noticia[]> {
   const corte = Date.now() - config.janelaHoras * 60 * 60 * 1000
-  const history = getSentNewsHistory().map(normalizeTitle)
+  const history = getSentNewsHistory().map(newsHistoryKey).filter(Boolean)
   const historySet = new Set(history)
 
   const resultados = await Promise.allSettled(
@@ -59,17 +67,26 @@ export async function buscarNoticias(): Promise<Noticia[]> {
   )
 
   const noticias: Noticia[] = []
+  const successfulSources = resultados.filter(result => result.status === 'fulfilled').length
   resultados.forEach((r, i) => {
     if (r.status === 'fulfilled') noticias.push(...r.value)
     else console.warn(`[fetch] fonte falhou: ${FONTES_RSS[i].nome} — ${r.reason?.message || r.reason}`)
   })
+
+  if (config.minSuccessfulSources > FONTES_RSS.length) {
+    throw new Error(`[fetch] MIN_SUCCESSFUL_SOURCES=${config.minSuccessfulSources} excede as ${FONTES_RSS.length} fontes configuradas.`)
+  }
+  if (successfulSources < config.minSuccessfulSources) {
+    throw new Error(`[fetch] Cobertura insuficiente: ${successfulSources}/${FONTES_RSS.length} fontes responderam; mínimo=${config.minSuccessfulSources}.`)
+  }
 
   // Dedup e histórico
   const vistos = new Set<string>()
   const unicas = noticias
     .sort((a, b) => b.data.getTime() - a.data.getTime())
     .filter((n) => {
-      const chave = normalizeTitle(n.titulo).slice(0, 80)
+      const chave = newsHistoryKey(n.titulo)
+      if (!chave) return false
       if (vistos.has(chave) || historySet.has(chave)) return false
       vistos.add(chave)
       return true

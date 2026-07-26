@@ -13,7 +13,6 @@ cron.schedule(
     await runPipeline()
   },
   {
-    scheduled: true,
     timezone: config.timezone,
   }
 )

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
+  assertExpectedDashboard,
   dashboardDescriptor,
   dispatchPrivatePublisher,
   selectLatestCompletedExecution,
@@ -31,6 +32,26 @@ test('dashboardDescriptor usa a data operacional recebida, sem somar dias', () =
     filename: 'Dashboard-Monitoramento-18-07-2026.html',
     dashboardUrl: 'https://example.test/base/Dashboard-Monitoramento-18-07-2026.html',
   })
+})
+
+test('assertExpectedDashboard bloqueia reuso de execução ou arquivo divergente', () => {
+  const execution = { date: '2026-07-18' }
+  const dashboard = dashboardDescriptor(execution.date)
+
+  assert.doesNotThrow(() => assertExpectedDashboard(
+    execution,
+    dashboard,
+    '2026-07-18',
+    'Dashboard-Monitoramento-18-07-2026.html',
+  ))
+  assert.throws(
+    () => assertExpectedDashboard(execution, dashboard, '2026-07-17', dashboard.filename),
+    /Data completed divergente/,
+  )
+  assert.throws(
+    () => assertExpectedDashboard(execution, dashboard, execution.date, 'outro.html'),
+    /Dashboard divergente/,
+  )
 })
 
 test('waitForPublishedDashboard repete até receber HTML da data correta', async () => {
