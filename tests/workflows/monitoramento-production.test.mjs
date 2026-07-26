@@ -24,10 +24,10 @@ test('production workflow keeps safe scheduling, dry-run dispatch, and daily ide
   assert.doesNotMatch(workflow, /npm ci \|\| npm install/)
 })
 
-test('production workflow uses Gemini 3.6 for editorial synthesis and economical models for bulk stages', () => {
-  assert.match(workflow, /GEMINI_MODEL_TRIAGE: 'gemini-3\.5-flash-lite'/)
+test('production workflow uses Gemini 3.6 Flash in every AI stage', () => {
+  assert.match(workflow, /GEMINI_MODEL_TRIAGE: 'gemini-3\.6-flash'/)
   assert.match(workflow, /GEMINI_MODEL_SUMMARY: 'gemini-3\.6-flash'/)
-  assert.match(workflow, /GEMINI_MODEL_TRANSLATION: 'gemini-3\.5-flash-lite'/)
+  assert.match(workflow, /GEMINI_MODEL_TRANSLATION: 'gemini-3\.6-flash'/)
   assert.match(workflow, /GEMINI_TIMEOUT_MS: '120000'/)
   assert.doesNotMatch(workflow, /GEMINI_MODEL: 'gemini-2\.5-flash'/)
 })

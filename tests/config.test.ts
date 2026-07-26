@@ -61,7 +61,7 @@ test('RECIPIENTS_SOURCE padrão permanece github com URL privada configurada', (
   assert.equal(config.recipients.apiUrl, 'https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients')
 })
 
-test('modelos Gemini padrão usam 3.6 Flash na síntese editorial', () => {
+test('modelos Gemini padrão usam 3.6 Flash em todas as etapas', () => {
   withEnv({
     GEMINI_MODEL: undefined,
     GEMINI_MODEL_TRIAGE: undefined,
@@ -71,9 +71,9 @@ test('modelos Gemini padrão usam 3.6 Flash na síntese editorial', () => {
   }, () => {
     const config = loadConfigWithDryRun(undefined)
     assert.deepEqual(config.gemini.models, {
-      triage: 'gemini-3.5-flash-lite',
+      triage: 'gemini-3.6-flash',
       summary: 'gemini-3.6-flash',
-      translation: 'gemini-3.5-flash-lite',
+      translation: 'gemini-3.6-flash',
     })
     assert.equal(config.gemini.timeoutMs, 120000)
   })
