@@ -1,4 +1,4 @@
-import { ApiError, GoogleGenAI, type GenerateContentResponse } from '@google/genai'
+import { ApiError, GoogleGenAI } from '@google/genai'
 import { config } from './config'
 
 const RETRYABLE_HTTP_STATUSES = new Set([408, 429, 500, 502, 503, 504])
@@ -11,6 +11,10 @@ const UNSUPPORTED_GEMINI_SCHEMA_KEYWORDS = new Set([
   'minLength',
   'maxLength',
 ])
+
+type GeminiStructuredResponse = {
+  text?: string
+}
 
 export function getGeminiClient(): GoogleGenAI {
   if (!config.gemini.apiKey) {
@@ -73,7 +77,7 @@ export async function generateContentWithRetry(
   prompt: string,
   responseJsonSchema?: unknown,
   retries = 3,
-): Promise<GenerateContentResponse> {
+): Promise<GeminiStructuredResponse> {
   const gemini = getGeminiClient()
   const apiSchema = sanitizeGeminiJsonSchema(responseJsonSchema)
 
@@ -82,14 +86,17 @@ export async function generateContentWithRetry(
       console.log(`[gemini] modelo=${model}; tentativa=${attempt}/${retries}; aguardando intervalo preventivo`)
       await new Promise(resolve => setTimeout(resolve, MIN_REQUEST_INTERVAL_MS))
 
-      return await gemini.models.generateContent({
+      const response = await gemini.interactions.create({
         model,
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          responseJsonSchema: apiSchema,
+        input: prompt,
+        store: false,
+        response_format: {
+          type: 'text',
+          mime_type: 'application/json',
+          ...(apiSchema && typeof apiSchema === 'object' ? { schema: apiSchema } : {}),
         },
       })
+      return { text: response.output_text }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       const retryable = isRetryableGeminiError(error)

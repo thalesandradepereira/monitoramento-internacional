@@ -54,3 +54,13 @@ test('schema Gemini remove recursivamente palavras não suportadas e preserva li
     },
   })
 })
+
+test('helper usa a Interactions API recomendada para saída estruturada', async () => {
+  const source = await import('node:fs/promises')
+    .then(fs => fs.readFile(new URL('../src/geminiHelper.ts', import.meta.url), 'utf8'))
+
+  assert.match(source, /gemini\.interactions\.create\(/)
+  assert.match(source, /response_format:/)
+  assert.match(source, /store:\s*false/)
+  assert.doesNotMatch(source, /gemini\.models\.generateContent\(/)
+})
