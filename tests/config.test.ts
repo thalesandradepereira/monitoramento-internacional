@@ -46,10 +46,10 @@ test('DRY_RUN=false permite execução real explicitamente', () => {
   assert.equal(config.dryRun, false)
 })
 
-test('cron local padrão usa 02:00 no timezone configurado', () => {
+test('cron local padrão usa 05:00 no timezone configurado', () => {
   delete process.env.CRON_EXPR
   const config = loadConfigWithDryRun(undefined)
-  assert.equal(config.cron, '0 2 * * *')
+  assert.equal(config.cron, '0 5 * * *')
 })
 
 
@@ -61,7 +61,7 @@ test('RECIPIENTS_SOURCE padrão permanece github com URL privada configurada', (
   assert.equal(config.recipients.apiUrl, 'https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients')
 })
 
-test('modelos Gemini padrão usam 3.6 Flash em todas as etapas', () => {
+test('modelos Gemini padrão reservam 3.6 Flash para a síntese editorial', () => {
   withEnv({
     GEMINI_MODEL: undefined,
     GEMINI_MODEL_TRIAGE: undefined,
@@ -71,9 +71,9 @@ test('modelos Gemini padrão usam 3.6 Flash em todas as etapas', () => {
   }, () => {
     const config = loadConfigWithDryRun(undefined)
     assert.deepEqual(config.gemini.models, {
-      triage: 'gemini-3.6-flash',
+      triage: 'gemini-3.5-flash-lite',
       summary: 'gemini-3.6-flash',
-      translation: 'gemini-3.6-flash',
+      translation: 'gemini-3.5-flash-lite',
     })
     assert.equal(config.gemini.timeoutMs, 120000)
   })

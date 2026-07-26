@@ -14,9 +14,9 @@ test('production workflow uses D1 as the recipients source', () => {
 test('production workflow keeps safe scheduling, dry-run dispatch, and daily idempotence controls', () => {
   assert.match(workflow, /default: true/)
   assert.match(workflow, /DRY_RUN: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.dry_run == true && 'true' \|\| 'false' \}\}/)
-  assert.match(workflow, /cron: '17 2 \* \* \*'/)
+  assert.match(workflow, /cron: '17 5 \* \* \*'/)
   assert.match(workflow, /timezone: 'America\/Sao_Paulo'/)
-  assert.match(workflow, /CRON_EXPR: '0 2 \* \* \*'/)
+  assert.match(workflow, /CRON_EXPR: '0 5 \* \* \*'/)
   assert.match(workflow, /TIMEZONE: 'America\/Sao_Paulo'/)
   assert.match(workflow, /DAILY_EXECUTION_LOG_PATH: 'state\/daily-executions\.json'/)
   assert.match(workflow, /^concurrency:\n  group: monitoramento-internacional-diario\n  cancel-in-progress: false/m)
@@ -24,10 +24,10 @@ test('production workflow keeps safe scheduling, dry-run dispatch, and daily ide
   assert.doesNotMatch(workflow, /npm ci \|\| npm install/)
 })
 
-test('production workflow uses Gemini 3.6 Flash in every AI stage', () => {
-  assert.match(workflow, /GEMINI_MODEL_TRIAGE: 'gemini-3\.6-flash'/)
+test('production workflow reserves Gemini 3.6 Flash for editorial synthesis', () => {
+  assert.match(workflow, /GEMINI_MODEL_TRIAGE: 'gemini-3\.5-flash-lite'/)
   assert.match(workflow, /GEMINI_MODEL_SUMMARY: 'gemini-3\.6-flash'/)
-  assert.match(workflow, /GEMINI_MODEL_TRANSLATION: 'gemini-3\.6-flash'/)
+  assert.match(workflow, /GEMINI_MODEL_TRANSLATION: 'gemini-3\.5-flash-lite'/)
   assert.match(workflow, /GEMINI_TIMEOUT_MS: '120000'/)
   assert.doesNotMatch(workflow, /GEMINI_MODEL: 'gemini-2\.5-flash'/)
 })
