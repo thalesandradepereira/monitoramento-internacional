@@ -273,8 +273,8 @@ Use somente em uma operação intencional. Fora do GitHub Actions, os commits e 
 | --- | --- | --- |
 | `GEMINI_API_KEY` | Chave da IA | Obrigatória para processar conteúdo |
 | `GEMINI_MODEL_SUMMARY` | Seleção e resumo editorial | `gemini-3.6-flash` |
-| `GEMINI_MODEL_TRIAGE` | Triagem em grande volume | `gemini-3.5-flash-lite` |
-| `GEMINI_MODEL_TRANSLATION` | Tradução em grande volume | `gemini-3.5-flash-lite` |
+| `GEMINI_MODEL_TRIAGE` | Triagem em grande volume | `gemini-3.6-flash` |
+| `GEMINI_MODEL_TRANSLATION` | Tradução em grande volume | `gemini-3.6-flash` |
 | `GEMINI_TIMEOUT_MS` | Timeout por chamada à IA | `120000` |
 | `SMTP_HOST` | Servidor SMTP | `smtp.gmail.com` |
 | `SMTP_PORT` | Porta SMTP | `465` |

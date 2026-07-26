@@ -56,7 +56,7 @@ export async function resumirNoticias(noticias: Noticia[]): Promise<Topico[]> {
   // ==========================================
   // PASSO 1: TRIAGEM DE CANDIDATOS (MAP)
   // ==========================================
-  // A triagem usa o modelo Flash-Lite em lotes para controlar quota e truncamento.
+  // A triagem usa o modelo Flash em lotes para controlar quota e truncamento.
   const TAMANHO_LOTE_TRIAGEM = 200 
   const noticiasComId = noticias.map((n, idx) => ({ ...n, id: idx.toString() }))
   const lotes: typeof noticiasComId[] = []

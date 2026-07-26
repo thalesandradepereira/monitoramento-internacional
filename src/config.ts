@@ -20,13 +20,13 @@ export const config = {
     models: {
       triage: process.env.GEMINI_MODEL_TRIAGE?.trim()
         || process.env.GEMINI_MODEL?.trim()
-        || 'gemini-3.5-flash-lite',
+        || 'gemini-3.6-flash',
       summary: process.env.GEMINI_MODEL_SUMMARY?.trim()
         || process.env.GEMINI_MODEL?.trim()
         || 'gemini-3.6-flash',
       translation: process.env.GEMINI_MODEL_TRANSLATION?.trim()
         || process.env.GEMINI_MODEL?.trim()
-        || 'gemini-3.5-flash-lite',
+        || 'gemini-3.6-flash',
     },
     timeoutMs: positiveIntegerFromEnv('GEMINI_TIMEOUT_MS', 120000),
   },
