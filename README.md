@@ -24,7 +24,7 @@ Pipeline automatizado que coleta notícias internacionais, seleciona e resume os
 | Item | Configuração atual |
 | --- | --- |
 | Identidade | **Monitoramento Mídia Internacional \| Global Media Monitoring** |
-| Execução agendada | Principal às **03:17 em Brasília**, com recuperação idempotente às **04:17** |
+| Execução agendada | Principal às **02:17 em Brasília**, com recuperação idempotente às **03:17** |
 | Execução manual | `dry_run=true` por padrão |
 | Fonte editorial | Pesquisas RSS localizadas do Google News |
 | Cobertura | 10 países, janela padrão de 24 horas |
@@ -263,17 +263,17 @@ O workflow de produção está em `.github/workflows/monitoramento.yml` e usa um
 
 ```yaml
 schedule:
-  - cron: '17 3 * * *'
+  - cron: '17 2 * * *'
     timezone: 'America/Sao_Paulo'
-  - cron: '17 4 * * *'
+  - cron: '17 3 * * *'
     timezone: 'America/Sao_Paulo'
 ```
 
-O workflow usa o timezone explícito do GitHub Actions. A segunda agenda recupera falhas transitórias ou um disparo não iniciado pela plataforma; a idempotência encerra sem reenviar quando o dia já está `completed`. Para a aplicação local, `CRON_EXPR=0 3 * * *` é interpretado com `TIMEZONE=America/Sao_Paulo`.
+O workflow usa o timezone explícito do GitHub Actions. A segunda agenda recupera falhas transitórias ou um disparo não iniciado pela plataforma; a idempotência encerra sem reenviar quando o dia já está `completed`. Para a aplicação local, `CRON_EXPR=17 2 * * *` é interpretado com `TIMEZONE=America/Sao_Paulo`.
 
 > O GitHub Actions pode iniciar alguns minutos depois do horário nominal devido à fila da plataforma.
 
-> **Cota do Gemini:** 03:17 em Brasília ocorre antes da renovação diária observada no projeto, próxima das 04:00 no horário de Brasília. Evite execuções reais ou `dry_run` adicionais após a renovação do dia anterior quando for necessário preservar cota para o disparo agendado.
+> **Cota do Gemini:** 02:17 em Brasília ocorre antes da renovação diária observada no projeto, próxima das 04:00 no horário de Brasília. Evite execuções reais ou `dry_run` adicionais após a renovação do dia anterior quando for necessário preservar cota para o disparo agendado.
 
 ## Idempotência diária
 
@@ -378,7 +378,7 @@ Use somente em uma operação intencional. Fora do GitHub Actions, os commits e 
 | `FROM_NAME` | Nome do remetente | `Monitoramento Mídia Internacional` |
 | `DRY_RUN` | Bloqueia ações irreversíveis | Seguro por padrão; somente `false` envia |
 | `EXECUTION_MODE` | `scheduled`, `manual` ou `local` | `local` |
-| `CRON_EXPR` | Cron da aplicação local | `0 3 * * *` |
+| `CRON_EXPR` | Cron da aplicação local | `17 2 * * *` |
 | `TIMEZONE` | Fuso da data operacional | `America/Sao_Paulo` |
 | `JANELA_HORAS` | Janela de coleta | `24` |
 | `MIN_SUCCESSFUL_SOURCES` | Cobertura RSS mínima exigida | `7` |
@@ -496,7 +496,7 @@ recipients.txt         Marcador público desativado, sem destinatários
 | Proteção de cota | Chamadas sequenciais, intervalo de 13 segundos e retry seletivo |
 | Smoke test isolado | Um único destinatário validado sem publicar HTML nem alterar estado |
 | Limpeza pós-teste | Workflow e scripts temporários removidos após a validação |
-| Agendamento | Execução diária configurada para 03:17 em Brasília |
+| Agendamento | Execução diária configurada para 02:17 em Brasília |
 
 ## Limitações e débitos técnicos atuais
 
@@ -508,7 +508,7 @@ Esta seção descreve o comportamento do código atual e evita que a documentaç
 4. **Código legado de destinatários GitHub:** o Worker ainda contém funções para manipular `recipients.txt`, embora `RECIPIENTS_STORAGE=d1` seja o modo de produção.
 5. **Dashboard público:** as notícias e os resumos publicados em `docs/` são deliberadamente públicos.
 6. **Conteúdo usado na síntese:** a decisão editorial e o resumo recebem atualmente os títulos candidatos, não o corpo integral das reportagens. IDs, links e fontes são preservados e a estrutura é validada, mas grounding integral exige extrair e fornecer o conteúdo das matérias.
-7. **Cota gratuita:** o pacing reduz rajadas, mas limites de RPM, TPM e RPD continuam externos ao sistema. O horário de 03:17 antecede a renovação diária observada no projeto.
+7. **Cota gratuita:** o pacing reduz rajadas, mas limites de RPM, TPM e RPD continuam externos ao sistema. O horário de 02:17 antecede a renovação diária observada no projeto.
 8. **Fallback de provedor:** NVIDIA NIM, OpenAI e GitHub Models foram avaliados, mas ainda não fazem parte do código de produção. O pipeline atual depende da disponibilidade do Gemini.
 9. **Licença:** o repositório não possui um arquivo `LICENSE`; portanto, não há licença de reutilização explicitamente declarada.
 
