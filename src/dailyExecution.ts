@@ -95,6 +95,10 @@ export function assertCanStartRealExecution(date: string): void {
   }
 
   if (sameDay.state === 'failed') {
+    if (sameDay.attempted === 0 && sameDay.sent === 0) {
+      console.warn(`[idempotencia] Falha anterior de ${date} ocorreu antes de qualquer tentativa de entrega; nova tentativa real permitida.`)
+      return
+    }
     throw new Error(`[idempotencia] Envio real de ${date} (${config.timezone}) já registrado com falha. Reenvio automático bloqueado para evitar duplicidade.`)
   }
 
