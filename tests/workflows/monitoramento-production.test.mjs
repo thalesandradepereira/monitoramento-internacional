@@ -15,6 +15,7 @@ test('production workflow keeps safe scheduling, dry-run dispatch, and daily ide
   assert.match(workflow, /default: true/)
   assert.match(workflow, /DRY_RUN: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.dry_run == true && 'true' \|\| 'false' \}\}/)
   assert.match(workflow, /cron: '17 3 \* \* \*'/)
+  assert.match(workflow, /cron: '17 4 \* \* \*'/)
   assert.match(workflow, /timezone: 'America\/Sao_Paulo'/)
   assert.match(workflow, /CRON_EXPR: '0 3 \* \* \*'/)
   assert.match(workflow, /TIMEZONE: 'America\/Sao_Paulo'/)

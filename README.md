@@ -24,7 +24,7 @@ Pipeline automatizado que coleta notícias internacionais, seleciona e resume os
 | Item | Configuração atual |
 | --- | --- |
 | Identidade | **Monitoramento Mídia Internacional \| Global Media Monitoring** |
-| Execução agendada | Diariamente às **03:17 em Brasília** |
+| Execução agendada | Principal às **03:17 em Brasília**, com recuperação idempotente às **04:17** |
 | Execução manual | `dry_run=true` por padrão |
 | Fonte editorial | Pesquisas RSS localizadas do Google News |
 | Cobertura | 10 países, janela padrão de 24 horas |
@@ -259,15 +259,17 @@ O gatilho não é executado em `dry_run`, em execuções sem novo dashboard ou q
 | Manual real | `workflow_dispatch` com `dry_run=false` | `false` | Sim | Sim | Sim |
 | Local padrão | `npm run once` sem `DRY_RUN=false` | `true` | Não | Não | Não |
 
-O workflow de produção está em `.github/workflows/monitoramento.yml` e usa:
+O workflow de produção está em `.github/workflows/monitoramento.yml` e usa uma execução principal e uma recuperação automática:
 
 ```yaml
 schedule:
   - cron: '17 3 * * *'
     timezone: 'America/Sao_Paulo'
+  - cron: '17 4 * * *'
+    timezone: 'America/Sao_Paulo'
 ```
 
-O workflow usa o timezone explícito do GitHub Actions. Para a aplicação local, `CRON_EXPR=0 3 * * *` é interpretado com `TIMEZONE=America/Sao_Paulo`.
+O workflow usa o timezone explícito do GitHub Actions. A segunda agenda recupera falhas transitórias ou um disparo não iniciado pela plataforma; a idempotência encerra sem reenviar quando o dia já está `completed`. Para a aplicação local, `CRON_EXPR=0 3 * * *` é interpretado com `TIMEZONE=America/Sao_Paulo`.
 
 > O GitHub Actions pode iniciar alguns minutos depois do horário nominal devido à fila da plataforma.
 

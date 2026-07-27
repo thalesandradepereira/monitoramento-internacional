@@ -42,3 +42,14 @@ test('transição de in_progress para failed substitui o estado efetivo e bloque
   assert.equal(records[0].state, 'failed')
   assert.throws(() => mod.assertCanStartRealExecution('2099-01-03'), /Reenvio automático bloqueado/)
 })
+
+test('falha antes de qualquer tentativa de entrega permite recuperação segura', () => {
+  const { mod, logPath } = loadDailyExecution()
+  mod.persistExecutionRecord({ date: '2099-01-04', time: '02:00:00', timezone: 'America/Sao_Paulo', state: 'in_progress', mode: 'scheduled', attempted: 0, sent: 0, failed: 0 })
+  mod.persistExecutionRecord({ date: '2099-01-04', time: '02:04:00', timezone: 'America/Sao_Paulo', state: 'failed', mode: 'scheduled', attempted: 0, sent: 0, failed: 0 })
+  const records = JSON.parse(fs.readFileSync(logPath, 'utf8')).records
+
+  assert.equal(records.length, 1)
+  assert.equal(records[0].state, 'failed')
+  assert.doesNotThrow(() => mod.assertCanStartRealExecution('2099-01-04'))
+})

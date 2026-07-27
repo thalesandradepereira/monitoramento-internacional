@@ -9,9 +9,21 @@ on:
         type: boolean
         default: true
 
+  # Gatilho operacional único para lançar a correção de 27/07/2026.
+  # Deve ser removido depois da execução real confirmada.
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/monitoramento.yml'
+
   # Minuto fora do início da hora reduz atrasos de fila do GitHub Actions.
   schedule:
     - cron: '17 3 * * *'
+      timezone: 'America/Sao_Paulo'
+    # Recuperação automática: a idempotência diária encerra sem reenviar
+    # quando a execução principal já foi concluída.
+    - cron: '17 4 * * *'
       timezone: 'America/Sao_Paulo'
 
 concurrency:

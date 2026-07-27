@@ -5,8 +5,21 @@ import { getSentNewsHistory } from './history'
 import { GoogleDecoder } from 'google-news-url-decoder'
 import pLimit from 'p-limit'
 
-const parser = new Parser({ timeout: 15000 })
+const parser = new Parser()
 const decoder = new GoogleDecoder()
+const RSS_FETCH_TIMEOUT_MS = 20_000
+const RSS_FETCH_ATTEMPTS = 3
+const RSS_FETCH_CONCURRENCY = 2
+const RSS_RETRYABLE_STATUSES = new Set([408, 429, 500, 502, 503, 504])
+const RSS_REQUEST_HEADERS = {
+  accept: 'application/rss+xml, application/xml;q=0.9',
+  'user-agent': 'MonitoramentoInternacional/1.0 (+https://github.com/thalesandradepereira/monitoramento-internacional)',
+}
+
+interface RssHttpError extends Error {
+  status?: number
+  retryAfterMs?: number
+}
 
 export interface Noticia {
   fonte: string
@@ -28,14 +41,83 @@ export function newsHistoryKey(title: string): string {
   return normalizeTitle(title).slice(0, 160)
 }
 
+export function isRetryableRssError(error: unknown): boolean {
+  const status = (error as RssHttpError | undefined)?.status
+  if (status !== undefined) return RSS_RETRYABLE_STATUSES.has(status)
+
+  const message = error instanceof Error ? error.message : String(error)
+  const statusMatch = message.match(/\b(408|429|500|502|503|504)\b/)
+  return statusMatch !== null
+    || /abort|network|socket|timeout|timed out|fetch failed|econnreset|enotfound/i.test(message)
+}
+
+function retryAfterMilliseconds(value: string | null): number | undefined {
+  if (!value) return undefined
+  const seconds = Number(value)
+  if (Number.isFinite(seconds) && seconds >= 0) return seconds * 1000
+
+  const date = Date.parse(value)
+  if (Number.isNaN(date)) return undefined
+  return Math.max(0, date - Date.now())
+}
+
+async function wait(ms: number): Promise<void> {
+  await new Promise(resolve => setTimeout(resolve, ms))
+}
+
+export async function fetchRssXml(
+  url: string,
+  fetchImpl: typeof fetch = fetch,
+  waitImpl: (ms: number) => Promise<void> = wait,
+): Promise<string> {
+  let lastError: unknown
+
+  for (let attempt = 1; attempt <= RSS_FETCH_ATTEMPTS; attempt += 1) {
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), RSS_FETCH_TIMEOUT_MS)
+
+    try {
+      const response = await fetchImpl(url, {
+        headers: RSS_REQUEST_HEADERS,
+        redirect: 'follow',
+        signal: controller.signal,
+      })
+
+      if (!response.ok) {
+        const error = new Error(`HTTP ${response.status}`) as RssHttpError
+        error.status = response.status
+        error.retryAfterMs = retryAfterMilliseconds(response.headers.get('retry-after'))
+        throw error
+      }
+
+      const xml = await response.text()
+      if (!xml.trim()) throw new Error('Feed RSS vazio')
+      return xml
+    } catch (error) {
+      lastError = error
+      if (attempt === RSS_FETCH_ATTEMPTS || !isRetryableRssError(error)) throw error
+
+      const retryAfterMs = (error as RssHttpError | undefined)?.retryAfterMs
+      const delayMs = Math.max(retryAfterMs ?? 0, attempt * 2_000)
+      await waitImpl(delayMs)
+    } finally {
+      clearTimeout(timeout)
+    }
+  }
+
+  throw lastError
+}
+
 export async function buscarNoticias(): Promise<Noticia[]> {
   const corte = Date.now() - config.janelaHoras * 60 * 60 * 1000
   const history = getSentNewsHistory().map(newsHistoryKey).filter(Boolean)
   const historySet = new Set(history)
+  const fetchLimit = pLimit(RSS_FETCH_CONCURRENCY)
 
   const resultados = await Promise.allSettled(
-    FONTES_RSS.map(async (f) => {
-      const feed = await parser.parseURL(f.url)
+    FONTES_RSS.map((f) => fetchLimit(async () => {
+      const xml = await fetchRssXml(f.url)
+      const feed = await parser.parseString(xml)
       const itens: Noticia[] = []
       for (const item of feed.items || []) {
         const iso = item.isoDate || item.pubDate
@@ -63,7 +145,7 @@ export async function buscarNoticias(): Promise<Noticia[]> {
         })
       }
       return itens
-    })
+    }))
   )
 
   const noticias: Noticia[] = []
