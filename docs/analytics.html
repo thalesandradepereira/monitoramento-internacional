@@ -262,6 +262,28 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    .analytics-status {
+      display: none;
+      margin-bottom: 1.5rem;
+      padding: 0.9rem 1.1rem;
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .analytics-status.ok {
+      display: block;
+      color: #BBF7D0;
+      background: rgba(34, 197, 94, 0.08);
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+    .analytics-status.error {
+      display: block;
+      color: #FECACA;
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.35);
+    }
+
     .footer-note {
       text-align: center;
       padding: 2rem;
@@ -305,6 +327,8 @@
   </header>
 
   <div class="content">
+    <div id="analytics-status" class="analytics-status" role="status" aria-live="polite"></div>
+
     <!-- Stats Cards -->
     <div class="stats-row">
       <div class="stat-card">
@@ -359,7 +383,7 @@
 
     <div class="footer-note">
       Contagem de visitas iniciada em 16/07/2026 · Dados fornecidos por Abacus CountAPI<br>
-      Os dados são atualizados em tempo real a cada vez que esta página é aberta.
+Os dados são consultados em tempo real. Falhas de leitura são sinalizadas e nunca convertidas silenciosamente em zero.
     </div>
   </div>
 </div>
@@ -408,12 +432,24 @@
 
   async function fetchCount(pageKey) {
     try {
-      var resp = await fetch(API_BASE + '/get/' + NAMESPACE + '/' + encodeURIComponent(pageKey));
-      if (!resp.ok) return 0;
+      var resp = await fetch(API_BASE + '/get/' + NAMESPACE + '/' + encodeURIComponent(pageKey), {
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      });
+
+      // Um contador ainda não criado representa zero visitas, não indisponibilidade.
+      if (resp.status === 404) return { available: true, count: 0 };
+      if (!resp.ok) return { available: false, count: null };
+
       var data = await resp.json();
-      return data.value || 0;
+      var value = Number(data.value);
+      if (!Number.isFinite(value) || value < 0) {
+        return { available: false, count: null };
+      }
+      return { available: true, count: value };
     } catch (e) {
-      return 0;
+      return { available: false, count: null };
     }
   }
 
@@ -424,16 +460,25 @@
     // Fetch counts for all dates
     for (var i = 0; i < dates.length; i++) {
       var key = 'Dashboard-Monitoramento-' + dates[i];
-      var count = await fetchCount(key);
-      results.push({ date: dates[i], key: key, count: count });
+      var reading = await fetchCount(key);
+      results.push({ date: dates[i], key: key, count: reading.count, available: reading.available });
     }
 
-    // Filter to show only pages with at least 1 visit (or all if none have visits)
-    var pagesWithVisits = results.filter(function(r) { return r.count > 0; });
-    var displayData = pagesWithVisits.length > 0 ? pagesWithVisits : results;
+    var failedReads = results.filter(function(r) { return !r.available; }).length;
+    var statusEl = document.getElementById('analytics-status');
+    if (failedReads > 0) {
+      statusEl.className = 'analytics-status error';
+      statusEl.textContent = 'Dados incompletos: ' + failedReads + ' contador(es) não puderam ser consultados. Valores indisponíveis não são tratados como zero.';
+    } else {
+      statusEl.className = 'analytics-status ok';
+      statusEl.textContent = 'Dados consultados com sucesso em ' + new Date().toLocaleString('pt-BR') + '.';
+    }
+
+    // Filter to show only pages with at least 1 visit
+    var pagesWithVisits = results.filter(function(r) { return r.available && r.count > 0; });
 
     // Calculate stats
-    var totalVisits = results.reduce(function(sum, r) { return sum + r.count; }, 0);
+    var totalVisits = results.reduce(function(sum, r) { return sum + (r.available ? r.count : 0); }, 0);
     var pagesCount = pagesWithVisits.length;
     var avgVisits = pagesCount > 0 ? (totalVisits / pagesCount).toFixed(1) : '0';
     
@@ -441,7 +486,7 @@
 
     // Update stat cards
     document.getElementById('total-visits').textContent = totalVisits.toLocaleString('pt-BR');
-    document.getElementById('total-pages').textContent = results.length;
+    document.getElementById('total-pages').textContent = pagesCount;
     document.getElementById('avg-visits').textContent = avgVisits;
     document.getElementById('top-page').textContent = topPage.date;
     document.getElementById('top-page-count').textContent = topPage.count > 0 ? topPage.count + ' visitas' : 'Sem visitas ainda';
@@ -525,7 +570,7 @@
             '<div style="flex:1;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden">' +
               '<div style="width:' + barWidth + '%;height:100%;background:var(--accent);border-radius:3px;transition:width 0.5s"></div>' +
             '</div>' +
-            '<span style="font-weight:600;min-width:2rem;text-align:right">' + r.count + '</span>' +
+            '<span style="font-weight:600;min-width:2rem;text-align:right">' + (r.available ? r.count : '—') + '</span>' +
           '</div>' +
         '</td>' +
         '<td><a href="' + url + '" target="_blank" class="link-btn">Abrir ↗</a></td>' +
