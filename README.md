@@ -164,7 +164,26 @@ https://thalesandradepereira.github.io/monitoramento-internacional/hoje
 
 `docs/hoje/index.html` valida o padrão do nome do arquivo, desabilita cache, declara a URL canônica e redireciona para a edição correspondente à data operacional.
 
-O dashboard não carrega fontes, scripts ou telemetria de terceiros. Os dados incorporados no HTML são serializados de modo seguro e o documento aplica uma política de segurança de conteúdo com nonce.
+Os dados incorporados no HTML são serializados de modo seguro e o documento aplica uma política de segurança de conteúdo com nonce. A política `connect-src` autoriza exclusivamente `https://abacus.jasoncameron.dev` para a contagem de visualizações.
+
+### Analytics de acessos
+
+Cada abertura de um arquivo `Dashboard-Monitoramento-DD-MM-AAAA.html` incrementa, sem cookies ou credenciais, a chave correspondente no namespace `tap-intl-monitor`. O painel consolidado está em:
+
+```text
+https://thalesandradepereira.github.io/monitoramento-internacional/analytics.html
+```
+
+Controles implementados:
+
+- a chave gravada e a chave consultada seguem exatamente o mesmo padrão;
+- `cache: no-store`, `credentials: omit` e `referrerPolicy: no-referrer`;
+- analytics não bloqueia nem degrada o uso do dashboard em caso de falha;
+- contador inexistente é exibido como zero;
+- indisponibilidade, HTTP inválido ou payload inválido são sinalizados como falha, nunca convertidos silenciosamente em zero;
+- o CSP continua com nonce e libera somente o domínio necessário à contagem.
+
+O Abacus CountAPI é um serviço externo gratuito e sem autenticação. Ele fornece contagem simples de visualizações, não visitantes únicos, e os valores públicos podem ser incrementados por automação externa. Portanto, este painel é adequado para acompanhamento operacional básico, não para auditoria, faturamento ou métricas antifraude.
 
 ### E-mail
 
@@ -468,7 +487,7 @@ A suíte cobre, entre outros pontos:
 
 O CI está em `.github/workflows/ci.yml` e executa testes, typecheck, validação JavaScript do Worker, sintaxe YAML e verificação de whitespace.
 
-Na versão documentada, a suíte completa possui **85 testes automatizados**.
+Na versão documentada, a suíte completa possui **88 testes automatizados**.
 
 ## Estrutura do repositório
 
