@@ -16,7 +16,7 @@ test('serialização inline neutraliza fechamento de script e separadores JavaSc
   assert.match(serialized, /\\u2029/)
 })
 
-test('dashboard aplica CSP com nonce, valida links e não chama analytics externo', () => {
+test('dashboard aplica CSP com nonce, valida links e permite somente o analytics aprovado', () => {
   const malicious = [{
     fonte: '</script><script>alert("source")</script>',
     pais: 'Brasil',
@@ -34,6 +34,11 @@ test('dashboard aplica CSP com nonce, valida links e não chama analytics extern
   assert.equal(html.includes('</script><script>alert("source")'), false)
   assert.match(html, /function safeHttpUrl/)
   assert.match(html, /rel="noopener noreferrer"/)
-  assert.doesNotMatch(html, /abacus\.jasoncameron\.dev|fonts\.googleapis\.com/)
+  assert.match(html, /connect-src https:\/\/abacus\.jasoncameron\.dev;/)
+  assert.doesNotMatch(html, /fonts\.googleapis\.com/)
+  assert.match(html, /https:\/\/abacus\.jasoncameron\.dev\/hit\/tap-intl-monitor\//)
+  assert.match(html, /startsWith\('Dashboard-Monitoramento-'\)/)
+  assert.match(html, /credentials: 'omit'/)
+  assert.match(html, /referrerPolicy: 'no-referrer'/)
   assert.match(html, /Monitoramento Mídia Internacional \| Global Media Monitoring/)
 })
