@@ -487,7 +487,7 @@ A suíte cobre, entre outros pontos:
 
 O CI está em `.github/workflows/ci.yml` e executa testes, typecheck, validação JavaScript do Worker, sintaxe YAML e verificação de whitespace.
 
-Na versão documentada, a suíte completa possui **88 testes automatizados**.
+Na versão documentada, a suíte completa possui **92 testes automatizados**.
 
 ## Estrutura do repositório
 
