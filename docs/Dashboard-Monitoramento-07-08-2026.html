@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'nonce-15NifaB04zRtRKMGLMejFxiX'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style>
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">07/08/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 style="margin: 0; font-size: 1.5rem; color: #fff;">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="15NifaB04zRtRKMGLMejFxiX">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"G1","pais":"Brasil","titulo":"OpenAI prepara dispositivo de IA sem tela para rivalizar com smartphones","resumo":"A OpenAI está desenvolvendo um novo dispositivo de inteligência artificial focado em interação por voz e contexto visual, dispensando o uso de telas tradicionais.\nA iniciativa busca criar uma alternativa aos smartphones modernos, redefinindo como os usuários se conectam à internet e serviços digitais.\nO projeto conta com investimentos bilionários e atrai atenção global por tentar liderar a próxima grande revolução no mercado de hardware de consumo.","link":"https://g1.globo.com/tecnologia/noticia/2026/08/06/openai-prepara-aparelho-de-ia-sem-tela-para-rivalizar-com-celular.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"ICL Notícias","pais":"Brasil","titulo":"Gigantes da IA compram e digitalizam livros raros para alimentar modelos","resumo":"Empresas de inteligência artificial estão adquirindo e digitalizando acervos de livros raros e históricos para expandir a base de dados de treinamento.\nO processo levanta debates éticos e jurídicos sobre direitos autorais, preservação do patrimônio cultural e os métodos de extração de conhecimento.\nEspecialistas alertam para os riscos de degradação de exemplares únicos durante o escaneamento de alta velocidade e exigem maior regulamentação do setor.","link":"https://iclnoticias.com.br/gigantes-ia-destroem-livros-tecnologia/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Investimentos massivos em inteligência artificial entram no radar do Fed","resumo":"O ritmo acelerado de aportes financeiros em infraestrutura de inteligência artificial acendeu o alerta em autoridades do Federal Reserve nos Estados Unidos.\nAnalistas monitoram se a alta alocação de capital em data centers e semicondutores pode gerar bolhas financeiras ou pressões inflacionárias na economia global.\nO movimento reflete o peso crescente da tecnologia de ponta nos indicadores macroeconômicos e na tomada de decisões dos grandes bancos centrais.","link":"https://www1.folha.uol.com.br/mercado/2026/08/ritmo-acelerado-de-investimentos-em-ia-entra-no-radar-de-autoridades-do-fed.shtml","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Software do LNCC aumenta precisão em simulações dos reservatórios do pré-sal","resumo":"Pesquisadores do Laboratório Nacional de Computação Científica desenvolveram uma nova ferramenta capaz de otimizar a modelagem computacional do pré-sal.\nO sistema permite prever o comportamento de fluidos em rochas profundas com maior exatidão, reduzindo custos operacionais e riscos ambientais na exploração.\nA inovação reforça o papel da ciência de dados e do superprocessamento nacional no fortalecimento da soberania energética do Brasil.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/software-desenvolvido-pelo-lncc-aumenta-a-precisao-de-simulacoes-dos-reservatorios-do-pre-sal-brasileiro","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Nova técnica acelera testes de materiais para implantes dentários","resumo":"Cientistas criaram um método inovador que reduz drasticamente o tempo necessário para avaliar a resistência de materiais usados em implantes biomédicos.\nA abordagem utiliza simulações avançadas e análises microscópicas para prever a integração dos biomateriais com o tecido ósseo humano.\nA descoberta promete baratear a produção de próteses, acelerar a aprovação de novos tratamentos e melhorar a qualidade de vida dos pacientes.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/nova-tecnica-acelera-testes-de-materiais-e-apoia-o-desenvolvimento-de-implantes-dentarios","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"INPE divulga novos dados do sistema Deter para combate ao desmatamento","resumo":"O Instituto Nacional de Pesquisas Espaciais apresentou o relatório atualizado de alertas de alteração na cobertura florestal brasileira.\nA tecnologia de monitoramento por satélite permite identificar focos de degradação ambiental em tempo real, orientando ações de fiscalização em campo.\nOs dados são cruciais para a formulação de políticas públicas de sustentabilidade e para o cumprimento de metas de preservação na Amazônia e no Cerrado.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/inpe-divulga-nesta-sexta-feira-7-dados-do-deter-que-orientam-o-combate-ao-desmatamento-no-brasil","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Micropagamentos passam a dominar as transações na economia digital","resumo":"Um novo levantamento revela que 45% de todas as transações financeiras digitais no país correspondem a pagamentos de até R$ 20.\nO avanço de meios instantâneos como o Pix e a digitalização do consumo impulsionaram o volume de pequenas operações no comércio eletrônico.\nA tendência transforma a infraestrutura bancária e exige novos modelos de negócios focados em baixas taxas e alta velocidade de processamento.","link":"https://oglobo.globo.com/blogs/lauro-jardim/post/2026/08/estudo-indica-que-micropagamentos-dominam-a-economia-digital-45percent-das-transacoes-sao-de-ate-r-20.ghtml","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"correiodamanha.com.br","pais":"Brasil","titulo":"Tecnologia e liderança feminina impulsionam combate ao desperdício de água","resumo":"Projetos tecnológicos liderados por mulheres estão transformando a gestão de recursos hídricos e prevenindo perdas na distribuição de água.\nAs soluções utilizam sensores inteligentes e análise preditiva para detectar vazamentos na rede urbana de forma precoce e automatizada.\nA união entre inovação técnica e protagonismo feminino fortalece a sustentabilidade ambiental e melhora a eficiência do saneamento básico.","link":"https://www.correiodamanha.com.br/rio-de-janeiro/2026/08/309026-tecnologia-e-protagonismo-feminino-contra-o-desperdicio-de-agua.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Circular Economy Hub","pais":"Inglaterra","titulo":"Indústria de concreto do Reino Unido lança seu primeiro plano de ação para economia circular","resumo":"A indústria de concreto e cimento do Reino Unido anunciou seu primeiro plano de ação voltado para a economia circular, visando reduzir o desperdício na construção.\nA iniciativa estabelece métricas de circularidade para todo o ciclo de vida dos materiais, impulsionando a reciclagem e o reaproveitamento.\nCom a meta de neutralidade de carbono até 2050, o setor busca liderar a transformação sustentável e tecnológica na infraestrutura do país.","link":"https://cehub.jp/news/mpa-uk-concrete-ceap/","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"Retail Technology Innovation Hub","pais":"Inglaterra","titulo":"Morrisons aprimora a experiência de checkout com plataforma de IA da Everseen","resumo":"A rede britânica de supermercados Morrisons implementou a plataforma de inteligência artificial da Everseen para aprimorar os caixas de autoatendimento.\nA tecnologia de visão computacional analisa o fluxo de produtos em tempo real, reduzindo erros, inconsistências e filas no atendimento.\nCom essa atualização, a empresa reforça o uso de automação no varejo para proporcionar uma experiência de compra mais fluida e segura aos clientes.","link":"https://retailtechinnovationhub.com/home/2026/8/6/retail-technology-innovation-of-the-week-morrisons-boosts-checkout-experience-with-everseen-platform","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Receios de segurança surgem com a criação dos primeiros vírus projetados por IA por cientistas","resumo":"Cientistas usaram ferramentas avançadas de inteligência artificial para criar, pela primeira vez, vírus projetados digitalmente do zero.\nApesar do potencial revolucionário para a criação rápida de vacinas e terapias, a descoberta gerou intensos debates sobre biossegurança.\nEspecialistas alertam para o risco de novos patógenos e cobram regulamentação rígida para controlar o avanço da biologia sintética.","link":"https://www.theguardian.com/science/2026/aug/06/safety-fears-as-scientists-make-first-viruses-designed-by-ai","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"'Não estou espiando': como os óculos inteligentes da Meta dividem opiniões","resumo":"Os óculos inteligentes da Meta integrados com inteligência artificial estão dividindo opiniões no Reino Unido devido ao impacto na privacidade.\nO dispositivo permite tirar fotos, gravar vídeos e interagir com IA de forma discreta, levantando receios de vigilância não consentida em locais públicos.\nEnquanto entusiastas destacam a praticidade da tecnologia vestível, defensores dos direitos digitais exigem diretrizes mais claras sobre a captura de dados de terceiros.","link":"https://www.theguardian.com/technology/2026/aug/06/meta-ai-smart-glasses-privacy","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"bbc.com","pais":"Inglaterra","titulo":"Inteligência Artificial é utilizada para projetar vírus totalmente inéditos","resumo":"O uso de modelos de inteligência artificial na concepção de vírus inéditos inaugura uma nova era na biologia computacional e médica.\nA inovação promete acelerar o desenvolvimento de fármacos e o combate a infecções complexas por meio do mapeamento de estruturas genéticas sintéticas.\nPor outro lado, o fácil acesso a essas ferramentas amplia as preocupações internacionais sobre os perigos da criação de novas ameaças biológicas.","link":"https://www.bbc.com/news/articles/c5y3j3ngevmo","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"La Razón","pais":"Espanha","titulo":"Chega de esperar por um milagre: Europa aprova implante sem fio com minipainel solar ocular para devolver a visão","resumo":"A União Europeia aprovou formalmente o uso de um inovador implante ocular sem fio que utiliza minipainéis solares integrados para restaurar a visão de pacientes.\nEssa tecnologia biomédica converte a luz diretamente em impulsos elétricos para estimular as células restantes da retina, dispensando fiação incômoda ou baterias volumosas.\nO avanço representa um feito histórico na medicina regenerativa e oferece novas esperanças para pessoas afetadas por doenças degenerativas da visão.","link":"https://www.larazon.es/tecnologia-consumo/ciencia/se-acabo-esperar-milagro-europa-aprueba-implante-inalambrico-te-mete-minipanel-solar-ojo-devolverte-vista_202608076a756dbca046ad6ebca3079f.html","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"BBC","pais":"Espanha","titulo":"O revolucionário design de vírus completamente novos por meio da inteligência artificial","resumo":"Cientistas começaram a empregar algoritmos avançados de inteligência artificial para criar estruturas virais inéditas do zero em laboratório.\nA técnica permite mapear e projetar combinações de proteínas altamente específicas com uma precisão sem precedentes, acelerando o desenvolvimento de vacinas e terapias gênicas.\nNo entanto, o feito também acende alertas na comunidade científica global sobre a necessidade urgente de regulamentações éticas e rigorosos protocolos de biossegurança.","link":"https://www.bbc.com/mundo/articles/cgk4ek6xke3o","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"OkDiario","pais":"Espanha","titulo":"Os materiais que permitirão viver na Lua durante anos","resumo":"Pesquisadores da área de engenharia de materiais desenvolveram novas ligas e compostos estruturais projetados para resistir às condições extremas da superfície lunar.\nOs novos componentes suportam variações severas de temperatura, além de oferecerem proteção contra radiação cósmica e micrometeoritos sem comprometer a eficiência de transporte.\nEssas inovações são consideradas essenciais para viabilizar bases permanentes e o assentamento humano sustentável em futuras missões à Lua.","link":"https://okdiario.com/ciencia/materiales-que-permitiran-vivir-luna-durante-anos-19140636","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"Expansión","pais":"Espanha","titulo":"Tesla e SpaceX investirão 14,55 bilhões em uma megafábrica de chips","resumo":"As empresas Tesla e SpaceX anunciaram um plano conjunto para investir 14,55 bilhões de dólares na construção de uma instalação gigante dedicada à produção de semicondutores.\nO objetivo estratégico é garantir a autossuficiência no fornecimento de microchips avançados essenciais para veículos autônomos, sistemas de inteligência artificial e espaçonaves.\nA iniciativa promete reconfigurar o mercado global de semicondutores e reduzir a dependência dessas companhias em relação a fornecedores externos.","link":"https://www.expansion.com/economia-digital/2026/08/06/6a74f828e5fdeaf2688b45a0.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Nacional.cat","pais":"Espanha","titulo":"A nova economia da informação: como a IA está mudando o negócio dos meios de comunicação","resumo":"A integração da inteligência artificial generativa está redefinindo profundamente a cadeia de produção, distribuição e monetização de conteúdos no jornalismo mundial.\nVeículos de imprensa enfrentam o desafio de balancear automação de processos, otimização de busca e direitos autorais diante da ascensão de plataformas baseadas em IA.\nA transformação exige novas abordagens de negócios para preservar a sustentabilidade financeira dos meios e garantir a credibilidade editorial na era digital.","link":"https://www.elnacional.cat/oneconomia/es/on-ia/nueva-economia-informacion-como-ia-esta-cambiando-negocio-medios_1677437_102.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"OkDiario","pais":"Espanha","titulo":"Tecnologia da OPUS RSE mede a poluição dos carros em tempo real e sem parar o trânsito","resumo":"Um novo sistema de sensores remotos desenvolvido pela OPUS RSE permite analisar as emissões de poluentes dos veículos em circulação contínua nas vias públicas.\nA tecnologia utiliza espectrometria óptica para identificar carros altamente poluentes no exato momento da passagem, sem necessidade de bloqueios no tráfego.\nA solução surge como ferramenta estratégica para cidades inteligentes no combate à contaminação urbana e no cumprimento de metas ambientais severas.","link":"https://okdiario.com/okgreen/tecnologia-opus-rse-mide-contaminacion-del-coche-tiempo-real-sin-necesidad-detener-trafico-19139136","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"bbva.com","pais":"Espanha","titulo":"Eletrolisadores: tecnologia-chave para produzir hidrogênio verde","resumo":"Os eletrolisadores consolidaram-se como o componente tecnológico mais crítico no processo de transição para uma matriz energética de carbono zero.\nCapazes de separar a água em oxigênio e hidrogênio utilizando energia renovável, estes equipamentos estão recebendo aportes maciços para aumentar a eficiência e reduzir custos.\nA expansão dessa indústria é fundamental para descarbonizar setores industriais pesados e o transporte de longa distância nas próximas décadas.","link":"https://www.bbva.com/es/sostenibilidad/electrolizadores-tecnologia-clave-para-producir-hidrogeno-verde/","categoria":"ENERGIA","lang":"pt"},{"fonte":"turbo.pt","pais":"Espanha","titulo":"Este hipercarro espanhol aposta em tecnologia que não substitui o condutor","resumo":"Um fabricante espanhol apresentou um hipercarro de altíssimo desempenho focado em aprimorar a experiência de pilotagem em vez de automatizá-la por completo.\nO veículo combina motores de ponta e assistência eletrônica avançada para amplificar os reflexos do motorista sem retirar o controle humano ao volante.\nA proposta contrapõe a tendência atual de condução totalmente autônoma, destacando a tecnologia a serviço do entusiasmo esportivo e da segurança ativa.","link":"https://www.turbo.pt/este-hipercarro-espanhol-aposta-em-tecnologia-que-nao-substitui-o-condutor/","categoria":"AUTOMOBILISMO","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Cientistas treinam modelo de IA com DNA e criam 16 novos tipos de vírus","resumo":"Pesquisadores utilizaram sequências de DNA para treinar um modelo avançado de inteligência artificial na área da biologia sintética.\nA partir desse treinamento, o sistema foi capaz de gerar e sintetizar 16 novas variantes de vírus até então desconhecidas.\nO feito demonstra o imenso potencial da IA na engenharia genética e no desenvolvimento biológico, ao mesmo tempo que reacende debates sobre biossegurança.","link":"https://news.yahoo.co.jp/articles/d2d0479602c2783b15d70d1298697b9bb3cb6f67","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"PR TIMES","pais":"Japão","titulo":"SHIFT obtém contrato para suporte em avaliação técnica de equipamentos de IA para defesa","resumo":"A empresa japonesa SHIFT anunciou ter sido contratada pela Agência de Aquisição, Tecnologia e Logística do Japão.\nO contrato prevê a prestação de serviços de suporte para a análise e avaliação técnica de equipamentos militares baseados em inteligência artificial.\nA iniciativa reflete o movimento das forças de defesa do país para integrar tecnologias emergentes de forma segura e eficiente em seu arsenal.","link":"https://prtimes.jp/main/html/rd/p/000000158.000018724.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"Denso e TÜV Rheinland lançam documento técnico conjunto sobre passaporte de baterias","resumo":"A fabricante de componentes automotivos Denso e a empresa de certificação TÜV Rheinland Japan publicaram um white paper técnico sobre o passaporte de bateria.\nO documento detalha os requisitos técnicos e de rastreabilidade necessários para acompanhar o ciclo de vida das baterias de veículos elétricos.\nA colaboração visa impulsionar a padronização e a sustentabilidade no setor automotivo em conformidade com as novas regulamentações globais.","link":"https://www.nikkei.com/article/DGXZRSP710950_X00C26A8000000/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"nyk.com","pais":"Japão","titulo":"Os engenheiros que enfrentam o desafio dos navios de recuperação de foguetes em alto-mar","resumo":"O setor aeroespacial japonês está avançando no desenvolvimento de embarcações especializadas na captura e recuperação de foguetes no oceano.\nEngenheiros locais compartilham os complexos desafios técnicos necessários para estabilizar e resgatar propulsores reutilizáveis em condições marítimas adversas.\nA iniciativa é fundamental para reduzir drasticamente os custos dos lançamentos espaciais e tornar o programa aeroespacial do país mais competitivo globalmente.","link":"https://www.nyk.com/stories/03/02/20260807_3.html","categoria":"TECNOLOGIA ESPACIAL","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"A transformação na avaliação de mercado das ações ligadas à inteligência artificial","resumo":"Os investidores e analistas do setor financeiro estão reformulando os critérios para precificar e avaliar empresas focadas em inteligência artificial.\nApós a onda inicial de euforia, o mercado passou a exigir resultados financeiros concretos e aplicações comerciais sustentáveis dessas companhias.\nEssa mudança de perspectiva sinaliza uma fase de maturação do ecossistema de IA, no qual a capacidade de monetização supera as meras promessas tecnológicas.","link":"https://www.nikkei.com/article/DGKKZO98033600X00C26A8ENI000/","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"Newscast.jp","pais":"Japão","titulo":"Relatório analisa o mercado global de tecnologia de monitoramento contínuo de glicose até 2032","resumo":"Um novo relatório analítico examina o crescimento global da tecnologia de monitoramento contínuo de glicose (CGM) previsto para o período de 2026 a 2032.\nO estudo detalha as projeções para dispositivos invasivos e não invasivos, destacando o impacto do avanço de sensores na gestão de doenças crônicas.\nA demanda impulsiona inovações em dispositivos vestíveis, sinalizando um mercado promissor para soluções tecnológicas aplicadas à medicina preventiva.","link":"https://newscast.jp/smart/news/6738786","categoria":"SAÚDE DIGITAL","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"Fukuoka inaugura novo polo de apoio a startups de tecnologia de ponta em setembro","resumo":"A desenvolvedora imobiliária Fukuoka Jisho e parceiros ligados à Universidade de Kyushu anunciarão um novo hub focado no suporte a startups de tecnologia de ponta.\nA estrutura, com inauguração prevista para setembro, oferecerá recursos financeiros, espaço físico e mentoria técnica para transformar pesquisas em negócios escaláveis.\nO projeto visa fortalecer o ecossistema de inovação da região de Kyushu e atrair talentos e investimentos em tecnologias emergentes.","link":"https://www.nikkei.com/article/DGXZQOJC06B350W6A800C2000000/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"PR TIMES","pais":"Japão","titulo":"Plataforma Material Catapult é lançada para acelerar novos usos para tecnologias de materiais","resumo":"A nova plataforma Material Catapult foi oficialmente lançada no Japão com o objetivo de conectar fabricantes de materiais avançados a novos mercados.\nA solução busca resolver um problema crítico das indústrias do setor: a dificuldade de comercializar produtos que possuem alta tecnologia, mas pouca demanda direta.\nAtravés da identificação de novas aplicações comerciais, o sistema pretende impulsionar a competitividade da indústria nacional de materiais de alta performance.","link":"https://prtimes.jp/main/html/rd/p/000000038.000031371.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"G1","pais":"Brazil","titulo":"OpenAI Prepares Screenless AI Device to Rival Smartphones","resumo":"OpenAI is developing a new artificial intelligence device focused on voice interaction and visual context, eliminating the need for traditional screens.\nThe initiative aims to create an alternative to modern smartphones, redefining how users connect to the internet and digital services.\nThe project features billion-dollar investments and is attracting global attention for attempting to lead the next major revolution in the consumer hardware market.","link":"https://g1.globo.com/tecnologia/noticia/2026/08/06/openai-prepara-aparelho-de-ia-sem-tela-para-rivalizar-com-celular.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"ICL Notícias","pais":"Brazil","titulo":"AI Giants Buy and Digitize Rare Books to Feed Models","resumo":"Artificial intelligence companies are acquiring and digitizing rare and historical book collections to expand their training data bases.\nThe process raises ethical and legal debates regarding copyright, the preservation of cultural heritage, and knowledge extraction methods.\nExperts warn of the risks of damaging unique copies during high-speed scanning and are demanding greater regulation of the sector.","link":"https://iclnoticias.com.br/gigantes-ia-destroem-livros-tecnologia/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"Massive Investments in Artificial Intelligence Enter Fed's Radar","resumo":"The accelerated pace of financial contributions to artificial intelligence infrastructure has raised alarms among Federal Reserve officials in the United States.\nAnalysts are monitoring whether high capital allocation in data centers and semiconductors could generate financial bubbles or inflationary pressures in the global economy.\nThe move reflects the growing weight of cutting-edge technology in macroeconomic indicators and the decision-making of major central banks.","link":"https://www1.folha.uol.com.br/mercado/2026/08/ritmo-acelerado-de-investimentos-em-ia-entra-no-radar-de-autoridades-do-fed.shtml","categoria":"TRENDS","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"LNCC Software Increases Accuracy in Pre-Salt Reservoir Simulations","resumo":"Researchers from the National Laboratory for Scientific Computing have developed a new tool capable of optimizing the computational modeling of the pre-salt layer.\nThe system makes it possible to predict fluid behavior in deep rocks with greater accuracy, reducing operational costs and environmental risks in exploration.\nThe innovation reinforces the role of data science and domestic supercomputing in strengthening Brazil's energy sovereignty.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/software-desenvolvido-pelo-lncc-aumenta-a-precisao-de-simulacoes-dos-reservatorios-do-pre-sal-brasileiro","categoria":"SCIENCE","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"New Technique Speeds Up Material Testing for Dental Implants","resumo":"Scientists have created an innovative method that drastically reduces the time required to evaluate the resistance of materials used in biomedical implants.\nThe approach utilizes advanced simulations and microscopic analyses to predict the integration of biomaterials with human bone tissue.\nThe discovery promises to lower the cost of prosthesis production, accelerate the approval of new treatments, and improve patients' quality of life.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/nova-tecnica-acelera-testes-de-materiais-e-apoia-o-desenvolvimento-de-implantes-dentarios","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"INPE Releases New Deter System Data to Combat Deforestation","resumo":"The National Institute for Space Research has released the updated report on alerts regarding changes in Brazilian forest cover.\nSatellite monitoring technology allows for the identification of environmental degradation hotspots in real time, guiding field inspection actions.\nThe data is crucial for the formulation of public sustainability policies and for meeting preservation targets in the Amazon and Cerrado biomes.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/inpe-divulga-nesta-sexta-feira-7-dados-do-deter-que-orientam-o-combate-ao-desmatamento-no-brasil","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Micropayments Begin to Dominate Transactions in the Digital Economy","resumo":"A new survey reveals that 45% of all digital financial transactions in the country correspond to payments of up to R$ 20.\nThe advancement of instant payment methods like Pix and the digitalization of consumption have driven the volume of small operations in e-commerce.\nThe trend is transforming banking infrastructure and demanding new business models focused on low fees and high processing speeds.","link":"https://oglobo.globo.com/blogs/lauro-jardim/post/2026/08/estudo-indica-que-micropagamentos-dominam-a-economia-digital-45percent-das-transacoes-sao-de-ate-r-20.ghtml","categoria":"INNOVATION","lang":"en"},{"fonte":"correiodamanha.com.br","pais":"Brazil","titulo":"Technology and Female Leadership Drive the Fight Against Water Waste","resumo":"Technological projects led by women are transforming water resource management and preventing losses in water distribution.\nThese solutions utilize smart sensors and predictive analysis to detect leaks in the urban network early and automatically.\nThe union between technical innovation and female leadership strengthens environmental sustainability and improves the efficiency of basic sanitation.","link":"https://www.correiodamanha.com.br/rio-de-janeiro/2026/08/309026-tecnologia-e-protagonismo-feminino-contra-o-desperdicio-de-agua.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Circular Economy Hub","pais":"England","titulo":"UK Concrete Industry Launches Its First Circular Economy Action Plan","resumo":"The UK concrete and cement industry has announced its first action plan aimed at the circular economy, targeting waste reduction in construction.\nThe initiative establishes circularity metrics for the entire lifecycle of materials, boosting recycling and reuse.\nWith the goal of carbon neutrality by 2050, the sector seeks to lead sustainable and technological transformation in the country's infrastructure.","link":"https://cehub.jp/news/mpa-uk-concrete-ceap/","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"Retail Technology Innovation Hub","pais":"England","titulo":"Morrisons Enhances Checkout Experience with Everseen AI Platform","resumo":"British supermarket chain Morrisons has implemented Everseen's artificial intelligence platform to improve self-checkout lanes.\nComputer vision technology analyzes the flow of products in real time, reducing errors, inconsistencies, and customer queues.\nWith this upgrade, the company reinforces the use of retail automation to provide a smoother and more secure shopping experience for customers.","link":"https://retailtechinnovationhub.com/home/2026/8/6/retail-technology-innovation-of-the-week-morrisons-boosts-checkout-experience-with-everseen-platform","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Safety Fears Emerge as Scientists Create First AI-Designed Viruses","resumo":"Scientists have used advanced artificial intelligence tools to create, for the first time, digitally designed viruses from scratch.\nDespite the revolutionary potential for the rapid creation of vaccines and therapies, the discovery has sparked intense debates on biosafety.\nExperts warn of the risk of new pathogens and are calling for strict regulations to control the advancement of synthetic biology.","link":"https://www.theguardian.com/science/2026/aug/06/safety-fears-as-scientists-make-first-viruses-designed-by-ai","categoria":"SCIENCE","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"'I'm Not Spying': How Meta's Smart Glasses Divide Opinions","resumo":"Meta's smart glasses integrated with artificial intelligence are dividing opinions in the UK due to their impact on privacy.\nThe device allows users to take photos, record videos, and interact with AI discreetly, raising fears of non-consensual surveillance in public places.\nWhile enthusiasts highlight the practicality of wearable technology, digital rights advocates are demanding clearer guidelines regarding the capture of third-party data.","link":"https://www.theguardian.com/technology/2026/aug/06/meta-ai-smart-glasses-privacy","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"bbc.com","pais":"England","titulo":"Artificial Intelligence Used to Design Entirely Novel Viruses","resumo":"The use of artificial intelligence models in designing novel viruses inaugurates a new era in computational and medical biology.\nThe innovation promises to accelerate drug development and the fight against complex infections through the mapping of synthetic genetic structures.\nOn the other hand, easy access to these tools broadens international concerns regarding the dangers of creating new biological threats.","link":"https://www.bbc.com/news/articles/c5y3j3ngevmo","categoria":"INNOVATION","lang":"en"},{"fonte":"La Razón","pais":"Spain","titulo":"No More Waiting for a Miracle: Europe Approves Wireless Implant with Ocular Mini-Solar Panel to Restore Vision","resumo":"The European Union has formally approved the use of an innovative wireless ocular implant that uses integrated mini-solar panels to restore patients' vision.\nThis biomedical technology converts light directly into electrical impulses to stimulate remaining retinal cells, eliminating cumbersome wiring or bulky batteries.\nThe breakthrough represents a historic milestone in regenerative medicine and offers new hope for people affected by degenerative vision diseases.","link":"https://www.larazon.es/tecnologia-consumo/ciencia/se-acabo-esperar-milagro-europa-aprueba-implante-inalambrico-te-mete-minipanel-solar-ojo-devolverte-vista_202608076a756dbca046ad6ebca3079f.html","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"BBC","pais":"Spain","titulo":"The Revolutionary Design of Completely New Viruses Through Artificial Intelligence","resumo":"Scientists have begun employing advanced artificial intelligence algorithms to create unprecedented viral structures from scratch in the laboratory.\nThe technique allows for the mapping and design of highly specific protein combinations with unprecedented precision, accelerating the development of vaccines and gene therapies.\nHowever, the feat also raises alarms in the global scientific community regarding the urgent need for ethical regulations and rigorous biosafety protocols.","link":"https://www.bbc.com/mundo/articles/cgk4ek6xke3o","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"OkDiario","pais":"Spain","titulo":"The materials that will make it possible to live on the Moon for years","resumo":"Materials engineering researchers have developed new alloys and structural composites designed to withstand the extreme conditions of the lunar surface.\nThe new components withstand severe temperature variations and offer protection against cosmic radiation and micrometeorites without compromising transport efficiency.\nThese innovations are considered essential to enabling permanent bases and sustainable human settlement in future missions to the Moon.","link":"https://okdiario.com/ciencia/materiales-que-permitiran-vivir-luna-durante-anos-19140636","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"Expansión","pais":"Spain","titulo":"Tesla and SpaceX to invest 14.55 billion in a mega chip factory","resumo":"Tesla and SpaceX have announced a joint plan to invest 14.55 billion dollars in the construction of a giant facility dedicated to semiconductor production.\nThe strategic objective is to ensure self-sufficiency in the supply of advanced microchips essential for autonomous vehicles, artificial intelligence systems, and spacecraft.\nThe initiative promises to reshape the global semiconductor market and reduce these companies' dependence on external suppliers.","link":"https://www.expansion.com/economia-digital/2026/08/06/6a74f828e5fdeaf2688b45a0.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Nacional.cat","pais":"Spain","titulo":"The new information economy: how AI is changing the media business","resumo":"The integration of generative artificial intelligence is profoundly redefining the production, distribution, and content monetization chain in global journalism.\nMedia outlets face the challenge of balancing process automation, search optimization, and copyright in the face of the rise of AI-based platforms.\nThe transformation requires new business approaches to preserve the financial sustainability of media outlets and ensure editorial credibility in the digital age.","link":"https://www.elnacional.cat/oneconomia/es/on-ia/nueva-economia-informacion-como-ia-esta-cambiando-negocio-medios_1677437_102.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"OkDiario","pais":"Spain","titulo":"OPUS RSE technology measures car pollution in real time without stopping traffic","resumo":"A new remote sensing system developed by OPUS RSE allows for the analysis of vehicle pollutant emissions during continuous circulation on public roads.\nThe technology uses optical spectrometry to identify highly polluting cars at the exact moment of passage, without the need for traffic blocks.\nThe solution emerges as a strategic tool for smart cities in combating urban contamination and meeting strict environmental goals.","link":"https://okdiario.com/okgreen/tecnologia-opus-rse-mide-contaminacion-del-coche-tiempo-real-sin-necesidad-detener-trafico-19139136","categoria":"INNOVATION","lang":"en"},{"fonte":"bbva.com","pais":"Spain","titulo":"Electrolyzers: key technology to produce green hydrogen","resumo":"Electrolyzers have established themselves as the most critical technological component in the transition process to a zero-carbon energy matrix.\nCapable of separating water into oxygen and hydrogen using renewable energy, this equipment is receiving massive investments to increase efficiency and reduce costs.\nThe expansion of this industry is fundamental to decarbonizing heavy industrial sectors and long-distance transport in the coming decades.","link":"https://www.bbva.com/es/sostenibilidad/electrolizadores-tecnologia-clave-para-producir-hidrogeno-verde/","categoria":"ENERGY","lang":"en"},{"fonte":"turbo.pt","pais":"Spain","titulo":"This Spanish hypercar bets on technology that does not replace the driver","resumo":"A Spanish manufacturer has unveiled a high-performance hypercar focused on enhancing the driving experience rather than completely automating it.\nThe vehicle combines cutting-edge engines and advanced electronic assistance to amplify the driver's reflexes without taking human control away from the steering wheel.\nThe proposal runs counter to the current trend of fully autonomous driving, highlighting technology at the service of sporting enthusiasm and active safety.","link":"https://www.turbo.pt/este-hipercarro-espanhol-aposta-em-tecnologia-que-nao-substitui-o-condutor/","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Scientists train AI model with DNA and create 16 new virus types","resumo":"Researchers used DNA sequences to train an advanced artificial intelligence model in the field of synthetic biology.\nFrom this training, the system was able to generate and synthesize 16 new, previously unknown virus variants.\nThe feat demonstrates the immense potential of AI in genetic engineering and biological development, while reigniting debates on biosafety.","link":"https://news.yahoo.co.jp/articles/d2d0479602c2783b15d70d1298697b9bb3cb6f67","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"PR TIMES","pais":"Japan","titulo":"SHIFT secures contract for technical evaluation support of defense AI equipment","resumo":"Japanese company SHIFT announced it has been hired by Japan's Acquisition, Technology \u0026 Logistics Agency.\nThe contract provides for support services in the analysis and technical evaluation of military equipment based on artificial intelligence.\nThe initiative reflects the country's defense forces' movement to safely and efficiently integrate emerging technologies into their arsenal.","link":"https://prtimes.jp/main/html/rd/p/000000158.000018724.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"Denso and TÜV Rheinland launch joint white paper on battery passports","resumo":"Automotive component manufacturer Denso and certification company TÜV Rheinland Japan have published a technical white paper on the battery passport.\nThe document details the technical and traceability requirements needed to track the lifecycle of electric vehicle batteries.\nThe collaboration aims to drive standardization and sustainability in the automotive sector in compliance with new global regulations.","link":"https://www.nikkei.com/article/DGXZRSP710950_X00C26A8000000/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"nyk.com","pais":"Japan","titulo":"Engineers take on the challenge of high-seas rocket recovery ships","resumo":"The Japanese aerospace sector is advancing in the development of vessels specialized in the capture and recovery of rockets in the ocean.\nLocal engineers share the complex technical challenges required to stabilize and rescue reusable boosters in adverse sea conditions.\nThe initiative is fundamental to drastically reducing the costs of space launches and making the country's aerospace program more globally competitive.","link":"https://www.nyk.com/stories/03/02/20260807_3.html","categoria":"SPACE TECHNOLOGY","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"The shift in market valuation for artificial intelligence-linked stocks","resumo":"Investors and financial sector analysts are reformulating the criteria for pricing and evaluating artificial intelligence-focused companies.\nFollowing the initial wave of euphoria, the market has started demanding concrete financial results and sustainable commercial applications from these companies.\nThis change in perspective signals a maturation phase for the AI ecosystem, in which the ability to monetize outweighs mere technological promises.","link":"https://www.nikkei.com/article/DGKKZO98033600X00C26A8ENI000/","categoria":"TRENDS","lang":"en"},{"fonte":"Newscast.jp","pais":"Japan","titulo":"Report analyzes global continuous glucose monitoring technology market through 2032","resumo":"A new analytical report examines the global growth of continuous glucose monitoring (CGM) technology projected for the period from 2026 to 2032.\nThe study details projections for invasive and non-invasive devices, highlighting the impact of sensor advancement on chronic disease management.\nThe demand drives innovations in wearable devices, signaling a promising market for technological solutions applied to preventive medicine.","link":"https://newscast.jp/smart/news/6738786","categoria":"DIGITAL HEALTH","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"Fukuoka to open new hub supporting cutting-edge tech startups in September","resumo":"Real estate developer Fukuoka Jisho and partners linked to Kyushu University will announce a new hub focused on supporting cutting-edge technology startups.\nThe structure, scheduled to open in September, will offer financial resources, physical space, and technical mentorship to turn research into scalable businesses.\nThe project aims to strengthen the Kyushu region's innovation ecosystem and attract talent and investment in emerging technologies.","link":"https://www.nikkei.com/article/DGXZQOJC06B350W6A800C2000000/","categoria":"INNOVATION","lang":"en"},{"fonte":"PR TIMES","pais":"Japan","titulo":"Material Catapult platform launched to accelerate new uses for material technologies","resumo":"The new Material Catapult platform has been officially launched in Japan with the goal of connecting advanced materials manufacturers to new markets.\nThe solution seeks to solve a critical problem for industries in the sector: the difficulty of commercializing products that feature high technology but low direct demand.\nThrough the identification of new commercial applications, the system aims to boost the competitiveness of the national high-performance materials industry.","link":"https://prtimes.jp/main/html/rd/p/000000038.000031371.html","categoria":"INNOVATION","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
