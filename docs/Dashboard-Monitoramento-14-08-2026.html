@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'nonce-WDWyenUZe1ToWaBx/8/6Hol3'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style>
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">14/08/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 style="margin: 0; font-size: 1.5rem; color: #fff;">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="WDWyenUZe1ToWaBx/8/6Hol3">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"e-global.pt","pais":"Brasil","titulo":"Brasil e China unem tecnologia para processar imagens diretamente no espaço","resumo":"Brasil e China uniram forças em uma parceria tecnológica de ponta voltada para o setor espacial.\nA cooperação visa desenvolver sistemas capazes de processar imagens de satélite diretamente em órbita, otimizando o envio de dados para a Terra.\nA inovação promete acelerar o tempo de resposta em monitoramentos ambientais, agrícolas e de segurança territorial.","link":"https://e-global.pt/noticias/lusofonia/brasil/brasil-e-china-unem-tecnologia-para-processar-imagens-diretamente-no-espaco/","categoria":"TECNOLOGIA ESPACIAL","lang":"pt"},{"fonte":"Globo","pais":"Brasil","titulo":"Cientistas conseguem usar dispositivo para tomar controle de Boeing 737","resumo":"Pesquisadores em segurança cibernética demonstraram a possibilidade de assumir o controle dos sistemas de um Boeing 737 por meio de um dispositivo específico.\nA descoberta acende um alerta global sobre potenciais vulnerabilidades na aviação comercial moderna.\nEspecialistas e autoridades já trabalham no reforço dos protocolos de defesa e na atualização dos softwares de bordo.","link":"https://revistagalileu.globo.com/google/amp/tecnologia/noticia/2026/08/cientistas-conseguem-usar-dispositivo-para-tomar-controle-de-boeing-737.ghtml","categoria":"CIBERSEGURANÇA","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"IA pode acrescentar R$ 1 trilhão ao PIB do Brasil até 2030, diz estudo da OpenAI","resumo":"Um novo estudo encomendado pela OpenAI revela o impacto transformador da inteligência artificial na economia brasileira.\nA adoção acelerada de tecnologias de IA pode injetar até R$ 1 trilhão no Produto Interno Bruto (PIB) do país até o ano de 2030.\nO avanço exige investimentos em infraestrutura digital, capacitação profissional e regulamentação ética para potencializar esses ganhos.","link":"https://www1.folha.uol.com.br/mercado/2026/08/ia-pode-acrescentar-r-1-tri-ao-pib-do-brasil-ate-2030-diz-estudo-comissionado-pela-openai.shtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Chineses vêm ao Brasil em busca de 30% do mercado de biotecnologia","resumo":"Empresas e investidores chineses estão expandindo suas operações no Brasil focando no setor de biotecnologia.\nA meta do grupo estrangeiro é conquistar até 30% da fatia desse mercado estratégico nos próximos anos.\nA movimentação promete impulsionar a inovação agrícola, farmacêutica e de soluções sustentáveis no ecossistema nacional.","link":"https://www1.folha.uol.com.br/mercado/2026/08/chineses-vem-ao-brasil-em-busca-de-30-do-mercado-de-biotecnologia.shtml","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"PSX Brasil","pais":"Brasil","titulo":"2K revela Small Axe Studio, nova desenvolvedora de jogos esportivos AAA","resumo":"A distribuidora de jogos 2K anunciou oficialmente a criação do Small Axe Studio, um novo estúdio focado em jogos esportivos AAA.\nA equipe é composta por veteranos da indústria, incluindo profissionais com vasta experiência anterior na EA Sports.\nA iniciativa busca trazer novas franquias de peso e inovações técnicas para o concorrido mercado global de games.","link":"https://psxbrasil.com.br/2k-revela-small-axe-studio-desenvolvedora-de-esportes-aaa-com-ex-membros-da-ea-sports/","categoria":"GAMES","lang":"pt"},{"fonte":"Pichau Arena","pais":"Brasil","titulo":"BenQ apresenta novo monitor gamer MOBIUZ com tecnologia OLED","resumo":"A BenQ lançou oficialmente seu mais recente monitor gamer da linha MOBIUZ, equipado com painel OLED de altíssima definição.\nO periférico promete tempos de resposta ultrarrápidos e excelente fidelidade de cores para jogadores profissionais e entusiastas.\nCom tecnologias avançadas de proteção ocular e ergonomia, o modelo reforça o portfólio da marca no mercado de hardware.","link":"https://www.pichauarena.com.br/hardware/benq-apresenta-novo/","categoria":"HARDWARE","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Observatório Nacional transmite eclipse solar em ação de popularização da ciência","resumo":"O Observatório Nacional mobilizou diversos veículos de comunicação para transmitir ao vivo a cobertura completa de um eclipse solar.\nA iniciativa fez parte de uma importante missão institucional de popularização da ciência e difusão do conhecimento astronômico.\nMilhões de espectadores puderam acompanhar o fenômeno acompanhados por explicações detalhadas de astrônomos brasileiros.","link":"https://www.gov.br/observatorio/pt-br/assuntos/noticias/on-cumpre-missao-de-popularizacao-da-ciencia-ao-ter-cobertura-do-eclipse-solar-transmitida-por-varios-veiculos-de-comunicacao","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"R7","pais":"Brasil","titulo":"Hiperconectados: estamos usando a tecnologia ou sendo usados por ela?","resumo":"O debate sobre o papel dos dispositivos digitais e redes na rotina humana ganha destaque em nova análise sobre hiperconectividade.\nO estudo questiona se a sociedade atual domina o uso das ferramentas tecnológicas ou se tornou dependente de seus algoritmos.\nEspecialistas apontam caminhos para um consumo mais consciente da tecnologia, preservando a saúde mental e a produtividade.","link":"https://noticias.r7.com/prisma/radar-tecnologico/hiperconectados-estamos-usando-a-tecnologia-ou-sendo-usados-por-ela-14082026/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Live Science","pais":"Estados Unidos","titulo":"Nova técnica de IA permite que robôs concluam tarefas duas vezes mais rápido ao 'pensar no futuro'","resumo":"Pesquisadores desenvolveram um método inovador de inteligência artificial que capacita robôs a prever cenários e planejar ações com antecedência.\nA técnica permite que os sistemas robóticos executem tarefas complexas com o dobro de velocidade em comparação aos métodos tradicionais.\nEsse avanço promete revolucionar a automação industrial e a logística ao aumentar significativamente a eficiência e a precisão operacional.","link":"https://www.livescience.com/technology/robotics/new-ai-technique-helps-robots-complete-tasks-twice-as-fast-by-letting-them-think-ahead","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Futurism","pais":"Estados Unidos","titulo":"Editora envolvida em escândalo de textos gerados por IA na Sports Illustrated se reposiciona no mercado","resumo":"A empresa de mídia que se tornou centro de controvérsias ao publicar artigos sob o nome de autores fictícios na revista Sports Illustrated anunciou sua reformulação institucional.\nAgora reposicionada formalmente como uma companhia de tecnologia focada em inteligência artificial, a organização busca atrair novos investimentos.\nO movimento reflete a rápida transição das empresas de conteúdo tradicional para soluções automatizadas no setor.","link":"https://futurism.com/artificial-intelligence/sports-illustrated-the-arena-group-paradium-ai","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Northeastern Global News","pais":"Estados Unidos","titulo":"Pesquisador obtém patente para tecnologia de detecção de vírus pelo hálito","resumo":"Um cientista norte-americano conquistou a patente de um dispositivo inovador capaz de identificar vírus respiratórios por meio da análise do hálito dos pacientes.\nO sistema utiliza sensores avançados para entregar diagnósticos não invasivos e altamente precisos em poucos minutos.\nA tecnologia representa um marco promissor para o controle de surtos virais e para o monitoramento contínuo da saúde pública.","link":"https://news.northeastern.edu/2026/08/13/northeastern-viral-gas-sensor/","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Financial Times","pais":"Estados Unidos","titulo":"Donald Trump impõe novas tarifas focadas na tecnologia de drones chineses","resumo":"O governo dos Estados Unidos anunciou a implementação de severas tarifas comerciais direcionadas especificamente à importação de drones desenvolvidos com tecnologia chinesa.\nA medida visa conter o avanço das fabricantes estrangeiras no mercado nacional e proteger dados sensíveis de segurança interna.\nA decisão gera apreensão no setor de tecnologia, pois pode encarecer equipamentos essenciais para mapeamento e inspeção industrial.","link":"https://www.ft.com/content/5ca83d6d-2c13-4d5e-b564-881f89189b3e?syn-25a6b1a6=1","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"WSJ","pais":"Estados Unidos","titulo":"Trump ordena que Marinha dos EUA retorne a tecnologias antigas em porta-aviões","resumo":"Uma nova diretiva presidencial ordenou que a Marinha americana substitua sistemas modernos de catapulta eletromagnética por modelos a vapor tradicionais em seus porta-aviões.\nA mudança de orientação técnica deve custar bilhões de dólares aos cofres públicos e exigir adaptações estruturais complexas nas embarcações.\nCríticos apontam que o retrocesso tecnológico pode impactar a eficiência operacional da frota diante de rivalidades globais.","link":"https://www.wsj.com/us-news/trump-orders-navy-to-restore-old-technology-in-aircraft-carriers-costing-billions-0055ec1b","categoria":"DEFESA","lang":"pt"},{"fonte":"National Audubon Society","pais":"Estados Unidos","titulo":"Tecnologia de ecoacústica com IA passa a apoiar a conservação de aves na América Latina","resumo":"A plataforma Chorus iniciou a implantação de sua tecnologia de inteligência artificial voltada ao processamento ecoacústico para monitorar a biodiversidade em ecossistemas latino-americanos.\nO sistema analisa arquivos de áudio da natureza para identificar espécies de aves e acompanhar padrões comportamentais em tempo real.\nA iniciativa apoia projetos comunitários de conservação ambiental, integrando inovação tecnológica à preservação da fauna regional.","link":"https://www.audubon.org/news/chorus-our-ai-ecoacoustic-processing-technology-begins-supporting-locally-led-bird","categoria":"MEIO AMBIENTE","lang":"pt"},{"fonte":"Daily Bruin","pais":"Estados Unidos","titulo":"Título de incentivo à pesquisa científica de US$ 5 bilhões é aprovado por comissão na Califórnia","resumo":"A Assembleia Legislativa da Califórnia deu um passo decisivo ao aprovar um projeto de título de dívida pública no valor de US$ 5 bilhões destinado à pesquisa científica.\nOs recursos serão direcionados para financiar estudos avançados em universidades e centros de inovação tecnológica do estado.\nA iniciativa busca consolidar a região como um polo global de desenvolvimento científico e impulsionar descobertas em áreas cruciais.","link":"https://dailybruin.com/2026/08/13/5-billion-science-research-bond-clears-california-assembly-committee","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Economist","pais":"Estados Unidos","titulo":"Especialistas defendem a reformulação completa do modelo científico americano","resumo":"Um novo debate no setor de políticas públicas argumenta que a infraestrutura de pesquisa científica dos Estados Unidos precisa de reformas estruturais urgentes para manter sua competitividade mundial.\nO estudo aponta a burocracia excessiva e a lentidão no financiamento como barreiras que travam o avanço de descobertas disruptivas.\nA proposta defende a adoção de modelos mais ágeis e descentralizados para acelerar a inovação tecnológica no país.","link":"https://www.economist.com/by-invitation/2026/08/13/the-case-for-overhauling-american-science","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"ladepeche.fr","pais":"França","titulo":"ANÁLISE: Donald Trump desembarcado em segredo do Air Force One: uma exfiltração 'inaceitável...' Por que a operação gera crise política nos EUA","resumo":"Uma operação secreta para desembarcar o ex-presidente Donald Trump do Air Force One desencadeou uma intensa crise política nos Estados Unidos.\nO episódio, classificado como inaceitável por opositores, levanta sérios questionamentos sobre protocolos de segurança e transparência governamental.\nA polêmica domina os debates públicos e intensifica as disputas entre democratas e republicanos no país.","link":"https://www.ladepeche.fr/2026/08/14/decryptage-donald-trump-debarque-en-secret-dair-force-one-une-exfiltration-inacceptable-pourquoi-loperation-suscite-une-crise-politique-aux-etats-unis-13507591.php","categoria":"POLÍTICA","lang":"pt"},{"fonte":"Presse Agence","pais":"França","titulo":"PARIS: Insurtech Eyst emite 1.000 cartões virtuais por dia para vítimas de incêndios","resumo":"A startup de tecnologia em seguros Eyst está emitindo cerca de mil cartões bancários virtuais diariamente para auxiliar vítimas de incêndios na França.\nA iniciativa visa acelerar a liberação de indenizações e proporcionar suporte financeiro imediato aos afetados em momentos de emergência.\nA solução demonstra o impacto positivo da inovação financeira na modernização dos serviços de seguros e na resposta a desastres.","link":"https://presseagence.fr/paris-assurance-technologie-eyst-emet-1-000-cartes-virtuelles-par-jour-pour-les-sinistres-des-incendies/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"中国经济网","pais":"França","titulo":"União Europeia amplia alcance da Lei de Inteligência Artificial para reforçar regulação da economia digital","resumo":"A União Europeia decidiu ampliar a abrangência da sua Lei de Inteligência Artificial para fortalecer a regulamentação do mercado digital.\nA medida busca aumentar a fiscalização sobre algoritmos avançados e assegurar padrões éticos rígidos para empresas de tecnologia.\nCom essa iniciativa, o bloco europeu consolida sua posição de liderança global na governança e segurança de dados na era da IA.","link":"http://www.ce.cn/xwzx/gnsz/gdxw/202608/t20260814_3146838.shtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Flock Safety tenta conter o uso indevido de suas câmeras de vigilância pela polícia após escândalos","resumo":"A empresa de tecnologia Flock Safety está implementando novas medidas de controle para conter abusos no uso de suas câmeras de leitura de placas por forças policiais.\nA decisão surge após uma série de denúncias e escândalos envolvendo monitoramento não autorizado e graves violações de privacidade dos cidadãos.\nO movimento reflete a crescente pressão popular e regulatória por maior transparência e ética no setor de vigilância automatizada.","link":"https://www.theguardian.com/technology/2026/aug/13/flock-safety-police-abuse-surveillance-cameras","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ITVX","pais":"Inglaterra","titulo":"Economia do Reino Unido supera integrantes do G7 no primeiro semestre de 2026 apesar de conflito no Golfo","resumo":"A economia do Reino Unido registrou um crescimento surpreendente no primeiro semestre de 2026, posicionando-se à frente dos demais países do G7.\nMesmo diante da instabilidade geopolítica e das pressões inflacionárias causadas pelo conflito na região do Golfo, os indicadores britânicos mostraram forte resiliência.\nO desempenho inesperado fortalece a confiança dos investidores e sinaliza uma recuperação sólida do mercado interno.","link":"https://www.itv.com/news/2026-08-13/uk-economy-races-ahead-of-g7-pack-in-first-half-of-2026-despite-gulf-war","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Reuters","pais":"Inglaterra","titulo":"Boom da inteligência artificial começa a impactar o desempenho da economia do Reino Unido","resumo":"O rápido avanço e os altos investimentos no setor de inteligência artificial começaram a impulsionar visivelmente os resultados econômicos do Reino Unido.\nA adoção em massa de ferramentas automatizadas por empresas locais elevou os níveis de produtividade e atraiu novos aportes financeiros internacionais.\nEsse fenômeno consolida a tecnologia de ponta como um dos principais motores de expansão do mercado britânico na atualidade.","link":"https://www.reuters.com/world/uk/ai-boom-is-starting-show-uk-economys-performance-2026-08-13/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Superdeporte","pais":"Espanha","titulo":"A bola que \"fala\": assim funciona a tecnologia revolucionária que estreará na LaLiga","resumo":"A principal liga de futebol da Espanha se prepara para estrear uma tecnologia inovadora em suas partidas com a introdução de uma bola inteligente.\nO dispositivo conta com sensores internos avançados capazes de rastrear movimentos em tempo real e fornecer dados precisos para a arbitragem e transmissões.\nEssa inovação promete transformar a análise técnica do jogo, otimizando as decisões de impedimento e elevando o nível de precisão no esporte.","link":"https://www.superdeporte.es/futbol/2026/08/13/balon-habla-funciona-revolucionaria-tecnologia-inteligente-133338458.html","categoria":"TECNOLOGIA ESPORTIVA","lang":"pt"},{"fonte":"El Economista","pais":"Espanha","titulo":"Ciência confirma: identificados 19 biomarcadores que podem prever o surgimento dos sintomas da ELA","resumo":"Pesquisadores identificaram um conjunto de 19 biomarcadores no sangue capazes de sinalizar o início da Esclerose Lateral Amiotrófica antes dos primeiros sintomas.\nA descoberta representa um avanço crucial para o diagnóstico precoce de uma das doenças neurodegenerativas mais agressivas da medicina moderna.\nCom esses dados, cientistas esperam desenvolver tratamentos preventivos mais eficazes e retardar significativamente a progressão da enfermidade.","link":"https://www.eleconomista.es/salud-bienestar/ultimas-noticias/noticias/14008038/08/26/lo-confirma-la-ciencia-identifican-19-biomarcadores-que-podrian-predecir-la-aparicion-de-los-sintomas-de-la-ela.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Xataka","pais":"Espanha","titulo":"A maior invasão biológica submarina da Espanha é imparável: ciência admite que não pode erradicar a alga asiática na Andaluzia","resumo":"Cientistas na Espanha confirmaram que a proliferação da alga asiática na costa da Andaluzia atingiu um ponto sem retorno ecológico.\nA espécie invasora está devastando os ecossistemas marinhos locais e causando graves prejuízos para o setor da pesca na região sul do país.\nEspecialistas agora focam em estratégias de contenção e manejo, admitindo que a erradicação total do organismo se tornou biologicamente impossível.","link":"https://www.xataka.com/ecologia-y-naturaleza/mayor-invasion-biologica-submarina-espana-imparable-ciencia-asume-que-no-podemos-erradicar-alga-asiatica-andalucia","categoria":"MEIO AMBIENTE","lang":"pt"},{"fonte":"PR Noticias","pais":"Espanha","titulo":"O verdadeiro desafio da IA não é a tecnologia, mas sua adoção em escala pelas empresas","resumo":"Embora o avanço dos modelos de inteligência artificial ocorra a passos largos, o maior gargalo atual reside no processo de integração corporativa.\nMuitas empresas enfrentam dificuldades culturais, falta de infraestrutura e resistência interna para implementar a ferramenta em larga escala.\nEspecialistas destacam que o sucesso da transformação digital dependerá mais da reorganização de processos operacionais do que de algoritmos.","link":"https://prnoticias.com/2026/08/14/el-verdadero-reto-de-la-ia-no-es-la-tecnologia-sino-su-adopcion-a-escala-en-las-empresas/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"OkDiario","pais":"Espanha","titulo":"Como funcionava a tecnologia que permitia a Stephen Hawking se comunicar por meio de um sensor na bochecha","resumo":"O renomado físico Stephen Hawking utilizou por décadas um sistema assistivo altamente especializado para conseguir sintetizar sua voz e textos.\nA tecnologia dependia de um único sensor infravermelho posicionado em seus óculos, capaz de detectar os mínimos movimentos do músculo da bochecha.\nO software traduzia esses impulsos em caracteres e palavras, demonstrando como a engenharia assistiva permitiu a continuidade de seu trabalho científico.","link":"https://okdiario.com/ciencia/asi-era-tecnologia-que-permitia-comunicarse-stephen-hawking-traves-sensor-mejilla-19176113","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"O trajeto do eclipse total que passará pela Espanha no verão de 2027 e durará mais de quatro minutos","resumo":"A Espanha será o palco principal de um dos eventos astronômicos mais espetaculares da década durante o verão do ano de 2027.\nO eclipse solar total cobrirá parte do território espanhol por mais de quatro minutos, oferecendo uma escuridão prolongada e rara.\nComunidades científicas e o setor de turismo já começam a se planejar para receber milhares de observadores e astrônomos do mundo inteiro.","link":"https://www.eldebate.com/ciencia/20260814/recorrido-eclipse-total-pasara-espana-verano-2027-durara-cuatro-minutos_449207.html","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"Información","pais":"Espanha","titulo":"Hospital de Torrevieja incorpora tecnologia imersiva para favorecer o bem-estar de pacientes de saúde mental","resumo":"O Hospital de Torrevieja, na Espanha, implementou ferramentas de realidade imersiva no tratamento de pacientes internados na ala psiquiátrica.\nA solução utiliza cenários virtuais relaxantes e interativos desenvolvidos para reduzir o estresse, a ansiedade e episódios de agitação grave.\nA iniciativa pioneira busca modernizar a assistência hospitalar e comprova o impacto positivo de tecnologias visuais na recuperação mental.","link":"https://www.informacion.es/vega-baja/2026/08/14/hospital-torrevieja-inmersivo-salud-mental-habitacion-133349471.html","categoria":"SAÚDE DIGITAL","lang":"pt"},{"fonte":"Xataka","pais":"Espanha","titulo":"O misterioso \"ponto vermelho\" visto no eclipse tem nome e sobrenome: ciência explica o fenômeno fascinante","resumo":"Durante a observação de um eclipse recente, um intrigante ponto vermelho visível próximo ao disco solar chamou a atenção do público mundial.\nAstrônomos explicaram que o fenômeno se trata de uma proeminência solar, uma gigantesca estrutura de plasma mantida por campos magnéticos.\nA análise do evento permitiu entender melhor a intensa atividade da coroa solar e seu impacto nas tempestades espaciais detectadas na Terra.","link":"https://www.xataka.com/espacio/misterioso-punto-rojo-que-vimos-eclipse-ayer-tiene-nombre-apellidos-asi-explica-ciencia-este-fascinante-fenomeno","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"pedelec-elektro-fahrrad.de","pais":"Alemanha","titulo":"ADO Sense 3.0: Tecnologia LiDAR deve estrear em bicicletas elétricas de produção em série","resumo":"A ADO está introduzindo o modelo Sense 3.0, marcado pelo uso pioneiro da tecnologia LiDAR em bicicletas elétricas de produção em série.\nEssa inovação busca aprimorar significativamente a segurança e a navegação dos ciclistas ao mapear o ambiente ao redor em tempo real.\nA implementação dessa tecnologia avançada promete redefinir os padrões do mercado de e-bikes, trazendo recursos antes restritos a veículos autônomos para o uso diário em duas rodas.","link":"https://pedelec-elektro-fahrrad.de/news/ado-sense-3-0-lidar-technologie-soll-erstmals-einzug-ins-serien-pedelec-halten/668461/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Table.Briefings","pais":"Alemanha","titulo":"Tecnologia: Alibaba constrói data centers de inteligência artificial padronizados","resumo":"A gigante chinesa de tecnologia Alibaba anunciou o desenvolvimento de data centers padronizados voltados especificamente para Inteligência Artificial.\nEssa abordagem de construção modular e pré-fabricada visa acelerar a expansão da infraestrutura computacional e reduzir drasticamente os custos operacionais.\nCom essa iniciativa, a empresa pretende atender à crescente demanda global por capacidade de processamento de modelos avançados de IA de forma mais eficiente.","link":"https://table.media/china/news/technologie-alibaba-baut-ki-rechenzentren-von-der-stange","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"自動運転ラボ","pais":"Japão","titulo":"Governo do Japão estima impacto econômico da condução autônoma em 187 trilhões de ienes","resumo":"O governo japonês divulgou uma nova estimativa apontando que a difusão dos veículos autônomos pode gerar um efeito econômico de até 187 trilhões de ienes no país.\nA projeção contempla desde a cadeia de suprimentos de semicondutores e softwares até a otimização de serviços de logística e transporte público.\nEspecialistas apontam que a automação veicular será fundamental para enfrentar a esc escassez crônica de motoristas e apoiar o envelhecimento populacional do Japão.","link":"https://jidounten-lab.com/u_66386","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Toyota planeja retorno do esportivo MR2 com até 600 cv e expansão da linha GR","resumo":"A Toyota está preparando o renascimento do icônico esportivo de dois lugares MR2, equipado com um novo motor 2.0 turbo de quatro cilindros capaz de render até 600 cv.\nO projeto faz parte de uma estratégia de ampliação da divisão de alto desempenho GR (Gazoo Racing), que também planeja resgatar o clássico modelo Celica.\nA iniciativa demonstra o compromisso da montadora em manter vivas as tecnologias de motores de alta performance e apelo entusiasta em uma era de transição da mobilidade.","link":"https://news.yahoo.co.jp/articles/9ef241fff6d693a39608aa009319c254e5e1b244","categoria":"LANÇAMENTO","lang":"pt"},{"fonte":"朝日新聞","pais":"Japão","titulo":"Universidade de Miyagi criará departamento focado em resolver problemas sociais com Inteligência Artificial","resumo":"A Universidade de Miyagi anunciou a criação de uma nova faculdade voltada para a aplicação de Inteligência Artificial e tecnologias de ponta na resolução de desafios sociais.\nO programa acadêmico pretende fundir conceitos de design, engenharia e ciências humanas para capacitar profissionais na criação de soluções para a comunidade local.\nA medida reflete o movimento das instituições de ensino japonesas para adaptar seus currículos às exigências de transformação digital do mercado moderno.","link":"https://www.asahi.com/sensei-connect/articles/16786256","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"客观日本","pais":"Japão","titulo":"Cientistas japoneses confirmam indícios de estado superiônico no núcleo da Terra","resumo":"Pesquisadores da Universidade de Ciência de Tóquio reproduziram experimentalmente pela primeira vez condições que sugerem que as ligas de ferro do núcleo terrestre estão em estado superiônico.\nNesse estado da matéria, os átomos de elementos leves movem-se como líquido através de uma rede cristalina sólida de ferro sob pressões e temperaturas extremas.\nA descoberta fornece uma nova base teórica para entender o funcionamento do campo magnético da Terra e a estrutura profunda do nosso planeta.","link":"https://www.keguanjp.com/kgjp_keji/kgjp_kj_hj/pt20260814000012.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"edu.cn","pais":"China","titulo":"USTC Eleva Distância de Emaranhamento Entre Memórias Quânticas para 420 km","resumo":"Pesquisadores da Universidade de Ciência e Tecnologia da China alcançaram um avanço histórico ao estender a distância de emaranhamento entre memórias quânticas para 420 quilômetros. O marco superou significativamente os recordes anteriores estabelecidos em redes de fibras ópticas de longa distância. Essa conquista pavimenta o caminho para o desenvolvimento de uma internet quântica global em grande escala. O feito promete transformar radicalmente a segurança da informação e a computação distribuída.","link":"https://www.edu.cn/ke_yan_yu_fa_zhan/gao_xiao_cheng_guo/cheng_guo_zhan_shi/202608/t20260814_2765179.shtml","categoria":"FÍSICA QUÂNTICA","lang":"pt"},{"fonte":"新京报","pais":"China","titulo":"Pesquisa das Amostras da Chang'e-6 Traz Novas Evidências Sobre as Diferenças no Lado Oculto da Lua","resumo":"Estudos recentes com amostras de solo lunar trazidas pela missão Chang'e-6 revelaram descobertas cruciais sobre a assimetria entre os lados da Lua. A análise detalhada forneceu evidências diretas sobre o histórico do vulcanismo e a evolução térmica do satélite natural. As descobertas ajudam a esclarecer mistérios científicos de longa data na ciência planetária. Além disso, o avanço consolida a liderança do programa espacial chinês em exploração lunar profunda.","link":"https://www.bjnews.com.cn/detail/1786663454129798.html","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"中国科技网","pais":"China","titulo":"Nova Plataforma Integra Três Tecnologias para Tornar Chips de IA Mais Compactos e Eficientes","resumo":"Uma equipe de pesquisadores desenvolveu uma nova plataforma de integração de semicondutores que combina três tecnologias essenciais. O avanço permite fabricar chips de IA consideravelmente mais compactos, rápidos e com menor consumo energético. A inovação promete aliviar os severos gargalos de infraestrutura impostos pela crescente demanda por modelos de inteligência artificial. O avanço abre novos caminhos para dispositivos móveis e centros de processamento de alto desempenho.","link":"https://www.stdaily.com/web/gdxw/2026-08/14/content_563414.html","categoria":"SEMICONDUTORES","lang":"pt"},{"fonte":"威海新闻网","pais":"China","titulo":"China Registra Primeira Prescrição Clínica com Interface Cérebro-Máquina em Hospital Municipal","resumo":"A cidade de Weihai marcou um feito pioneiro ao emitir a primeira receita clínica para aplicação de interface cérebro-máquina em um hospital municipal. A tecnologia permite a leitura precisa de sinais neurais para auxiliar na reabilitação de pacientes com disfunções motoras graves. Esse evento sinaliza a transição da neurotecnologia diretamente dos laboratórios de pesquisa para os atendimentos de rotina. A iniciativa abre precedentes para a adoção médica dessa inovação em larga escala.","link":"https://www.whnews.cn/news/node/2026-08/14/content_-34850.htm","categoria":"NEUROTECNOLOGIA","lang":"pt"},{"fonte":"新华报业网","pais":"China","titulo":"Computação Quântica Acelera Transição de Descobertas Tecnológicas para Aplicação Industrial","resumo":"Especialistas do setor de alta tecnologia indicam que a computação quântica está migrando do ambiente de testes acadêmicos para entregas industriais. O movimento é impulsionado por melhorias na estabilidade dos qubits e em ferramentas integradas de hardware e software. Essa transição abre oportunidades comerciais em áreas como criptografia, finanças e física de materiais. A indústria se prepara para adotar soluções quânticas em problemas complexos do mundo real.","link":"https://www.xhby.net/content/s6a7e9375e4b0b3294d7a4d8c.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"东方财富","pais":"China","titulo":"China Publica Padrão Nacional de Resfriamento Líquido para Data Centers e Movimenta Mercado","resumo":"A divulgação de novos padrões nacionais regulando a tecnologia de resfriamento líquido para data centers movimentou fortemente o mercado chinês. A medida visa otimizar a eficiência energética das infraestruturas de processamento intensivo exigidas pela inteligência artificial. Com a regulamentação, a indústria deve acelerar a substituição de sistemas tradicionais por soluções sustentáveis. A mudança teve impacto direto no desempenho financeiro e na valorização das empresas de tecnologia do setor.","link":"http://finance.eastmoney.com/a/202608143841515643.html","categoria":"INFRAESTRUTURA","lang":"pt"},{"fonte":"同济大学新闻网","pais":"China","titulo":"Pesquisadores Desenvolvem Nova Estratégia de Identificação de Peptídeos com Nanóporos","resumo":"Cientistas da Escola de Ciências da Vida desenvolveram uma metodologia inovadora para identificação de peptídeos utilizando sensores de nanóporos. O sistema oferece alta sensibilidade para a análise de sequências de aminoácidos sem a necessidade de modificações químicas complexas. A abordagem simplifica significativamente a detecção biológica em tempo real com excelente precisão. A inovação apresenta grande potencial de aplicação na descoberta de fármacos e no diagnóstico precoce de doenças.","link":"https://news.tongji.edu.cn/info/1003/95340.htm","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"新华网","pais":"China","titulo":"Três Cientistas São Contemplados com o Prêmio Future Science de 2026","resumo":"O prestigiado prêmio Future Science de 2026 anunciou seus vencedores, homenageando Zhang Hong e outros dois proeminentes cientistas. A premiação reconhece avanços de grande impacto nas áreas de ciências da vida, matemática e computação. A iniciativa busca incentivar a pesquisa básica inovadora realizada por pesquisadores da região da China. A conquista destaca a crescente relevância e liderança da produção científica chinesa no cenário global.","link":"https://www.news.cn/tech/20260813/3d9d07e434fd465bb80c36d7da8da241/c.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"fundsforNGOs","pais":"Índia","titulo":"Convocatória Aberta para o Programa India Science Book Fellowship 2026-27","resumo":"O programa India Science Book Fellowship abriu inscrições para sua edição de 2026-27, visando promover a divulgação científica no país.\nA iniciativa apoia autores na escrita e publicação de livros focados em temas científicos e tecnológicos acessíveis ao público geral.\nO projeto busca fortalecer a cultura de conhecimento e estimular a literatura de divulgação científica na Índia.","link":"https://www2.fundsforngos.org/science/open-call-for-india-science-book-fellowship-program-2026-27/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ThePrint","pais":"Índia","titulo":"Universidade de Chandigarh Junta-se à ISRO para Sediar Conclave Nacional de Tecnologia Espacial","resumo":"A Universidade de Chandigarh fez uma parceria com a Agência Espacial Indiana (ISRO) para realizar o Conclave Nacional de Tecnologia Espacial entre os dias 17 e 18 de agosto.\nO evento reunirá cerca de 30 cientistas proeminentes da área espacial, incluindo o Capitão do Grupo Shubhanshu Shukla.\nO encontro visa debater inovações, avanços científicos e o futuro da exploração espacial no país.","link":"https://theprint.in/ani-press-releases/chandigarh-university-joins-isro-to-host-national-space-technology-conclave-on-17th-18th-august-group-capt-shubhanshu-shukla-among-30-space-scientists-to-attend/3014466/","categoria":"TECNOLOGIA ESPACIAL","lang":"pt"},{"fonte":"India Shipping News","pais":"Índia","titulo":"MDL Assina Memorando com a MWRRA para Avançar na Gestão de Recursos Hídricos Baseada em Tecnologia","resumo":"A Mazagon Dock Shipbuilders Limited (MDL) assinou um memorando de entendimento com a MWRRA visando modernizar a gestão de recursos hídricos.\nA parceria foca na aplicação de soluções tecnológicas para otimizar o monitoramento e a distribuição sustentável da água na região.\nEssa iniciativa impulsiona a inovação no setor de infraestrutura e sustentabilidade ambiental da Índia.","link":"https://indiashippingnews.com/ship-building/mdl-signs-mou-with-mwrra-to-advance-technology-driven-water-resource-management/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Expresso","pais":"Portugal","titulo":"PRR digital gera em Portugal menos impacto do que o valor investido","resumo":"Um relatório recente revela que a transformação digital financiada pelo Plano de Recuperação e Resiliência em Portugal está aquém do esperado.\nApesar dos altos investimentos financeiros aplicados no setor público e privado, o retorno efetivo na produtividade permanece limitado.\nO cenário levanta alertas sobre a eficiência dos fundos europeus e a necessidade de reestruturar as estratégias tecnológicas nacionais.","link":"https://expresso.pt/economia/2026-08-13-prr-digital-gera-em-portugal-menos-impacto-do-que-o-valor-investido-054afd44?utm_source=expresso\u0026utm_medium=category\u0026utm_campaign=WEB\u0026utm_content=/economia/2026-08-13-prr-digital-gera-em-portugal-menos-impacto-do-que-o-valor-investido-054afd44","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Leak.pt","pais":"Portugal","titulo":"Google disse \"não\" à tecnologia mais recente: entenda o motivo","resumo":"A Google decidiu não adotar imediatamente as inovações tecnológicas mais recentes em seus principais produtos e infraestruturas.\nA gigante da tecnologia optou por priorizar a estabilidade, a segurança dos dados e o desempenho contínuo dos sistemas.\nA decisão reflete uma abordagem cautelosa no desenvolvimento de software para garantir a confiabilidade exigida pelos usuários.","link":"https://www.leak.pt/google-disse-nao-a-tecnologia-mais-recente-porque/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ECO","pais":"Portugal","titulo":"Próximo eclipse ocorre só em 2027, mas missão da ESA usa tecnologia portuguesa para recriar o fenômeno","resumo":"Embora o próximo eclipse solar total ocorra em 2027, a Agência Espacial Europeia está recriando o evento no espaço.\nA missão Proba-3 utiliza sistemas de alta precisão desenvolvidos pela empresa portuguesa Tekever para alinhar dois satélites.\nA inovação permite criar uma sombra artificial constante e estudar a coroa solar com detalhamento sem precedentes.","link":"https://eco.sapo.pt/2026/08/13/proximo-eclipse-so-em-2027-mas-missao-da-esa-usa-tecnologia-da-tekever-para-recriar-o-fenomeno/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Mais Algarve","pais":"Portugal","titulo":"Município de Lagoa reforça investimento na modernização da iluminação pública com tecnologia LED","resumo":"A Câmara Municipal de Lagoa anunciou um novo investimento voltado para a substituição da iluminação pública por tecnologia LED.\nO projeto visa reduzir significativamente o consumo de energia elétrica, diminuir custos operacionais e cortar emissões de carbono.\nA iniciativa consolida o avanço das cidades inteligentes em Portugal, aliando modernização urbana e sustentabilidade ambiental.","link":"https://maisalgarve.pt/2026/08/13/lagoa-municipio-reforca-investimento-na-modernizacao-da-iluminacao-publica-com-tecnologia-led/","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"AICEP","pais":"Portugal","titulo":"Infraspeak: a tecnologia portuguesa de gestão de instalações com alcance global","resumo":"A startup portuguesa Infraspeak continua a expandir a sua plataforma de gestão inteligente de instalações para o mercado internacional.\nUtilizando inteligência artificial e conectividade IoT, a solução otimiza operações complexas em empresas de diversos setores.\nO crescimento global da empresa destaca a força do ecossistema de inovação e tecnologia em Portugal.","link":"https://portugalglobal.pt/noticias/2026/agosto/infraspeak-tecnologia-portuguesa-com-alcance-global-1/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"24noticias.sapo.pt","pais":"Portugal","titulo":"Instabilidade no Oriente Médio pode trazer o WRC de volta a Portugal","resumo":"O aumento das tensões geopolíticas no Oriente Médio coloca em risco a realização de etapas do Campeonato Mundial de Rali na região.\nDiante desse cenário incerto, a organização do WRC estuda alternativas de calendário e Portugal surge como forte candidato.\nO eventual retorno da competição traria grande visibilidade esportiva, atratividade turística e impacto econômico positivo.","link":"https://24noticias.sapo.pt/desporto/artigos/instabilidade-no-medio-oriente-pode-fazer-o-wrc-regressar-portugal","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"Público","pais":"Portugal","titulo":"O debate sobre a valorização da ciência, da academia e do histórico acadêmico","resumo":"Um debate inflamado traz à tona as contradições entre o discurso político sobre o ensino superior e a validação de títulos acadêmicos.\nA discussão analisa o impacto da desvalorização das instituições de ensino e da pesquisa científica na sociedade civil.\nO tema ganha relevância ao questionar a integridade dos currículos e o papel da ciência no desenvolvimento social.","link":"https://www.publico.pt/2026/08/14/mundo/cronica/direita-desdenha-ciencia-cientistas-forja-curriculos-2184981","categoria":"SOCIEDADE","lang":"pt"},{"fonte":"e-global.pt","pais":"Brazil","titulo":"Brazil and China unite technology to process images directly in space","resumo":"Brazil and China have joined forces in a cutting-edge technological partnership focused on the space sector.\nThe cooperation aims to develop systems capable of processing satellite images directly in orbit, optimizing the transmission of data back to Earth.\nThe innovation promises to accelerate response times for environmental, agricultural, and territorial security monitoring.","link":"https://e-global.pt/noticias/lusofonia/brasil/brasil-e-china-unem-tecnologia-para-processar-imagens-diretamente-no-espaco/","categoria":"SPACE TECHNOLOGY","lang":"en"},{"fonte":"Globo","pais":"Brazil","titulo":"Scientists manage to use device to take control of Boeing 737","resumo":"Cybersecurity researchers have demonstrated the ability to take control of a Boeing 737's systems using a specific device.\nThe discovery triggers a global alert regarding potential vulnerabilities in modern commercial aviation.\nExperts and authorities are already working to strengthen defense protocols and update onboard software.","link":"https://revistagalileu.globo.com/google/amp/tecnologia/noticia/2026/08/cientistas-conseguem-usar-dispositivo-para-tomar-controle-de-boeing-737.ghtml","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"AI could add R$ 1 trillion to Brazil's GDP by 2030, OpenAI study says","resumo":"A new study commissioned by OpenAI reveals the transformative impact of artificial intelligence on the Brazilian economy.\nThe accelerated adoption of AI technologies could inject up to R$ 1 trillion into the country's Gross Domestic Product (GDP) by 2030.\nThe advancement requires investments in digital infrastructure, professional training, and ethical regulation to maximize these gains.","link":"https://www1.folha.uol.com.br/mercado/2026/08/ia-pode-acrescentar-r-1-tri-ao-pib-do-brasil-ate-2030-diz-estudo-comissionado-pela-openai.shtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"Chinese companies come to Brazil seeking 30% of the biotechnology market","resumo":"Chinese companies and investors are expanding their operations in Brazil, targeting the biotechnology sector.\nThe foreign group's goal is to capture up to a 30% share of this strategic market in the coming years.\nThe move promises to drive innovation in agriculture, pharmaceuticals, and sustainable solutions within the national ecosystem.","link":"https://www1.folha.uol.com.br/mercado/2026/08/chineses-vem-ao-brasil-em-busca-de-30-do-mercado-de-biotecnologia.shtml","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"PSX Brasil","pais":"Brazil","titulo":"2K reveals Small Axe Studio, a new AAA sports game developer","resumo":"Game publisher 2K has officially announced the creation of Small Axe Studio, a new studio focused on AAA sports games.\nThe team is composed of industry veterans, including professionals with extensive prior experience at EA Sports.\nThe initiative seeks to bring major new franchises and technical innovations to the competitive global gaming market.","link":"https://psxbrasil.com.br/2k-revela-small-axe-studio-desenvolvedora-de-esportes-aaa-com-ex-membros-da-ea-sports/","categoria":"GAMING","lang":"en"},{"fonte":"Pichau Arena","pais":"Brazil","titulo":"BenQ unveils new MOBIUZ gaming monitor with OLED technology","resumo":"BenQ has officially launched its latest gaming monitor in the MOBIUZ line, equipped with an ultra-high-definition OLED panel.\nThe peripheral promises ultra-fast response times and excellent color fidelity for professional players and enthusiasts.\nFeaturing advanced eye-protection technologies and ergonomics, the model reinforces the brand's portfolio in the hardware market.","link":"https://www.pichauarena.com.br/hardware/benq-apresenta-novo/","categoria":"HARDWARE","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"National Observatory broadcasts solar eclipse in science popularization effort","resumo":"The National Observatory mobilized various media outlets to provide live coverage of a complete solar eclipse.\nThe initiative was part of an important institutional mission to popularize science and disseminate astronomical knowledge.\nMillions of viewers were able to follow the phenomenon accompanied by detailed explanations from Brazilian astronomers.","link":"https://www.gov.br/observatorio/pt-br/assuntos/noticias/on-cumpre-missao-de-popularizacao-da-ciencia-ao-ter-cobertura-do-eclipse-solar-transmitida-por-varios-veiculos-de-comunicacao","categoria":"SCIENCE","lang":"en"},{"fonte":"R7","pais":"Brazil","titulo":"Hyperconnected: Are we using technology or being used by it?","resumo":"The debate over the role of digital devices and networks in human routines takes center stage in a new analysis of hyperconnectivity.\nThe study questions whether current society controls the use of technological tools or has become dependent on their algorithms.\nExperts point to paths for a more conscious consumption of technology, preserving mental health and productivity.","link":"https://noticias.r7.com/prisma/radar-tecnologico/hiperconectados-estamos-usando-a-tecnologia-ou-sendo-usados-por-ela-14082026/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Live Science","pais":"United States","titulo":"New AI technique helps robots complete tasks twice as fast by 'thinking ahead'","resumo":"Researchers have developed an innovative artificial intelligence method that empowers robots to predict scenarios and plan actions in advance.\nThe technique allows robotic systems to execute complex tasks twice as fast compared to traditional methods.\nThis breakthrough promises to revolutionize industrial automation and logistics by significantly increasing operational efficiency and precision.","link":"https://www.livescience.com/technology/robotics/new-ai-technique-helps-robots-complete-tasks-twice-as-fast-by-letting-them-think-ahead","categoria":"ROBOTICS","lang":"en"},{"fonte":"Futurism","pais":"United States","titulo":"Publisher embroiled in AI-generated text scandal at Sports Illustrated repositions itself in the market","resumo":"The media company that became the center of controversy after publishing articles under fictitious author names in Sports Illustrated has announced its corporate restructuring.\nNow formally repositioned as an artificial intelligence technology company, the organization is seeking to attract new investments.\nThe move reflects the rapid transition of traditional content companies toward automated solutions in the sector.","link":"https://futurism.com/artificial-intelligence/sports-illustrated-the-arena-group-paradium-ai","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Northeastern Global News","pais":"United States","titulo":"Researcher secures patent for breath-based virus detection technology","resumo":"A North American scientist has secured a patent for an innovative device capable of identifying respiratory viruses through the analysis of patients' breath.\nThe system utilizes advanced sensors to deliver non-invasive and highly accurate diagnostics in just a few minutes.\nThe technology represents a promising milestone for controlling viral outbreaks and continuously monitoring public health.","link":"https://news.northeastern.edu/2026/08/13/northeastern-viral-gas-sensor/","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Financial Times","pais":"United States","titulo":"Donald Trump imposes new tariffs targeting Chinese drone technology","resumo":"The United States government has announced the implementation of severe trade tariffs specifically directed at the import of drones developed with Chinese technology.\nThe measure aims to curb the advance of foreign manufacturers in the domestic market and protect sensitive internal security data.\nThe decision is causing apprehension in the technology sector, as it could drive up the cost of equipment essential for mapping and industrial inspection.","link":"https://www.ft.com/content/5ca83d6d-2c13-4d5e-b564-881f89189b3e?syn-25a6b1a6=1","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"WSJ","pais":"United States","titulo":"Trump orders US Navy to return to older technology on aircraft carriers","resumo":"A new presidential directive has ordered the U.S. Navy to replace modern electromagnetic catapult systems with traditional steam models on its aircraft carriers.\nThe technical shift is expected to cost taxpayers billions of dollars and require complex structural adaptations on the vessels.\nCritics point out that this technological rollback could impact the operational efficiency of the fleet amid global rivalries.","link":"https://www.wsj.com/us-news/trump-orders-navy-to-restore-old-technology-in-aircraft-carriers-costing-billions-0055ec1b","categoria":"DEFENSE","lang":"en"},{"fonte":"National Audubon Society","pais":"United States","titulo":"AI ecoacoustic technology begins supporting bird conservation in Latin America","resumo":"The Chorus platform has begun deploying its artificial intelligence technology geared toward ecoacoustic processing to monitor biodiversity in Latin American ecosystems.\nThe system analyzes natural audio files to identify bird species and track behavioral patterns in real time.\nThe initiative supports community-led environmental conservation projects, integrating technological innovation into regional wildlife preservation.","link":"https://www.audubon.org/news/chorus-our-ai-ecoacoustic-processing-technology-begins-supporting-locally-led-bird","categoria":"ENVIRONMENT","lang":"en"},{"fonte":"Daily Bruin","pais":"United States","titulo":"$5 billion scientific research bond clears California assembly committee","resumo":"The California State Assembly took a decisive step by approving a $5 billion public bond measure aimed at scientific research.\nThe funds will be directed to finance advanced studies in universities and technological innovation centers throughout the state.\nThe initiative seeks to solidify the region as a global hub for scientific development and drive breakthroughs in crucial areas.","link":"https://dailybruin.com/2026/08/13/5-billion-science-research-bond-clears-california-assembly-committee","categoria":"SCIENCE","lang":"en"},{"fonte":"The Economist","pais":"United States","titulo":"Experts Call for a Complete Overhaul of the American Scientific Model","resumo":"A new debate in public policy argues that the United States' scientific research infrastructure needs urgent structural reforms to maintain its global competitiveness.\nThe study points to excessive bureaucracy and slow funding as barriers halting the advancement of disruptive discoveries.\nThe proposal advocates for the adoption of more agile and decentralized models to accelerate technological innovation in the country.","link":"https://www.economist.com/by-invitation/2026/08/13/the-case-for-overhauling-american-science","categoria":"INNOVATION","lang":"en"},{"fonte":"ladepeche.fr","pais":"France","titulo":"ANALYSIS: Donald Trump Secretly Disembarked from Air Force One: An 'Unacceptable' Exfiltration. Why the Operation is Triggering a Political Crisis in the US","resumo":"A secret operation to disembark former President Donald Trump from Air Force One has sparked an intense political crisis in the United States.\nThe episode, labeled unacceptable by opponents, raises serious questions about security protocols and government transparency.\nThe controversy is dominating public debate and intensifying disputes between Democrats and Republicans in the country.","link":"https://www.ladepeche.fr/2026/08/14/decryptage-donald-trump-debarque-en-secret-dair-force-one-une-exfiltration-inacceptable-pourquoi-loperation-suscite-une-crise-politique-aux-etats-unis-13507591.php","categoria":"POLITICS","lang":"en"},{"fonte":"Presse Agence","pais":"France","titulo":"PARIS: Insurtech Eyst Issues 1,000 Virtual Cards Per Day for Fire Victims","resumo":"Insurtech startup Eyst is issuing about a thousand virtual bank cards daily to assist fire victims in France.\nThe initiative aims to speed up the payout of claims and provide immediate financial support to those affected in emergency moments.\nThe solution demonstrates the positive impact of financial innovation on modernizing insurance services and disaster response.","link":"https://presseagence.fr/paris-assurance-technologie-eyst-emet-1-000-cartes-virtuelles-par-jour-pour-les-sinistres-des-incendies/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"中国经济网","pais":"France","titulo":"European Union Expands Scope of Artificial Intelligence Act to Strengthen Regulation of the Digital Economy","resumo":"The European Union has decided to expand the scope of its Artificial Intelligence Act to strengthen digital market regulations.\nThe measure seeks to increase oversight of advanced algorithms and ensure strict ethical standards for tech companies.\nWith this initiative, the European bloc consolidates its position of global leadership in governance and data security in the AI era.","link":"http://www.ce.cn/xwzx/gnsz/gdxw/202608/t20260814_3146838.shtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Flock Safety Tries to Curb Police Misuse of Surveillance Cameras Following Scandals","resumo":"Tech company Flock Safety is implementing new control measures to curb abuses in the use of its license plate reader cameras by police forces.\nThe decision comes after a series of complaints and scandals involving unauthorized monitoring and serious violations of citizens' privacy.\nThe movement reflects growing public and regulatory pressure for greater transparency and ethics in the automated surveillance sector.","link":"https://www.theguardian.com/technology/2026/aug/13/flock-safety-police-abuse-surveillance-cameras","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ITVX","pais":"England","titulo":"UK Economy Outpaces G7 Members in the First Half of 2026 Despite Gulf Conflict","resumo":"The UK economy posted surprising growth in the first half of 2026, positioning itself ahead of other G7 nations.\nEven in the face of geopolitical instability and inflationary pressures caused by the conflict in the Gulf region, British indicators showed strong resilience.\nThe unexpected performance strengthens investor confidence and signals a solid recovery of the domestic market.","link":"https://www.itv.com/news/2026-08-13/uk-economy-races-ahead-of-g7-pack-in-first-half-of-2026-despite-gulf-war","categoria":"ECONOMY","lang":"en"},{"fonte":"Reuters","pais":"England","titulo":"Artificial Intelligence Boom Begins to Impact UK Economic Performance","resumo":"The rapid advancement and high investments in the artificial intelligence sector have begun to visibly boost the UK's economic results.\nThe mass adoption of automated tools by local companies has raised productivity levels and attracted new international financial contributions.\nThis phenomenon solidifies cutting-edge technology as one of the main drivers of expansion in the British market today.","link":"https://www.reuters.com/world/uk/ai-boom-is-starting-show-uk-economys-performance-2026-08-13/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Superdeporte","pais":"Spain","titulo":"The Ball That \"Talks\": How the Revolutionary Technology Debuting in LaLiga Works","resumo":"Spain's top football league is preparing to debut innovative technology in its matches with the introduction of a smart ball.\nThe device features advanced internal sensors capable of tracking movements in real time and providing precise data for referees and broadcasts.\nThis innovation promises to transform the technical analysis of the game, optimizing offside decisions and raising the level of precision in the sport.","link":"https://www.superdeporte.es/futbol/2026/08/13/balon-habla-funciona-revolucionaria-tecnologia-inteligente-133338458.html","categoria":"SPORTS TECHNOLOGY","lang":"en"},{"fonte":"El Economista","pais":"Spain","titulo":"Science Confirms: 19 Biomarkers Identified That Can Predict the Onset of ALS Symptoms","resumo":"Researchers have identified a set of 19 blood biomarkers capable of signaling the onset of Amyotrophic Lateral Sclerosis before the first symptoms appear.\nThe discovery represents a crucial breakthrough for the early diagnosis of one of modern medicine's most aggressive neurodegenerative diseases.\nWith these data, scientists hope to develop more effective preventive treatments and significantly slow the progression of the illness.","link":"https://www.eleconomista.es/salud-bienestar/ultimas-noticias/noticias/14008038/08/26/lo-confirma-la-ciencia-identifican-19-biomarcadores-que-podrian-predecir-la-aparicion-de-los-sintomas-de-la-ela.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Xataka","pais":"Spain","titulo":"Spain's Largest Underwater Biological Invasion Is Unstoppable: Science Admits It Cannot Eradicate Asian Kelp in Andalusia","resumo":"Scientists in Spain have confirmed that the proliferation of Asian kelp off the coast of Andalusia has reached an ecological point of no return.\nThe invasive species is devastating local marine ecosystems and causing severe damage to the fishing sector in the south of the country.\nExperts are now focusing on containment and management strategies, admitting that the total eradication of the organism has become biologically impossible.","link":"https://www.xataka.com/ecologia-y-naturaleza/mayor-invasion-biologica-submarina-espana-imparable-ciencia-asume-que-no-podemos-erradicar-alga-asiatica-andalucia","categoria":"ENVIRONMENT","lang":"en"},{"fonte":"PR Noticias","pais":"Spain","titulo":"The Real Challenge of AI Is Not the Technology, But Its Scale Adoption by Companies","resumo":"Although the advancement of artificial intelligence models is moving at a fast pace, the biggest current bottleneck lies in the corporate integration process.\nMany companies face cultural difficulties, a lack of infrastructure, and internal resistance to implementing the tool on a large scale.\nExperts emphasize that the success of digital transformation will depend more on the reorganization of operational processes than on algorithms.","link":"https://prnoticias.com/2026/08/14/el-verdadero-reto-de-la-ia-no-es-la-tecnologia-sino-su-adopcion-a-escala-en-las-empresas/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"OkDiario","pais":"Spain","titulo":"How the Technology That Allowed Stephen Hawking to Communicate Via a Cheek Sensor Worked","resumo":"Renowned physicist Stephen Hawking used a highly specialized assistive system for decades to synthesize his voice and texts.\nThe technology relied on a single infrared sensor positioned on his glasses, capable of detecting the slightest movements of his cheek muscle.\nThe software translated these impulses into characters and words, demonstrating how assistive engineering allowed his scientific work to continue.","link":"https://okdiario.com/ciencia/asi-era-tecnologia-que-permitia-comunicarse-stephen-hawking-traves-sensor-mejilla-19176113","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"The Path of the Total Eclipse That Will Cross Spain in the Summer of 2027 and Last More Than Four Minutes","resumo":"Spain will be the main stage for one of the most spectacular astronomical events of the decade during the summer of 2027.\nThe total solar eclipse will cover part of Spanish territory for more than four minutes, offering prolonged and rare darkness.\nScientific communities and the tourism sector are already beginning to plan to welcome thousands of observers and astronomers from around the world.","link":"https://www.eldebate.com/ciencia/20260814/recorrido-eclipse-total-pasara-espana-verano-2027-durara-cuatro-minutos_449207.html","categoria":"ASTRONOMY","lang":"en"},{"fonte":"Información","pais":"Spain","titulo":"Torrevieja Hospital Incorporates Immersive Technology to Promote Mental Health Patients' Well-being","resumo":"Torrevieja Hospital in Spain has implemented immersive reality tools in the treatment of patients admitted to the psychiatric ward.\nThe solution uses relaxing and interactive virtual scenarios designed to reduce stress, anxiety, and episodes of severe agitation.\nThe pioneering initiative seeks to modernize hospital care and proves the positive impact of visual technologies on mental recovery.","link":"https://www.informacion.es/vega-baja/2026/08/14/hospital-torrevieja-inmersivo-salud-mental-habitacion-133349471.html","categoria":"DIGITAL HEALTH","lang":"en"},{"fonte":"Xataka","pais":"Spain","titulo":"The Mysterious \"Red Dot\" Seen in the Eclipse Has a First and Last Name: Science Explains the Fascinating Phenomenon","resumo":"During the observation of a recent eclipse, an intriguing red dot visible near the solar disk caught the attention of the global public.\nAstronomers explained that the phenomenon is a solar prominence, a giant plasma structure held together by magnetic fields.\nThe analysis of the event allowed for a better understanding of the intense activity of the solar corona and its impact on space storms detected on Earth.","link":"https://www.xataka.com/espacio/misterioso-punto-rojo-que-vimos-eclipse-ayer-tiene-nombre-apellidos-asi-explica-ciencia-este-fascinante-fenomeno","categoria":"SCIENCE","lang":"en"},{"fonte":"pedelec-elektro-fahrrad.de","pais":"Germany","titulo":"ADO Sense 3.0: LiDAR Technology Set to Debut in Mass-Production E-Bikes","resumo":"ADO is introducing the Sense 3.0 model, marked by the pioneering use of LiDAR technology in mass-production electric bicycles.\nThis innovation aims to significantly improve cyclist safety and navigation by mapping the surrounding environment in real-time.\nThe implementation of this advanced technology promises to redefine standards in the e-bike market, bringing features once restricted to autonomous vehicles to everyday two-wheeled transportation.","link":"https://pedelec-elektro-fahrrad.de/news/ado-sense-3-0-lidar-technologie-soll-erstmals-einzug-ins-serien-pedelec-halten/668461/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Table.Briefings","pais":"Germany","titulo":"Technology: Alibaba Builds Standardized Artificial Intelligence Data Centers","resumo":"Chinese tech giant Alibaba has announced the development of standardized data centers specifically tailored for Artificial Intelligence.\nThis modular and prefabricated construction approach aims to accelerate computing infrastructure expansion and drastically reduce operational costs.\nThrough this initiative, the company intends to more efficiently meet the growing global demand for processing capacity dedicated to advanced AI models.","link":"https://table.media/china/news/technologie-alibaba-baut-ki-rechenzentren-von-der-stange","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"自動運転ラボ","pais":"Japan","titulo":"Japanese Government Estimates Economic Impact of Autonomous Driving at 187 Trillion Yen","resumo":"The Japanese government has released a new estimate indicating that the widespread adoption of autonomous vehicles could generate an economic impact of up to 187 trillion yen in the country.\nThe projection covers everything from the semiconductor and software supply chains to the optimization of logistics services and public transportation.\nExperts point out that vehicular automation will be essential to address the chronic shortage of drivers and support Japan's aging population.","link":"https://jidounten-lab.com/u_66386","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Toyota Plans Return of MR2 Sports Car with Up to 600 HP and Expansion of GR Lineup","resumo":"Toyota is preparing the revival of the iconic two-seat MR2 sports car, equipped with a new 2.0-liter turbocharged four-cylinder engine capable of producing up to 600 hp.\nThe project is part of a strategy to expand the GR (Gazoo Racing) high-performance division, which also plans to bring back the classic Celica model.\nThis initiative demonstrates the automaker's commitment to keeping high-performance engine technologies and enthusiast appeal alive during a transitional era in mobility.","link":"https://news.yahoo.co.jp/articles/9ef241fff6d693a39608aa009319c254e5e1b244","categoria":"LAUNCH","lang":"en"},{"fonte":"朝日新聞","pais":"Japan","titulo":"Miyagi University to Establish Department Focused on Solving Social Problems with Artificial Intelligence","resumo":"Miyagi University has announced the creation of a new faculty dedicated to applying Artificial Intelligence and cutting-edge technologies to solve social challenges.\nThe academic program aims to merge concepts of design, engineering, and the humanities to train professionals in creating solutions for the local community.\nThis move reflects a trend among Japanese educational institutions to adapt their curricula to the digital transformation demands of the modern market.","link":"https://www.asahi.com/sensei-connect/articles/16786256","categoria":"INNOVATION","lang":"en"},{"fonte":"客观日本","pais":"Japan","titulo":"Japanese Scientists Confirm Evidence of Superionic State in Earth's Core","resumo":"Researchers at the Tokyo University of Science have experimentally reproduced conditions for the first time suggesting that iron alloys in the Earth's core are in a superionic state.\nIn this state of matter, light element atoms move like a liquid through a solid iron crystal lattice under extreme pressures and temperatures.\nThe discovery provides a new theoretical foundation for understanding how the Earth's magnetic field works and the deep structure of our planet.","link":"https://www.keguanjp.com/kgjp_keji/kgjp_kj_hj/pt20260814000012.html","categoria":"SCIENCE","lang":"en"},{"fonte":"edu.cn","pais":"China","titulo":"USTC Extends Entanglement Distance Between Quantum Memories to 420 km","resumo":"Researchers at the University of Science and Technology of China have achieved a historic milestone by extending the entanglement distance between quantum memories to 420 kilometers. This milestone significantly surpassed previous records established in long-distance fiber-optic networks. This achievement paves the way for the development of a large-scale global quantum internet. The feat promises to radically transform information security and distributed computing.","link":"https://www.edu.cn/ke_yan_yu_fa_zhan/gao_xiao_cheng_guo/cheng_guo_zhan_shi/202608/t20260814_2765179.shtml","categoria":"QUANTUM PHYSICS","lang":"en"},{"fonte":"新京报","pais":"China","titulo":"Chang'e-6 Sample Research Yields New Evidence on Differences on the Moon's Far Side","resumo":"Recent studies of lunar soil samples brought back by the Chang'e-6 mission have revealed crucial discoveries regarding the asymmetry between the Moon's sides. Detailed analysis provided direct evidence of the satellite's volcanic history and thermal evolution. These findings help clarify long-standing scientific mysteries in planetary science. Furthermore, this breakthrough consolidates the leadership of China's space program in deep lunar exploration.","link":"https://www.bjnews.com.cn/detail/1786663454129798.html","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"中国科技网","pais":"China","titulo":"New Platform Integrates Three Technologies to Make AI Chips More Compact and Efficient","resumo":"A team of researchers has developed a new semiconductor integration platform combining three essential technologies. This advancement allows for the manufacturing of considerably more compact, faster, and energy-efficient AI chips. The innovation promises to ease severe infrastructure bottlenecks caused by the surging demand for artificial intelligence models. This breakthrough opens new avenues for mobile devices and high-performance processing centers.","link":"https://www.stdaily.com/web/gdxw/2026-08/14/content_563414.html","categoria":"SEMICONDUCTORS","lang":"en"},{"fonte":"威海新闻网","pais":"China","titulo":"China Records First Clinical Prescription Using a Brain-Computer Interface at a Municipal Hospital","resumo":"The city of Weihai has marked a pioneering feat by issuing the first clinical prescription for a brain-computer interface application at a municipal hospital. The technology allows for precise neural signal reading to aid in the rehabilitation of patients with severe motor impairments. This event signals the transition of neurotechnology directly from research laboratories into routine healthcare. The initiative sets a precedent for the large-scale medical adoption of this innovation.","link":"https://www.whnews.cn/news/node/2026-08/14/content_-34850.htm","categoria":"NEUROTECHNOLOGY","lang":"en"},{"fonte":"新华报业网","pais":"China","titulo":"Quantum Computing Accelerates Transition from Technological Discoveries to Industrial Application","resumo":"High-tech industry experts indicate that quantum computing is migrating from academic testing environments to industrial deliveries. This movement is driven by improvements in qubit stability and integrated hardware and software tools. This transition opens commercial opportunities in areas such as cryptography, finance, and materials physics. The industry is preparing to adopt quantum solutions for complex real-world problems.","link":"https://www.xhby.net/content/s6a7e9375e4b0b3294d7a4d8c.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"东方财富","pais":"China","titulo":"China Releases National Standard for Data Center Liquid Cooling, Stirring the Market","resumo":"The release of new national standards regulating liquid cooling technology for data centers has strongly stirred the Chinese market. The measure aims to optimize the energy efficiency of intensive processing infrastructures required by artificial intelligence. With this regulation, the industry is expected to accelerate the replacement of traditional systems with sustainable solutions. The change has had a direct impact on the financial performance and valuation of tech companies in the sector.","link":"http://finance.eastmoney.com/a/202608143841515643.html","categoria":"INFRASTRUCTURE","lang":"en"},{"fonte":"同济大学新闻网","pais":"China","titulo":"Researchers Develop New Nanopore Peptide Identification Strategy","resumo":"Scientists from the School of Life Sciences have developed an innovative methodology for peptide identification using nanopore sensors. The system offers high sensitivity for analyzing amino acid sequences without the need for complex chemical modifications. This approach significantly simplifies real-time biological detection with excellent precision. The innovation presents great potential for application in drug discovery and early disease diagnosis.","link":"https://news.tongji.edu.cn/info/1003/95340.htm","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"新华网","pais":"China","titulo":"Three Scientists Honored with the 2026 Future Science Prize","resumo":"The prestigious 2026 Future Science Prize has announced its winners, honoring Zhang Hong and two other prominent scientists. The award recognizes high-impact advancements in the fields of life sciences, mathematics, and computer science. The initiative aims to encourage innovative basic research conducted by researchers in the China region. This achievement highlights the growing relevance and leadership of Chinese scientific production on the global stage.","link":"https://www.news.cn/tech/20260813/3d9d07e434fd465bb80c36d7da8da241/c.html","categoria":"SCIENCE","lang":"en"},{"fonte":"fundsforNGOs","pais":"India","titulo":"Open Call for the 2026-27 India Science Book Fellowship Program","resumo":"The India Science Book Fellowship program has opened applications for its 2026-27 edition, aiming to promote scientific outreach in the country.\nThe initiative supports authors in writing and publishing books focused on scientific and technological topics accessible to the general public.\nThe project seeks to strengthen a culture of knowledge and stimulate science communication literature in India.","link":"https://www2.fundsforngos.org/science/open-call-for-india-science-book-fellowship-program-2026-27/","categoria":"SCIENCE","lang":"en"},{"fonte":"ThePrint","pais":"India","titulo":"Chandigarh University Partners with ISRO to Host National Space Technology Conclave","resumo":"Chandigarh University has partnered with the Indian Space Research Organisation (ISRO) to host the National Space Technology Conclave from August 17th to 18th.\nThe event will bring together around 30 prominent space scientists, including Group Captain Shubhanshu Shukla.\nThe gathering aims to discuss innovations, scientific advancements, and the future of space exploration in the country.","link":"https://theprint.in/ani-press-releases/chandigarh-university-joins-isro-to-host-national-space-technology-conclave-on-17th-18th-august-group-capt-shubhanshu-shukla-among-30-space-scientists-to-attend/3014466/","categoria":"SPACE TECHNOLOGY","lang":"en"},{"fonte":"India Shipping News","pais":"India","titulo":"MDL Signs MoU with MWRRA to Advance Technology-Driven Water Resource Management","resumo":"Mazagon Dock Shipbuilders Limited (MDL) has signed a memorandum of understanding with the MWRRA aimed at modernizing water resource management.\nThe partnership focuses on applying technological solutions to optimize monitoring and sustainable water distribution in the region.\nThis initiative drives innovation in India's infrastructure sector and environmental sustainability.","link":"https://indiashippingnews.com/ship-building/mdl-signs-mou-with-mwrra-to-advance-technology-driven-water-resource-management/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Expresso","pais":"Portugal","titulo":"Digital RRP Yields Less Impact in Portugal Than the Amount Invested","resumo":"A recent report reveals that the digital transformation funded by the Recovery and Resilience Plan in Portugal is falling short of expectations.\nDespite high financial investments applied in the public and private sectors, the effective return on productivity remains limited.\nThe scenario raises red flags regarding the efficiency of European funds and the need to restructure national technological strategies.","link":"https://expresso.pt/economia/2026-08-13-prr-digital-gera-em-portugal-menos-impacto-do-que-o-valor-investido-054afd44?utm_source=expresso\u0026utm_medium=category\u0026utm_campaign=WEB\u0026utm_content=/economia/2026-08-13-prr-digital-gera-em-portugal-menos-impacto-do-que-o-valor-investido-054afd44","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Leak.pt","pais":"Portugal","titulo":"Google Said 'No' to the Latest Technology: Understand Why","resumo":"Google has decided not to immediately adopt the newest technological innovations in its main products and infrastructure.\nThe tech giant chose to prioritize stability, data security, and continuous system performance.\nThe decision reflects a cautious approach to software development to ensure the reliability demanded by users.","link":"https://www.leak.pt/google-disse-nao-a-tecnologia-mais-recente-porque/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ECO","pais":"Portugal","titulo":"Next Eclipse Only Occurs in 2027, But ESA Mission Uses Portuguese Technology to Recreate the Phenomenon","resumo":"Although the next total solar eclipse will take place in 2027, the European Space Agency is recreating the event in space.\nThe Proba-3 mission uses high-precision systems developed by the Portuguese company Tekever to align two satellites.\nThe innovation makes it possible to create a constant artificial shadow and study the solar corona with unprecedented detail.","link":"https://eco.sapo.pt/2026/08/13/proximo-eclipse-so-em-2027-mas-missao-da-esa-usa-tecnologia-da-tekever-para-recriar-o-fenomeno/","categoria":"SCIENCE","lang":"en"},{"fonte":"Mais Algarve","pais":"Portugal","titulo":"Municipality of Lagoa Boosts Investment in Public Lighting Modernization with LED Technology","resumo":"The City Council of Lagoa has announced a new investment aimed at replacing public lighting with LED technology.\nThe project aims to significantly reduce electricity consumption, lower operational costs, and cut carbon emissions.\nThe initiative consolidates the advancement of smart cities in Portugal, combining urban modernization with environmental sustainability.","link":"https://maisalgarve.pt/2026/08/13/lagoa-municipio-reforca-investimento-na-modernizacao-da-iluminacao-publica-com-tecnologia-led/","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"AICEP","pais":"Portugal","titulo":"Infraspeak: Portuguese Facility Management Technology with Global Reach","resumo":"Portuguese startup Infraspeak continues to expand its intelligent facility management platform into the international market.\nUsing artificial intelligence and IoT connectivity, the solution optimizes complex operations in companies across various sectors.\nThe company's global growth highlights the strength of Portugal's innovation and technology ecosystem.","link":"https://portugalglobal.pt/noticias/2026/agosto/infraspeak-tecnologia-portuguesa-com-alcance-global-1/","categoria":"BUSINESS","lang":"en"},{"fonte":"24noticias.sapo.pt","pais":"Portugal","titulo":"Instability in the Middle East Could Bring the WRC Back to Portugal","resumo":"Rising geopolitical tensions in the Middle East put the holding of World Rally Championship stages in the region at risk.\nFaced with this uncertain scenario, WRC organizers are studying calendar alternatives, and Portugal is emerging as a strong candidate.\nThe eventual return of the competition would bring great sports visibility, touristic attractiveness, and positive economic impact.","link":"https://24noticias.sapo.pt/desporto/artigos/instabilidade-no-medio-oriente-pode-fazer-o-wrc-regressar-portugal","categoria":"TRENDS","lang":"en"},{"fonte":"Público","pais":"Portugal","titulo":"The Debate on the Valuation of Science, Academia, and Academic Background","resumo":"An inflamed debate brings to light the contradictions between political discourse on higher education and the validation of academic degrees.\nThe discussion analyzes the impact of the devaluation of educational institutions and scientific research on civil society.\nThe topic gains relevance by questioning the integrity of resumes and the role of science in social development.","link":"https://www.publico.pt/2026/08/14/mundo/cronica/direita-desdenha-ciencia-cientistas-forja-curriculos-2184981","categoria":"SOCIETY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
