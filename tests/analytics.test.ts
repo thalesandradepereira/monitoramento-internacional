@@ -43,7 +43,7 @@ test('painel distingue contador inexistente de indisponibilidade da API', () => 
   )
   assert.match(
     analyticsHtml,
-    /Valores indisponíveis não são tratados como zero/
+    /valores indisponíveis não são tratados como zero/i
   )
   assert.doesNotMatch(
     analyticsHtml,
