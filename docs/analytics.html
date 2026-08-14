@@ -7,6 +7,7 @@
   <title>Analytics - Monitoramento Internacional</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.19.0/js/md5.min.js"></script>
   <style>
     :root {
       --bg-main: #0B0F19;
@@ -25,11 +26,11 @@
       background-color: var(--bg-main);
       color: var(--text-main);
       min-height: 100vh;
-      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
-                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+      background-image:
+        radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
     }
 
-    /* ============ AUTH GATE ============ */
     #auth-gate {
       display: flex;
       justify-content: center;
@@ -49,20 +50,9 @@
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
       text-align: center;
     }
-    .auth-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-    .auth-card h2 {
-      font-size: 1.5rem;
-      color: #fff;
-      margin-bottom: 0.5rem;
-    }
-    .auth-card p {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-bottom: 2rem;
-    }
+    .auth-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .auth-card h2 { font-size: 1.5rem; color: #fff; margin-bottom: 0.5rem; }
+    .auth-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
     .auth-input {
       width: 100%;
       padding: 0.85rem 1.2rem;
@@ -99,16 +89,9 @@
       box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
       transform: translateY(-1px);
     }
-    .auth-error {
-      color: var(--danger);
-      font-size: 0.85rem;
-      margin-top: 0.75rem;
-      display: none;
-    }
+    .auth-error { color: var(--danger); font-size: 0.85rem; margin-top: 0.75rem; display: none; }
 
-    /* ============ MAIN CONTENT ============ */
     #main-content { display: none; }
-
     header {
       padding: 1.5rem 5%;
       border-bottom: 1px solid var(--glass-border);
@@ -122,12 +105,7 @@
       z-index: 100;
       background: rgba(11, 15, 25, 0.8);
     }
-    .logo-text {
-      font-weight: 700;
-      font-size: 1.5rem;
-      letter-spacing: -0.5px;
-      color: #fff;
-    }
+    .logo-text { font-weight: 700; font-size: 1.5rem; letter-spacing: -0.5px; color: #fff; }
     .logo-text span { color: var(--accent); }
     .header-badge {
       background: var(--bg-panel);
@@ -138,10 +116,7 @@
       color: var(--accent);
       font-weight: 600;
     }
-
     .content { padding: 2rem 5%; max-width: 1200px; margin: 0 auto; }
-
-    /* Stats Cards */
     .stats-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -157,10 +132,7 @@
       -webkit-backdrop-filter: blur(16px);
       transition: transform 0.2s, border-color 0.2s;
     }
-    .stat-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(212, 175, 55, 0.3);
-    }
+    .stat-card:hover { transform: translateY(-2px); border-color: rgba(212, 175, 55, 0.3); }
     .stat-label {
       font-size: 0.8rem;
       text-transform: uppercase;
@@ -168,20 +140,9 @@
       color: var(--text-muted);
       margin-bottom: 0.5rem;
     }
-    .stat-value {
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: #fff;
-      line-height: 1;
-    }
-    .stat-sub {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-top: 0.5rem;
-    }
-
-    /* Chart */
-    .chart-section {
+    .stat-value { font-size: 2.5rem; font-weight: 700; color: #fff; line-height: 1; }
+    .stat-sub { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; }
+    .chart-section, .table-container {
       background: var(--bg-panel);
       border: 1px solid var(--glass-border);
       border-radius: 16px;
@@ -190,6 +151,7 @@
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
     }
+    .table-container { overflow-x: auto; }
     .section-title {
       font-size: 1.2rem;
       font-weight: 600;
@@ -199,21 +161,7 @@
       align-items: center;
       gap: 0.5rem;
     }
-
-    /* Table */
-    .table-container {
-      background: var(--bg-panel);
-      border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 2rem;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      overflow-x: auto;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+    table { width: 100%; border-collapse: collapse; }
     thead th {
       text-align: left;
       padding: 0.75rem 1rem;
@@ -223,26 +171,11 @@
       color: var(--accent);
       border-bottom: 1px solid var(--glass-border);
     }
-    tbody td {
-      padding: 0.85rem 1rem;
-      font-size: 0.95rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-    }
-    tbody tr:hover {
-      background: rgba(212, 175, 55, 0.05);
-    }
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-    .link-btn {
-      color: var(--accent);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.85rem;
-      transition: color 0.2s;
-    }
+    tbody td { padding: 0.85rem 1rem; font-size: 0.95rem; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
+    tbody tr:hover { background: rgba(212, 175, 55, 0.05); }
+    tbody tr:last-child td { border-bottom: none; }
+    .link-btn { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.85rem; }
     .link-btn:hover { color: var(--accent-hover); }
-
     .loading-spinner {
       display: flex;
       flex-direction: column;
@@ -261,7 +194,6 @@
       animation: spin 0.8s linear infinite;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-
     .analytics-status {
       display: none;
       margin-bottom: 1.5rem;
@@ -283,19 +215,11 @@
       background: rgba(239, 68, 68, 0.08);
       border-color: rgba(239, 68, 68, 0.35);
     }
-
-    .footer-note {
-      text-align: center;
-      padding: 2rem;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-    }
-
+    .footer-note { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem; }
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg-main); }
     ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-
     @media (max-width: 768px) {
       .stats-row { grid-template-columns: 1fr 1fr; }
       .stat-value { font-size: 2rem; }
@@ -304,8 +228,6 @@
   </style>
 </head>
 <body>
-
-<!-- ==================== AUTH GATE ==================== -->
 <div id="auth-gate">
   <div class="auth-card">
     <div class="auth-icon">🔒</div>
@@ -319,7 +241,6 @@
   </div>
 </div>
 
-<!-- ==================== MAIN CONTENT ==================== -->
 <div id="main-content">
   <header>
     <div class="logo-text">Analytics <span>Dashboard</span></div>
@@ -329,17 +250,16 @@
   <div class="content">
     <div id="analytics-status" class="analytics-status" role="status" aria-live="polite"></div>
 
-    <!-- Stats Cards -->
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-label">Total de Visitas</div>
         <div class="stat-value" id="total-visits">—</div>
-        <div class="stat-sub">Em todas as páginas</div>
+        <div class="stat-sub" id="total-visits-sub">Em todas as páginas</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Dashboards Publicados</div>
         <div class="stat-value" id="total-pages">—</div>
-        <div class="stat-sub">Páginas com acessos</div>
+        <div class="stat-sub" id="total-pages-sub">Páginas com acessos</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Média por Dashboard</div>
@@ -353,7 +273,6 @@
       </div>
     </div>
 
-    <!-- Chart -->
     <div class="chart-section">
       <div class="section-title">📊 Visitas por Dashboard</div>
       <div id="chart-loading" class="loading-spinner">
@@ -363,17 +282,11 @@
       <canvas id="viewsChart" style="display:none;"></canvas>
     </div>
 
-    <!-- Table -->
     <div class="table-container">
       <div class="section-title">📋 Detalhamento por Página</div>
       <table>
         <thead>
-          <tr>
-            <th>Data</th>
-            <th>Página</th>
-            <th>Visitas</th>
-            <th>Link</th>
-          </tr>
+          <tr><th>Data</th><th>Página</th><th>Visitas</th><th>Link</th></tr>
         </thead>
         <tbody id="table-body">
           <tr><td colspan="4" style="text-align:center; padding:2rem; color:var(--text-muted)">Carregando...</td></tr>
@@ -383,22 +296,18 @@
 
     <div class="footer-note">
       Contagem de visitas iniciada em 16/07/2026 · Dados fornecidos por Abacus CountAPI<br>
-Os dados são consultados em tempo real. Falhas de leitura são sinalizadas e nunca convertidas silenciosamente em zero.
+      Consultas são feitas em lotes, com retentativa automática e respeito ao rate limit do serviço. Falhas persistentes nunca são convertidas silenciosamente em zero.
     </div>
   </div>
 </div>
 
 <script>
-  // ==================== AUTH ====================
-  var PASS_HASH = '0951cb2fc44bb6c4c934cc0dbdde5ff5'; // MD5 of password
-  
-  function md5(s){/* Lightweight MD5 - Joseph Myers */
-    function L(k,d){return(k<<d)|(k>>>(32-d))}function K(G,k){var I,d,F,H,x;F=(G&2147483648);H=(k&2147483648);I=(G&1073741824);d=(k&1073741824);x=(G&1073741823)+(k&1073741823);if(I&d){return(x^2147483648^F^H)}if(I|d){if(x&1073741824){return(x^3221225472^F^H)}else{return(x^1073741824^F^H)}}else{return(x^F^H)}}function r(d,F,k){return(d&F)|((~d)&k)}function q(d,F,k){return(d&k)|(F&(~k))}function p(d,F,k){return(d^F^k)}function n(d,F,k){return(F^(d|(~k)))}function u(G,F,aa,Z,k,H,I){G=K(G,K(K(r(F,aa,Z),k),I));return K(L(G,H),F)}function f(G,F,aa,Z,k,H,I){G=K(G,K(K(q(F,aa,Z),k),I));return K(L(G,H),F)}function D(G,F,aa,Z,k,H,I){G=K(G,K(K(p(F,aa,Z),k),I));return K(L(G,H),F)}function t(G,F,aa,Z,k,H,I){G=K(G,K(K(n(F,aa,Z),k),I));return K(L(G,H),F)}function e(G){var Z;var F=G.length;var x=F+8;var k=(x-(x%64))/64;var I=(k+1)*16;var aa=Array(I-1);var d=0;var H=0;while(H<F){Z=(H-(H%4))/4;d=(H%4)*8;aa[Z]=(aa[Z]|(G.charCodeAt(H)<<d));H++}Z=(H-(H%4))/4;d=(H%4)*8;aa[Z]=aa[Z]|(128<<d);aa[I-2]=F<<3;aa[I-1]=F>>>29;return aa}function B(x){var k="",F="",G,d;for(d=0;d<=3;d++){G=(x>>>(d*8))&255;F="0"+G.toString(16);k=k+F.substr(F.length-2,2)}return k}var C=Array();var P,h,E,v,g,Y,X,W,V;var S;var i=e(s);Y=1732584193;X=4023233417;W=2562383102;V=271733878;for(P=0;P<i.length;P+=16){h=Y;E=X;v=W;g=V;Y=u(Y,X,W,V,i[P+0],7,3614090360);V=u(V,Y,X,W,i[P+1],12,3905402710);W=u(W,V,Y,X,i[P+2],17,606105819);X=u(X,W,V,Y,i[P+3],22,3250441966);Y=u(Y,X,W,V,i[P+4],7,4118548399);V=u(V,Y,X,W,i[P+5],12,1200080426);W=u(W,V,Y,X,i[P+6],17,2821735955);X=u(X,W,V,Y,i[P+7],22,4249261313);Y=u(Y,X,W,V,i[P+8],7,1770035416);V=u(V,Y,X,W,i[P+9],12,2336552879);W=u(W,V,Y,X,i[P+10],17,4294925233);X=u(X,W,V,Y,i[P+11],22,2304563134);Y=u(Y,X,W,V,i[P+12],7,1804603682);V=u(V,Y,X,W,i[P+13],12,4254626195);W=u(W,V,Y,X,i[P+14],17,2792965006);X=u(X,W,V,Y,i[P+15],22,1236535329);Y=f(Y,X,W,V,i[P+1],5,4129170786);V=f(V,Y,X,W,i[P+6],9,3225465664);W=f(W,V,Y,X,i[P+11],14,643717713);X=f(X,W,V,Y,i[P+0],20,3921069994);Y=f(Y,X,W,V,i[P+5],5,3593408605);V=f(V,Y,X,W,i[P+10],9,38016083);W=f(W,V,Y,X,i[P+15],14,3634488961);X=f(X,W,V,Y,i[P+4],20,3889429448);Y=f(Y,X,W,V,i[P+9],5,568446438);V=f(V,Y,X,W,i[P+14],9,3275163606);W=f(W,V,Y,X,i[P+3],14,4107603335);X=f(X,W,V,Y,i[P+8],20,1163531501);Y=f(Y,X,W,V,i[P+13],5,2850285829);V=f(V,Y,X,W,i[P+2],9,4243563512);W=f(W,V,Y,X,i[P+7],14,1735328473);X=f(X,W,V,Y,i[P+12],20,2368359562);Y=D(Y,X,W,V,i[P+5],4,4294588738);V=D(V,Y,X,W,i[P+8],11,2272392833);W=D(W,V,Y,X,i[P+11],16,1839030562);X=D(X,W,V,Y,i[P+14],23,4259657740);Y=D(Y,X,W,V,i[P+1],4,2763975236);V=D(V,Y,X,W,i[P+4],11,1272893353);W=D(W,V,Y,X,i[P+7],16,4139469664);X=D(X,W,V,Y,i[P+10],23,3200236656);Y=D(Y,X,W,V,i[P+13],4,681279174);V=D(V,Y,X,W,i[P+0],11,3936430074);W=D(W,V,Y,X,i[P+3],16,3572445317);X=D(X,W,V,Y,i[P+6],23,76029189);Y=D(Y,X,W,V,i[P+9],4,3654602809);V=D(V,Y,X,W,i[P+12],11,3873151461);W=D(W,V,Y,X,i[P+15],16,530742520);X=D(X,W,V,Y,i[P+2],23,3299628645);Y=t(Y,X,W,V,i[P+0],6,4096336452);V=t(V,Y,X,W,i[P+7],10,1126891415);W=t(W,V,Y,X,i[P+14],15,2878612391);X=t(X,W,V,Y,i[P+5],21,4237533241);Y=t(Y,X,W,V,i[P+12],6,1700485571);V=t(V,Y,X,W,i[P+3],10,2399980690);W=t(W,V,Y,X,i[P+10],15,4293915773);X=t(X,W,V,Y,i[P+1],21,2240044497);Y=t(Y,X,W,V,i[P+8],6,1873313359);V=t(V,Y,X,W,i[P+15],10,4264355552);W=t(W,V,Y,X,i[P+6],15,2734768916);X=t(X,W,V,Y,i[P+13],21,1309151649);Y=t(Y,X,W,V,i[P+4],6,4149444226);V=t(V,Y,X,W,i[P+11],10,3174756917);W=t(W,V,Y,X,i[P+2],15,718787259);X=t(X,W,V,Y,i[P+9],21,3951481745);Y=K(Y,h);X=K(X,E);W=K(W,v);V=K(V,g)}return(B(Y)+B(X)+B(W)+B(V)).toLowerCase()}
+  var PASS_HASH = '0951cb2fc44bb6c4c934cc0dbdde5ff5';
 
   document.getElementById('auth-form').addEventListener('submit', function(e) {
     e.preventDefault();
     var input = document.getElementById('pwd-input').value;
-    if (md5(input) === PASS_HASH) {
+    if (typeof md5 === 'function' && md5(input) === PASS_HASH) {
       document.getElementById('auth-gate').style.display = 'none';
       document.getElementById('main-content').style.display = 'block';
       loadAnalytics();
@@ -409,13 +318,19 @@ Os dados são consultados em tempo real. Falhas de leitura são sinalizadas e nu
     }
   });
 
-  // ==================== ANALYTICS ====================
   var API_BASE = 'https://abacus.jasoncameron.dev';
   var NAMESPACE = 'tap-intl-monitor';
+  var BATCH_SIZE = 20;
+  var WINDOW_DELAY_MS = 3200;
+  var MAX_RETRIES = 3;
+  var REQUEST_TIMEOUT_MS = 10000;
 
-  // Generate date range from first dashboard to today
+  function sleep(ms) {
+    return new Promise(function(resolve) { setTimeout(resolve, ms); });
+  }
+
   function generateDates() {
-    var start = new Date(2026, 6, 11); // 11-07-2026 (first dashboard)
+    var start = new Date(2026, 6, 11);
     var today = new Date();
     today.setHours(23, 59, 59, 999);
     var dates = [];
@@ -430,68 +345,117 @@ Os dados são consultados em tempo real. Falhas de leitura são sinalizadas e nu
     return dates;
   }
 
+  function retryDelayFromHeaders(resp, attempt) {
+    var retryAfter = Number(resp.headers.get('Retry-After'));
+    if (Number.isFinite(retryAfter) && retryAfter >= 0) {
+      return Math.max(WINDOW_DELAY_MS, retryAfter + 250);
+    }
+
+    var reset = Number(resp.headers.get('RateLimit-Reset'));
+    if (Number.isFinite(reset) && reset > 0) {
+      var untilReset = (reset * 1000) - Date.now() + 250;
+      if (untilReset > 0) return Math.max(WINDOW_DELAY_MS, untilReset);
+    }
+
+    return WINDOW_DELAY_MS * (attempt + 1);
+  }
+
   async function fetchCount(pageKey) {
-    try {
-      var resp = await fetch(API_BASE + '/get/' + NAMESPACE + '/' + encodeURIComponent(pageKey), {
-        cache: 'no-store',
-        credentials: 'omit',
-        referrerPolicy: 'no-referrer'
-      });
+    for (var attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      var controller = typeof AbortController === 'function' ? new AbortController() : null;
+      var timeoutId = controller ? setTimeout(function() { controller.abort(); }, REQUEST_TIMEOUT_MS) : null;
 
-      // Um contador ainda não criado representa zero visitas, não indisponibilidade.
-      if (resp.status === 404) return { available: true, count: 0 };
-      if (!resp.ok) return { available: false, count: null };
+      try {
+        var resp = await fetch(API_BASE + '/get/' + NAMESPACE + '/' + encodeURIComponent(pageKey), {
+          cache: 'no-store',
+          credentials: 'omit',
+          referrerPolicy: 'no-referrer',
+          signal: controller ? controller.signal : undefined
+        });
 
-      var data = await resp.json();
-      var value = Number(data.value);
-      if (!Number.isFinite(value) || value < 0) {
+        if (timeoutId) clearTimeout(timeoutId);
+
+        if (resp.status === 404) return { available: true, count: 0 };
+
+        if (resp.status === 429) {
+          if (attempt < MAX_RETRIES) {
+            await sleep(retryDelayFromHeaders(resp, attempt) + Math.floor(Math.random() * 250));
+            continue;
+          }
+          return { available: false, count: null };
+        }
+
+        if (!resp.ok) {
+          if (resp.status >= 500 && attempt < MAX_RETRIES) {
+            await sleep(800 * (attempt + 1));
+            continue;
+          }
+          return { available: false, count: null };
+        }
+
+        var data = await resp.json();
+        var value = Number(data.value);
+        if (!Number.isFinite(value) || value < 0) return { available: false, count: null };
+        return { available: true, count: value };
+      } catch (e) {
+        if (timeoutId) clearTimeout(timeoutId);
+        if (attempt < MAX_RETRIES) {
+          await sleep(800 * (attempt + 1));
+          continue;
+        }
         return { available: false, count: null };
       }
-      return { available: true, count: value };
-    } catch (e) {
-      return { available: false, count: null };
     }
+
+    return { available: false, count: null };
   }
 
   async function loadAnalytics() {
     var dates = generateDates();
     var results = [];
 
-    // Fetch counts for all dates
-    for (var i = 0; i < dates.length; i++) {
-      var key = 'Dashboard-Monitoramento-' + dates[i];
-      var reading = await fetchCount(key);
-      results.push({ date: dates[i], key: key, count: reading.count, available: reading.available });
+    for (var offset = 0; offset < dates.length; offset += BATCH_SIZE) {
+      var batchDates = dates.slice(offset, offset + BATCH_SIZE);
+      var batchResults = await Promise.all(batchDates.map(async function(date) {
+        var key = 'Dashboard-Monitoramento-' + date;
+        var reading = await fetchCount(key);
+        return { date: date, key: key, count: reading.count, available: reading.available };
+      }));
+
+      results = results.concat(batchResults);
+
+      if (offset + BATCH_SIZE < dates.length) {
+        await sleep(WINDOW_DELAY_MS);
+      }
     }
 
     var failedReads = results.filter(function(r) { return !r.available; }).length;
     var statusEl = document.getElementById('analytics-status');
     if (failedReads > 0) {
       statusEl.className = 'analytics-status error';
-      statusEl.textContent = 'Dados incompletos: ' + failedReads + ' contador(es) não puderam ser consultados. Valores indisponíveis não são tratados como zero.';
+      statusEl.textContent = 'Dados incompletos: ' + failedReads + ' contador(es) permaneceram indisponíveis após retentativas. KPIs parciais são identificados como limite inferior e valores indisponíveis não são tratados como zero.';
     } else {
       statusEl.className = 'analytics-status ok';
-      statusEl.textContent = 'Dados consultados com sucesso em ' + new Date().toLocaleString('pt-BR') + '.';
+      statusEl.textContent = 'Dados consultados com sucesso em ' + new Date().toLocaleString('pt-BR') + '. Rate limit respeitado automaticamente.';
     }
 
-    // Filter to show only pages with at least 1 visit
-    var pagesWithVisits = results.filter(function(r) { return r.available && r.count > 0; });
-
-    // Calculate stats
-    var totalVisits = results.reduce(function(sum, r) { return sum + (r.available ? r.count : 0); }, 0);
+    var availableResults = results.filter(function(r) { return r.available; });
+    var pagesWithVisits = availableResults.filter(function(r) { return r.count > 0; });
+    var knownTotalVisits = availableResults.reduce(function(sum, r) { return sum + r.count; }, 0);
     var pagesCount = pagesWithVisits.length;
-    var avgVisits = pagesCount > 0 ? (totalVisits / pagesCount).toFixed(1) : '0';
-    
-    var topPage = results.reduce(function(max, r) { return r.count > max.count ? r : max; }, { date: '—', count: 0 });
+    var avgVisits = pagesCount > 0 ? (knownTotalVisits / pagesCount).toFixed(1) : '0';
+    var topPage = pagesWithVisits.reduce(function(max, r) {
+      return !max || r.count > max.count ? r : max;
+    }, null);
 
-    // Update stat cards
-    document.getElementById('total-visits').textContent = totalVisits.toLocaleString('pt-BR');
-    document.getElementById('total-pages').textContent = pagesCount;
-    document.getElementById('avg-visits').textContent = avgVisits;
-    document.getElementById('top-page').textContent = topPage.date;
-    document.getElementById('top-page-count').textContent = topPage.count > 0 ? topPage.count + ' visitas' : 'Sem visitas ainda';
+    document.getElementById('total-visits').textContent = failedReads > 0 ? '≥ ' + knownTotalVisits.toLocaleString('pt-BR') : knownTotalVisits.toLocaleString('pt-BR');
+    document.getElementById('total-pages').textContent = failedReads > 0 ? '≥ ' + pagesCount : pagesCount;
+    document.getElementById('avg-visits').textContent = failedReads > 0 ? '—' : avgVisits;
+    document.getElementById('total-visits-sub').textContent = failedReads > 0 ? 'Mínimo confirmado' : 'Em todas as páginas';
+    document.getElementById('total-pages-sub').textContent = failedReads > 0 ? 'Mínimo confirmado com acessos' : 'Páginas com acessos';
+    document.getElementById('top-page').textContent = topPage ? topPage.date : '—';
+    document.getElementById('top-page-count').textContent = topPage ? topPage.count + ' visitas' + (failedReads > 0 ? ' · entre dados disponíveis' : '') : 'Sem visitas ainda';
 
-    // Render chart
     document.getElementById('chart-loading').style.display = 'none';
     var canvas = document.getElementById('viewsChart');
     canvas.style.display = 'block';
@@ -502,8 +466,9 @@ Os dados são consultados em tempo real. Falhas de leitura são sinalizadas e nu
         labels: results.map(function(r) { return r.date; }),
         datasets: [{
           label: 'Visitas',
-          data: results.map(function(r) { return r.count; }),
+          data: results.map(function(r) { return r.available ? r.count : null; }),
           backgroundColor: results.map(function(r) {
+            if (!r.available) return 'rgba(239, 68, 68, 0.25)';
             return r.count > 0 ? 'rgba(212, 175, 55, 0.7)' : 'rgba(212, 175, 55, 0.15)';
           }),
           borderColor: 'rgba(212, 175, 55, 1)',
@@ -527,29 +492,22 @@ Os dados são consultados em tempo real. Falhas de leitura são sinalizadas e nu
             padding: 12,
             callbacks: {
               title: function(ctx) { return 'Dashboard ' + ctx[0].label; },
-              label: function(ctx) { return '  ' + ctx.parsed.y + ' visitas'; }
+              label: function(ctx) { return ctx.raw === null ? '  indisponível' : '  ' + ctx.parsed.y + ' visitas'; }
             }
           }
         },
         scales: {
-          x: {
-            ticks: { color: '#94A3B8', font: { size: 11 } },
-            grid: { display: false }
-          },
+          x: { ticks: { color: '#94A3B8', font: { size: 11 } }, grid: { display: false } },
           y: {
             beginAtZero: true,
-            ticks: {
-              color: '#94A3B8',
-              stepSize: 1,
-              font: { size: 11 }
-            },
+            ticks: { color: '#94A3B8', stepSize: 1, font: { size: 11 } },
             grid: { color: 'rgba(255,255,255,0.05)' }
           }
         }
       }
     });
 
-    // Render table (sorted by date descending)
+    var maxKnown = Math.max.apply(null, availableResults.map(function(r) { return r.count || 0; }).concat([1]));
     var sorted = results.slice().sort(function(a, b) {
       var partsA = a.date.split('-');
       var partsB = b.date.split('-');
@@ -561,19 +519,17 @@ Os dados são consultados em tempo real. Falhas de leitura são sinalizadas e nu
     var tbody = document.getElementById('table-body');
     tbody.innerHTML = sorted.map(function(r) {
       var url = 'https://thalesandradepereira.github.io/monitoramento-internacional/' + r.key + '.html';
-      var barWidth = r.available && totalVisits > 0 ? Math.max(2, (r.count / Math.max.apply(null, results.map(function(x){return x.available && x.count ? x.count : 1}))) * 100) : 0;
+      var barWidth = r.available && r.count > 0 ? Math.max(2, (r.count / maxKnown) * 100) : 0;
       return '<tr>' +
         '<td style="font-weight:600; color:#fff;">' + r.date + '</td>' +
         '<td>' + r.key + '</td>' +
-        '<td>' +
-          '<div style="display:flex;align-items:center;gap:0.75rem">' +
-            '<div style="flex:1;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden">' +
-              '<div style="width:' + barWidth + '%;height:100%;background:var(--accent);border-radius:3px;transition:width 0.5s"></div>' +
-            '</div>' +
-            '<span style="font-weight:600;min-width:2rem;text-align:right">' + (r.available ? r.count : '—') + '</span>' +
+        '<td><div style="display:flex;align-items:center;gap:0.75rem">' +
+          '<div style="flex:1;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden">' +
+            '<div style="width:' + barWidth + '%;height:100%;background:var(--accent);border-radius:3px;transition:width 0.5s"></div>' +
           '</div>' +
-        '</td>' +
-        '<td><a href="' + url + '" target="_blank" class="link-btn">Abrir ↗</a></td>' +
+          '<span style="font-weight:600;min-width:2rem;text-align:right">' + (r.available ? r.count : '—') + '</span>' +
+        '</div></td>' +
+        '<td><a href="' + url + '" target="_blank" rel="noopener noreferrer" class="link-btn">Abrir ↗</a></td>' +
       '</tr>';
     }).join('');
   }
