@@ -53,3 +53,36 @@ test('falha antes de qualquer tentativa de entrega permite recuperação segura'
   assert.equal(records[0].state, 'failed')
   assert.doesNotThrow(() => mod.assertCanStartRealExecution('2099-01-04'))
 })
+
+
+test('falha total de autenticação SMTP permite reprocessamento seguro sem duplicidade', () => {
+  const { mod } = loadDailyExecution()
+  mod.persistExecutionRecord({
+    date: '2099-01-05',
+    time: '02:55:32',
+    timezone: 'America/Sao_Paulo',
+    state: 'failed',
+    mode: 'scheduled',
+    attempted: 6,
+    sent: 0,
+    failed: 6,
+  })
+
+  assert.doesNotThrow(() => mod.assertCanStartRealExecution('2099-01-05'))
+})
+
+test('contabilidade incompleta das tentativas mantém o bloqueio preventivo', () => {
+  const { mod } = loadDailyExecution()
+  mod.persistExecutionRecord({
+    date: '2099-01-06',
+    time: '03:00:00',
+    timezone: 'America/Sao_Paulo',
+    state: 'failed',
+    mode: 'scheduled',
+    attempted: 6,
+    sent: 0,
+    failed: 5,
+  })
+
+  assert.throws(() => mod.assertCanStartRealExecution('2099-01-06'), /Reenvio automático bloqueado/)
+})
