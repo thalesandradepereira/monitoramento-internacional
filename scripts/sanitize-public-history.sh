@@ -12,6 +12,10 @@ fail() {
 }
 
 VALIDATE_ONLY="${SANITIZE_VALIDATE_ONLY:-false}"
+PERMISSION_PROBE="${SANITIZE_PERMISSION_PROBE:-false}"
+PROBE_SUFFIX="${GITHUB_RUN_ID:-manual}-${GITHUB_RUN_ATTEMPT:-1}"
+PROBE_BRANCH="history-sanitize-permission-probe-${PROBE_SUFFIX}"
+PROBE_TAG="history-sanitize-permission-probe-${PROBE_SUFFIX}"
 
 [[ "${GITHUB_REPOSITORY:-}" == "$EXPECTED_REPOSITORY" ]] || fail "Unexpected repository."
 if [[ "$VALIDATE_ONLY" != "true" ]]; then
@@ -49,6 +53,17 @@ git for-each-ref --format='%(refname)' refs/tags | sort > /tmp/tags-before.txt
 
 # Ephemeral rollback bundle: never uploaded, never printed, destroyed with the runner.
 git bundle create /tmp/pre-sanitize.bundle --branches --tags >/dev/null
+
+cleanup_probe_refs() {
+  if [[ "$PERMISSION_PROBE" == "true" && "$VALIDATE_ONLY" != "true" ]]; then
+    git_auth push origin --delete "refs/heads/${PROBE_BRANCH}" "refs/tags/${PROBE_TAG}" >/dev/null 2>&1 || true
+  fi
+}
+
+if [[ "$PERMISSION_PROBE" == "true" && "$VALIDATE_ONLY" != "true" ]]; then
+  echo "[history-sanitize] Creating temporary permission-probe refs..."
+  git_auth push origin     "refs/heads/main:refs/heads/${PROBE_BRANCH}"     "refs/heads/main:refs/tags/${PROBE_TAG}" >/dev/null
+fi
 
 # Byte-for-byte preservation gate for every currently published docs artifact.
 find docs -type f -print0 | sort -z | xargs -0 sha256sum > /tmp/docs-before.sha256
@@ -147,7 +162,18 @@ if [[ "$VALIDATE_ONLY" == "true" ]]; then
   exit 0
 fi
 
+if [[ "$PERMISSION_PROBE" == "true" ]]; then
+  echo "[history-sanitize] Verifying PAT can force-update workflow-bearing history..."
+  if ! git_auth push --atomic --force origin     "refs/heads/main:refs/heads/${PROBE_BRANCH}"     "refs/heads/main:refs/tags/${PROBE_TAG}"; then
+    cleanup_probe_refs
+    fail "Permission probe failed; target token cannot rewrite workflow-bearing history."
+  fi
+  cleanup_probe_refs
+  echo "[history-sanitize] Permission probe passed."
+fi
+
 rollback_remote() {
+  cleanup_probe_refs
   echo "::error::Post-push verification failed. Attempting atomic rollback to the pre-sanitize refs."
   rm -rf /tmp/rollback.git
   git clone --mirror /tmp/pre-sanitize.bundle /tmp/rollback.git >/dev/null 2>&1 || return 1
@@ -203,6 +229,7 @@ if ! cmp -s /tmp/docs-before.sha256 /tmp/docs-remote.sha256; then
   fail "Remote published docs are not byte-identical after rewrite."
 fi
 
+cleanup_probe_refs
 echo "[history-sanitize] SUCCESS"
 echo "[history-sanitize] Historical recipient paths removed: ${RECIPIENT_PATH_COUNT}"
 echo "[history-sanitize] Historical recipient addresses sanitized: ${RECIPIENT_EMAIL_COUNT}"
