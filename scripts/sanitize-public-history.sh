@@ -12,7 +12,9 @@ fail() {
 }
 
 VALIDATE_ONLY="${SANITIZE_VALIDATE_ONLY:-false}"
+STAGE_ONLY="${SANITIZE_STAGE_ONLY:-false}"
 PERMISSION_PROBE="${SANITIZE_PERMISSION_PROBE:-false}"
+STAGE_PREFIX="history-sanitized-stage"
 PROBE_SUFFIX="${GITHUB_RUN_ID:-manual}-${GITHUB_RUN_ATTEMPT:-1}"
 PROBE_BRANCH="history-sanitize-permission-probe-${PROBE_SUFFIX}"
 PROBE_TAG="history-sanitize-permission-probe-${PROBE_SUFFIX}"
@@ -207,6 +209,43 @@ if [[ "$VALIDATE_ONLY" == "true" ]]; then
   echo "[history-sanitize] Branch refs preserved locally: ${BEFORE_BRANCH_COUNT}"
   echo "[history-sanitize] Tag refs preserved locally: ${BEFORE_TAG_COUNT}"
   echo "[history-sanitize] Current docs artifacts preserved byte-for-byte: ${DOC_COUNT}"
+  exit 0
+fi
+
+# Optional staging mode: publish sanitized commits only under new temporary
+# branch refs. This is non-destructive to the original public refs and allows an
+# external GitHub App with workflow permission to move existing branches safely.
+if [[ "$STAGE_ONLY" == "true" ]]; then
+  echo "[history-sanitize] Publishing sanitized refs to temporary staging namespace..."
+
+  mapfile -t stale_stage_refs < <(
+    git_auth ls-remote origin "refs/heads/${STAGE_PREFIX}/*" |
+      awk '{print $2}' |
+      sort -u
+  )
+  for ref in "${stale_stage_refs[@]}"; do
+    git_auth push origin ":${ref}" >/dev/null
+  done
+
+  refspecs=()
+  while IFS= read -r ref; do
+    branch_name="${ref#refs/heads/}"
+    refspecs+=("${ref}:refs/heads/${STAGE_PREFIX}/branches/${branch_name}")
+  done < <(git for-each-ref --format='%(refname)' refs/heads | sort)
+
+  while IFS= read -r tag_ref; do
+    tag_name="${tag_ref#refs/tags/}"
+    commit_sha="$(git rev-parse "${tag_ref}^{commit}")"
+    refspecs+=("${commit_sha}:refs/heads/${STAGE_PREFIX}/tags/${tag_name}")
+  done < <(git for-each-ref --format='%(refname)' refs/tags | sort)
+
+  [[ "${#refspecs[@]}" -gt 0 ]] || fail "No sanitized refs available for staging."
+  git_auth push --atomic origin "${refspecs[@]}"
+
+  echo "[history-sanitize] STAGE-ONLY SUCCESS"
+  echo "[history-sanitize] Sanitized branch refs staged: ${BEFORE_BRANCH_COUNT}"
+  echo "[history-sanitize] Sanitized release-tag commits staged as branches: ${BEFORE_TAG_COUNT}"
+  echo "[history-sanitize] Original branch/tag refs were not modified."
   exit 0
 fi
 
