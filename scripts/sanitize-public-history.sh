@@ -11,8 +11,12 @@ fail() {
   exit 1
 }
 
+VALIDATE_ONLY="${SANITIZE_VALIDATE_ONLY:-false}"
+
 [[ "${GITHUB_REPOSITORY:-}" == "$EXPECTED_REPOSITORY" ]] || fail "Unexpected repository."
-[[ "${GITHUB_REF:-}" == "refs/heads/main" ]] || fail "History rewrite is authorized only from main."
+if [[ "$VALIDATE_ONLY" != "true" ]]; then
+  [[ "${GITHUB_REF:-}" == "refs/heads/main" ]] || fail "History rewrite is authorized only from main."
+fi
 [[ -n "${GITHUB_TOKEN:-}" ]] || fail "GITHUB_TOKEN is required."
 [[ -f "$MARKER_PATH" ]] || fail "Authorization marker is missing."
 [[ "$(tr -d '\r\n' < "$MARKER_PATH")" == "$AUTHORIZATION_MARKER" ]] || fail "Authorization marker does not match."
@@ -131,6 +135,17 @@ while IFS= read -r email; do
   done < "$REV_LIST_FILE"
   [[ "$found" -eq 0 ]] || fail "Recipient PII remains in a historical blob."
 done < /tmp/recipient-emails.txt
+
+if [[ "$VALIDATE_ONLY" == "true" ]]; then
+  echo "[history-sanitize] VALIDATION-ONLY SUCCESS"
+  echo "[history-sanitize] No remote refs were modified."
+  echo "[history-sanitize] Historical recipient paths detected: ${RECIPIENT_PATH_COUNT}"
+  echo "[history-sanitize] Historical recipient addresses detected and sanitized locally: ${RECIPIENT_EMAIL_COUNT}"
+  echo "[history-sanitize] Branch refs preserved locally: ${BEFORE_BRANCH_COUNT}"
+  echo "[history-sanitize] Tag refs preserved locally: ${BEFORE_TAG_COUNT}"
+  echo "[history-sanitize] Current docs artifacts preserved byte-for-byte: ${DOC_COUNT}"
+  exit 0
+fi
 
 rollback_remote() {
   echo "::error::Post-push verification failed. Attempting atomic rollback to the pre-sanitize refs."
