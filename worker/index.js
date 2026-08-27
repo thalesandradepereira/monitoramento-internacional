@@ -1,8 +1,8 @@
 /**
  * Cloudflare Worker — inscrição, descadastro e endpoints internos de destinatários.
  *
- * Produção usa RECIPIENTS_STORAGE=d1 para inscrições, descadastros e listagem
- * interna, sem expor a lista de destinatários para IA.
+ * Produção usa exclusivamente D1 para inscrições, descadastros e listagem
+ * interna, sem expor a lista de destinatários para IA ou para conteúdo GitHub.
  */
 
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8' }
