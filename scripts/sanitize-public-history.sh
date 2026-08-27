@@ -66,6 +66,9 @@ cleanup_stale_probe_refs
 echo "[history-sanitize] Fetching all branch and tag refs..."
 git_auth fetch --force --prune --tags origin '+refs/heads/*:refs/remotes/origin/*'
 
+# Normalize detached PR checkouts to the actual target main before inventory.
+git checkout --force -B main refs/remotes/origin/main >/dev/null
+
 # Materialize every public branch locally so filter-repo rewrites every branch head.
 while read -r ref sha; do
   branch_name="${ref#refs/remotes/origin/}"
@@ -78,8 +81,8 @@ done < <(git for-each-ref --format='%(refname) %(objectname)' refs/remotes/origi
 while IFS= read -r ref; do
   git update-ref -d "$ref"
 done < <(
-  git for-each-ref --format='%(refname)' refs/heads refs/tags |
-    grep -E '^refs/(heads|tags)/history-sanitize-permission-probe-' || true
+  git for-each-ref --format='%(refname)' refs/heads refs/tags refs/remotes/origin |
+    grep -E '^refs/(heads|tags|remotes/origin)/history-sanitize-permission-probe-' || true
 )
 
 BEFORE_BRANCH_COUNT="$(git for-each-ref --format='%(refname)' refs/heads | wc -l | tr -d ' ')"
