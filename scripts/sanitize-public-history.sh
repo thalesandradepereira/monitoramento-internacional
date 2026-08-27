@@ -34,15 +34,56 @@ git_auth() {
   git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic ${AUTH_HEADER}" "$@"
 }
 
-echo "[history-sanitize] Fetching all branch and tag refs..."
-git_auth fetch --force --tags origin '+refs/heads/*:refs/remotes/origin/*'
+cleanup_current_probe_refs() {
+  if [[ "$PERMISSION_PROBE" == "true" && "$VALIDATE_ONLY" != "true" ]]; then
+    git_auth push origin ":refs/heads/${PROBE_BRANCH}" ":refs/tags/${PROBE_TAG}" >/dev/null 2>&1 || true
+  fi
+}
 
-# Materialize every remote branch as a local branch so filter-repo rewrites all public heads.
+cleanup_stale_probe_refs() {
+  [[ "$PERMISSION_PROBE" == "true" && "$VALIDATE_ONLY" != "true" ]] || return 0
+
+  mapfile -t stale_refs < <(
+    git_auth ls-remote origin       'refs/heads/history-sanitize-permission-probe-*'       'refs/tags/history-sanitize-permission-probe-*' |
+      awk '{print $2}' |
+      sort -u
+  )
+
+  if [[ "${#stale_refs[@]}" -eq 0 ]]; then
+    return 0
+  fi
+
+  echo "[history-sanitize] Removing ${#stale_refs[@]} stale permission-probe refs..."
+  for ref in "${stale_refs[@]}"; do
+    git_auth push origin ":${ref}" >/dev/null
+  done
+}
+
+trap cleanup_current_probe_refs EXIT
+
+cleanup_stale_probe_refs
+
+echo "[history-sanitize] Fetching all branch and tag refs..."
+git_auth fetch --force --prune --tags origin '+refs/heads/*:refs/remotes/origin/*'
+
+# Normalize detached PR checkouts to the actual target main before inventory.
+git checkout --force -B main refs/remotes/origin/main >/dev/null
+
+# Materialize every public branch locally so filter-repo rewrites every branch head.
 while read -r ref sha; do
   branch_name="${ref#refs/remotes/origin/}"
   [[ "$branch_name" == "HEAD" ]] && continue
+  [[ "$branch_name" == history-sanitize-permission-probe-* ]] && continue
   git update-ref "refs/heads/${branch_name}" "$sha"
 done < <(git for-each-ref --format='%(refname) %(objectname)' refs/remotes/origin)
+
+# Probe refs are operationally ephemeral and must never become part of the preserved inventory.
+while IFS= read -r ref; do
+  git update-ref -d "$ref"
+done < <(
+  git for-each-ref --format='%(refname)' refs/heads refs/tags refs/remotes/origin |
+    grep -E '^refs/(heads|tags|remotes/origin)/history-sanitize-permission-probe-' || true
+)
 
 BEFORE_BRANCH_COUNT="$(git for-each-ref --format='%(refname)' refs/heads | wc -l | tr -d ' ')"
 BEFORE_TAG_COUNT="$(git for-each-ref --format='%(refname)' refs/tags | wc -l | tr -d ' ')"
@@ -53,17 +94,6 @@ git for-each-ref --format='%(refname)' refs/tags | sort > /tmp/tags-before.txt
 
 # Ephemeral rollback bundle: never uploaded, never printed, destroyed with the runner.
 git bundle create /tmp/pre-sanitize.bundle --branches --tags >/dev/null
-
-cleanup_probe_refs() {
-  if [[ "$PERMISSION_PROBE" == "true" && "$VALIDATE_ONLY" != "true" ]]; then
-    git_auth push origin --delete "refs/heads/${PROBE_BRANCH}" "refs/tags/${PROBE_TAG}" >/dev/null 2>&1 || true
-  fi
-}
-
-if [[ "$PERMISSION_PROBE" == "true" && "$VALIDATE_ONLY" != "true" ]]; then
-  echo "[history-sanitize] Creating temporary permission-probe refs..."
-  git_auth push origin     "refs/heads/main:refs/heads/${PROBE_BRANCH}"     "refs/heads/main:refs/tags/${PROBE_TAG}" >/dev/null
-fi
 
 # Byte-for-byte preservation gate for every currently published docs artifact.
 find docs -type f -print0 | sort -z | xargs -0 sha256sum > /tmp/docs-before.sha256
@@ -79,7 +109,7 @@ git log --all --name-only --pretty=format: |
 [[ -s /tmp/recipient-paths.txt ]] || fail "No historical recipients.txt path was discovered; refusing a blind rewrite."
 RECIPIENT_PATH_COUNT="$(wc -l < /tmp/recipient-paths.txt | tr -d ' ')"
 
-# Extract recipient addresses only into an ephemeral file. Never print the values.
+# Extract recipient addresses only into an ephemeral file. Never print their values.
 : > /tmp/recipient-emails.raw
 while IFS= read -r path; do
   while IFS= read -r commit; do
@@ -114,13 +144,25 @@ git remote add origin "$REMOTE_URL"
 
 AFTER_BRANCH_COUNT="$(git for-each-ref --format='%(refname)' refs/heads | wc -l | tr -d ' ')"
 AFTER_TAG_COUNT="$(git for-each-ref --format='%(refname)' refs/tags | wc -l | tr -d ' ')"
-[[ "$AFTER_BRANCH_COUNT" == "$BEFORE_BRANCH_COUNT" ]] || fail "Branch count changed during rewrite."
-[[ "$AFTER_TAG_COUNT" == "$BEFORE_TAG_COUNT" ]] || fail "Tag count changed during rewrite."
+if [[ "$AFTER_BRANCH_COUNT" != "$BEFORE_BRANCH_COUNT" ]]; then
+  echo "::error::Branch inventory changed: before=${BEFORE_BRANCH_COUNT}, after=${AFTER_BRANCH_COUNT}"
+  fail "Branch count changed during rewrite."
+fi
+if [[ "$AFTER_TAG_COUNT" != "$BEFORE_TAG_COUNT" ]]; then
+  echo "::error::Tag inventory changed: before=${BEFORE_TAG_COUNT}, after=${AFTER_TAG_COUNT}"
+  fail "Tag count changed during rewrite."
+fi
 
 git for-each-ref --format='%(refname)' refs/heads | sort > /tmp/branches-after.txt
 git for-each-ref --format='%(refname)' refs/tags | sort > /tmp/tags-after.txt
-cmp -s /tmp/branches-before.txt /tmp/branches-after.txt || fail "Branch names changed during rewrite."
-cmp -s /tmp/tags-before.txt /tmp/tags-after.txt || fail "Tag names changed during rewrite."
+cmp -s /tmp/branches-before.txt /tmp/branches-after.txt || {
+  diff -u /tmp/branches-before.txt /tmp/branches-after.txt || true
+  fail "Branch names changed during rewrite."
+}
+cmp -s /tmp/tags-before.txt /tmp/tags-after.txt || {
+  diff -u /tmp/tags-before.txt /tmp/tags-after.txt || true
+  fail "Tag names changed during rewrite."
+}
 
 # Current published artifacts must remain byte-identical.
 find docs -type f -print0 | sort -z | xargs -0 sha256sum > /tmp/docs-after.sha256
@@ -151,6 +193,12 @@ while IFS= read -r email; do
   [[ "$found" -eq 0 ]] || fail "Recipient PII remains in a historical blob."
 done < /tmp/recipient-emails.txt
 
+# Personal maintainer addresses must no longer appear in commit metadata.
+if git log --all --format='%ae%n%ce' |
+  grep -Eqi 'thalesandrade@yahoo\.com|thalespereira@macbook-pro-de-thales\.local'; then
+  fail "Maintainer personal email remains in rewritten commit metadata."
+fi
+
 if [[ "$VALIDATE_ONLY" == "true" ]]; then
   echo "[history-sanitize] VALIDATION-ONLY SUCCESS"
   echo "[history-sanitize] No remote refs were modified."
@@ -162,18 +210,21 @@ if [[ "$VALIDATE_ONLY" == "true" ]]; then
   exit 0
 fi
 
+# Capability probe happens only after the complete local rewrite and validation.
+# Creating temporary refs that point at rewritten workflow-bearing history exercises
+# the same GitHub permission class required by the final force-push.
 if [[ "$PERMISSION_PROBE" == "true" ]]; then
-  echo "[history-sanitize] Verifying PAT can force-update workflow-bearing history..."
-  if ! git_auth push --atomic --force origin     "refs/heads/main:refs/heads/${PROBE_BRANCH}"     "refs/heads/main:refs/tags/${PROBE_TAG}"; then
-    cleanup_probe_refs
-    fail "Permission probe failed; target token cannot rewrite workflow-bearing history."
+  echo "[history-sanitize] Verifying token can publish rewritten workflow-bearing history..."
+  cleanup_current_probe_refs
+  if ! git_auth push --atomic origin     "refs/heads/main:refs/heads/${PROBE_BRANCH}"     "refs/heads/main:refs/tags/${PROBE_TAG}"; then
+    fail "Permission probe failed; target token cannot publish rewritten workflow-bearing history."
   fi
-  cleanup_probe_refs
+  cleanup_current_probe_refs
   echo "[history-sanitize] Permission probe passed."
 fi
 
 rollback_remote() {
-  cleanup_probe_refs
+  cleanup_current_probe_refs
   echo "::error::Post-push verification failed. Attempting atomic rollback to the pre-sanitize refs."
   rm -rf /tmp/rollback.git
   git clone --mirror /tmp/pre-sanitize.bundle /tmp/rollback.git >/dev/null 2>&1 || return 1
@@ -215,6 +266,12 @@ while IFS= read -r email; do
   fi
 done < /tmp/recipient-emails.txt
 
+if git --git-dir=/tmp/post-sanitize.git log --all --format='%ae%n%ce' |
+  grep -Eqi 'thalesandrade@yahoo\.com|thalespereira@macbook-pro-de-thales\.local'; then
+  rollback_remote || true
+  fail "Remote commit metadata still exposes maintainer personal email."
+fi
+
 if ! git_auth clone --depth 1 --branch main "$REMOTE_URL" /tmp/post-sanitize-work >/dev/null 2>&1; then
   rollback_remote || true
   fail "Fresh main clone failed after push."
@@ -229,7 +286,9 @@ if ! cmp -s /tmp/docs-before.sha256 /tmp/docs-remote.sha256; then
   fail "Remote published docs are not byte-identical after rewrite."
 fi
 
-cleanup_probe_refs
+cleanup_current_probe_refs
+trap - EXIT
+
 echo "[history-sanitize] SUCCESS"
 echo "[history-sanitize] Historical recipient paths removed: ${RECIPIENT_PATH_COUNT}"
 echo "[history-sanitize] Historical recipient addresses sanitized: ${RECIPIENT_EMAIL_COUNT}"
