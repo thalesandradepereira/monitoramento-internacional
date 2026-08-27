@@ -1,4 +1,4 @@
-name: Publicar v1.1.0
+name: Publicar v1.1.1
 
 on:
   push:
@@ -31,7 +31,7 @@ jobs:
 
       - name: Validar versão
         run: |
-          node -e "const p=require('./package.json'); if (p.version !== '1.1.0') { console.error('package.json precisa estar em 1.1.0'); process.exit(1) }"
+          node -e "const p=require('./package.json'); if (p.version !== '1.1.1') { console.error('package.json precisa estar em 1.1.1'); process.exit(1) }"
 
       - name: Instalar dependências
         run: npm ci
@@ -56,25 +56,25 @@ jobs:
 
       - name: Criar release
         run: |
-          if gh release view v1.1.0 >/dev/null 2>&1; then
-            echo "Release v1.1.0 já existe; nenhuma duplicação será criada."
+          if gh release view v1.1.1 >/dev/null 2>&1; then
+            echo "Release v1.1.1 já existe; nenhuma duplicação será criada."
             exit 0
           fi
 
           cat > /tmp/release-notes.md <<'EOF'
-          ## Monitoramento Internacional v1.1.0
+          ## Monitoramento Internacional v1.1.1
 
-          Release de resiliência com suporte a relógio externo Google Cloud Scheduler.
+          Release corretiva de segurança e privacidade após auditoria independente do código.
 
-          ### Novidades
-          - receptor repository_dispatch:gcp_scheduler com validação de origem, target, job e frescor;
-          - relay Node.js 22 para Cloud Run privado;
-          - desenho OIDC Cloud Scheduler → Cloud Run;
-          - Secret Manager para a credencial GitHub do relay;
-          - dois horários externos de failsafe para o monitoramento;
-          - testes unitários do relay e do receptor;
-          - validação do container e do script de provisionamento no CI;
-          - README totalmente revisado e bilíngue PT-BR / EN-US.
+          ### Correções
+          - removido XSS refletido no servidor Express legado;
+          - servidor legado não grava mais destinatários em recipients.txt e delega inscrições ao Worker + D1;
+          - removido fallback do Worker que gravava PII em recipients.txt via GitHub API;
+          - D1 passa a ser a fonte padrão fail-closed de destinatários;
+          - recipients.txt removido do HEAD do repositório;
+          - CSP do dashboard não usa mais style-src unsafe-inline; estilos usam nonce;
+          - workflow auxiliar de verificação D1 atualizado para Actions fixadas por SHA;
+          - cobertura adicionada para o gateway Express legado.
 
           ### Segurança
           - nenhum token cloud ou GitHub é armazenado no repositório;
@@ -83,9 +83,9 @@ jobs:
           - idempotência diária continua sendo a autoridade contra duplicidade;
           - GitHub Actions permanecem fixadas por SHA imutável.
 
-          ### Status de ativação cloud
-          O código e o provisionamento estão prontos e testados estaticamente. A release não afirma que recursos Google Cloud foram criados: a ativação live exige uma identidade Google Cloud com permissão de escrita no projeto e uma credencial GitHub fine-grained para os dois repositórios.
+          ### Observações
+          A camada Google Cloud continua preparada em código e testada estaticamente; seu provisionamento live continua dependente de credenciais administrativas do Google Cloud e de uma credencial GitHub restrita para repository_dispatch. Double opt-in/rate limiting do formulário público permanece como melhoria de produto, não como correção aplicada nesta release.
 
           EOF
 
-          gh release create v1.1.0             --target "$GITHUB_SHA"             --title "Monitoramento Internacional v1.1.0"             --notes-file /tmp/release-notes.md
+          gh release create v1.1.1             --target "$GITHUB_SHA"             --title "Monitoramento Internacional v1.1.1"             --notes-file /tmp/release-notes.md
