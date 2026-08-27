@@ -42,6 +42,24 @@ cleanup_current_probe_refs() {
   fi
 }
 
+cleanup_stale_stage_refs() {
+  [[ "$STAGE_ONLY" == "true" ]] || return 0
+
+  mapfile -t stale_refs < <(
+    git_auth ls-remote origin "refs/heads/${STAGE_PREFIX}/*" |
+      awk '{print $2}' |
+      sort -u
+  )
+  if [[ "${#stale_refs[@]}" -eq 0 ]]; then
+    return 0
+  fi
+
+  echo "[history-sanitize] Removing ${#stale_refs[@]} stale staging refs..."
+  for ref in "${stale_refs[@]}"; do
+    git_auth push origin ":${ref}" >/dev/null
+  done
+}
+
 cleanup_stale_probe_refs() {
   [[ "$PERMISSION_PROBE" == "true" && "$VALIDATE_ONLY" != "true" ]] || return 0
 
@@ -64,6 +82,7 @@ cleanup_stale_probe_refs() {
 trap cleanup_current_probe_refs EXIT
 
 cleanup_stale_probe_refs
+cleanup_stale_stage_refs
 
 echo "[history-sanitize] Fetching all branch and tag refs..."
 git_auth fetch --force --prune --tags origin '+refs/heads/*:refs/remotes/origin/*'
@@ -217,15 +236,6 @@ fi
 # external GitHub App with workflow permission to move existing branches safely.
 if [[ "$STAGE_ONLY" == "true" ]]; then
   echo "[history-sanitize] Publishing sanitized refs to temporary staging namespace..."
-
-  mapfile -t stale_stage_refs < <(
-    git_auth ls-remote origin "refs/heads/${STAGE_PREFIX}/*" |
-      awk '{print $2}' |
-      sort -u
-  )
-  for ref in "${stale_stage_refs[@]}"; do
-    git_auth push origin ":${ref}" >/dev/null
-  done
 
   refspecs=()
   while IFS= read -r ref; do
