@@ -1,10 +1,12 @@
-name: Publicar v1.0.0
+name: Publicar v1.1.0
 
 on:
   push:
     branches:
       - main
     paths:
+      - 'package.json'
+      - 'package-lock.json'
       - '.github/workflows/release.yml'
 
 permissions:
@@ -13,7 +15,7 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       GH_TOKEN: ${{ github.token }}
 
@@ -29,7 +31,7 @@ jobs:
 
       - name: Validar versão
         run: |
-          node -e "const p=require('./package.json'); if (p.version !== '1.0.0') { console.error('package.json precisa estar em 1.0.0'); process.exit(1) }"
+          node -e "const p=require('./package.json'); if (p.version !== '1.1.0') { console.error('package.json precisa estar em 1.1.0'); process.exit(1) }"
 
       - name: Instalar dependências
         run: npm ci
@@ -37,53 +39,53 @@ jobs:
       - name: Auditoria de segurança
         run: npm audit --audit-level=moderate
 
-      - name: Testes
+      - name: Testes da aplicação
         run: npm test
 
       - name: TypeScript
         run: npx tsc --noEmit
 
+      - name: Testes do relay Google Cloud
+        run: npm --prefix infra/gcp-scheduler-relay test
+
+      - name: Validar infraestrutura
+        run: |
+          node --check infra/gcp-scheduler-relay/src/server.mjs
+          bash -n infra/gcp-scheduler-relay/deploy.sh
+          docker build --tag tap-gcp-scheduler-relay:release infra/gcp-scheduler-relay
+
       - name: Criar release
         run: |
-          if gh release view v1.0.0 >/dev/null 2>&1; then
-            echo "Release v1.0.0 já existe; nenhuma duplicação será criada."
+          if gh release view v1.1.0 >/dev/null 2>&1; then
+            echo "Release v1.1.0 já existe; nenhuma duplicação será criada."
             exit 0
           fi
 
           cat > /tmp/release-notes.md <<'EOF'
-          ## Monitoramento Internacional v1.0.0
+          ## Monitoramento Internacional v1.1.0
 
-          Primeira versão estável de produção do Monitoramento Internacional.
+          Release de resiliência com suporte a relógio externo Google Cloud Scheduler.
 
-          ### Correção de resiliência do agendamento
-          - Identificada ausência total dos eventos schedule em 27/08/2026, antes da criação de qualquer runner/job.
-          - Mantidas as janelas principais de 02:17 e 03:17 BRT.
-          - Adicionado watchdog em workflow independente às 04:29, 05:29 e 06:29 BRT.
-          - Workflow principal e watchdog compartilham o mesmo grupo de concorrência.
-          - Idempotência diária preservada para impedir reenvios após uma execução concluída.
-          - Watchdog manual inicia em dry-run por padrão.
-          - QA de branch do watchdog não executa o pipeline real, não publica dashboard e não envia e-mail.
+          ### Novidades
+          - receptor repository_dispatch:gcp_scheduler com validação de origem, target, job e frescor;
+          - relay Node.js 22 para Cloud Run privado;
+          - desenho OIDC Cloud Scheduler → Cloud Run;
+          - Secret Manager para a credencial GitHub do relay;
+          - dois horários externos de failsafe para o monitoramento;
+          - testes unitários do relay e do receptor;
+          - validação do container e do script de provisionamento no CI;
+          - README totalmente revisado e bilíngue PT-BR / EN-US.
 
-          ### Hardening
-          - GitHub Actions atualizadas e fixadas por SHA imutável.
-          - Runtime padronizado em Node.js 22.
-          - npm audit incorporado como gate obrigatório no CI.
-          - TypeScript e validação de YAML mantidos como gates.
-          - CI ampliado para branches agent/** antes da promoção para main.
+          ### Segurança
+          - nenhum token cloud ou GitHub é armazenado no repositório;
+          - Cloud Run projetado sem acesso anônimo;
+          - jobs e rotas allow-listed;
+          - idempotência diária continua sendo a autoridade contra duplicidade;
+          - GitHub Actions permanecem fixadas por SHA imutável.
 
-          ### Validação
-          - 96 testes automatizados aprovados.
-          - npm audit: 0 vulnerabilidades.
-          - TypeScript: aprovado.
-          - YAML dos workflows: aprovado.
-          - Execução real de recuperação em 27/08/2026: 6 destinatários, 6 enviados, 0 falhas.
-          - Dashboard de 27/08/2026 criado.
-          - Alias /hoje atualizado para 27/08/2026.
-          - GitHub Pages publicado com sucesso.
-          - Publicador social privado acionado com sucesso.
+          ### Status de ativação cloud
+          O código e o provisionamento estão prontos e testados estaticamente. A release não afirma que recursos Google Cloud foram criados: a ativação live exige uma identidade Google Cloud com permissão de escrita no projeto e uma credencial GitHub fine-grained para os dois repositórios.
 
-          ### Risco residual
-          O watchdog reduz substancialmente a probabilidade de perda de um dia por falha de um único workflow agendado. Como ambas as agendas ainda dependem da infraestrutura do GitHub Actions, uma indisponibilidade generalizada da plataforma continua sendo um risco externo residual.
           EOF
 
-          gh release create v1.0.0             --target "$GITHUB_SHA"             --title "Monitoramento Internacional v1.0.0"             --notes-file /tmp/release-notes.md
+          gh release create v1.1.0             --target "$GITHUB_SHA"             --title "Monitoramento Internacional v1.1.0"             --notes-file /tmp/release-notes.md
