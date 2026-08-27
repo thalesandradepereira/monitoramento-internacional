@@ -10,6 +10,7 @@ function clearSrcModules() {
 test('logs de envio não expõem e-mails completos e o módulo não recarrega destinatários', async () => {
   clearSrcModules()
   const token = 'super-secret-token'
+  const recipient = 'qa-recipient@example.com'
   process.env.RECIPIENTS_API_TOKEN = token
   process.env.UNSUBSCRIBE_SECRET = 'unsubscribe-secret'
   process.env.RECIPIENTS_SOURCE = 'd1'
@@ -39,7 +40,7 @@ test('logs de envio não expõem e-mails completos e o módulo não recarrega de
       link: 'javascript:alert("xss")',
       categoria: 'GERAL',
     }]
-    const recipient = 'qa-recipient@example.com'\n    const report = await enviarEmail(maliciousTopic, maliciousTopic, '01/01/2099', [recipient], 'd1')
+    const report = await enviarEmail(maliciousTopic, maliciousTopic, '01/01/2099', [recipient], 'd1')
     assert.ok(report.attempted > 0)
     assert.equal(report.sent, report.attempted)
     assert.equal(report.failed, 0)
@@ -58,8 +59,8 @@ test('logs de envio não expõem e-mails completos e o módulo não recarrega de
   }
 
   const output = logs.join('\n')
-  assert.equal(output.includes('***REMOVED-RECIPIENT-PII***'), false)
-  assert.equal(output.includes('***REMOVED-RECIPIENT-PII***'), false)
+  assert.equal(output.includes(recipient), false)
+  assert.equal(output.includes('recipient@example.com'), false)
   assert.equal(output.includes(token), false)
   assert.match(output, /[a-z]{2}\*+@\*\*\*\.com/)
 })
