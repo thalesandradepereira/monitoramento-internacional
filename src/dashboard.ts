@@ -23,10 +23,10 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-${scriptNonce}'; script-src 'nonce-${scriptNonce}'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'nonce-${scriptNonce}'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
   <meta name="referrer" content="no-referrer">
   <title>Dashboard - International Monitoring</title>
-  <style nonce="${scriptNonce}">
+  <style>
     :root {
       --bg-main: #0B0F19;
       --bg-panel: rgba(255, 255, 255, 0.03);
@@ -145,11 +145,6 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
-    }
-    .results-title {
-      margin: 0;
-      font-size: 1.5rem;
-      color: #fff;
     }
     .results-count {
       color: var(--text-muted);
@@ -320,7 +315,7 @@ export function gerarDashboardHTML(topicosPt: Topico[], topicosEn: Topico[], dat
 
   <main class="results">
     <div class="results-header">
-      <h2 class="results-title">Resultados</h2>
+      <h2 style="margin: 0; font-size: 1.5rem; color: #fff;">Resultados</h2>
       <span class="results-count" id="count">0 notícias</span>
     </div>
     <div class="news-grid" id="grid">

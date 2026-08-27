@@ -39,7 +39,7 @@ test('logs de envio não expõem e-mails completos e o módulo não recarrega de
       link: 'javascript:alert("xss")',
       categoria: 'GERAL',
     }]
-    const report = await enviarEmail(maliciousTopic, maliciousTopic, '01/01/2099', ['***REMOVED-RECIPIENT-PII***'], 'd1')
+    const report = await enviarEmail(maliciousTopic, maliciousTopic, '01/01/2099', ['alice.private@example.com'], 'd1')
     assert.ok(report.attempted > 0)
     assert.equal(report.sent, report.attempted)
     assert.equal(report.failed, 0)
@@ -58,8 +58,8 @@ test('logs de envio não expõem e-mails completos e o módulo não recarrega de
   }
 
   const output = logs.join('\n')
-  assert.equal(output.includes('***REMOVED-RECIPIENT-PII***'), false)
-  assert.equal(output.includes('***REMOVED-RECIPIENT-PII***'), false)
+  assert.equal(output.includes('alice.private@example.com'), false)
+  assert.equal(output.includes('owner.private@example.test'), false)
   assert.equal(output.includes(token), false)
   assert.match(output, /[a-z]{2}\*+@\*\*\*\.com/)
 })

@@ -53,11 +53,11 @@ test('cron local padrão usa 02:17 no timezone configurado', () => {
 })
 
 
-test('RECIPIENTS_SOURCE padrão é d1 fail-closed com URL privada configurada', () => {
+test('RECIPIENTS_SOURCE padrão permanece github com URL privada configurada', () => {
   delete process.env.RECIPIENTS_SOURCE
   delete process.env.RECIPIENTS_API_URL
   const config = loadConfigWithDryRun(undefined)
-  assert.equal(config.recipients.source, 'd1')
+  assert.equal(config.recipients.source, 'github')
   assert.equal(config.recipients.apiUrl, 'https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients')
 })
 
