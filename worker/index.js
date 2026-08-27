@@ -55,11 +55,9 @@ async function hmacSign(email, secret) {
     .join('')
 }
 
-// ─── Recipient storage selection ────────────────────────────────────────────
-
-function recipientsStorage(env) {
-  return env.RECIPIENTS_STORAGE || 'd1'
-}
+// ─── Recipient storage ──────────────────────────────────────────────────────
+// D1 is the only supported recipient store. Legacy GitHub-file writes were
+// removed to avoid persisting recipient PII in repository content.
 
 function requireD1(env) {
   if (!env.DB) throw new Error('D1 storage selected but DB binding is unavailable')
@@ -152,18 +150,11 @@ export async function listActiveRecipients(env) {
 }
 
 async function addRecipient(env, email) {
-  if (recipientsStorage(env) === 'd1') {
-    return subscribeRecipient(env, email)
-  }
-  if (recipientsStorage(env) !== 'github') throw new Error('Invalid RECIPIENTS_STORAGE')
-  const added = await addToRecipients(email, env.GH_PAT_UNSUB, env.GH_REPO)
-  return { ok: true, status: added ? 'created' : 'existing' }
+  return subscribeRecipient(env, email)
 }
 
 async function removeRecipient(env, email) {
-  if (recipientsStorage(env) === 'd1') return unsubscribeRecipient(env, email)
-  if (recipientsStorage(env) !== 'github') throw new Error('Invalid RECIPIENTS_STORAGE')
-  return removeFromRecipients(email, env.GH_PAT_UNSUB, env.GH_REPO)
+  return unsubscribeRecipient(env, email)
 }
 
 // ─── Internal authentication ────────────────────────────────────────────────
@@ -477,111 +468,9 @@ async function handleSubscribe(request, env) {
   }
 }
 
-// ─── GitHub API ──────────────────────────────────────────────────────────────
-
-async function removeFromRecipients(email, ghPat, repo) {
-  const apiUrl = `https://api.github.com/repos/${repo}/contents/recipients.txt`
-  const headers = {
-    Authorization: `Bearer ${ghPat}`,
-    Accept: 'application/vnd.github.v3+json',
-    'User-Agent': 'resumo-ia-unsubscribe',
-  }
-
-  // 1. Ler o arquivo atual
-  const getRes = await fetch(apiUrl, { headers })
-  if (!getRes.ok) throw new Error(`GitHub GET falhou: ${getRes.status}`)
-
-  const fileData = await getRes.json()
-  const content = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))))
-  const lines = content.split('\n')
-
-  // 2. Filtrar o e-mail
-  const emailLower = email.toLowerCase().trim()
-  const newLines = lines.filter((line) => {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) return true
-    // Aceita linhas com vírgula (multi-email por linha)
-    const emails = trimmed.split(',').map((e) => e.trim().toLowerCase())
-    return !emails.includes(emailLower)
-  })
-
-  if (newLines.length === lines.length) {
-    return false // já não estava na lista
-  }
-
-  // 3. Commitar a remoção
-  const newContent = newLines.join('\n')
-  const putRes = await fetch(apiUrl, {
-    method: 'PUT',
-    headers: { ...headers, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message: '🚫 Descadastro automático',
-      content: btoa(unescape(encodeURIComponent(newContent))),
-      sha: fileData.sha,
-    }),
-  })
-
-  if (!putRes.ok) {
-    const err = await putRes.json()
-    throw new Error(err.message || `GitHub PUT falhou: ${putRes.status}`)
-  }
-
-  return true
-}
-
-async function addToRecipients(email, ghPat, repo) {
-  const apiUrl = `https://api.github.com/repos/${repo}/contents/recipients.txt`
-  const headers = {
-    Authorization: `Bearer ${ghPat}`,
-    Accept: 'application/vnd.github.v3+json',
-    'User-Agent': 'resumo-ia-subscribe',
-  }
-
-  // 1. Ler o arquivo atual
-  const getRes = await fetch(apiUrl, { headers })
-  if (!getRes.ok) throw new Error(`GitHub GET falhou: ${getRes.status}`)
-
-  const fileData = await getRes.json()
-  const content = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))))
-  const lines = content.split('\n')
-
-  // 2. Verificar se já existe
-  const emailLower = email.toLowerCase().trim()
-  const exists = lines.some((line) => {
-    const trimmed = line.trim()
-    if (!trimmed || trimmed.startsWith('#')) return false
-    const emails = trimmed.split(',').map((e) => e.trim().toLowerCase())
-    return emails.includes(emailLower)
-  })
-
-  if (exists) {
-    return false // já cadastrado
-  }
-
-  // 3. Adicionar no final e commitar
-  lines.push(emailLower)
-  const newContent = lines.join('\n')
-  
-  const putRes = await fetch(apiUrl, {
-    method: 'PUT',
-    headers: { ...headers, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      message: '✨ Cadastro via formulário',
-      content: btoa(unescape(encodeURIComponent(newContent))),
-      sha: fileData.sha,
-    }),
-  })
-
-  if (!putRes.ok) {
-    const err = await putRes.json()
-    throw new Error(err.message || `GitHub PUT falhou: ${putRes.status}`)
-  }
-
-  return true
-}
-
-
 // ─── HTML helpers ────────────────────────────────────────────────────────────
+
+
 
 function escHtml(s) {
   return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
