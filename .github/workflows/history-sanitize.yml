@@ -1,0 +1,45 @@
+name: One-time history sanitization
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ops/history-rewrite-authorized.txt'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monitoramento-internacional-history-sanitization
+  cancel-in-progress: false
+
+jobs:
+  sanitize:
+    name: Rewrite public history and preserve published artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout authorized main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+        with:
+          python-version: '3.12'
+
+      - name: Install pinned git-filter-repo
+        run: python -m pip install --disable-pip-version-check git-filter-repo==2.47.0
+
+      - name: Validate sanitization script syntax
+        run: bash -n scripts/sanitize-public-history.sh
+
+      - name: Rewrite and verify history
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: bash scripts/sanitize-public-history.sh
