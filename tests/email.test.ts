@@ -39,7 +39,7 @@ test('logs de envio não expõem e-mails completos e o módulo não recarrega de
       link: 'javascript:alert("xss")',
       categoria: 'GERAL',
     }]
-    const report = await enviarEmail(maliciousTopic, maliciousTopic, '01/01/2099', ['***REMOVED-RECIPIENT-PII***'], 'd1')
+    const recipient = 'qa-recipient@example.com'\n    const report = await enviarEmail(maliciousTopic, maliciousTopic, '01/01/2099', [recipient], 'd1')
     assert.ok(report.attempted > 0)
     assert.equal(report.sent, report.attempted)
     assert.equal(report.failed, 0)
