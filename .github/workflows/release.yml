@@ -1,0 +1,89 @@
+name: Publicar v1.0.0
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/release.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Validar versão
+        run: |
+          node -e "const p=require('./package.json'); if (p.version !== '1.0.0') { console.error('package.json precisa estar em 1.0.0'); process.exit(1) }"
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Auditoria de segurança
+        run: npm audit --audit-level=moderate
+
+      - name: Testes
+        run: npm test
+
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+      - name: Criar release
+        run: |
+          if gh release view v1.0.0 >/dev/null 2>&1; then
+            echo "Release v1.0.0 já existe; nenhuma duplicação será criada."
+            exit 0
+          fi
+
+          cat > /tmp/release-notes.md <<'EOF'
+          ## Monitoramento Internacional v1.0.0
+
+          Primeira versão estável de produção do Monitoramento Internacional.
+
+          ### Correção de resiliência do agendamento
+          - Identificada ausência total dos eventos schedule em 27/08/2026, antes da criação de qualquer runner/job.
+          - Mantidas as janelas principais de 02:17 e 03:17 BRT.
+          - Adicionado watchdog em workflow independente às 04:29, 05:29 e 06:29 BRT.
+          - Workflow principal e watchdog compartilham o mesmo grupo de concorrência.
+          - Idempotência diária preservada para impedir reenvios após uma execução concluída.
+          - Watchdog manual inicia em dry-run por padrão.
+          - QA de branch do watchdog não executa o pipeline real, não publica dashboard e não envia e-mail.
+
+          ### Hardening
+          - GitHub Actions atualizadas e fixadas por SHA imutável.
+          - Runtime padronizado em Node.js 22.
+          - npm audit incorporado como gate obrigatório no CI.
+          - TypeScript e validação de YAML mantidos como gates.
+          - CI ampliado para branches agent/** antes da promoção para main.
+
+          ### Validação
+          - 96 testes automatizados aprovados.
+          - npm audit: 0 vulnerabilidades.
+          - TypeScript: aprovado.
+          - YAML dos workflows: aprovado.
+          - Execução real de recuperação em 27/08/2026: 6 destinatários, 6 enviados, 0 falhas.
+          - Dashboard de 27/08/2026 criado.
+          - Alias /hoje atualizado para 27/08/2026.
+          - GitHub Pages publicado com sucesso.
+          - Publicador social privado acionado com sucesso.
+
+          ### Risco residual
+          O watchdog reduz substancialmente a probabilidade de perda de um dia por falha de um único workflow agendado. Como ambas as agendas ainda dependem da infraestrutura do GitHub Actions, uma indisponibilidade generalizada da plataforma continua sendo um risco externo residual.
+          EOF
+
+          gh release create v1.0.0             --target "$GITHUB_SHA"             --title "Monitoramento Internacional v1.0.0"             --notes-file /tmp/release-notes.md
