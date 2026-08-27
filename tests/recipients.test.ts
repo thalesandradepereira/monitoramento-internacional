@@ -39,8 +39,8 @@ async function loadWithEnv(env: Record<string, string | undefined>, fetchImpl?: 
   return { mod, restore: () => { globalThis.fetch = originalFetch; restoreEnv(); clearSrcModules() } }
 }
 
-test('modo github legado usa DEST_EMAIL e recipients.txt, normaliza e deduplica', async () => {
-  const { mod, restore } = await loadWithEnv({ DEST_EMAIL: ' USER@Example.com,other@example.com' })
+test('modo github legado explícito usa apenas DEST_EMAIL após remoção de recipients.txt', async () => {
+  const { mod, restore } = await loadWithEnv({ RECIPIENTS_SOURCE: 'github', DEST_EMAIL: ' USER@Example.com,other@example.com' })
   try {
     const result = await mod.loadRecipients()
     assert.equal(result.source, 'github')
