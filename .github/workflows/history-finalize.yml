@@ -1,0 +1,122 @@
+name: Finalize sanitized history
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ops/history-finalization-authorized.txt'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monitoramento-internacional-history-finalization
+  cancel-in-progress: false
+
+jobs:
+  finalize:
+    name: Retag releases, prune stale refs and verify Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      EXPECTED_DOCS_TREE: dfbb7ab435671a097aae7212b448a98ee4422bcd
+      TAG_V100_SHA: 6bc8dc24b98bd2a1b6e0c3cf7b06c8af3330548a
+      TAG_V110_SHA: 83ed35d5458fa879c5695113b26056e0273ddcb2
+      TAG_V111_SHA: 4c2969f647914583b8720ba7813ed6a4ace3e436
+
+    steps:
+      - name: Checkout sanitized main
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Verify published artifact tree before ref changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD:docs)" = "$EXPECTED_DOCS_TREE"
+          test -f docs/Dashboard-Monitoramento-24-08-2026.html
+          test -f docs/hoje/index.html
+          test ! -f recipients.txt
+
+      - name: Fetch sanitized release snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --force origin             refs/heads/history-sanitized-release-v1.0.0:refs/remotes/origin/history-sanitized-release-v1.0.0             refs/heads/history-sanitized-release-v1.1.0:refs/remotes/origin/history-sanitized-release-v1.1.0             refs/heads/history-sanitized-release-v1.1.1:refs/remotes/origin/history-sanitized-release-v1.1.1
+
+          test "$(git rev-parse refs/remotes/origin/history-sanitized-release-v1.0.0)" = "$TAG_V100_SHA"
+          test "$(git rev-parse refs/remotes/origin/history-sanitized-release-v1.1.0)" = "$TAG_V110_SHA"
+          test "$(git rev-parse refs/remotes/origin/history-sanitized-release-v1.1.1)" = "$TAG_V111_SHA"
+
+      - name: Atomically retarget existing releases to sanitized snapshots
+        shell: bash
+        run: |
+          set -euo pipefail
+          git push --atomic --force origin             "$TAG_V100_SHA:refs/tags/v1.0.0"             "$TAG_V110_SHA:refs/tags/v1.1.0"             "$TAG_V111_SHA:refs/tags/v1.1.1"
+
+          test "$(git ls-remote --tags origin refs/tags/v1.0.0 | awk '{print $1}')" = "$TAG_V100_SHA"
+          test "$(git ls-remote --tags origin refs/tags/v1.1.0 | awk '{print $1}')" = "$TAG_V110_SHA"
+          test "$(git ls-remote --tags origin refs/tags/v1.1.1 | awk '{print $1}')" = "$TAG_V111_SHA"
+
+      - name: Prune all stale non-main branches atomically
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t refs < <(git ls-remote --heads origin | awk '{print $2}' | grep -v '^refs/heads/main$' | sort)
+          if [ "${#refs[@]}" -gt 0 ]; then
+            delete_specs=()
+            for ref in "${refs[@]}"; do
+              delete_specs+=(":${ref}")
+            done
+            git push --atomic origin "${delete_specs[@]}"
+          fi
+
+          mapfile -t remaining < <(git ls-remote --heads origin | awk '{print $2}' | sort)
+          test "${#remaining[@]}" -eq 1
+          test "${remaining[0]}" = "refs/heads/main"
+
+      - name: Verify release links remain functional
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for tag in v1.0.0 v1.1.0 v1.1.1; do
+            gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
+          done
+
+      - name: Verify published artifact tree after ref changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --force origin main
+          git reset --hard origin/main
+          test "$(git rev-parse HEAD:docs)" = "$EXPECTED_DOCS_TREE"
+          test -f docs/Dashboard-Monitoramento-24-08-2026.html
+          test -f docs/hoje/index.html
+          test ! -f recipients.txt
+
+      - name: Verify public GitHub Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 5 --retry-delay 5             "https://thalesandradepereira.github.io/monitoramento-internacional/hoje"             --output /tmp/hoje.html
+          curl --fail --silent --show-error --location --retry 5 --retry-delay 5             "https://thalesandradepereira.github.io/monitoramento-internacional/Dashboard-Monitoramento-24-08-2026.html"             --output /tmp/historico.html
+          test -s /tmp/hoje.html
+          test -s /tmp/historico.html
+
+      - name: Summarize
+        run: |
+          {
+            echo "## History finalization"
+            echo
+            echo "- Sanitized release tags: **v1.0.0, v1.1.0, v1.1.1**"
+            echo "- Remaining public branch refs: **main only**"
+            echo "- docs tree preserved: **$EXPECTED_DOCS_TREE**"
+            echo "- Historical page 24/08/2026: **reachable**"
+            echo "- /hoje: **reachable**"
+          } >> "$GITHUB_STEP_SUMMARY"
