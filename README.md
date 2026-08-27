@@ -8,7 +8,7 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.0<br>
+> **Versão / Version:** 1.1.1<br>
 > **Fuso operacional / Operational timezone:** `America/Sao_Paulo`<br>
 > **Objetivo / Purpose:** monitoramento diário bilíngue, dashboard, e-mail e integração social com múltiplas camadas de contingência.
 
@@ -130,6 +130,20 @@ Controles principais:
 - `concurrency` compartilhada entre principal e watchdog;
 - dispatch externo validado por origem, target, job, horário e frescor.
 
+### Hardening de segurança da v1.1.1
+
+A auditoria final identificou um servidor Express legado que ainda aceitava inscrições e gravava e-mails em `recipients.txt`. Esse caminho foi desativado como fonte de dados: o gateway agora apenas redireciona/delega para o Worker oficial, que persiste destinatários em D1. O fallback do Worker que escrevia PII no GitHub também foi removido, e `recipients.txt` não faz mais parte do HEAD.
+
+Outros reforços:
+
+- D1 é a fonte padrão de destinatários;
+- o gateway Express não reflete input do usuário em HTML;
+- a CSP do dashboard usa nonce também para estilos, sem `style-src 'unsafe-inline'`;
+- o workflow auxiliar de verificação D1 usa Actions fixadas por SHA;
+- testes específicos cobrem o comportamento do gateway legado.
+
+**Risco residual conhecido:** o formulário público ainda não implementa double opt-in/Turnstile. Isso é uma melhoria de produto/antiabuso recomendada para uma próxima versão, pois exige fluxo de confirmação e configuração adicional de infraestrutura.
+
 ### Segurança da camada Google Cloud
 
 ```mermaid
@@ -209,7 +223,7 @@ O projeto segue SemVer:
 - `MINOR`: nova capacidade compatível;
 - `MAJOR`: mudança incompatível.
 
-A versão 1.1.0 adiciona a arquitetura do Google Cloud Scheduler como relógio externo, sem remover os mecanismos GitHub existentes.
+A versão 1.1.1 preserva a arquitetura Google Cloud Scheduler da 1.1.0 e adiciona hardening de segurança/privacidade no servidor legado, no armazenamento de destinatários e na CSP.
 
 ---
 
@@ -276,6 +290,20 @@ The repository includes:
 
 Live provisioning requires a Google Cloud principal with sufficient permissions and a restricted GitHub fine-grained credential. Credentials must never be committed to this repository.
 
+### v1.1.1 security hardening
+
+The final audit found a legacy Express subscription server that could still accept addresses and write them to `recipients.txt`. That path is no longer an authoritative data store: the gateway now redirects/delegates to the official Worker, which persists recipients in D1. The Worker fallback that could write recipient PII through the GitHub API was removed, and `recipients.txt` is no longer present in HEAD.
+
+Additional hardening:
+
+- D1 is the default recipient source;
+- the Express gateway no longer reflects user input into HTML;
+- dashboard CSP uses a nonce for styles and no longer allows `style-src 'unsafe-inline'`;
+- the auxiliary D1 verification workflow uses immutable Action SHAs;
+- dedicated tests cover the legacy gateway behavior.
+
+**Known residual risk:** the public subscription form does not yet implement double opt-in/Turnstile. That is recommended as a future anti-abuse/product enhancement because it requires a confirmation flow and additional infrastructure configuration.
+
 ### Reliability and security
 
 The production pipeline:
@@ -330,7 +358,7 @@ DRY_RUN=true EXECUTION_MODE=manual npm run once
 
 ### Release policy
 
-This repository follows Semantic Versioning. Version **1.1.0** introduces the external Google Cloud Scheduler control plane while preserving all existing GitHub scheduling and watchdog mechanisms.
+This repository follows Semantic Versioning. Version **1.1.1** preserves the Google Cloud Scheduler control plane introduced in 1.1.0 and adds security/privacy hardening for the legacy web gateway, recipient storage, and dashboard CSP.
 
 ---
 
