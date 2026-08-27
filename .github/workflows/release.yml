@@ -1,4 +1,4 @@
-name: Publicar v1.1.1
+name: Publicar v1.1.2
 
 on:
   push:
@@ -15,13 +15,17 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 30
     env:
       GH_TOKEN: ${{ github.token }}
+      EXPECTED_DOCS_TREE: dfbb7ab435671a097aae7212b448a98ee4422bcd
 
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup Node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -29,9 +33,15 @@ jobs:
           node-version: '22'
           cache: npm
 
-      - name: Validar versão
+      - name: Validar versão e artefatos históricos
+        shell: bash
         run: |
-          node -e "const p=require('./package.json'); if (p.version !== '1.1.1') { console.error('package.json precisa estar em 1.1.1'); process.exit(1) }"
+          set -euo pipefail
+          node -e "const p=require('./package.json'); if (p.version !== '1.1.2') process.exit(1)"
+          test "$(git rev-parse HEAD:docs)" = "$EXPECTED_DOCS_TREE"
+          test -f docs/Dashboard-Monitoramento-24-08-2026.html
+          test -f docs/hoje/index.html
+          test ! -f recipients.txt
 
       - name: Instalar dependências
         run: npm ci
@@ -49,43 +59,71 @@ jobs:
         run: npm --prefix infra/gcp-scheduler-relay test
 
       - name: Validar infraestrutura
+        shell: bash
         run: |
+          set -euo pipefail
           node --check infra/gcp-scheduler-relay/src/server.mjs
           bash -n infra/gcp-scheduler-relay/deploy.sh
           docker build --tag tap-gcp-scheduler-relay:release infra/gcp-scheduler-relay
 
-      - name: Criar release
+      - name: Validar releases históricas sanitizadas
+        shell: bash
         run: |
-          if gh release view v1.1.1 >/dev/null 2>&1; then
-            echo "Release v1.1.1 já existe; nenhuma duplicação será criada."
+          set -euo pipefail
+          for tag in v1.0.0 v1.1.0 v1.1.1; do
+            gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
+            git cat-file -e "$tag^{commit}"
+            if git ls-tree -r --name-only "$tag" | grep -Eq '(^|/)recipients\.txt$'; then
+              echo "PII file still reachable from $tag" >&2
+              exit 1
+            fi
+          done
+
+      - name: Validar GitHub Pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 5 --retry-delay 5             "https://thalesandradepereira.github.io/monitoramento-internacional/hoje"             --output /tmp/hoje.html
+          curl --fail --silent --show-error --location --retry 5 --retry-delay 5             "https://thalesandradepereira.github.io/monitoramento-internacional/Dashboard-Monitoramento-24-08-2026.html"             --output /tmp/historico.html
+          test -s /tmp/hoje.html
+          test -s /tmp/historico.html
+
+      - name: Criar release
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view v1.1.2 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release v1.1.2 já existe; nenhuma duplicação será criada."
             exit 0
           fi
 
           cat > /tmp/release-notes.md <<'EOF'
-          ## Monitoramento Internacional v1.1.1
+          ## Monitoramento Internacional v1.1.2
 
-          Release corretiva de segurança e privacidade após auditoria independente do código.
+          Release corretiva de privacidade, manutenção e confiabilidade operacional.
 
-          ### Correções
-          - removido XSS refletido no servidor Express legado;
-          - servidor legado não grava mais destinatários em recipients.txt e delega inscrições ao Worker + D1;
-          - removido fallback do Worker que gravava PII em recipients.txt via GitHub API;
-          - D1 passa a ser a fonte padrão fail-closed de destinatários;
-          - recipients.txt removido do HEAD do repositório;
-          - CSP do dashboard não usa mais style-src unsafe-inline; estilos usam nonce;
-          - workflow auxiliar de verificação D1 atualizado para Actions fixadas por SHA;
-          - cobertura adicionada para o gateway Express legado.
+          ### Higienização concluída
+          - histórico público da main reescrito para remover PII legada de destinatários;
+          - branches antigas removidas após validação;
+          - releases v1.0.0, v1.1.0 e v1.1.1 preservadas por tags sanitizadas;
+          - recipients.txt ausente da árvore atual e das tags reconstruídas;
+          - 88 artefatos atuais de docs preservados byte a byte;
+          - página histórica de 24/08/2026 e /hoje validados no GitHub Pages;
+          - workflows temporários de higienização removidos.
 
-          ### Segurança
-          - nenhum token cloud ou GitHub é armazenado no repositório;
-          - Cloud Run projetado sem acesso anônimo;
-          - jobs e rotas allow-listed;
-          - idempotência diária continua sendo a autoridade contra duplicidade;
-          - GitHub Actions permanecem fixadas por SHA imutável.
+          ### QA
+          - npm audit obrigatório;
+          - suíte automatizada completa;
+          - TypeScript;
+          - sintaxe do Worker;
+          - relay Google Cloud;
+          - build do container;
+          - validação de YAML no CI;
+          - GitHub Pages e releases históricas verificados.
 
-          ### Observações
-          A camada Google Cloud continua preparada em código e testada estaticamente; seu provisionamento live continua dependente de credenciais administrativas do Google Cloud e de uma credencial GitHub restrita para repository_dispatch. Double opt-in/rate limiting do formulário público permanece como melhoria de produto, não como correção aplicada nesta release.
+          ### Operação
+          Os workflows principais, watchdogs, estado diário e idempotência permanecem inalterados. A camada Google Cloud continua preparada em software, mas seu provisionamento live depende de credenciais administrativas externas ao GitHub.
 
           EOF
 
-          gh release create v1.1.1             --target "$GITHUB_SHA"             --title "Monitoramento Internacional v1.1.1"             --notes-file /tmp/release-notes.md
+          gh release create v1.1.2             --repo "$GITHUB_REPOSITORY"             --target "$GITHUB_SHA"             --title "Monitoramento Internacional v1.1.2"             --notes-file /tmp/release-notes.md
