@@ -52,7 +52,7 @@ export const config = {
   executionMode: (process.env.EXECUTION_MODE || 'local') as 'scheduled' | 'manual' | 'local',
   dailyExecutionLogPath: process.env.DAILY_EXECUTION_LOG_PATH || 'state/daily-executions.json',
   recipients: {
-    source: (process.env.RECIPIENTS_SOURCE || 'd1') as 'github' | 'd1',
+    source: (process.env.RECIPIENTS_SOURCE || 'github') as 'github' | 'd1',
     apiUrl: process.env.RECIPIENTS_API_URL || 'https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients',
     apiToken: process.env.RECIPIENTS_API_TOKEN || '',
     timeoutMs: positiveIntegerFromEnv('RECIPIENTS_API_TIMEOUT_MS', 5000),

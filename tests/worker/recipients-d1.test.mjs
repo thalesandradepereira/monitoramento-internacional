@@ -206,12 +206,12 @@ test('internal handlers do not log email addresses on D1 errors', async () => {
   }
 })
 
-test('public subscriptions are D1-only and never fall back to GitHub writes', async () => {
+test('RECIPIENTS_STORAGE defaults to d1 and fails explicitly without DB instead of falling back to github', async () => {
   const originalFetch = globalThis.fetch
   let githubCalled = false
   globalThis.fetch = async () => {
     githubCalled = true
-    return new Response('{}', { status: 500 })
+    return new Response(JSON.stringify({ content: btoa(''), sha: 'sha' }), { status: 200 })
   }
   try {
     const subscribeRequest = () => new Request('https://worker.test/subscribe', {
@@ -219,16 +219,16 @@ test('public subscriptions are D1-only and never fall back to GitHub writes', as
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: 'email=novo%40example.com',
     })
-
-    for (const extra of [
-      {},
-      { RECIPIENTS_STORAGE: 'd1' },
-      { RECIPIENTS_STORAGE: 'github', GH_PAT_UNSUB: 'fake', GH_REPO: 'owner/repo' },
-    ]) {
-      const res = await worker.fetch(subscribeRequest(), extra)
-      assert.equal(res.status, 500)
-    }
+    const d1DefaultRes = await worker.fetch(subscribeRequest(), { GH_PAT_UNSUB: 'fake', GH_REPO: 'owner/repo' })
+    assert.equal(d1DefaultRes.status, 500)
     assert.equal(githubCalled, false)
+
+    const d1ExplicitRes = await worker.fetch(subscribeRequest(), { RECIPIENTS_STORAGE: 'd1' })
+    assert.equal(d1ExplicitRes.status, 500)
+
+    const githubRollbackRes = await worker.fetch(subscribeRequest(), { RECIPIENTS_STORAGE: 'github', GH_PAT_UNSUB: 'fake', GH_REPO: 'owner/repo' })
+    assert.equal(githubRollbackRes.status, 200)
+    assert.equal(githubCalled, true)
   } finally {
     globalThis.fetch = originalFetch
   }
@@ -317,9 +317,9 @@ test('unsubscribe fails safely when UNSUBSCRIBE_SECRET is absent without writes'
   }
 })
 
-test('primary wrangler.toml declares D1 as the only recipient store with a real binding', async () => {
+test('primary wrangler.toml enables d1 mode with real D1 binding declared', async () => {
   const config = await readFile(new URL('../../worker/wrangler.toml', import.meta.url), 'utf8')
-  assert.doesNotMatch(config, /RECIPIENTS_STORAGE|GH_PAT_UNSUB|GH_REPO/)
+  assert.match(config, /RECIPIENTS_STORAGE = "d1"/)
   assert.match(config, /\[\[d1_databases\]\]/)
   assert.match(config, /binding = "DB"/)
   assert.match(config, /database_name = "monitoramento-internacional-recipients"/)

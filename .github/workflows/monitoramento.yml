@@ -1,9 +1,6 @@
 name: Disparo Monitoramento Mídia Internacional
 
 on:
-  repository_dispatch:
-    types: [gcp_scheduler]
-
   workflow_dispatch:
     inputs:
       dry_run:
@@ -37,7 +34,7 @@ jobs:
       contents: write
     env:
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == true && 'true' || 'false' }}
-      EXECUTION_MODE: ${{ github.event_name == 'schedule' && 'scheduled' || github.event_name == 'repository_dispatch' && 'gcp-scheduler' || 'manual' }}
+      EXECUTION_MODE: ${{ github.event_name == 'schedule' && 'scheduled' || 'manual' }}
 
     steps:
       - name: 📥 Clonar Código do Repositório
@@ -51,10 +48,6 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-
-      - name: 🛰️ Validar failsafe externo do Google Cloud Scheduler
-        if: github.event_name == 'repository_dispatch'
-        run: node scripts/validate-gcp-scheduler-dispatch.mjs
 
       - name: 📦 Instalar Dependências
         run: npm ci

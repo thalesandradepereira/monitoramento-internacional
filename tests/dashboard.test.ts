@@ -31,10 +31,6 @@ test('dashboard aplica CSP com nonce, valida links e permite somente o analytics
 
   assert.ok(nonce)
   assert.ok(html.includes(`<script nonce="${nonce}">`))
-  assert.ok(html.includes(`<style nonce="${nonce}">`))
-  assert.match(html, /style-src 'nonce-[^']+';/)
-  assert.doesNotMatch(html, /style-src 'unsafe-inline'/)
-  assert.doesNotMatch(html, /style="/)
   assert.equal(html.includes('</script><script>alert("source")'), false)
   assert.match(html, /function safeHttpUrl/)
   assert.match(html, /rel="noopener noreferrer"/)

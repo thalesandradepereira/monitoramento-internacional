@@ -51,17 +51,6 @@ jobs:
       - name: Validate Worker JavaScript syntax
         run: node --check worker/index.js
 
-      - name: Test Google Cloud Scheduler relay
-        run: npm --prefix infra/gcp-scheduler-relay test
-
-      - name: Validate relay source and deployment script
-        run: |
-          node --check infra/gcp-scheduler-relay/src/server.mjs
-          bash -n infra/gcp-scheduler-relay/deploy.sh
-
-      - name: Build relay container
-        run: docker build --tag tap-gcp-scheduler-relay:ci infra/gcp-scheduler-relay
-
       - name: Validate workflow YAML syntax
         run: |
           ruby -e "require 'yaml'; Dir['.github/workflows/*.{yml,yaml}'].sort.each { |file| YAML.load_file(file); puts \"ok #{file}\" }"
