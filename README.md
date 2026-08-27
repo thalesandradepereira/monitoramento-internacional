@@ -8,7 +8,7 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.1<br>
+> **Versão / Version:** 1.1.2<br>
 > **Fuso operacional / Operational timezone:** `America/Sao_Paulo`<br>
 > **Objetivo / Purpose:** monitoramento diário bilíngue, dashboard, e-mail e integração social com múltiplas camadas de contingência.
 
@@ -144,6 +144,22 @@ Outros reforços:
 
 **Risco residual conhecido:** o formulário público ainda não implementa double opt-in/Turnstile. Isso é uma melhoria de produto/antiabuso recomendada para uma próxima versão, pois exige fluxo de confirmação e configuração adicional de infraestrutura.
 
+### Higienização de histórico — v1.1.2
+
+A versão 1.1.2 conclui a higienização do histórico público do Git sem alterar os artefatos publicados em `docs/`.
+
+Controles aplicados:
+
+- histórico da `main` reescrito para remover PII legada de destinatários;
+- branches antigas removidas após validação e ausência de PRs abertos;
+- releases `v1.0.0`, `v1.1.0` e `v1.1.1` preservadas com tags sanitizadas;
+- `recipients.txt` não existe mais na árvore atual nem nas tags reconstruídas;
+- os 88 artefatos atuais de `docs/` foram preservados byte a byte;
+- a página histórica de 24/08/2026 e o alias `/hoje` foram validados no GitHub Pages;
+- os workflows temporários usados na higienização foram removidos após a conclusão.
+
+A limpeza de referências internas/caches mantidos pelo próprio GitHub pode depender de suporte da plataforma e não altera a operação diária do projeto.
+
 ### Segurança da camada Google Cloud
 
 ```mermaid
@@ -223,7 +239,7 @@ O projeto segue SemVer:
 - `MINOR`: nova capacidade compatível;
 - `MAJOR`: mudança incompatível.
 
-A versão 1.1.1 preserva a arquitetura Google Cloud Scheduler da 1.1.0 e adiciona hardening de segurança/privacidade no servidor legado, no armazenamento de destinatários e na CSP.
+A versão 1.1.2 preserva os hardenings da 1.1.1 e conclui a higienização do histórico público, mantendo integralmente os artefatos publicados e as releases funcionais.
 
 ---
 
@@ -303,6 +319,22 @@ Additional hardening:
 - dedicated tests cover the legacy gateway behavior.
 
 **Known residual risk:** the public subscription form does not yet implement double opt-in/Turnstile. That is recommended as a future anti-abuse/product enhancement because it requires a confirmation flow and additional infrastructure configuration.
+
+### History sanitization — v1.1.2
+
+Version 1.1.2 completes the public Git history sanitization without changing the published `docs/` artifacts.
+
+Controls applied:
+
+- the public `main` history was rewritten to remove legacy recipient PII;
+- stale branches were removed after validation and confirmation that no pull requests were open;
+- releases `v1.0.0`, `v1.1.0`, and `v1.1.1` remain available through sanitized tags;
+- `recipients.txt` is absent from the current tree and reconstructed release tags;
+- all 88 current `docs/` artifacts were preserved byte-for-byte;
+- the 24/08/2026 historical page and `/hoje` were validated through GitHub Pages;
+- one-time sanitization workflows were removed after completion.
+
+Server-managed pull-request refs/caches may still require GitHub Support for complete dereferencing; this does not affect the daily production pipeline.
 
 ### Reliability and security
 
