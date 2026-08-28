@@ -8,7 +8,7 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.2<br>
+> **Versão / Version:** 1.1.3<br>
 > **Fuso operacional / Operational timezone:** `America/Sao_Paulo`<br>
 > **Objetivo / Purpose:** monitoramento diário bilíngue, dashboard, e-mail e integração social com múltiplas camadas de contingência.
 
@@ -143,6 +143,12 @@ Outros reforços:
 - testes específicos cobrem o comportamento do gateway legado.
 
 **Risco residual conhecido:** o formulário público ainda não implementa double opt-in/Turnstile. Isso é uma melhoria de produto/antiabuso recomendada para uma próxima versão, pois exige fluxo de confirmação e configuração adicional de infraestrutura.
+
+### Concorrência entre Media e Social Publisher — v1.1.3
+
+A versão 1.1.3 corrige uma condição de corrida observada em 28/08/2026: enquanto o pipeline de mídia processava e enviava o relatório, o Social Publisher publicou a imagem do Story no mesmo repositório, avançando a `main`. O push final do dashboard/estado foi então rejeitado como `non-fast-forward`.
+
+A persistência agora detecta especificamente esse tipo de rejeição, executa `git pull --rebase origin main` e repete o push com limite de quatro tentativas. Erros de autenticação ou permissão continuam falhando imediatamente.
 
 ### Higienização de histórico — v1.1.2
 
