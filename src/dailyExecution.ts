@@ -71,6 +71,39 @@ function runGit(command: string): void {
   execSync(command, { stdio: 'pipe' })
 }
 
+function errorMessage(err: unknown): string {
+  if (err instanceof Error) return err.message
+  return String(err)
+}
+
+export function isConcurrentPushRejection(err: unknown): boolean {
+  const message = errorMessage(err).toLowerCase()
+  return message.includes('non-fast-forward')
+    || message.includes('fetch first')
+    || message.includes('failed to push some refs')
+}
+
+function pushWithConcurrentUpdateRecovery(maxAttempts = 4): void {
+  let lastError: unknown
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      runGit('git push origin HEAD:main')
+      return
+    } catch (err) {
+      lastError = err
+      if (!isConcurrentPushRejection(err) || attempt === maxAttempts) throw err
+      console.warn(`[idempotencia] Push concorrente detectado; sincronizando main e tentando novamente (${attempt}/${maxAttempts}).`)
+      try {
+        runGit('git pull --rebase origin main')
+      } catch (rebaseErr) {
+        try { runGit('git rebase --abort') } catch {}
+        throw new Error(`[idempotencia] Falha ao rebasear após atualização concorrente: ${errorMessage(rebaseErr)}`)
+      }
+    }
+  }
+  throw lastError
+}
+
 export function syncPersistentExecutionLog(): void {
   if (!process.env.GITHUB_ACTIONS || process.env.DRY_RUN === 'true') return
   try {
@@ -132,7 +165,7 @@ export function commitAndPushPersistentState(message: string): void {
     const status = execSync('git status --porcelain', { encoding: 'utf8' })
     if (!status.trim()) return
     runGit(`git commit -m ${JSON.stringify(message)}`)
-    runGit('git push origin HEAD:main')
+    pushWithConcurrentUpdateRecovery()
   } catch (err: any) {
     throw new Error(`[idempotencia] Falha ao persistir/sincronizar estado obrigatório: ${err?.message || err}`)
   }

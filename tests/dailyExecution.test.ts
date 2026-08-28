@@ -86,3 +86,15 @@ test('contabilidade incompleta das tentativas mantém o bloqueio preventivo', ()
 
   assert.throws(() => mod.assertCanStartRealExecution('2099-01-06'), /Reenvio automático bloqueado/)
 })
+
+test('classifica rejeição non-fast-forward como conflito recuperável', () => {
+  const { mod } = loadDailyExecution()
+  assert.equal(mod.isConcurrentPushRejection(new Error("! [rejected] HEAD -> main (non-fast-forward)")), true)
+  assert.equal(mod.isConcurrentPushRejection(new Error("failed to push some refs; fetch first")), true)
+})
+
+test('não classifica falhas arbitrárias como conflito concorrente', () => {
+  const { mod } = loadDailyExecution()
+  assert.equal(mod.isConcurrentPushRejection(new Error("authentication failed")), false)
+  assert.equal(mod.isConcurrentPushRejection(new Error("permission denied")), false)
+})
