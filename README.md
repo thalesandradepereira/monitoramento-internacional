@@ -22,6 +22,20 @@ O **Monitoramento Mídia Internacional** é um pipeline automatizado que coleta 
 
 O projeto foi desenhado para operar com **fail-closed**, **idempotência diária** e **múltiplos relógios independentes**. Uma execução de contingência pode acontecer várias vezes no mesmo dia sem reenviar conteúdo quando o estado já está concluído.
 
+### Atualização operacional — 29/08/2026
+
+A confiabilidade foi reforçada após o incidente de 29/08/2026, quando os eventos `schedule` do GitHub não foram criados no horário esperado.
+
+Estado validado:
+
+- o PR #44 foi integrado à `main`, endurecendo a recuperação de push concorrente: somente marcadores reais de `non-fast-forward` / `fetch first` são tratados como concorrência; rejeições genéricas de permissão não entram em retry;
+- o ruleset `main-production-safety` está ativo na branch padrão, bloqueando exclusão e force/non-fast-forward push e exigindo histórico linear, sem bypass;
+- a integração `dashboard_published` com o repositório privado `monitoramento-social-publisher` foi configurada com `SOCIAL_PUBLISHER_REPOSITORY` + `SOCIAL_PUBLISHER_TOKEN`;
+- a permissão cross-repository foi comprovada por probe não-produtivo com retorno HTTP 204, sem envio de e-mail e sem publicação de Story;
+- o relay Google Cloud foi endurecido para provisionamento idempotente, validação prévia de credenciais e limpeza de versões antigas do Secret Manager;
+- a camada Google Cloud permanece **deployment-ready** até que os recursos sejam criados por uma identidade Google Cloud autenticada e os dois jobs sejam observados em produção.
+
+
 ### Acessos rápidos
 
 | Recurso | Endereço |
@@ -65,18 +79,22 @@ A camada Google Cloud foi desenhada para retirar do GitHub o papel de **único r
 
 ### Estado da camada Google Cloud
 
-O repositório contém o código completo para:
+O repositório contém uma implementação pronta para produção:
 
 - relay HTTP mínimo em Node.js 22;
-- container Cloud Run;
-- validação de `X-CloudScheduler-JobName` e `X-CloudScheduler-ScheduleTime`;
+- container Cloud Run privado;
+- validação de `X-CloudScheduler`, `X-CloudScheduler-JobName` e `X-CloudScheduler-ScheduleTime`;
 - dispatch separado para mídia e publisher;
 - autenticação OIDC Scheduler → Cloud Run;
 - token GitHub armazenado em Secret Manager;
 - provisionamento idempotente em `infra/gcp-scheduler-relay/deploy.sh`;
-- testes unitários do relay e do receptor `gcp_scheduler`.
+- probe seguro de `repository_dispatch` nos dois repositórios antes do deploy;
+- limpeza de versões antigas do secret para manter apenas a versão corrente ativa;
+- testes unitários do relay e dos receptores `gcp_scheduler`.
 
-A ativação dos recursos cloud exige uma identidade Google Cloud com permissões administrativas no projeto de destino e uma credencial GitHub fine-grained autorizada nos dois repositórios. Nenhuma dessas credenciais é armazenada neste repositório.
+**Status de ativação:** `deployment-ready`. A camada só deve ser considerada ativa quando uma identidade Google Cloud autenticada provisionar os recursos, `gcloud scheduler jobs describe` confirmar os dois jobs e um `repository_dispatch: gcp_scheduler` validado aparecer no histórico do GitHub.
+
+O script agora exige `GCP_PROJECT_ID` explícito para impedir deploy acidental no projeto errado. A credencial GitHub dedicada ao relay deve selecionar somente `monitoramento-internacional` e `monitoramento-social-publisher`, com permissão `Contents: Read and write`. Nenhuma credencial é armazenada no repositório.
 
 ### Fluxo diário
 
@@ -148,7 +166,9 @@ Outros reforços:
 
 A versão 1.1.3 corrige uma condição de corrida observada em 28/08/2026: enquanto o pipeline de mídia processava e enviava o relatório, o Social Publisher publicou a imagem do Story no mesmo repositório, avançando a `main`. O push final do dashboard/estado foi então rejeitado como `non-fast-forward`.
 
-A persistência agora detecta especificamente esse tipo de rejeição, executa `git pull --rebase origin main` e repete o push com limite de quatro tentativas. Erros de autenticação ou permissão continuam falhando imediatamente.
+O hardening concluído em 29/08/2026 passou a inspecionar também `stderr`/`stdout` do `execSync`, mas só classifica como concorrência os marcadores específicos `non-fast-forward` ou `fetch first`. A frase genérica `failed to push some refs` não é mais suficiente para retry, evitando mascarar bloqueios de branch, autenticação ou hooks.
+
+Quando a rejeição é realmente concorrente, o pipeline executa `git pull --rebase origin main` e repete o push com limite de quatro tentativas. A regressão é coberta por teste dedicado e a CI validou 113/113 testes do projeto, TypeScript, YAML, segurança e o relay GCP.
 
 ### Higienização de histórico — v1.1.2
 
@@ -186,7 +206,9 @@ O relay não recebe destinatários, credenciais SMTP, chaves Gemini ou token Ins
 
 ### Postura de custo
 
-A arquitetura proposta usa **2 jobs do Cloud Scheduler**. O Google oferece atualmente até **3 jobs sem custo por mês por conta de faturamento**. O relay utiliza Cloud Run com `min-instances=0` e volume de apenas algumas requisições por dia; o GitHub token utiliza uma única versão do Secret Manager. O custo real continua dependente do uso agregado da conta e das políticas vigentes do Google Cloud.
+A arquitetura usa **2 jobs do Cloud Scheduler**, abaixo da franquia atual de **3 jobs sem custo por mês por conta de faturamento**. O relay usa Cloud Run com `min-instances=0`, `max-instances=1` e tráfego de apenas algumas requisições por dia. O provisionamento mantém uma única versão ativa do token no Secret Manager, bem abaixo da franquia atual de 6 versões ativas e 10.000 acessos/mês.
+
+A expectativa para este workload é custo operacional zero enquanto a conta permanecer dentro das franquias gratuitas, mas o uso é agregado por conta de faturamento e preços podem mudar. Referências oficiais: `cloud.google.com/scheduler/pricing`, `cloud.google.com/run/pricing` e `cloud.google.com/secret-manager/pricing`.
 
 ### Operação e diagnóstico
 
@@ -245,7 +267,7 @@ O projeto segue SemVer:
 - `MINOR`: nova capacidade compatível;
 - `MAJOR`: mudança incompatível.
 
-A versão 1.1.2 preserva os hardenings da 1.1.1 e conclui a higienização do histórico público, mantendo integralmente os artefatos publicados e as releases funcionais.
+A versão 1.1.3 preserva os hardenings anteriores, adiciona recuperação segura de concorrência entre mídia e publicação social e incorpora os reforços operacionais validados em 29/08/2026.
 
 ---
 
@@ -256,6 +278,20 @@ A versão 1.1.2 preserva os hardenings da 1.1.1 e conclui a higienização do hi
 **Global Media Monitoring** is an automated pipeline that collects international news, filters and deduplicates content, uses Google Gemini for editorial triage and summarization, produces **PT-BR** and **EN-US** output, generates a daily HTML dashboard, and sends individualized e-mails to active recipients stored outside GitHub.
 
 The system is designed around **fail-closed behavior**, **daily idempotency**, and **multiple independent clocks**. Recovery attempts can run more than once without resending content after the operational date has already reached `completed`.
+
+### Operational update — 2026-08-29
+
+Reliability was strengthened after the 2026-08-29 incident in which expected GitHub `schedule` events were not created on time.
+
+Validated state:
+
+- PR #44 was merged into `main`; concurrent-push recovery now retries only real `non-fast-forward` / `fetch first` conflicts;
+- the `main-production-safety` ruleset is active on the default branch, blocking deletion and force/non-fast-forward pushes and requiring linear history with no bypass;
+- the `dashboard_published` integration to the private `monitoramento-social-publisher` repository is configured through `SOCIAL_PUBLISHER_REPOSITORY` and `SOCIAL_PUBLISHER_TOKEN`;
+- cross-repository permission was verified with a non-production probe returning HTTP 204, without sending e-mail or publishing an Instagram Story;
+- Google Cloud provisioning is hardened and idempotent, including preflight permission checks and Secret Manager version cleanup;
+- the Google Cloud layer remains **deployment-ready** until an authenticated Google Cloud principal provisions the live resources and the jobs are observed in production.
+
 
 ### Quick links
 
@@ -285,7 +321,7 @@ flowchart LR
     PIPE --> STATE[(Daily state)]
 ```
 
-The Google Cloud layer removes GitHub as the **single scheduling clock**. Cloud Scheduler does not execute application logic itself. It calls a private Cloud Run relay, authenticated with OIDC, and the relay sends a validated GitHub `repository_dispatch`.
+The Google Cloud layer is designed to remove GitHub as the **single scheduling clock** once provisioned. Cloud Scheduler does not execute application logic itself. It calls a private Cloud Run relay, authenticated with OIDC, and the relay sends a validated GitHub `repository_dispatch`. Until live provisioning is verified, GitHub remains the active scheduling provider.
 
 ### Scheduling layers
 
@@ -299,18 +335,22 @@ Duplicate wake-ups are safe because the application checks persistent daily stat
 
 ### Google Cloud layer
 
-The repository includes:
+The repository includes a production-ready implementation:
 
 - a minimal Node.js 22 HTTP relay;
-- a Cloud Run container;
-- Scheduler header and freshness validation;
+- a private Cloud Run container;
+- Scheduler header, job-name and freshness validation;
 - separate media and publisher targets;
-- OIDC Scheduler → Cloud Run authentication design;
+- OIDC Scheduler → Cloud Run authentication;
 - Secret Manager integration for the GitHub dispatch credential;
-- idempotent provisioning logic in `infra/gcp-scheduler-relay/deploy.sh`;
-- unit tests for both relay and GitHub receiver.
+- idempotent provisioning in `infra/gcp-scheduler-relay/deploy.sh`;
+- safe non-production dispatch probes against both repositories before deployment;
+- cleanup of superseded enabled secret versions;
+- unit tests for the relay and both GitHub receivers.
 
-Live provisioning requires a Google Cloud principal with sufficient permissions and a restricted GitHub fine-grained credential. Credentials must never be committed to this repository.
+**Activation status:** `deployment-ready`. The external clock must not be considered active until an authenticated Google Cloud principal provisions the resources, both Scheduler jobs are confirmed, and a validated `repository_dispatch: gcp_scheduler` is observed.
+
+The deployment script requires an explicit `GCP_PROJECT_ID` to prevent accidental deployment to the wrong project. The dedicated fine-grained GitHub token must select only the two production repositories and grant `Contents: Read and write`. Credentials must never be committed to this repository.
 
 ### v1.1.1 security hardening
 
@@ -344,6 +384,8 @@ Server-managed pull-request refs/caches may still require GitHub Support for com
 
 ### Reliability and security
 
+The 2026-08-29 hardening also corrected concurrent push classification. The persistence layer inspects `message`, `stderr`, and `stdout`, but retries only on specific `non-fast-forward` or `fetch first` markers. Generic `failed to push some refs` output is not enough to trigger a rebase/retry, so branch protection, authentication, and hook failures remain visible.
+
 The production pipeline:
 
 - synchronizes `main` before a real run;
@@ -357,7 +399,9 @@ The production pipeline:
 
 ### Cost posture
 
-The design uses two Cloud Scheduler jobs, below Google's current allowance of three free jobs per billing account per month. Cloud Run is configured for zero minimum instances and extremely low traffic, while Secret Manager requires only one active secret version. Billing can still vary with account-wide usage and future pricing changes.
+The design uses two Cloud Scheduler jobs, below Google's current allowance of three free jobs per billing account per month. Cloud Run uses `min-instances=0`, `max-instances=1`, and only a few short requests per day. Provisioning keeps one active Secret Manager token version, below the current free allowance of six active versions and 10,000 access operations per month.
+
+This workload is expected to stay within the free usage envelope, but quotas are aggregated by billing account and pricing can change. Official references: `cloud.google.com/scheduler/pricing`, `cloud.google.com/run/pricing`, and `cloud.google.com/secret-manager/pricing`.
 
 ### Repository map
 
@@ -396,7 +440,7 @@ DRY_RUN=true EXECUTION_MODE=manual npm run once
 
 ### Release policy
 
-This repository follows Semantic Versioning. Version **1.1.1** preserves the Google Cloud Scheduler control plane introduced in 1.1.0 and adds security/privacy hardening for the legacy web gateway, recipient storage, and dashboard CSP.
+This repository follows Semantic Versioning. Version **1.1.3** preserves the previous security hardening, adds safe media/social concurrent-push recovery, and incorporates the operational reliability improvements validated on 2026-08-29.
 
 ---
 
