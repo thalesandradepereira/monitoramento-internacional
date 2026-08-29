@@ -38,7 +38,10 @@ export function validateSchedulerRequest({ method, path, headers, now = new Date
   }
 
   const jobName = String(header(headers, 'x-cloudscheduler-jobname') || '')
-  if (!jobName.endsWith(`/jobs/${config.expectedJob}`)) {
+  const isExpectedJob =
+    jobName === config.expectedJob
+    || jobName.endsWith(`/jobs/${config.expectedJob}`)
+  if (!isExpectedJob) {
     throw new Error('unexpected_scheduler_job')
   }
 
@@ -86,7 +89,10 @@ export async function dispatchToGitHub({
           source: 'gcp-cloud-scheduler-relay',
           target: config.target,
           schedule_time: config.scheduleTime,
-          scheduler_job: config.jobName,
+          scheduler_job:
+            config.jobName === config.expectedJob
+              ? `/jobs/${config.expectedJob}`
+              : config.jobName,
           relay_version: RELAY_VERSION,
         },
       }),
