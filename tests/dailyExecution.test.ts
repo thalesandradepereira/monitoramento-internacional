@@ -97,6 +97,10 @@ test('não classifica falhas arbitrárias como conflito concorrente', () => {
   const { mod } = loadDailyExecution()
   assert.equal(mod.isConcurrentPushRejection(new Error("authentication failed")), false)
   assert.equal(mod.isConcurrentPushRejection(new Error("permission denied")), false)
+  assert.equal(
+    mod.isConcurrentPushRejection(new Error("remote: protected branch update failed\nerror: failed to push some refs")),
+    false,
+  )
 })
 
 
