@@ -5,22 +5,17 @@ const RELAY_VERSION = '1.1.0'
 const MAX_AGE_MS = 45 * 60 * 1000
 const MAX_FUTURE_SKEW_MS = 5 * 60 * 1000
 const MAX_FORCE_RUN_FUTURE_MS = 24 * 60 * 60 * 1000
-const SCHEDULER_TIMEZONE = 'America/Sao_Paulo'
 
 const TARGETS = Object.freeze({
   '/dispatch/media': {
     target: 'media',
     repository: 'monitoramento-internacional',
     expectedJob: 'tap-monitoramento-media-failsafe',
-    scheduleHour: 6,
-    scheduleMinutes: [41, 51],
   },
   '/dispatch/publisher': {
     target: 'publisher',
     repository: 'monitoramento-social-publisher',
     expectedJob: 'tap-instagram-publisher-failsafe',
-    scheduleHour: 5,
-    scheduleMinutes: [41, 51],
   },
 })
 
@@ -29,32 +24,11 @@ function header(headers, name) {
   return Array.isArray(value) ? value[0] : value
 }
 
-function schedulerLocalParts(date) {
-  const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: SCHEDULER_TIMEZONE,
-    hourCycle: 'h23',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  }).formatToParts(date)
-  return Object.fromEntries(parts.map((part) => [part.type, part.value]))
-}
-
-function isExpectedForceRunNominalTime(config, scheduleTime, now) {
+function isBoundedForceRunNominalTime(scheduleTime, now) {
   const futureMs = scheduleTime.getTime() - now.getTime()
-  if (futureMs <= MAX_FUTURE_SKEW_MS || futureMs > MAX_FORCE_RUN_FUTURE_MS) {
-    return false
-  }
-
-  const parts = schedulerLocalParts(scheduleTime)
-  const hour = Number(parts.hour)
-  const minute = Number(parts.minute)
-  const second = Number(parts.second)
-
   return (
-    hour === config.scheduleHour
-    && config.scheduleMinutes.includes(minute)
-    && second === 0
+    futureMs > MAX_FUTURE_SKEW_MS
+    && futureMs <= MAX_FORCE_RUN_FUTURE_MS
   )
 }
 
@@ -94,7 +68,7 @@ export function validateSchedulerRequest({ method, path, headers, now = new Date
   let effectiveScheduleTime = scheduleTime
   let scheduleTimeMode = 'scheduled'
   if (ageMs < -MAX_FUTURE_SKEW_MS) {
-    if (!isExpectedForceRunNominalTime(config, scheduleTime, now)) {
+    if (!isBoundedForceRunNominalTime(scheduleTime, now)) {
       throw new Error('future_schedule_time')
     }
     effectiveScheduleTime = now
