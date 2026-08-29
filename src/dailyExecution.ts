@@ -92,7 +92,6 @@ export function isConcurrentPushRejection(err: unknown): boolean {
   const message = errorMessage(err).toLowerCase()
   return message.includes('non-fast-forward')
     || message.includes('fetch first')
-    || message.includes('failed to push some refs')
 }
 
 function pushWithConcurrentUpdateRecovery(maxAttempts = 4): void {
