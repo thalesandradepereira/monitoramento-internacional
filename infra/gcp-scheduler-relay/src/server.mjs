@@ -1,26 +1,61 @@
 import http from 'node:http'
 
 const OWNER = process.env.GITHUB_OWNER || 'thalesandradepereira'
-const RELAY_VERSION = '1.0.0'
+const RELAY_VERSION = '1.1.0'
 const MAX_AGE_MS = 45 * 60 * 1000
 const MAX_FUTURE_SKEW_MS = 5 * 60 * 1000
+const MAX_FORCE_RUN_FUTURE_MS = 24 * 60 * 60 * 1000
+const SCHEDULER_TIMEZONE = 'America/Sao_Paulo'
 
 const TARGETS = Object.freeze({
   '/dispatch/media': {
     target: 'media',
     repository: 'monitoramento-internacional',
     expectedJob: 'tap-monitoramento-media-failsafe',
+    scheduleHour: 6,
+    scheduleMinutes: [41, 51],
   },
   '/dispatch/publisher': {
     target: 'publisher',
     repository: 'monitoramento-social-publisher',
     expectedJob: 'tap-instagram-publisher-failsafe',
+    scheduleHour: 5,
+    scheduleMinutes: [41, 51],
   },
 })
 
 function header(headers, name) {
   const value = headers?.[name] ?? headers?.[name.toLowerCase()]
   return Array.isArray(value) ? value[0] : value
+}
+
+function schedulerLocalParts(date) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: SCHEDULER_TIMEZONE,
+    hourCycle: 'h23',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).formatToParts(date)
+  return Object.fromEntries(parts.map((part) => [part.type, part.value]))
+}
+
+function isExpectedForceRunNominalTime(config, scheduleTime, now) {
+  const futureMs = scheduleTime.getTime() - now.getTime()
+  if (futureMs <= MAX_FUTURE_SKEW_MS || futureMs > MAX_FORCE_RUN_FUTURE_MS) {
+    return false
+  }
+
+  const parts = schedulerLocalParts(scheduleTime)
+  const hour = Number(parts.hour)
+  const minute = Number(parts.minute)
+  const second = Number(parts.second)
+
+  return (
+    hour === config.scheduleHour
+    && config.scheduleMinutes.includes(minute)
+    && second === 0
+  )
 }
 
 export function validateSchedulerRequest({ method, path, headers, now = new Date() }) {
@@ -55,11 +90,24 @@ export function validateSchedulerRequest({ method, path, headers, now = new Date
   if (ageMs > MAX_AGE_MS) {
     throw new Error('stale_schedule_time')
   }
+
+  let effectiveScheduleTime = scheduleTime
+  let scheduleTimeMode = 'scheduled'
   if (ageMs < -MAX_FUTURE_SKEW_MS) {
-    throw new Error('future_schedule_time')
+    if (!isExpectedForceRunNominalTime(config, scheduleTime, now)) {
+      throw new Error('future_schedule_time')
+    }
+    effectiveScheduleTime = now
+    scheduleTimeMode = 'force-run-normalized'
   }
 
-  return { ...config, jobName, scheduleTime: scheduleTime.toISOString() }
+  return {
+    ...config,
+    jobName,
+    scheduleTime: effectiveScheduleTime.toISOString(),
+    originalScheduleTime: scheduleTime.toISOString(),
+    scheduleTimeMode,
+  }
 }
 
 export async function dispatchToGitHub({
@@ -89,6 +137,8 @@ export async function dispatchToGitHub({
           source: 'gcp-cloud-scheduler-relay',
           target: config.target,
           schedule_time: config.scheduleTime,
+          original_schedule_time: config.originalScheduleTime,
+          schedule_time_mode: config.scheduleTimeMode,
           scheduler_job:
             config.jobName === config.expectedJob
               ? `/jobs/${config.expectedJob}`
