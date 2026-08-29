@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/validate-github-token.sh
+source "$SCRIPT_DIR/lib/validate-github-token.sh"
+
 : "${GCP_PROJECT_ID:?GCP_PROJECT_ID is required. Set the exact Google Cloud project before provisioning.}"
 
 PROJECT_ID="$GCP_PROJECT_ID"
@@ -23,10 +27,7 @@ for command_name in "${required_commands[@]}"; do
   fi
 done
 
-if [[ -z "${GITHUB_DISPATCH_TOKEN:-}" ]]; then
-  echo "GITHUB_DISPATCH_TOKEN is required and must never be committed to the repository." >&2
-  exit 1
-fi
+validate_github_dispatch_token "${GITHUB_DISPATCH_TOKEN:-}"
 
 ACTIVE_ACCOUNT="$(gcloud auth list --filter=status:ACTIVE --format='value(account)' | head -n 1)"
 if [[ -z "$ACTIVE_ACCOUNT" ]]; then
