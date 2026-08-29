@@ -90,6 +90,34 @@ test('publisher scheduler request dispatches only to the private publisher', asy
   assert.equal(JSON.parse(captured.options.body).client_payload.target, 'publisher')
 })
 
+test('normalizes a force-run future nominal schedule time without weakening stale rejection', async () => {
+  let captured
+  const forceNow = new Date('2026-08-29T14:20:00.000Z')
+  const forceHeaders = {
+    ...headers('media'),
+    'x-cloudscheduler-jobname': 'tap-monitoramento-media-failsafe',
+    'x-cloudscheduler-scheduletime': '2026-08-30T09:41:00.000Z',
+  }
+
+  const result = await handleRelay({
+    method: 'POST',
+    path: '/dispatch/media',
+    headers: forceHeaders,
+    githubToken: 'test-token',
+    now: forceNow,
+    fetchImpl: async (url, options) => {
+      captured = { url, options }
+      return { status: 204, text: async () => '' }
+    },
+  })
+
+  assert.equal(result.status, 202)
+  const body = JSON.parse(captured.options.body)
+  assert.equal(body.client_payload.schedule_time, forceNow.toISOString())
+  assert.equal(body.client_payload.original_schedule_time, '2026-08-30T09:41:00.000Z')
+  assert.equal(body.client_payload.schedule_time_mode, 'force-run-normalized')
+})
+
 test('rejects forged, stale and mismatched scheduler requests', () => {
   assert.throws(
     () =>
