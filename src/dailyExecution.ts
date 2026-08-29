@@ -72,7 +72,19 @@ function runGit(command: string): void {
 }
 
 function errorMessage(err: unknown): string {
-  if (err instanceof Error) return err.message
+  if (err && typeof err === 'object') {
+    const candidate = err as {
+      message?: unknown
+      stderr?: unknown
+      stdout?: unknown
+    }
+    const parts = [candidate.message, candidate.stderr, candidate.stdout]
+      .filter(value => value !== undefined && value !== null)
+      .map(value => Buffer.isBuffer(value) ? value.toString('utf8') : String(value))
+      .map(value => value.trim())
+      .filter(Boolean)
+    if (parts.length > 0) return parts.join('\n')
+  }
   return String(err)
 }
 
@@ -80,7 +92,6 @@ export function isConcurrentPushRejection(err: unknown): boolean {
   const message = errorMessage(err).toLowerCase()
   return message.includes('non-fast-forward')
     || message.includes('fetch first')
-    || message.includes('failed to push some refs')
 }
 
 function pushWithConcurrentUpdateRecovery(maxAttempts = 4): void {
