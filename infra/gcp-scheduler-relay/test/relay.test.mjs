@@ -56,6 +56,23 @@ test('media scheduler request dispatches only to monitoramento-internacional', a
   assert.equal(body.client_payload.source, 'gcp-cloud-scheduler-relay')
 })
 
+test('accepts Cloud Scheduler bare job-name header as documented', () => {
+  const bareHeaders = {
+    ...headers('media'),
+    'x-cloudscheduler-jobname': 'tap-monitoramento-media-failsafe',
+  }
+
+  const result = validateSchedulerRequest({
+    method: 'POST',
+    path: '/dispatch/media',
+    headers: bareHeaders,
+    now,
+  })
+
+  assert.equal(result.expectedJob, 'tap-monitoramento-media-failsafe')
+  assert.equal(result.jobName, 'tap-monitoramento-media-failsafe')
+})
+
 test('publisher scheduler request dispatches only to the private publisher', async () => {
   let captured
   await handleRelay({
