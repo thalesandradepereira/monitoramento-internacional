@@ -82,6 +82,25 @@ verify_github_dispatch_access "$PUBLISHER_REPOSITORY"
 echo "[gcp] Enabling required APIs..."
 gcloud services enable   run.googleapis.com   cloudscheduler.googleapis.com   secretmanager.googleapis.com   cloudbuild.googleapis.com   artifactregistry.googleapis.com   iamcredentials.googleapis.com   --project "$PROJECT_ID"
 
+PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
+if [[ -z "$PROJECT_NUMBER" ]]; then
+  echo "Google Cloud project number could not be resolved for '$PROJECT_ID'." >&2
+  exit 1
+fi
+
+CLOUD_BUILD_SA="${PROJECT_NUMBER}-compute@developer.gserviceaccount.com"
+if ! gcloud projects get-iam-policy "$PROJECT_ID" \
+  --flatten='bindings[].members' \
+  --filter="bindings.role=roles/run.builder AND bindings.members=serviceAccount:${CLOUD_BUILD_SA}" \
+  --format='value(bindings.role)' | grep -qx 'roles/run.builder'; then
+  echo "[gcp] Granting Cloud Run Builder to default Cloud Build service account: $CLOUD_BUILD_SA"
+  gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+    --member="serviceAccount:${CLOUD_BUILD_SA}" \
+    --role roles/run.builder >/dev/null
+else
+  echo "[gcp] Cloud Run Builder already granted to: $CLOUD_BUILD_SA"
+fi
+
 RUNTIME_SA="${RUNTIME_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 INVOKER_SA="${INVOKER_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
@@ -100,7 +119,48 @@ printf '%s' "$GITHUB_DISPATCH_TOKEN" |   gcloud secrets versions add "$SECRET_NA
 gcloud secrets add-iam-policy-binding "$SECRET_NAME"   --project "$PROJECT_ID"   --member "serviceAccount:${RUNTIME_SA}"   --role roles/secretmanager.secretAccessor >/dev/null
 
 echo "[gcp] Deploying private Cloud Run relay..."
-gcloud run deploy "$SERVICE_NAME"   --project "$PROJECT_ID"   --region "$REGION"   --source "$(cd "$(dirname "$0")" && pwd)"   --service-account "$RUNTIME_SA"   --set-secrets "GITHUB_TOKEN=${SECRET_NAME}:latest"   --set-env-vars "GITHUB_OWNER=${GITHUB_OWNER}"   --no-allow-unauthenticated   --min-instances 0   --max-instances 1   --memory 256Mi   --cpu 1   --concurrency 10   --timeout 15s   --quiet
+deploy_cloud_run() {
+  gcloud run deploy "$SERVICE_NAME" \
+    --project "$PROJECT_ID" \
+    --region "$REGION" \
+    --source "$SCRIPT_DIR" \
+    --service-account "$RUNTIME_SA" \
+    --set-secrets "GITHUB_TOKEN=${SECRET_NAME}:latest" \
+    --set-env-vars "GITHUB_OWNER=${GITHUB_OWNER}" \
+    --no-allow-unauthenticated \
+    --min-instances 0 \
+    --max-instances 1 \
+    --memory 256Mi \
+    --cpu 1 \
+    --concurrency 10 \
+    --timeout 15s \
+    --quiet
+}
+
+for attempt in 1 2 3; do
+  deploy_log="$(mktemp)"
+  if deploy_cloud_run 2>&1 | tee "$deploy_log"; then
+    rm -f "$deploy_log"
+    break
+  fi
+
+  if ! grep -Eqi 'PERMISSION_DENIED.*default service account|default service account.*IAM permissions|roles/run.builder' "$deploy_log"; then
+    rm -f "$deploy_log"
+    echo "Cloud Run deployment failed for a non-IAM reason; refusing blind retry." >&2
+    exit 1
+  fi
+
+  if [[ "$attempt" == "3" ]]; then
+    rm -f "$deploy_log"
+    echo "Cloud Run deployment still lacks propagated builder IAM after 3 attempts." >&2
+    exit 1
+  fi
+
+  wait_seconds=$((attempt * 45))
+  echo "[gcp] Builder IAM may still be propagating; retrying Cloud Run deploy in ${wait_seconds}s..."
+  rm -f "$deploy_log"
+  sleep "$wait_seconds"
+done
 
 SERVICE_URL="$(
   gcloud run services describe "$SERVICE_NAME"     --project "$PROJECT_ID"     --region "$REGION"     --format='value(status.url)'
