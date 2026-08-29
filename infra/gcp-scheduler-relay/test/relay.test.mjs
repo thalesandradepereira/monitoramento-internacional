@@ -118,6 +118,52 @@ test('normalizes a force-run future nominal schedule time without weakening stal
   assert.equal(body.client_payload.schedule_time_mode, 'force-run-normalized')
 })
 
+test('accepts any bounded future nominal time from an authenticated exact job', async () => {
+  let captured
+  const forceNow = new Date('2026-08-29T15:40:00.000Z')
+  const forceHeaders = {
+    ...headers('media'),
+    'x-cloudscheduler-jobname': 'tap-monitoramento-media-failsafe',
+    'x-cloudscheduler-scheduletime': '2026-08-30T09:42:25.000Z',
+  }
+
+  await handleRelay({
+    method: 'POST',
+    path: '/dispatch/media',
+    headers: forceHeaders,
+    githubToken: 'test-token',
+    now: forceNow,
+    fetchImpl: async (url, options) => {
+      captured = { url, options }
+      return { status: 204, text: async () => '' }
+    },
+  })
+
+  const body = JSON.parse(captured.options.body)
+  assert.equal(body.client_payload.schedule_time, forceNow.toISOString())
+  assert.equal(body.client_payload.original_schedule_time, '2026-08-30T09:42:25.000Z')
+  assert.equal(body.client_payload.schedule_time_mode, 'force-run-normalized')
+})
+
+test('rejects future nominal time beyond the bounded force-run window', () => {
+  const forceNow = new Date('2026-08-29T15:40:00.000Z')
+  const badHeaders = {
+    ...headers('media'),
+    'x-cloudscheduler-jobname': 'tap-monitoramento-media-failsafe',
+    'x-cloudscheduler-scheduletime': '2026-08-31T16:00:00.000Z',
+  }
+
+  assert.throws(
+    () => validateSchedulerRequest({
+      method: 'POST',
+      path: '/dispatch/media',
+      headers: badHeaders,
+      now: forceNow,
+    }),
+    /future_schedule_time/,
+  )
+})
+
 test('rejects forged, stale and mismatched scheduler requests', () => {
   assert.throws(
     () =>
