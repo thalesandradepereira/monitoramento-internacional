@@ -29,9 +29,9 @@ The repeated wake-ups are intentional. The media and publisher applications use 
 
 ## Activation status
 
-The repository is **deployment-ready**. The relay, Docker image, receiving guards, IAM model, Secret Manager integration, Scheduler definitions and idempotent provisioning script are versioned and covered by CI.
+**ACTIVE / production validated — 2026-08-29.** The relay, Docker image, receiving guards, IAM model, Secret Manager integration, Scheduler definitions and idempotent provisioning script are versioned, covered by CI, and active in Google Cloud project `tap-monitoramento-auto`.
 
-Live Google Cloud resources must still be provisioned from an authenticated Google Cloud principal. Do not describe the external clock as active until both Scheduler jobs exist in the target project and at least one validated `repository_dispatch: gcp_scheduler` has been observed.
+Live validation completed for both targets: Media GitHub run `33261434000` and Publisher GitHub run `33260914533` were created by `repository_dispatch: gcp_scheduler` and completed successfully. Application idempotency preserved `sent=6`, `failed=0`, and `instagram.attempts=1`.
 
 ## Security model
 
@@ -91,6 +91,41 @@ The script performs these gates before reporting success:
 11. creates/updates the two Scheduler jobs;
 12. removes superseded active secret versions;
 13. describes both jobs as final deployment evidence.
+
+## Production validation record — 2026-08-29
+
+The live path was verified end to end:
+
+```text
+Cloud Scheduler
+  -> OIDC
+Private Cloud Run relay
+  -> fine-grained GitHub PAT from Secret Manager
+repository_dispatch: gcp_scheduler
+  -> receiver guard
+persistent idempotency
+```
+
+Evidence:
+
+- Media run: `33261434000` — `success`
+- Publisher run: `33260914533` — `success`
+- Media receiver accepted `target=media`
+- Media state remained `attempted=6 / sent=6 / failed=0`
+- Publisher detector returned `ready=false / existing_state_completed`
+- Instagram remained `completed` with `attempts=1`
+- No duplicate e-mail and no duplicate Instagram Story were produced
+
+### Force-run timestamp behavior
+
+Google Cloud Scheduler manual runs can carry a future nominal `X-CloudScheduler-ScheduleTime`. Relay v1.1.0 handles this conservatively:
+
+- exact OIDC-protected endpoint, exact target, and exact allow-listed job must validate first;
+- stale timestamps are still rejected;
+- future nominal timestamps are accepted only within a bounded 24-hour window;
+- the effective dispatch time is normalized to receipt time;
+- the original nominal time is preserved as `original_schedule_time`;
+- `schedule_time_mode=force-run-normalized` records the decision for audit.
 
 ## Safe live verification
 
