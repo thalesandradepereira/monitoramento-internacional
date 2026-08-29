@@ -4,6 +4,11 @@ on:
   repository_dispatch:
     types: [gcp_scheduler]
 
+  push:
+    branches: [main]
+    paths:
+      - 'ops/recover-media.txt'
+
   workflow_dispatch:
     inputs:
       dry_run:
@@ -55,6 +60,10 @@ jobs:
       - name: 🛰️ Validar failsafe externo do Google Cloud Scheduler
         if: github.event_name == 'repository_dispatch'
         run: node scripts/validate-gcp-scheduler-dispatch.mjs
+
+      - name: 🛟 Validar marcador de recuperação por push
+        if: github.event_name == 'push'
+        run: node scripts/validate-recovery-marker.mjs
 
       - name: 📦 Instalar Dependências
         run: npm ci

@@ -50,3 +50,10 @@ test('production workflow has no automatic GitHub or DEST_EMAIL fallback when D1
   assert.doesNotMatch(recipientsBlock, /DEST_EMAIL|recipients\.txt|github/i)
   assert.doesNotMatch(workflow, /RECIPIENTS_API_TOKEN: (?!\$\{\{ secrets\.RECIPIENTS_API_TOKEN \}\})/)
 })
+
+
+test('production workflow exposes a guarded recovery push trigger', () => {
+  assert.match(workflow, /push:\n    branches: \[main\]\n    paths:\n      - 'ops\/recover-media\.txt'/)
+  assert.match(workflow, /if: github\.event_name == 'push'/)
+  assert.match(workflow, /run: node scripts\/validate-recovery-marker\.mjs/)
+})
