@@ -83,13 +83,14 @@ The script performs these gates before reporting success:
 3. checks billing status when the principal can inspect it;
 4. validates GitHub `repository_dispatch` permission against both repositories without triggering production workflows;
 5. enables required Google APIs;
-6. creates/reuses dedicated runtime and invoker service accounts;
-7. creates/reuses the Secret Manager secret and adds the current token version;
-8. deploys a private Cloud Run relay with `min-instances=0` and `max-instances=1`;
-9. grants the Scheduler invoker only `roles/run.invoker`;
-10. creates/updates the two Scheduler jobs;
-11. removes superseded active secret versions;
-12. describes both jobs as final deployment evidence.
+6. resolves the Google Cloud project number and grants `roles/run.builder` to the Compute Engine default service account used by Cloud Build for source deployments;
+7. creates/reuses dedicated runtime and invoker service accounts;
+8. creates/reuses the Secret Manager secret and adds the current token version;
+9. deploys a private Cloud Run relay with `min-instances=0` and `max-instances=1`; if the newly granted builder IAM is still propagating, only that specific IAM failure is retried;
+10. grants the Scheduler invoker only `roles/run.invoker`;
+11. creates/updates the two Scheduler jobs;
+12. removes superseded active secret versions;
+13. describes both jobs as final deployment evidence.
 
 ## Safe live verification
 
@@ -138,7 +139,8 @@ Common failure classes:
 | project inaccessible | wrong `GCP_PROJECT_ID` or insufficient IAM |
 | billing disabled | attach an enabled billing account |
 | GitHub probe != HTTP 204 | token does not have repository-dispatch permission on one or both repositories |
-| Cloud Run deploy failure | inspect Cloud Build/Run error before retry |
+| Cloud Run source build says default service account lacks IAM | the script grants `roles/run.builder` to `PROJECT_NUMBER-compute@developer.gserviceaccount.com`; rerun the current script after pulling `main` |
+| Cloud Run deploy failure for another reason | inspect Cloud Build/Run error before retry; the script refuses blind retries for unrelated failures |
 | Scheduler OIDC 401/403 | inspect invoker service account and `roles/run.invoker` binding |
 | receiver rejects dispatch | inspect target/job/schedule freshness validation |
 
