@@ -98,3 +98,13 @@ test('não classifica falhas arbitrárias como conflito concorrente', () => {
   assert.equal(mod.isConcurrentPushRejection(new Error("authentication failed")), false)
   assert.equal(mod.isConcurrentPushRejection(new Error("permission denied")), false)
 })
+
+
+test('classifica conflito real do execSync quando detalhe está somente no stderr', () => {
+  const { mod } = loadDailyExecution()
+  const execError = Object.assign(new Error('Command failed: git push origin HEAD:main'), {
+    stderr: Buffer.from('! [rejected] HEAD -> main (fetch first)\nerror: failed to push some refs'),
+    stdout: Buffer.alloc(0),
+  })
+  assert.equal(mod.isConcurrentPushRejection(execError), true)
+})
