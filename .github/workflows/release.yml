@@ -1,4 +1,4 @@
-name: Publicar v1.1.3
+name: Publicar v1.1.4
 
 on:
   push:
@@ -93,21 +93,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if gh release view v1.1.3 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "Release v1.1.3 já existe; nenhuma duplicação será criada."
+          if gh release view v1.1.4 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release v1.1.4 já existe; nenhuma duplicação será criada."
             exit 0
           fi
 
           cat > /tmp/release-notes.md <<'EOF'
-          ## Monitoramento Internacional v1.1.3
+          ## Monitoramento Internacional v1.1.4
 
-          Release corretiva de concorrência e confiabilidade operacional.
+          Release corretiva de confiabilidade e ativação do failsafe Google Cloud em produção.
 
-          ### Correção principal
-          - persistência de dashboard/estado agora recupera automaticamente rejeições non-fast-forward;
-          - em caso de commit concorrente do Social Publisher, o pipeline executa pull --rebase e tenta novamente;
-          - limite de quatro tentativas evita loop infinito;
-          - falhas de autenticação/permissão continuam fail-closed e não são tratadas como concorrência.
+          ### Correções principais
+          - Google Cloud Scheduler e Cloud Run passam de deployment-ready para ACTIVE / production validated;
+          - corrige IAM de build do Cloud Run com roles/run.builder provisionado de forma idempotente;
+          - aceita e normaliza com segurança o header X-CloudScheduler-JobName em formatos observados em produção;
+          - trata Force Run do Cloud Scheduler com janela futura limitada, preservando o timestamp original para auditoria;
+          - mantém retry de persistência apenas para conflitos reais non-fast-forward/fetch first.
 
           ### QA
           - npm audit obrigatório;
@@ -119,9 +120,13 @@ jobs:
           - validação de YAML no CI;
           - GitHub Pages e releases históricas verificados.
 
-          ### Operação
-          Os workflows principais, watchdogs, estado diário e idempotência permanecem inalterados. A camada Google Cloud continua preparada em software, mas seu provisionamento live depende de credenciais administrativas externas ao GitHub.
+          ### Validação de produção
+          - Media repository_dispatch/gcp_scheduler: run 33261434000, success;
+          - idempotência confirmou estado já completed e não reenviou e-mails;
+          - estado final permaneceu attempted=6, sent=6, failed=0;
+          - Publisher repository_dispatch/gcp_scheduler: run 33260914533, success;
+          - Instagram permaneceu completed com attempts=1, sem Story duplicado.
 
           EOF
 
-          gh release create v1.1.3             --repo "$GITHUB_REPOSITORY"             --target "$GITHUB_SHA"             --title "Monitoramento Internacional v1.1.3"             --notes-file /tmp/release-notes.md
+          gh release create v1.1.4             --repo "$GITHUB_REPOSITORY"             --target "$GITHUB_SHA"             --title "Monitoramento Internacional v1.1.4"             --notes-file /tmp/release-notes.md
