@@ -8,7 +8,7 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.3<br>
+> **Versão / Version:** 1.1.4<br>
 > **Fuso operacional / Operational timezone:** `America/Sao_Paulo`<br>
 > **Objetivo / Purpose:** monitoramento diário bilíngue, dashboard, e-mail e integração social com múltiplas camadas de contingência.
 
@@ -284,7 +284,7 @@ O projeto segue SemVer:
 - `MINOR`: nova capacidade compatível;
 - `MAJOR`: mudança incompatível.
 
-A versão 1.1.3 preserva os hardenings anteriores, adiciona recuperação segura de concorrência entre mídia e publicação social e incorpora os reforços operacionais validados em 29/08/2026.
+A versão 1.1.4 consolida as correções do failsafe Google Cloud, a validação real Scheduler → Cloud Run → GitHub, a proteção de Force Run e a prova de idempotência sem duplicidade em produção.
 
 ---
 
@@ -457,7 +457,7 @@ DRY_RUN=true EXECUTION_MODE=manual npm run once
 
 ### Release policy
 
-This repository follows Semantic Versioning. Version **1.1.3** preserves the previous security hardening, adds safe media/social concurrent-push recovery, and incorporates the operational reliability improvements validated on 2026-08-29.
+This repository follows Semantic Versioning. Version **1.1.4** consolidates the Google Cloud failsafe fixes, live Scheduler → Cloud Run → GitHub validation, bounded Force Run handling, and production idempotency evidence with no duplicate effects.
 
 ---
 
