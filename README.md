@@ -33,7 +33,7 @@ Estado validado:
 - a integração `dashboard_published` com o repositório privado `monitoramento-social-publisher` foi configurada com `SOCIAL_PUBLISHER_REPOSITORY` + `SOCIAL_PUBLISHER_TOKEN`;
 - a permissão cross-repository foi comprovada por probe não-produtivo com retorno HTTP 204, sem envio de e-mail e sem publicação de Story;
 - o relay Google Cloud foi endurecido para provisionamento idempotente, validação prévia de credenciais e limpeza de versões antigas do Secret Manager;
-- a camada Google Cloud permanece **deployment-ready** até que os recursos sejam criados por uma identidade Google Cloud autenticada e os dois jobs sejam observados em produção.
+- a camada Google Cloud está **ACTIVE / production validated**: os dois jobs foram provisionados em `tap-monitoramento-auto`, o relay Cloud Run privado respondeu aos dois targets e os dois repositórios receberam `repository_dispatch: gcp_scheduler` reais; a idempotência foi comprovada sem duplicar e-mails nem Story.
 
 
 ### Acessos rápidos
@@ -92,7 +92,7 @@ O repositório contém uma implementação pronta para produção:
 - limpeza de versões antigas do secret para manter apenas a versão corrente ativa;
 - testes unitários do relay e dos receptores `gcp_scheduler`.
 
-**Status de ativação:** `deployment-ready`. A camada só deve ser considerada ativa quando uma identidade Google Cloud autenticada provisionar os recursos, `gcloud scheduler jobs describe` confirmar os dois jobs e um `repository_dispatch: gcp_scheduler` validado aparecer no histórico do GitHub.
+**Status de ativação:** `ACTIVE / production validated` em 29/08/2026. O projeto `tap-monitoramento-auto` possui os dois Cloud Scheduler jobs ativos, o Cloud Run privado `tap-github-scheduler-relay`, OIDC/IAM, Secret Manager e dispatch validado em produção nos dois repositórios. O teste real de mídia encerrou por idempotência com `sent=6`, `failed=0` e nenhum novo envio; o publisher encerrou com `ready=false / existing_state_completed`, mantendo `instagram.attempts=1`.
 
 O script agora exige `GCP_PROJECT_ID` explícito para impedir deploy acidental no projeto errado. A credencial GitHub dedicada ao relay deve selecionar somente `monitoramento-internacional` e `monitoramento-social-publisher`, com permissão `Contents: Read and write`. Nenhuma credencial é armazenada no repositório.
 
@@ -210,6 +210,23 @@ A arquitetura usa **2 jobs do Cloud Scheduler**, abaixo da franquia atual de **3
 
 A expectativa para este workload é custo operacional zero enquanto a conta permanecer dentro das franquias gratuitas, mas o uso é agregado por conta de faturamento e preços podem mudar. Referências oficiais: `cloud.google.com/scheduler/pricing`, `cloud.google.com/run/pricing` e `cloud.google.com/secret-manager/pricing`.
 
+### Validação de produção do Google Cloud — 29/08/2026
+
+Evidências finais do teste real:
+
+| Gate | Evidência |
+|---|---|
+| Media dispatch | GitHub run `33261434000`, evento `repository_dispatch`, conclusão `success` |
+| Media guard | `accepted target=media schedule_time=2026-08-29T15:52:38.997Z` |
+| Media idempotência | `já registrado como concluído. Encerrando sem novo envio.` |
+| E-mails | `attempted=6`, `sent=6`, `failed=0` |
+| Publisher dispatch | GitHub run `33260914533`, evento `repository_dispatch`, conclusão `success` |
+| Publisher guard | `repository_dispatch/gcp_scheduler` aceito para `2026-08-29` |
+| Publisher idempotência | `ready=false`, `reason=existing_state_completed` |
+| Instagram | `state=completed`, `attempts=1`, sem Story duplicado |
+
+O relay também foi endurecido para lidar com `gcloud scheduler jobs run`: timestamps nominais futuros dentro de uma janela limitada de 24h são normalizados apenas após OIDC, target e job exatos terem sido validados; timestamps antigos continuam rejeitados e o valor original é preservado para auditoria.
+
 ### Operação e diagnóstico
 
 | Verificação | Resultado esperado |
@@ -290,7 +307,7 @@ Validated state:
 - the `dashboard_published` integration to the private `monitoramento-social-publisher` repository is configured through `SOCIAL_PUBLISHER_REPOSITORY` and `SOCIAL_PUBLISHER_TOKEN`;
 - cross-repository permission was verified with a non-production probe returning HTTP 204, without sending e-mail or publishing an Instagram Story;
 - Google Cloud provisioning is hardened and idempotent, including preflight permission checks and Secret Manager version cleanup;
-- the Google Cloud layer remains **deployment-ready** until an authenticated Google Cloud principal provisions the live resources and the jobs are observed in production.
+- the Google Cloud layer is **ACTIVE / production validated**: both Scheduler jobs are provisioned in `tap-monitoramento-auto`, the private Cloud Run relay reached both GitHub repositories through real `repository_dispatch: gcp_scheduler` events, and idempotency prevented duplicate e-mail and Instagram effects.
 
 
 ### Quick links
@@ -321,7 +338,7 @@ flowchart LR
     PIPE --> STATE[(Daily state)]
 ```
 
-The Google Cloud layer is designed to remove GitHub as the **single scheduling clock** once provisioned. Cloud Scheduler does not execute application logic itself. It calls a private Cloud Run relay, authenticated with OIDC, and the relay sends a validated GitHub `repository_dispatch`. Until live provisioning is verified, GitHub remains the active scheduling provider.
+The Google Cloud layer removes GitHub as the **single scheduling clock**. Cloud Scheduler calls a private Cloud Run relay authenticated with OIDC, and the relay sends a validated GitHub `repository_dispatch`. This path was production-validated on 2026-08-29 for both media and publisher targets.
 
 ### Scheduling layers
 
@@ -348,7 +365,7 @@ The repository includes a production-ready implementation:
 - cleanup of superseded enabled secret versions;
 - unit tests for the relay and both GitHub receivers.
 
-**Activation status:** `deployment-ready`. The external clock must not be considered active until an authenticated Google Cloud principal provisions the resources, both Scheduler jobs are confirmed, and a validated `repository_dispatch: gcp_scheduler` is observed.
+**Activation status:** `ACTIVE / production validated` as of 2026-08-29. Both Scheduler jobs are active in `tap-monitoramento-auto`; the private Cloud Run relay, OIDC/IAM, Secret Manager, and both GitHub receivers were validated with live dispatches. Media idempotency preserved `sent=6`, `failed=0`; publisher idempotency preserved `instagram.attempts=1`.
 
 The deployment script requires an explicit `GCP_PROJECT_ID` to prevent accidental deployment to the wrong project. The dedicated fine-grained GitHub token must select only the two production repositories and grant `Contents: Read and write`. Credentials must never be committed to this repository.
 
