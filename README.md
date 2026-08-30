@@ -8,7 +8,7 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.4<br>
+> **Versão / Version:** 1.1.5<br>
 > **Fuso operacional / Operational timezone:** `America/Sao_Paulo`<br>
 > **Objetivo / Purpose:** monitoramento diário bilíngue, dashboard, e-mail e integração social com múltiplas camadas de contingência.
 
@@ -21,6 +21,16 @@
 O **Monitoramento Mídia Internacional** é um pipeline automatizado que coleta notícias internacionais, filtra e deduplica conteúdo, usa Google Gemini para triagem e síntese editorial, produz versões em **PT-BR** e **EN-US**, gera um dashboard HTML diário e envia mensagens individualizadas aos destinatários ativos mantidos fora do GitHub.
 
 O projeto foi desenhado para operar com **fail-closed**, **idempotência diária** e **múltiplos relógios independentes**. Uma execução de contingência pode acontecer várias vezes no mesmo dia sem reenviar conteúdo quando o estado já está concluído.
+
+### Atualização operacional — 30/08/2026
+
+O incidente de 30/08/2026 confirmou que eventos `schedule` do GitHub Actions podem sofrer atraso severo: o run agendado `33306554202` só foi criado às 07:28 BRT. A edição já havia sido recuperada de forma idempotente pelo controlador externo no run `33303070482`, concluída às 06:12 BRT com `attempted=6`, `sent=6`, `failed=0`.
+
+A causa raiz foi classificada como indisponibilidade/atraso do relógio externo do GitHub, não como falha do pipeline, Gemini, SMTP ou persistência. O run tardio comprovou a proteção: encontrou 30/08 como `completed` e encerrou sem novo envio.
+
+A postura de produção da v1.1.5 combina GitHub principal, watchdog, Google Cloud Scheduler/Cloud Run e controlador externo de produção. O controlador verifica estado diário, dashboard, `/hoje`, GitHub Pages e Instagram antes de qualquer recuperação, nunca cria novo disparo quando já existe run relevante `queued`/`in_progress` e não se desativa por falha transitória de ferramenta.
+
+O postmortem completo e as evidências estão em `POSTMORTEM-2026-08-30.md`.
 
 ### Atualização operacional — 29/08/2026
 
@@ -284,6 +294,8 @@ O projeto segue SemVer:
 - `MINOR`: nova capacidade compatível;
 - `MAJOR`: mudança incompatível.
 
+A versão 1.1.5 formaliza o fechamento do incidente de 30/08/2026, adiciona o controlador externo à postura operacional documentada e registra o QA pós-incidente com prova real de idempotência.
+
 A versão 1.1.4 consolida as correções do failsafe Google Cloud, a validação real Scheduler → Cloud Run → GitHub, a proteção de Force Run e a prova de idempotência sem duplicidade em produção.
 
 ---
@@ -295,6 +307,16 @@ A versão 1.1.4 consolida as correções do failsafe Google Cloud, a validação
 **Global Media Monitoring** is an automated pipeline that collects international news, filters and deduplicates content, uses Google Gemini for editorial triage and summarization, produces **PT-BR** and **EN-US** output, generates a daily HTML dashboard, and sends individualized e-mails to active recipients stored outside GitHub.
 
 The system is designed around **fail-closed behavior**, **daily idempotency**, and **multiple independent clocks**. Recovery attempts can run more than once without resending content after the operational date has already reached `completed`.
+
+### Operational update — 2026-08-30
+
+The 2026-08-30 incident confirmed that GitHub Actions `schedule` events can be severely delayed: scheduled run `33306554202` was only created at 07:28 BRT. The daily edition had already been recovered idempotently by the external production controller through run `33303070482`, completing at 06:12 BRT with `attempted=6`, `sent=6`, `failed=0`.
+
+Root cause was classified as delay/unavailability of GitHub's external scheduling clock, not a pipeline, Gemini, SMTP, or persistence failure. The late scheduled run proved the guard by finding 2026-08-30 already `completed` and exiting without another delivery.
+
+The v1.1.5 production posture combines the primary GitHub workflow, independent watchdog, Google Cloud Scheduler/Cloud Run, and the external production controller. The controller validates daily state, dashboard, `/hoje`, GitHub Pages, and Instagram before any recovery; it never creates another trigger while a relevant run is `queued`/`in_progress`, and it is not disabled by transient tool failures.
+
+The full postmortem and evidence are documented in `POSTMORTEM-2026-08-30.md`.
 
 ### Operational update — 2026-08-29
 
@@ -457,7 +479,7 @@ DRY_RUN=true EXECUTION_MODE=manual npm run once
 
 ### Release policy
 
-This repository follows Semantic Versioning. Version **1.1.4** consolidates the Google Cloud failsafe fixes, live Scheduler → Cloud Run → GitHub validation, bounded Force Run handling, and production idempotency evidence with no duplicate effects.
+This repository follows Semantic Versioning. Version **1.1.5** formalizes closure of the 2026-08-30 incident, documents the external production controller, and records post-incident QA with live idempotency evidence. Version **1.1.4** consolidated the Google Cloud failsafe fixes, live Scheduler → Cloud Run → GitHub validation, bounded Force Run handling, and production idempotency evidence with no duplicate effects.
 
 ---
 
