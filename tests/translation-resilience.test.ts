@@ -10,7 +10,7 @@ test('contingência traduz título e resumo sem alterar fonte ou link', async ()
 
   globalThis.fetch = async () => new Response(JSON.stringify([
     [[
-      'ZXQ0000QXZ Global market advances\\nZXQ0001QXZ Complete translated summary',
+      'ZXQ0000QXZ Global market advances\nZXQ0001QXZ Complete translated summary',
       null,
       null,
       null,
