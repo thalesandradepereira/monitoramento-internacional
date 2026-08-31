@@ -25,7 +25,7 @@ O Scheduler Chaos QA de 31/08/2026 ampliou o gate de produção para tratar atra
 
 Foram identificadas e tratadas duas lacunas adicionais no Monitoramento Mídia: o comando de testes não incluía arquivos \`*.test.mjs\` diretamente na raiz de \`tests/\`, o que permitia um teste de chaos existir sem ser executado; e o publicador social validava o dashboard datado, mas não exigia que o alias público \`/hoje\` já estivesse na mesma edição antes de emitir o dispatch social. A v1.1.6 corrige ambos.
 
-O gate atual passa a executar os testes MJS de raiz e bloqueia a publicação social enquanto \`/hoje\` estiver stale. O run GREEN do hardening social foi \`33382960655\`; a validação completa de release inclui suíte total, TypeScript, npm audit, Worker, relay GCP, Docker, YAML, GitHub Pages com cache-busting e estado social.
+Ao habilitar os testes MJS de raiz, o CI falhou no run \`33383501842\`, expondo o contrato antigo do dispatcher. Depois da correção do teste e do gate de \`/hoje\`, a suíte completa passou no run \`33383633346\`. A validação de release inclui suíte total, TypeScript, npm audit, Worker, relay GCP, Docker, YAML, GitHub Pages com cache-busting e estado social.
 
 O controlador externo permanece idempotente e independente do scheduler do GitHub. A aprovação de QA significa 100% dos cenários determinísticos definidos no chaos matrix, sem afirmar impossibilidade matemática de falha simultânea de provedores externos.`
 if (!readme.includes('### Atualização operacional — 31/08/2026')) {
@@ -40,7 +40,7 @@ The 2026-08-31 Scheduler Chaos QA expanded the production gate to treat schedule
 
 Two additional Media Monitoring gaps were found and fixed: the test command did not include root-level \`tests/*.test.mjs\` files, allowing a chaos test to exist without being executed; and the social dispatcher validated the dated dashboard but did not require the public \`/hoje\` alias to point to the same edition before dispatching social publication. Version 1.1.6 closes both gaps.
 
-The test gate now executes root MJS tests and social dispatch is blocked while \`/hoje\` is stale. The social hardening GREEN run is \`33382960655\`; the full release gate covers the complete suite, TypeScript, npm audit, Worker, GCP relay, Docker, YAML, cache-busted GitHub Pages, and social state.
+Once root MJS tests were enabled, CI failed in run \`33383501842\`, exposing the stale dispatcher contract. After correcting the test contract and the \`/hoje\` gate, the complete suite passed in run \`33383633346\`. The full release gate covers the complete suite, TypeScript, npm audit, Worker, GCP relay, Docker, YAML, cache-busted GitHub Pages, and social state.
 
 QA approval means 100% of the deterministic scenarios defined in the chaos matrix passed; it does not claim mathematical impossibility of simultaneous external-provider failure.`
 if (!readme.includes('### Operational update — 2026-08-31')) {
