@@ -8,7 +8,7 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.5<br>
+> **Versão / Version:** 1.1.6<br>
 > **Fuso operacional / Operational timezone:** `America/Sao_Paulo`<br>
 > **Objetivo / Purpose:** monitoramento diário bilíngue, dashboard, e-mail e integração social com múltiplas camadas de contingência.
 
@@ -21,6 +21,16 @@
 O **Monitoramento Mídia Internacional** é um pipeline automatizado que coleta notícias internacionais, filtra e deduplica conteúdo, usa Google Gemini para triagem e síntese editorial, produz versões em **PT-BR** e **EN-US**, gera um dashboard HTML diário e envia mensagens individualizadas aos destinatários ativos mantidos fora do GitHub.
 
 O projeto foi desenhado para operar com **fail-closed**, **idempotência diária** e **múltiplos relógios independentes**. Uma execução de contingência pode acontecer várias vezes no mesmo dia sem reenviar conteúdo quando o estado já está concluído.
+
+### Atualização operacional — 31/08/2026
+
+O Scheduler Chaos QA de 31/08/2026 ampliou o gate de produção para tratar atraso/ausência do scheduler, concorrência, recuperação externa e publicação social como domínios de falha independentes.
+
+Foram identificadas e tratadas duas lacunas adicionais no Monitoramento Mídia: o comando de testes não incluía arquivos `*.test.mjs` diretamente na raiz de `tests/`, o que permitia um teste de chaos existir sem ser executado; e o publicador social validava o dashboard datado, mas não exigia que o alias público `/hoje` já estivesse na mesma edição antes de emitir o dispatch social. A v1.1.6 corrige ambos.
+
+Ao habilitar os testes MJS de raiz, o CI falhou no run `33383501842`, expondo o contrato antigo do dispatcher. Depois da correção do teste e do gate de `/hoje`, a suíte completa passou no run `33383633346`. A validação de release inclui suíte total, TypeScript, npm audit, Worker, relay GCP, Docker, YAML, GitHub Pages com cache-busting e estado social.
+
+O controlador externo permanece idempotente e independente do scheduler do GitHub. A aprovação de QA significa 100% dos cenários determinísticos definidos no chaos matrix, sem afirmar impossibilidade matemática de falha simultânea de provedores externos.
 
 ### Atualização operacional — 30/08/2026
 
@@ -307,6 +317,16 @@ A versão 1.1.4 consolida as correções do failsafe Google Cloud, a validação
 **Global Media Monitoring** is an automated pipeline that collects international news, filters and deduplicates content, uses Google Gemini for editorial triage and summarization, produces **PT-BR** and **EN-US** output, generates a daily HTML dashboard, and sends individualized e-mails to active recipients stored outside GitHub.
 
 The system is designed around **fail-closed behavior**, **daily idempotency**, and **multiple independent clocks**. Recovery attempts can run more than once without resending content after the operational date has already reached `completed`.
+
+### Operational update — 2026-08-31
+
+The 2026-08-31 Scheduler Chaos QA expanded the production gate to treat scheduler delay/absence, concurrency, external recovery, and social publication as independent failure domains.
+
+Two additional Media Monitoring gaps were found and fixed: the test command did not include root-level `tests/*.test.mjs` files, allowing a chaos test to exist without being executed; and the social dispatcher validated the dated dashboard but did not require the public `/hoje` alias to point to the same edition before dispatching social publication. Version 1.1.6 closes both gaps.
+
+Once root MJS tests were enabled, CI failed in run `33383501842`, exposing the stale dispatcher contract. After correcting the test contract and the `/hoje` gate, the complete suite passed in run `33383633346`. The full release gate covers the complete suite, TypeScript, npm audit, Worker, GCP relay, Docker, YAML, cache-busted GitHub Pages, and social state.
+
+QA approval means 100% of the deterministic scenarios defined in the chaos matrix passed; it does not claim mathematical impossibility of simultaneous external-provider failure.
 
 ### Operational update — 2026-08-30
 
