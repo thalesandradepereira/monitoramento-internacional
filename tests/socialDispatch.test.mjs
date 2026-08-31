@@ -5,6 +5,7 @@ import {
   dashboardDescriptor,
   dispatchPrivatePublisher,
   selectLatestCompletedExecution,
+  waitForPublishedAlias,
   waitForPublishedDashboard,
 } from '../scripts/dispatch-social-publisher.mjs'
 
@@ -23,7 +24,7 @@ test('selectLatestCompletedExecution escolhe a execução completed mais recente
   assert.equal(selected.state, 'completed')
 })
 
-test('dashboardDescriptor usa a data operacional recebida, sem somar dias', () => {
+test('dashboardDescriptor usa a data operacional recebida e inclui alias /hoje', () => {
   const descriptor = dashboardDescriptor('2026-07-18', 'https://example.test/base/')
 
   assert.deepEqual(descriptor, {
@@ -31,6 +32,7 @@ test('dashboardDescriptor usa a data operacional recebida, sem somar dias', () =
     displayDate: '18/07/2026',
     filename: 'Dashboard-Monitoramento-18-07-2026.html',
     dashboardUrl: 'https://example.test/base/Dashboard-Monitoramento-18-07-2026.html',
+    aliasUrl: 'https://example.test/base/hoje',
   })
 })
 
@@ -59,9 +61,7 @@ test('waitForPublishedDashboard repete até receber HTML da data correta', async
   let sleeps = 0
   const fetchImpl = async () => {
     calls += 1
-    if (calls === 1) {
-      return new Response('not ready', { status: 404, headers: { 'content-type': 'text/plain' } })
-    }
+    if (calls === 1) return new Response('not ready', { status: 404, headers: { 'content-type': 'text/plain' } })
     return new Response(`<html><body>${'x'.repeat(600)}18/07/2026</body></html>`, {
       status: 200,
       headers: { 'content-type': 'text/html; charset=utf-8' },
@@ -80,6 +80,27 @@ test('waitForPublishedDashboard repete até receber HTML da data correta', async
   assert.equal(result.attempts, 2)
   assert.equal(calls, 2)
   assert.equal(sleeps, 1)
+})
+
+test('waitForPublishedAlias rejeita alias stale e aceita a data esperada', async () => {
+  let calls = 0
+  const fetchImpl = async () => {
+    calls += 1
+    const date = calls === 1 ? '17/07/2026' : '18/07/2026'
+    return new Response(`<html><body>${date}</body></html>`, {
+      status: 200,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    })
+  }
+  const result = await waitForPublishedAlias({
+    aliasUrl: 'https://example.test/hoje',
+    displayDate: '18/07/2026',
+    maxAttempts: 2,
+    retryDelayMs: 0,
+    fetchImpl,
+    sleepImpl: async () => {},
+  })
+  assert.equal(result.attempts, 2)
 })
 
 test('dispatchPrivatePublisher envia somente metadados, sem expor o token no corpo', async () => {
