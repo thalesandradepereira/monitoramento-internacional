@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import * as social from '../scripts/dispatch-social-publisher.mjs'
 
+// TDD RED gate: social publication must not outrun the public /hoje alias.
 test('social dispatch exposes a /hoje alias validator before publishing Story', () => {
   assert.equal(typeof social.waitForPublishedAlias, 'function')
 })
