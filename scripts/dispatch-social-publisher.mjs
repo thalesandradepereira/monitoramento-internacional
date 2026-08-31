@@ -9,30 +9,25 @@ const DEFAULT_MAX_ATTEMPTS = 12
 const DEFAULT_RETRY_DELAY_MS = 10_000
 
 export function selectLatestCompletedExecution(log, timezone = DEFAULT_TIMEZONE) {
-  if (!log || log.version !== 1 || !Array.isArray(log.records)) {
-    throw new Error('Registro state/daily-executions.json inválido.')
-  }
-
+  if (!log || log.version !== 1 || !Array.isArray(log.records)) throw new Error('Registro state/daily-executions.json inválido.')
   return log.records
     .filter(record => record?.state === 'completed' && record?.timezone === timezone)
     .sort((a, b) => `${b.date}T${b.time}`.localeCompare(`${a.date}T${a.time}`))[0]
 }
 
 export function dashboardDescriptor(dateIso, baseUrl = DEFAULT_PAGES_BASE_URL) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateIso)) {
-    throw new Error(`Data operacional inválida: ${dateIso}`)
-  }
-
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateIso)) throw new Error(`Data operacional inválida: ${dateIso}`)
   const [year, month, day] = dateIso.split('-')
   const dateForFilename = `${day}-${month}-${year}`
   const displayDate = `${day}/${month}/${year}`
   const filename = `Dashboard-Monitoramento-${dateForFilename}.html`
-
+  const normalizedBase = baseUrl.replace(/\/$/, '')
   return {
     monitoringDate: dateIso,
     displayDate,
     filename,
-    dashboardUrl: `${baseUrl.replace(/\/$/, '')}/${filename}`,
+    dashboardUrl: `${normalizedBase}/${filename}`,
+    aliasUrl: `${normalizedBase}/hoje`,
   }
 }
 
@@ -45,6 +40,36 @@ export function assertExpectedDashboard(execution, dashboard, expectedMonitoring
   }
 }
 
+async function waitForHtmlDate({ url, displayDate, maxAttempts, retryDelayMs, fetchImpl, sleepImpl, minimumLength, label }) {
+  let lastError
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const separator = url.includes('?') ? '&' : '?'
+      const response = await fetchImpl(`${url}${separator}publication_check=${Date.now()}-${attempt}`, {
+        method: 'GET',
+        redirect: 'follow',
+        headers: {
+          accept: 'text/html,application/xhtml+xml',
+          'cache-control': 'no-cache',
+          pragma: 'no-cache',
+          'user-agent': 'monitoramento-social-dispatch/1.1',
+        },
+      })
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      const contentType = response.headers.get('content-type') || ''
+      if (!contentType.toLowerCase().includes('text/html')) throw new Error(`Content-Type inesperado: ${contentType || 'ausente'}`)
+      const html = await response.text()
+      if (html.length < minimumLength || !html.includes(displayDate)) throw new Error(`${label} publicado não corresponde à data esperada ${displayDate}.`)
+      return { attempts: attempt, contentLength: html.length }
+    } catch (error) {
+      lastError = error
+      console.warn(`[social-dispatch] ${label} ainda indisponível (tentativa ${attempt}/${maxAttempts}): ${error instanceof Error ? error.message : String(error)}`)
+      if (attempt < maxAttempts) await sleepImpl(retryDelayMs)
+    }
+  }
+  throw new Error(`${label} não ficou disponível após ${maxAttempts} tentativas: ${lastError instanceof Error ? lastError.message : String(lastError)}`)
+}
+
 export async function waitForPublishedDashboard({
   dashboardUrl,
   displayDate,
@@ -53,72 +78,33 @@ export async function waitForPublishedDashboard({
   fetchImpl = fetch,
   sleepImpl = sleep,
 }) {
-  let lastError
-
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    try {
-      const separator = dashboardUrl.includes('?') ? '&' : '?'
-      const response = await fetchImpl(`${dashboardUrl}${separator}publication_check=${Date.now()}`, {
-        method: 'GET',
-        redirect: 'follow',
-        headers: {
-          accept: 'text/html,application/xhtml+xml',
-          'cache-control': 'no-cache',
-          'user-agent': 'monitoramento-social-dispatch/1.0',
-        },
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`)
-      }
-
-      const contentType = response.headers.get('content-type') || ''
-      if (!contentType.toLowerCase().includes('text/html')) {
-        throw new Error(`Content-Type inesperado: ${contentType || 'ausente'}`)
-      }
-
-      const html = await response.text()
-      if (html.length < 500 || !html.includes(displayDate)) {
-        throw new Error('Conteúdo publicado não corresponde ao dashboard esperado.')
-      }
-
-      return { attempts: attempt, contentLength: html.length }
-    } catch (error) {
-      lastError = error
-      console.warn(`[social-dispatch] Dashboard ainda indisponível (tentativa ${attempt}/${maxAttempts}): ${error instanceof Error ? error.message : String(error)}`)
-      if (attempt < maxAttempts) await sleepImpl(retryDelayMs)
-    }
-  }
-
-  throw new Error(`Dashboard não ficou disponível após ${maxAttempts} tentativas: ${lastError instanceof Error ? lastError.message : String(lastError)}`)
+  return waitForHtmlDate({ url: dashboardUrl, displayDate, maxAttempts, retryDelayMs, fetchImpl, sleepImpl, minimumLength: 500, label: 'Dashboard' })
 }
 
-export async function dispatchPrivatePublisher({
-  repository,
-  token,
-  payload,
+export async function waitForPublishedAlias({
+  aliasUrl,
+  displayDate,
+  maxAttempts = DEFAULT_MAX_ATTEMPTS,
+  retryDelayMs = DEFAULT_RETRY_DELAY_MS,
   fetchImpl = fetch,
-  apiVersion = process.env.GITHUB_API_VERSION || '2026-03-10',
+  sleepImpl = sleep,
 }) {
-  if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) {
-    throw new Error('SOCIAL_PUBLISHER_REPOSITORY deve estar no formato owner/repository.')
-  }
+  return waitForHtmlDate({ url: aliasUrl, displayDate, maxAttempts, retryDelayMs, fetchImpl, sleepImpl, minimumLength: 1, label: 'Alias /hoje' })
+}
 
+export async function dispatchPrivatePublisher({ repository, token, payload, fetchImpl = fetch, apiVersion = process.env.GITHUB_API_VERSION || '2026-03-10' }) {
+  if (!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)) throw new Error('SOCIAL_PUBLISHER_REPOSITORY deve estar no formato owner/repository.')
   const response = await fetchImpl(`https://api.github.com/repos/${repository}/dispatches`, {
     method: 'POST',
     headers: {
       accept: 'application/vnd.github+json',
       authorization: `Bearer ${token}`,
       'content-type': 'application/json',
-      'user-agent': 'monitoramento-social-dispatch/1.0',
+      'user-agent': 'monitoramento-social-dispatch/1.1',
       'x-github-api-version': apiVersion,
     },
-    body: JSON.stringify({
-      event_type: 'dashboard_published',
-      client_payload: payload,
-    }),
+    body: JSON.stringify({ event_type: 'dashboard_published', client_payload: payload }),
   })
-
   if (!response.ok) {
     const body = await response.text()
     throw new Error(`Falha ao acionar ${repository}: HTTP ${response.status}; ${body.slice(0, 300)}`)
@@ -128,7 +114,6 @@ export async function dispatchPrivatePublisher({
 async function main() {
   const repository = process.env.SOCIAL_PUBLISHER_REPOSITORY?.trim()
   const token = process.env.SOCIAL_PUBLISHER_TOKEN?.trim()
-
   if (!repository || !token) {
     console.log('[social-dispatch] Integração desativada: variável SOCIAL_PUBLISHER_REPOSITORY ou segredo SOCIAL_PUBLISHER_TOKEN não configurado.')
     return
@@ -137,28 +122,24 @@ async function main() {
   const timezone = process.env.TIMEZONE || DEFAULT_TIMEZONE
   const pagesBaseUrl = process.env.GITHUB_PAGES_BASE_URL || DEFAULT_PAGES_BASE_URL
   const logPath = path.resolve(process.cwd(), process.env.DAILY_EXECUTION_LOG_PATH || 'state/daily-executions.json')
-
-  if (!fs.existsSync(logPath)) {
-    throw new Error(`Registro de execução não encontrado: ${logPath}`)
-  }
+  if (!fs.existsSync(logPath)) throw new Error(`Registro de execução não encontrado: ${logPath}`)
 
   const log = JSON.parse(fs.readFileSync(logPath, 'utf8'))
   const execution = selectLatestCompletedExecution(log, timezone)
-  if (!execution) {
-    throw new Error(`Nenhuma execução completed encontrada para o fuso ${timezone}.`)
-  }
+  if (!execution) throw new Error(`Nenhuma execução completed encontrada para o fuso ${timezone}.`)
 
   const expectedMonitoringDate = process.env.EXPECTED_MONITORING_DATE?.trim()
   const dashboard = dashboardDescriptor(execution.date, pagesBaseUrl)
   const expectedFilename = process.env.EXPECTED_DASHBOARD_FILENAME?.trim()
   assertExpectedDashboard(execution, dashboard, expectedMonitoringDate, expectedFilename)
-  const localDashboardPath = path.resolve(process.cwd(), 'docs', dashboard.filename)
-  if (!fs.existsSync(localDashboardPath)) {
-    throw new Error(`Arquivo do dashboard não encontrado no checkout: ${localDashboardPath}`)
-  }
 
-  console.log(`[social-dispatch] Validando publicação de ${dashboard.dashboardUrl}`)
+  const localDashboardPath = path.resolve(process.cwd(), 'docs', dashboard.filename)
+  if (!fs.existsSync(localDashboardPath)) throw new Error(`Arquivo do dashboard não encontrado no checkout: ${localDashboardPath}`)
+
+  console.log(`[social-dispatch] Validando dashboard publicado: ${dashboard.dashboardUrl}`)
   const availability = await waitForPublishedDashboard(dashboard)
+  console.log(`[social-dispatch] Validando alias público atual: ${dashboard.aliasUrl}`)
+  const aliasAvailability = await waitForPublishedAlias(dashboard)
 
   const checkedOutSha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
   const payload = {
@@ -174,12 +155,10 @@ async function main() {
   }
 
   await dispatchPrivatePublisher({ repository, token, payload })
-  console.log(`[social-dispatch] Evento dashboard_published enviado para ${repository}; tentativas de validação=${availability.attempts}.`)
+  console.log(`[social-dispatch] Evento dashboard_published enviado para ${repository}; dashboard_attempts=${availability.attempts}; alias_attempts=${aliasAvailability.attempts}.`)
 }
 
-function sleep(milliseconds) {
-  return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
+function sleep(milliseconds) { return new Promise(resolve => setTimeout(resolve, milliseconds)) }
 
 const isDirectExecution = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href
 if (isDirectExecution) {
