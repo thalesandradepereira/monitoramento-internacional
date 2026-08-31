@@ -1,4 +1,4 @@
-name: Publicar v1.1.5
+name: Publicar v1.1.6
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
     paths:
       - '.github/workflows/release.yml'
-      - 'scripts/prepare-release-v1.1.5.mjs'
+      - 'scripts/prepare-release-v1.1.6.mjs'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-v1.1.5
+  group: release-v1.1.6
   cancel-in-progress: false
 
 jobs:
@@ -37,19 +37,19 @@ jobs:
           node-version: '22'
           cache: npm
 
-      - name: Preparar metadados v1.1.5 em memória
-        run: node scripts/prepare-release-v1.1.5.mjs
+      - name: Preparar metadados v1.1.6 em memória
+        run: node scripts/prepare-release-v1.1.6.mjs
 
       - name: Validar metadados e artefatos de produção
         shell: bash
         run: |
           set -euo pipefail
-          node -e "const p=require('./package.json'); if (p.version !== '1.1.5') process.exit(1)"
-          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.5' || p.packages[''].version !== '1.1.5') process.exit(1)"
-          grep -Fq '**Versão / Version:** 1.1.5' README.md
-          grep -Fq '### Atualização operacional — 30/08/2026' README.md
-          grep -Fq '### Operational update — 2026-08-30' README.md
-          test -f POSTMORTEM-2026-08-30.md
+          node -e "const p=require('./package.json'); if (p.version !== '1.1.6') process.exit(1)"
+          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.6' || p.packages[''].version !== '1.1.6') process.exit(1)"
+          grep -Fq '**Versão / Version:** 1.1.6' README.md
+          grep -Fq '### Atualização operacional — 31/08/2026' README.md
+          grep -Fq '### Operational update — 2026-08-31' README.md
+          grep -Fq 'tests/*.test.mjs' package.json
           test ! -f recipients.txt
           RELEASE_DATE="$(TZ=America/Sao_Paulo date +%d-%m-%Y)"
           ISO_DATE="$(TZ=America/Sao_Paulo date +%Y-%m-%d)"
@@ -64,7 +64,7 @@ jobs:
       - name: Auditoria de segurança
         run: npm audit --audit-level=moderate
 
-      - name: Testes completos
+      - name: Testes completos, incluindo chaos MJS de raiz
         run: npm test
 
       - name: TypeScript
@@ -82,7 +82,7 @@ jobs:
         run: npm --prefix infra/gcp-scheduler-relay test
 
       - name: Build do relay
-        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.5 infra/gcp-scheduler-relay
+        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.6 infra/gcp-scheduler-relay
 
       - name: Validar YAML e whitespace
         shell: bash
@@ -95,7 +95,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4; do
+          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4 v1.1.5; do
             gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
             git cat-file -e "$tag^{commit}"
             if git ls-tree -r --name-only "$tag" | grep -Eq '(^|/)recipients\.txt$'; then
@@ -104,17 +104,19 @@ jobs:
             fi
           done
 
-      - name: Validar GitHub Pages com cache-busting
+      - name: Validar GitHub Pages /hoje e dashboard com cache-busting
         shell: bash
         run: |
           set -euo pipefail
           RELEASE_DATE="$(TZ=America/Sao_Paulo date +%d-%m-%Y)"
+          DISPLAY_DATE="$(TZ=America/Sao_Paulo date +%d/%m/%Y)"
           CACHE_BUST="${GITHUB_SHA}-$(date +%s)"
           curl --fail --silent --show-error --location --retry 5 --retry-delay 5 "https://thalesandradepereira.github.io/monitoramento-internacional/hoje?qa=${CACHE_BUST}" --output /tmp/hoje.html
           test -s /tmp/hoje.html
-          grep -q "Dashboard-Monitoramento-${RELEASE_DATE}.html" /tmp/hoje.html
+          grep -q "${DISPLAY_DATE}" /tmp/hoje.html
           curl --fail --silent --show-error --location --retry 5 --retry-delay 5 "https://thalesandradepereira.github.io/monitoramento-internacional/Dashboard-Monitoramento-${RELEASE_DATE}.html?qa=${CACHE_BUST}" --output /tmp/dashboard.html
           test -s /tmp/dashboard.html
+          grep -q "${DISPLAY_DATE}" /tmp/dashboard.html
 
       - name: Validar publicação social da data
         shell: bash
@@ -134,54 +136,46 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          if git diff --quiet -- package.json package-lock.json README.md; then
-            echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-            exit 0
+          if ! git diff --quiet -- package.json package-lock.json README.md; then
+            git add package.json package-lock.json README.md
+            git commit -m 'chore: preparar release v1.1.6'
+            pushed=false
+            for attempt in 1 2 3; do
+              if git push origin HEAD:main; then
+                pushed=true
+                break
+              fi
+              git pull --rebase origin main
+            done
+            test "$pushed" = true
           fi
-          git add package.json package-lock.json README.md
-          git commit -m 'chore: preparar release v1.1.5'
-          pushed=false
-          for attempt in 1 2 3; do
-            if git push origin HEAD:main; then
-              pushed=true
-              break
-            fi
-            git pull --rebase origin main
-          done
-          test "$pushed" = true
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Criar release v1.1.5
+      - name: Criar release v1.1.6
         shell: bash
         env:
           RELEASE_SHA: ${{ steps.persist.outputs.sha }}
         run: |
           set -euo pipefail
-          if gh release view v1.1.5 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'Release v1.1.5 já existe; nenhuma duplicação será criada.'
+          if gh release view v1.1.6 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Release v1.1.6 já existe; nenhuma duplicação será criada.'
             exit 0
           fi
-          printf '%s\n' \
-            '## Monitoramento Internacional v1.1.5' \
-            '' \
-            'Release corretiva de fechamento pós-incidente e hardening do controle externo de produção.' \
-            '' \
-            '### Causa raiz de 30/08/2026' \
-            '- GitHub Actions schedule sofreu atraso severo; run tardio 33306554202 foi criado às 07:28 BRT.' \
-            '- A recuperação externa já havia concluído a edição no run 33303070482.' \
-            '- O run tardio comprovou idempotência e encerrou sem reenviar e-mails.' \
-            '' \
-            '### QA' \
-            '- npm audit, suíte completa, TypeScript, Worker, relay GCP e build Docker.' \
-            '- YAML, whitespace, artefato diário, /hoje e estado completed.' \
-            '- GitHub Pages validado com cache-busting.' \
-            '- Instagram validado como completed com platform_id.' \
-            '- releases históricas sanitizadas e ausência de recipients.txt.' \
-            '' \
-            '### Evidência operacional' \
-            '- recuperação de mídia: run 33303070482, success.' \
-            '- edição 30/08: attempted=6, sent=6, failed=0.' \
-            '- schedule tardio/idempotência: run 33306554202, success, sem novo envio.' \
-            '- postmortem: POSTMORTEM-2026-08-30.md.' \
-            > /tmp/release-notes.md
-          gh release create v1.1.5 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.5' --notes-file /tmp/release-notes.md
+          cat > /tmp/release-notes.md <<'EOF'
+          ## Monitoramento Internacional v1.1.6
+
+          Scheduler Chaos QA e hardening de publicação.
+
+          ### Correções
+          - Suite passa a executar também `tests/*.test.mjs` na raiz, fechando uma lacuna real de cobertura do CI.
+          - Publicação social exige que o dashboard datado e o alias público `/hoje` correspondam à edição atual antes do dispatch.
+          - Cache-busting e redirects são validados antes de liberar o publisher social.
+          - Controlador externo e idempotência diária permanecem como relógio/guard independentes do scheduler GitHub.
+
+          ### Evidências
+          - Run de hardening social GREEN: 33382960655.
+          - Suite completa incluindo chaos MJS, npm audit, TypeScript, Worker, relay GCP, Docker e YAML.
+          - GitHub Pages `/hoje` e dashboard atual validados com cache-busting.
+          - Instagram da data validado como completed com platform_id.
+          EOF
+          gh release create v1.1.6 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.6' --notes-file /tmp/release-notes.md
