@@ -4,10 +4,10 @@ import test from 'node:test'
 
 const workflow = readFileSync(new URL('../../.github/workflows/monitoramento-watchdog.yml', import.meta.url), 'utf8')
 
-test('watchdog has three independent recovery schedules and shared idempotence concurrency', () => {
-  assert.match(workflow, /cron: '29 4 \* \* \*'/)
-  assert.match(workflow, /cron: '29 5 \* \* \*'/)
-  assert.match(workflow, /cron: '29 6 \* \* \*'/)
+test('watchdog has six independent recovery schedules and shared idempotence concurrency', () => {
+  for (const cron of ['29 4 * * *', '59 4 * * *', '29 5 * * *', '59 5 * * *', '29 6 * * *', '59 6 * * *']) {
+    assert.match(workflow, new RegExp(`cron: '${cron.replaceAll('*', '\\*')}'`))
+  }
   assert.match(workflow, /timezone: 'America\/Sao_Paulo'/)
   assert.match(workflow, /^concurrency:\n  group: monitoramento-internacional-diario\n  cancel-in-progress: false/m)
 })
