@@ -61,7 +61,16 @@ verify_github_dispatch_access() {
   local http_code
 
   http_code="$(
-    curl --silent --show-error       --output "$response_file"       --write-out '%{http_code}'       --request POST       --header 'Accept: application/vnd.github+json'       --header "Authorization: Bearer ${GITHUB_DISPATCH_TOKEN}"       --header 'X-GitHub-Api-Version: 2022-11-28'       --header 'Content-Type: application/json'       "https://api.github.com/repos/${GITHUB_OWNER}/${repository}/dispatches"       --data '{"event_type":"gcp_connectivity_probe","client_payload":{"purpose":"permission_check_no_workflow"}}'
+    curl --silent --show-error \
+      --output "$response_file" \
+      --write-out '%{http_code}' \
+      --request POST \
+      --header 'Accept: application/vnd.github+json' \
+      --header "Authorization: Bearer ${GITHUB_DISPATCH_TOKEN}" \
+      --header 'X-GitHub-Api-Version: 2022-11-28' \
+      --header 'Content-Type: application/json' \
+      "https://api.github.com/repos/${GITHUB_OWNER}/${repository}/dispatches" \
+      --data '{"event_type":"gcp_connectivity_probe","client_payload":{"purpose":"permission_check_no_workflow"}}'
   )"
 
   if [[ "$http_code" != "204" ]]; then
@@ -80,7 +89,14 @@ verify_github_dispatch_access "$MEDIA_REPOSITORY"
 verify_github_dispatch_access "$PUBLISHER_REPOSITORY"
 
 echo "[gcp] Enabling required APIs..."
-gcloud services enable   run.googleapis.com   cloudscheduler.googleapis.com   secretmanager.googleapis.com   cloudbuild.googleapis.com   artifactregistry.googleapis.com   iamcredentials.googleapis.com   --project "$PROJECT_ID"
+gcloud services enable \
+  run.googleapis.com \
+  cloudscheduler.googleapis.com \
+  secretmanager.googleapis.com \
+  cloudbuild.googleapis.com \
+  artifactregistry.googleapis.com \
+  iamcredentials.googleapis.com \
+  --project "$PROJECT_ID"
 
 PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
 if [[ -z "$PROJECT_NUMBER" ]]; then
@@ -105,18 +121,29 @@ RUNTIME_SA="${RUNTIME_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 INVOKER_SA="${INVOKER_SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
 for sa in "$RUNTIME_SA_NAME" "$INVOKER_SA_NAME"; do
-  if ! gcloud iam service-accounts describe "${sa}@${PROJECT_ID}.iam.gserviceaccount.com"     --project "$PROJECT_ID" >/dev/null 2>&1; then
-    gcloud iam service-accounts create "$sa"       --project "$PROJECT_ID"       --display-name "$sa"
+  if ! gcloud iam service-accounts describe "${sa}@${PROJECT_ID}.iam.gserviceaccount.com" \
+    --project "$PROJECT_ID" >/dev/null 2>&1; then
+    gcloud iam service-accounts create "$sa" \
+      --project "$PROJECT_ID" \
+      --display-name "$sa"
   fi
 done
 
 if ! gcloud secrets describe "$SECRET_NAME" --project "$PROJECT_ID" >/dev/null 2>&1; then
-  gcloud secrets create "$SECRET_NAME"     --project "$PROJECT_ID"     --replication-policy automatic
+  gcloud secrets create "$SECRET_NAME" \
+    --project "$PROJECT_ID" \
+    --replication-policy automatic
 fi
 
-printf '%s' "$GITHUB_DISPATCH_TOKEN" |   gcloud secrets versions add "$SECRET_NAME"     --project "$PROJECT_ID"     --data-file=-
+printf '%s' "$GITHUB_DISPATCH_TOKEN" | \
+  gcloud secrets versions add "$SECRET_NAME" \
+    --project "$PROJECT_ID" \
+    --data-file=-
 
-gcloud secrets add-iam-policy-binding "$SECRET_NAME"   --project "$PROJECT_ID"   --member "serviceAccount:${RUNTIME_SA}"   --role roles/secretmanager.secretAccessor >/dev/null
+gcloud secrets add-iam-policy-binding "$SECRET_NAME" \
+  --project "$PROJECT_ID" \
+  --member "serviceAccount:${RUNTIME_SA}" \
+  --role roles/secretmanager.secretAccessor >/dev/null
 
 echo "[gcp] Deploying private Cloud Run relay..."
 deploy_cloud_run() {
@@ -163,7 +190,10 @@ for attempt in 1 2 3; do
 done
 
 SERVICE_URL="$(
-  gcloud run services describe "$SERVICE_NAME"     --project "$PROJECT_ID"     --region "$REGION"     --format='value(status.url)'
+  gcloud run services describe "$SERVICE_NAME" \
+    --project "$PROJECT_ID" \
+    --region "$REGION" \
+    --format='value(status.url)'
 )"
 
 if [[ -z "$SERVICE_URL" ]]; then
@@ -171,7 +201,11 @@ if [[ -z "$SERVICE_URL" ]]; then
   exit 1
 fi
 
-gcloud run services add-iam-policy-binding "$SERVICE_NAME"   --project "$PROJECT_ID"   --region "$REGION"   --member "serviceAccount:${INVOKER_SA}"   --role roles/run.invoker >/dev/null
+gcloud run services add-iam-policy-binding "$SERVICE_NAME" \
+  --project "$PROJECT_ID" \
+  --region "$REGION" \
+  --member "serviceAccount:${INVOKER_SA}" \
+  --role roles/run.invoker >/dev/null
 
 upsert_job() {
   local job_name="$1"
@@ -198,23 +232,38 @@ upsert_job() {
     "--description=$description"
   )
 
-  if gcloud scheduler jobs describe "$job_name"     --project "$PROJECT_ID"     --location "$REGION" >/dev/null 2>&1; then
+  if gcloud scheduler jobs describe "$job_name" \
+    --project "$PROJECT_ID" \
+    --location "$REGION" >/dev/null 2>&1; then
     gcloud scheduler jobs update http "$job_name" "${common[@]}" >/dev/null
   else
     gcloud scheduler jobs create http "$job_name" "${common[@]}" >/dev/null
   fi
 }
 
-# External clocks run only after the internal GitHub schedules/watchdogs.
-# Each job fires twice; application-level idempotency prevents duplicate effects.
-upsert_job   "$MEDIA_JOB"   "41,51 6 * * *"   "/dispatch/media"   "External failsafe for Monitoramento Internacional after GitHub watchdogs"
+# External media clock overlaps the latter part of the GitHub window instead of waiting
+# until 06:41. It fires every 30 minutes from 03:11 through 06:41; application-level
+# idempotency makes all later dispatches no-ops after the first completed edition.
+upsert_job \
+  "$MEDIA_JOB" \
+  "11,41 3-6 * * *" \
+  "/dispatch/media" \
+  "External failsafe for Monitoramento Internacional with 30-minute recovery cadence"
 
-upsert_job   "$PUBLISHER_JOB"   "41,51 5 * * *"   "/dispatch/publisher"   "External failsafe for Instagram publisher after GitHub watchdogs"
+upsert_job \
+  "$PUBLISHER_JOB" \
+  "41,51 5 * * *" \
+  "/dispatch/publisher" \
+  "External failsafe for Instagram publisher after GitHub watchdogs"
 
 cleanup_old_secret_versions() {
   local versions
   mapfile -t versions < <(
-    gcloud secrets versions list "$SECRET_NAME"       --project "$PROJECT_ID"       --filter='state=ENABLED'       --sort-by='~createTime'       --format='value(name)'
+    gcloud secrets versions list "$SECRET_NAME" \
+      --project "$PROJECT_ID" \
+      --filter='state=ENABLED' \
+      --sort-by='~createTime' \
+      --format='value(name)'
   )
 
   if (( ${#versions[@]} <= 1 )); then
@@ -223,7 +272,10 @@ cleanup_old_secret_versions() {
 
   for version in "${versions[@]:1}"; do
     [[ -z "$version" ]] && continue
-    gcloud secrets versions destroy "$version"       --secret "$SECRET_NAME"       --project "$PROJECT_ID"       --quiet >/dev/null
+    gcloud secrets versions destroy "$version" \
+      --secret "$SECRET_NAME" \
+      --project "$PROJECT_ID" \
+      --quiet >/dev/null
     echo "[gcp] Destroyed superseded Secret Manager version: $version"
   done
 }
@@ -232,7 +284,10 @@ cleanup_old_secret_versions() {
 cleanup_old_secret_versions
 
 for job_name in "$MEDIA_JOB" "$PUBLISHER_JOB"; do
-  gcloud scheduler jobs describe "$job_name"     --project "$PROJECT_ID"     --location "$REGION"     --format='table(name.basename(),state,schedule,timeZone,httpTarget.uri)' || exit 1
+  gcloud scheduler jobs describe "$job_name" \
+    --project "$PROJECT_ID" \
+    --location "$REGION" \
+    --format='table(name.basename(),state,schedule,timeZone,httpTarget.uri)' || exit 1
 done
 
 echo
@@ -240,7 +295,7 @@ echo "Google Cloud Scheduler failsafe configured."
 echo "Project: $PROJECT_ID"
 echo "Region: $REGION"
 echo "Relay: $SERVICE_URL"
-echo "Media job: $MEDIA_JOB (06:41 and 06:51 America/Sao_Paulo)"
+echo "Media job: $MEDIA_JOB (03:11/03:41 through 06:11/06:41 America/Sao_Paulo)"
 echo "Publisher job: $PUBLISHER_JOB (05:41 and 05:51 America/Sao_Paulo)"
 echo
 echo "The deployment is idempotent. Re-running it updates the service/jobs instead of creating duplicates."
