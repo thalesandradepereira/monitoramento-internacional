@@ -11,11 +11,12 @@ test('production workflow uses D1 as the recipients source', () => {
   assert.match(workflow, /RECIPIENTS_API_TOKEN: \$\{\{ secrets\.RECIPIENTS_API_TOKEN \}\}/)
 })
 
-test('production workflow keeps safe scheduling, dry-run dispatch, and daily idempotence controls', () => {
+test('production workflow keeps redundant scheduling, dry-run dispatch, and daily idempotence controls', () => {
   assert.match(workflow, /default: true/)
   assert.match(workflow, /DRY_RUN: \$\{\{ github\.event_name == 'workflow_dispatch' && inputs\.dry_run == true && 'true' \|\| 'false' \}\}/)
-  assert.match(workflow, /cron: '17 2 \* \* \*'/)
-  assert.match(workflow, /cron: '17 3 \* \* \*'/)
+  for (const cron of ['17 2 * * *', '47 2 * * *', '17 3 * * *', '47 3 * * *']) {
+    assert.match(workflow, new RegExp(`cron: '${cron.replaceAll('*', '\\*')}'`))
+  }
   assert.match(workflow, /timezone: 'America\/Sao_Paulo'/)
   assert.match(workflow, /CRON_EXPR: '17 2 \* \* \*'/)
   assert.match(workflow, /TIMEZONE: 'America\/Sao_Paulo'/)
@@ -50,7 +51,6 @@ test('production workflow has no automatic GitHub or DEST_EMAIL fallback when D1
   assert.doesNotMatch(recipientsBlock, /DEST_EMAIL|recipients\.txt|github/i)
   assert.doesNotMatch(workflow, /RECIPIENTS_API_TOKEN: (?!\$\{\{ secrets\.RECIPIENTS_API_TOKEN \}\})/)
 })
-
 
 test('production workflow exposes a guarded recovery push trigger', () => {
   assert.match(workflow, /push:\n    branches: \[main\]\n    paths:\n      - 'ops\/recover-media\.txt'/)
