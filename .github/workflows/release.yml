@@ -1,4 +1,4 @@
-name: Publicar v1.1.6
+name: Publicar v1.1.7
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
     paths:
       - '.github/workflows/release.yml'
-      - 'scripts/prepare-release-v1.1.6.mjs'
+      - 'scripts/prepare-release-v1.1.7.mjs'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-v1.1.6
+  group: release-v1.1.7
   cancel-in-progress: false
 
 jobs:
@@ -37,18 +37,25 @@ jobs:
           node-version: '22'
           cache: npm
 
-      - name: Preparar metadados v1.1.6 em memória
-        run: node scripts/prepare-release-v1.1.6.mjs
+      - name: Preparar metadados v1.1.7 em memória
+        run: node scripts/prepare-release-v1.1.7.mjs
 
-      - name: Validar metadados e artefatos de produção
+      - name: Validar metadados, malha diária e artefatos de produção
         shell: bash
         run: |
           set -euo pipefail
-          node -e "const p=require('./package.json'); if (p.version !== '1.1.6') process.exit(1)"
-          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.6' || p.packages[''].version !== '1.1.6') process.exit(1)"
-          grep -Fq '**Versão / Version:** 1.1.6' README.md
-          grep -Fq '### Atualização operacional — 31/08/2026' README.md
-          grep -Fq '### Operational update — 2026-08-31' README.md
+          node -e "const p=require('./package.json'); if (p.version !== '1.1.7') process.exit(1)"
+          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.7' || p.packages[''].version !== '1.1.7') process.exit(1)"
+          grep -Fq '**Versão / Version:** 1.1.7' README.md
+          grep -Fq '### Atualização operacional — 02/09/2026' README.md
+          grep -Fq '### Operational update — 2026-09-02' README.md
+          for cron in "17 2 * * *" "47 2 * * *" "17 3 * * *" "47 3 * * *"; do
+            grep -Fq "cron: '$cron'" .github/workflows/monitoramento.yml
+          done
+          for cron in "29 4 * * *" "59 4 * * *" "29 5 * * *" "59 5 * * *" "29 6 * * *" "59 6 * * *"; do
+            grep -Fq "cron: '$cron'" .github/workflows/monitoramento-watchdog.yml
+          done
+          grep -Fq '"11,41 3-6 * * *"' infra/gcp-scheduler-relay/deploy.sh
           grep -Fq 'tests/*.test.mjs' package.json
           test ! -f recipients.txt
           RELEASE_DATE="$(TZ=America/Sao_Paulo date +%d-%m-%Y)"
@@ -64,7 +71,7 @@ jobs:
       - name: Auditoria de segurança
         run: npm audit --audit-level=moderate
 
-      - name: Testes completos, incluindo chaos MJS de raiz
+      - name: Testes completos incluindo hardening e chaos
         run: npm test
 
       - name: TypeScript
@@ -82,7 +89,7 @@ jobs:
         run: npm --prefix infra/gcp-scheduler-relay test
 
       - name: Build do relay
-        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.6 infra/gcp-scheduler-relay
+        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.7 infra/gcp-scheduler-relay
 
       - name: Validar YAML e whitespace
         shell: bash
@@ -95,7 +102,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4 v1.1.5; do
+          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4 v1.1.5 v1.1.6; do
             gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
             git cat-file -e "$tag^{commit}"
             if git ls-tree -r --name-only "$tag" | grep -Eq '(^|/)recipients\.txt$'; then
@@ -138,7 +145,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           if ! git diff --quiet -- package.json package-lock.json README.md; then
             git add package.json package-lock.json README.md
-            git commit -m 'chore: preparar release v1.1.6'
+            git commit -m 'chore: preparar release v1.1.7'
             pushed=false
             for attempt in 1 2 3; do
               if git push origin HEAD:main; then
@@ -151,31 +158,32 @@ jobs:
           fi
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Criar release v1.1.6
+      - name: Criar release v1.1.7
         shell: bash
         env:
           RELEASE_SHA: ${{ steps.persist.outputs.sha }}
         run: |
           set -euo pipefail
-          if gh release view v1.1.6 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'Release v1.1.6 já existe; nenhuma duplicação será criada.'
+          if gh release view v1.1.7 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Release v1.1.7 já existe; nenhuma duplicação será criada.'
             exit 0
           fi
           cat > /tmp/release-notes.md <<'EOF'
-          ## Monitoramento Internacional v1.1.6
+          ## Monitoramento Internacional v1.1.7
 
-          Scheduler Chaos QA e hardening de publicação.
+          Hardening da malha automática diária após o incidente de gatilho de 02/09/2026.
 
           ### Correções
-          - Suite passa a executar também `tests/*.test.mjs` na raiz, fechando uma lacuna real de cobertura do CI.
-          - Publicação social exige que o dashboard datado e o alias público `/hoje` correspondam à edição atual antes do dispatch.
-          - Cache-busting e redirects são validados antes de liberar o publisher social.
-          - Controlador externo e idempotência diária permanecem como relógio/guard independentes do scheduler GitHub.
+          - Workflow principal passa de 2 para 4 oportunidades diárias: 02:17, 02:47, 03:17 e 03:47 BRT.
+          - Watchdog independente passa de 3 para 6 oportunidades: 04:29, 04:59, 05:29, 05:59, 06:29 e 06:59 BRT.
+          - Provisionamento do failsafe de mídia no Google Cloud passa a declarar cadência de 30 minutos de 03:11 a 06:41 BRT; o redeploy GCP permanece uma operação de infraestrutura separada.
+          - Todos os caminhos reais preservam concurrency compartilhada e idempotência diária, evitando duplicação de e-mail/dashboard/Story após completed.
+          - README PT-BR/EN-US documenta o incidente, a nova malha e a distinção entre garantia de configuração diária e disponibilidade matemática de provedores externos.
 
           ### Evidências
-          - Run de hardening social GREEN: 33382960655.
-          - Suite completa incluindo chaos MJS, npm audit, TypeScript, Worker, relay GCP, Docker e YAML.
-          - GitHub Pages `/hoje` e dashboard atual validados com cache-busting.
-          - Instagram da data validado como completed com platform_id.
+          - TDD RED: run 33615858817 falhou antes da implementação.
+          - Gate final GREEN: run 33616253278.
+          - Suite completa, npm audit, TypeScript, Worker, relay GCP, bash, Docker, YAML e whitespace validados.
+          - Release gate revalida dashboard/estado da data, GitHub Pages /hoje e publicação social antes de criar a tag.
           EOF
-          gh release create v1.1.6 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.6' --notes-file /tmp/release-notes.md
+          gh release create v1.1.7 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.7' --notes-file /tmp/release-notes.md
