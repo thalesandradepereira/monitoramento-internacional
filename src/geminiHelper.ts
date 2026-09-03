@@ -48,7 +48,14 @@ function errorStatus(error: unknown): number | undefined {
   return match ? Number(match[1]) : undefined
 }
 
+export function isGeminiQuotaExhausted(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error)
+  return /exceeded your current quota/i.test(message)
+    || /quota exceeded for metric:/i.test(message)
+}
+
 export function isRetryableGeminiError(error: unknown): boolean {
+  if (isGeminiQuotaExhausted(error)) return false
   const status = errorStatus(error)
   return status !== undefined && RETRYABLE_HTTP_STATUSES.has(status)
 }

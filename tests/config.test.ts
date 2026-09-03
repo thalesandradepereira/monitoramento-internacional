@@ -8,7 +8,7 @@ function loadConfigWithDryRun(value: string | undefined) {
   return require('../src/config').config as {
     dryRun: boolean
     cron: string
-    gemini: { models: { triage: string; summary: string; translation: string }; timeoutMs: number }
+    gemini: { models: { triage: string; summary: string; summaryFallback: string; translation: string }; timeoutMs: number }
     recipients: { source: string; apiUrl: string }
   }
 }
@@ -61,11 +61,12 @@ test('RECIPIENTS_SOURCE padrão é d1 fail-closed com URL privada configurada', 
   assert.equal(config.recipients.apiUrl, 'https://monitoramento-internacional-unsub.thalesandrade.workers.dev/internal/recipients')
 })
 
-test('modelos Gemini padrão reservam 3.6 Flash para a síntese editorial', () => {
+test('modelos Gemini padrão reservam 3.6 Flash para síntese e Flash-Lite como contingência', () => {
   withEnv({
     GEMINI_MODEL: undefined,
     GEMINI_MODEL_TRIAGE: undefined,
     GEMINI_MODEL_SUMMARY: undefined,
+    GEMINI_MODEL_SUMMARY_FALLBACK: undefined,
     GEMINI_MODEL_TRANSLATION: undefined,
     GEMINI_TIMEOUT_MS: undefined,
   }, () => {
@@ -73,25 +74,40 @@ test('modelos Gemini padrão reservam 3.6 Flash para a síntese editorial', () =
     assert.deepEqual(config.gemini.models, {
       triage: 'gemini-3.5-flash-lite',
       summary: 'gemini-3.6-flash',
+      summaryFallback: 'gemini-3.5-flash-lite',
       translation: 'gemini-3.5-flash-lite',
     })
     assert.equal(config.gemini.timeoutMs, 120000)
   })
 })
 
-test('GEMINI_MODEL funciona como override global e override por etapa tem precedência', () => {
+test('GEMINI_MODEL funciona como override global e overrides por etapa têm precedência', () => {
   withEnv({
     GEMINI_MODEL: 'gemini-global',
     GEMINI_MODEL_TRIAGE: undefined,
     GEMINI_MODEL_SUMMARY: 'gemini-summary',
+    GEMINI_MODEL_SUMMARY_FALLBACK: undefined,
     GEMINI_MODEL_TRANSLATION: undefined,
   }, () => {
     const config = loadConfigWithDryRun(undefined)
     assert.deepEqual(config.gemini.models, {
       triage: 'gemini-global',
       summary: 'gemini-summary',
+      summaryFallback: 'gemini-global',
       translation: 'gemini-global',
     })
+  })
+})
+
+test('GEMINI_MODEL_SUMMARY_FALLBACK permite contingência independente do modelo de triagem', () => {
+  withEnv({
+    GEMINI_MODEL: 'gemini-global',
+    GEMINI_MODEL_TRIAGE: 'gemini-triage',
+    GEMINI_MODEL_SUMMARY: 'gemini-summary',
+    GEMINI_MODEL_SUMMARY_FALLBACK: 'gemini-fallback',
+  }, () => {
+    const config = loadConfigWithDryRun(undefined)
+    assert.equal(config.gemini.models.summaryFallback, 'gemini-fallback')
   })
 })
 

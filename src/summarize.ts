@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { config } from './config'
 import { Noticia } from './fetchNews'
-import { generateContentWithRetry, cleanGeminiJson } from './geminiHelper'
+import { cleanGeminiJson, generateContentWithRetry, isGeminiQuotaExhausted } from './geminiHelper'
 
 export interface Topico {
   fonte: string
@@ -30,34 +30,30 @@ const summaryResponseSchema = z.array(z.object({
 }).strict()).max(8)
 
 const paisesPermitidos = [
-  'Brasil', 'Estados Unidos', 'França', 'Inglaterra', 'Espanha', 
+  'Brasil', 'Estados Unidos', 'França', 'Inglaterra', 'Espanha',
   'Alemanha', 'Japão', 'China', 'Índia', 'Portugal'
 ]
 
 function normalizarPais(pais: string): string | null {
-  if (!pais) return null;
-  const p = pais.toLowerCase().trim();
-  if (p === 'eua' || p === 'usa' || p === 'estados unidos' || p === 'us' || p === 'united states') return 'Estados Unidos';
-  if (p === 'br' || p === 'brasil' || p === 'brazil') return 'Brasil';
-  if (p === 'uk' || p === 'inglaterra' || p === 'reino unido' || p === 'england' || p === 'united kingdom') return 'Inglaterra';
-  if (p === 'frança' || p === 'france' || p === 'franca') return 'França';
-  if (p === 'espanha' || p === 'spain') return 'Espanha';
-  if (p === 'alemanha' || p === 'germany' || p === 'deutschland') return 'Alemanha';
-  if (p === 'japão' || p === 'japao' || p === 'japan') return 'Japão';
-  if (p === 'china') return 'China';
-  if (p === 'índia' || p === 'india') return 'Índia';
-  if (p === 'portugal') return 'Portugal';
-  return null;
+  if (!pais) return null
+  const p = pais.toLowerCase().trim()
+  if (p === 'eua' || p === 'usa' || p === 'estados unidos' || p === 'us' || p === 'united states') return 'Estados Unidos'
+  if (p === 'br' || p === 'brasil' || p === 'brazil') return 'Brasil'
+  if (p === 'uk' || p === 'inglaterra' || p === 'reino unido' || p === 'england' || p === 'united kingdom') return 'Inglaterra'
+  if (p === 'frança' || p === 'france' || p === 'franca') return 'França'
+  if (p === 'espanha' || p === 'spain') return 'Espanha'
+  if (p === 'alemanha' || p === 'germany' || p === 'deutschland') return 'Alemanha'
+  if (p === 'japão' || p === 'japao' || p === 'japan') return 'Japão'
+  if (p === 'china') return 'China'
+  if (p === 'índia' || p === 'india') return 'Índia'
+  if (p === 'portugal') return 'Portugal'
+  return null
 }
 
 export async function resumirNoticias(noticias: Noticia[]): Promise<Topico[]> {
   if (noticias.length === 0) return []
-  
-  // ==========================================
-  // PASSO 1: TRIAGEM DE CANDIDATOS (MAP)
-  // ==========================================
-  // A triagem usa o modelo Flash em lotes para controlar quota e truncamento.
-  const TAMANHO_LOTE_TRIAGEM = 200 
+
+  const TAMANHO_LOTE_TRIAGEM = 200
   const noticiasComId = noticias.map((n, idx) => ({ ...n, id: idx.toString() }))
   const lotes: typeof noticiasComId[] = []
   for (let i = 0; i < noticiasComId.length; i += TAMANHO_LOTE_TRIAGEM) {
@@ -65,7 +61,7 @@ export async function resumirNoticias(noticias: Noticia[]): Promise<Topico[]> {
   }
 
   console.log(`[summarize] PASSO 1: Triagem barata. Extraindo candidatos de ${noticias.length} notícias em ${lotes.length} lotes.`)
-  
+
   const todosCandidatos: Candidato[] = []
 
   for (let i = 0; i < lotes.length; i++) {
@@ -118,9 +114,6 @@ ${JSON.stringify(lote.map(n => ({ id: n.id, titulo: n.titulo, fonte: n.fonte }))
     }
   }
 
-  // ==========================================
-  // AGRUPAMENTO INTERMEDIÁRIO (POR PAÍS)
-  // ==========================================
   console.log(`[summarize] Agrupando ${todosCandidatos.length} candidatos totais por país...`)
   const candidatosPorPais: Record<string, Candidato[]> = {}
   for (const p of paisesPermitidos) {
@@ -128,21 +121,17 @@ ${JSON.stringify(lote.map(n => ({ id: n.id, titulo: n.titulo, fonte: n.fonte }))
   }
 
   for (const c of todosCandidatos) {
-    // Aqui c.pais já está normalizado
     const paisEncontrado = c.pais
     if (candidatosPorPais[paisEncontrado]) {
-      // Evitar candidatos duplicados via link
       if (!candidatosPorPais[paisEncontrado].some(ex => ex.link === c.link)) {
         candidatosPorPais[paisEncontrado].push(c)
       }
     }
   }
 
-  // ==========================================
-  // PASSO 2: ESCOLHA E RESUMO (REDUCE POR PAÍS)
-  // ==========================================
-  console.log(`[summarize] PASSO 2: Decisão Qualitativa. Resumindo cada país separadamente para evitar truncamento.`)
+  console.log('[summarize] PASSO 2: Decisão Qualitativa. Resumindo cada país separadamente para evitar truncamento.')
   const topicosFinais: Topico[] = []
+  const modelosSemQuota = new Set<string>()
 
   let totalCandidatos = 0
   for (const pais of paisesPermitidos) {
@@ -150,15 +139,56 @@ ${JSON.stringify(lote.map(n => ({ id: n.id, titulo: n.titulo, fonte: n.fonte }))
   }
 
   if (totalCandidatos === 0) {
-    console.log(`[summarize] Nenhum candidato finalista encontrado no total.`)
+    console.log('[summarize] Nenhum candidato finalista encontrado no total.')
     return []
   }
 
   console.log(`[summarize] Processando ${totalCandidatos} candidatos totais país por país...`)
 
+  async function executarResumoComFallback(promptResumo: string): Promise<string> {
+    const modelos = [config.gemini.models.summary, config.gemini.models.summaryFallback]
+      .filter((model, index, arr) => Boolean(model) && arr.indexOf(model) === index)
+
+    let ultimoErro: unknown
+    for (let i = 0; i < modelos.length; i += 1) {
+      const model = modelos[i]
+      if (modelosSemQuota.has(model)) continue
+
+      try {
+        const result = await generateContentWithRetry(
+          model,
+          promptResumo,
+          z.toJSONSchema(summaryResponseSchema),
+        )
+        return result.text || '[]'
+      } catch (err) {
+        ultimoErro = err
+        if (!isGeminiQuotaExhausted(err)) throw err
+
+        modelosSemQuota.add(model)
+        const fallback = modelos.find(candidate => candidate !== model && !modelosSemQuota.has(candidate))
+        if (fallback) {
+          console.warn(`[summarize] modelo editorial ${model} sem quota; acionando fallback ${fallback}.`)
+          continue
+        }
+        console.error(`[summarize] quota esgotada também no fallback; interrompendo novas chamadas de resumo.`)
+      }
+    }
+
+    throw ultimoErro instanceof Error
+      ? ultimoErro
+      : new Error('[summarize] Nenhum modelo Gemini com quota disponível para resumo.')
+  }
+
   for (const pais of paisesPermitidos) {
     const candidatosDoPais = candidatosPorPais[pais]
     if (candidatosDoPais.length === 0) continue
+
+    if (modelosSemQuota.has(config.gemini.models.summary)
+      && modelosSemQuota.has(config.gemini.models.summaryFallback)) {
+      console.error('[summarize] Todos os modelos de resumo estão sem quota; encerrando Passo 2 sem retries inúteis.')
+      break
+    }
 
     const payloadPais = candidatosDoPais.map(c => ({ id: c.id, titulo: c.titulo }))
     console.log(`[summarize] Resumindo ${payloadPais.length} candidatos para: ${pais}...`)
@@ -187,13 +217,7 @@ ${JSON.stringify(payloadPais, null, 2)}
 `
 
     try {
-      const result = await generateContentWithRetry(
-        config.gemini.models.summary,
-        promptResumo,
-        z.toJSONSchema(summaryResponseSchema),
-      )
-      const limpo = cleanGeminiJson(result.text || '[]')
-      
+      const limpo = cleanGeminiJson(await executarResumoComFallback(promptResumo))
       const arr = summaryResponseSchema.parse(JSON.parse(limpo))
       const seenIds = new Set<string>()
       const aprovados = arr.map(item => {
