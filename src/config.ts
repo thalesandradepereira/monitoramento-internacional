@@ -14,16 +14,20 @@ function positiveIntegerFromEnv(name: string, defaultValue: number): number {
   return value
 }
 
+const triageModel = process.env.GEMINI_MODEL_TRIAGE?.trim()
+  || process.env.GEMINI_MODEL?.trim()
+  || 'gemini-3.5-flash-lite'
+
 export const config = {
   gemini: {
     apiKey: process.env.GEMINI_API_KEY || '',
     models: {
-      triage: process.env.GEMINI_MODEL_TRIAGE?.trim()
-        || process.env.GEMINI_MODEL?.trim()
-        || 'gemini-3.5-flash-lite',
+      triage: triageModel,
       summary: process.env.GEMINI_MODEL_SUMMARY?.trim()
         || process.env.GEMINI_MODEL?.trim()
         || 'gemini-3.6-flash',
+      summaryFallback: process.env.GEMINI_MODEL_SUMMARY_FALLBACK?.trim()
+        || triageModel,
       translation: process.env.GEMINI_MODEL_TRANSLATION?.trim()
         || process.env.GEMINI_MODEL?.trim()
         || 'gemini-3.5-flash-lite',
