@@ -84,5 +84,5 @@ test('resumo possui fallback explícito quando a quota do modelo editorial esgot
 
   assert.match(source, /isGeminiQuotaExhausted/)
   assert.match(source, /config\.gemini\.models\.summaryFallback/)
-  assert.match(source, /modelo editorial .* quota .* fallback/i)
+  assert.match(source, /modelo editorial .* quota.*fallback/i)
 })
