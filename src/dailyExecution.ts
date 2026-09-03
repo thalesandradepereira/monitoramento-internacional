@@ -23,9 +23,9 @@ interface DailyExecutionLog {
 }
 
 const logPath = path.resolve(__dirname, '..', config.dailyExecutionLogPath)
+const STALE_IN_PROGRESS_AFTER_MS = 45 * 60 * 1000
 
-export function getZonedNow(timezone = config.timezone): { date: string; time: string; timezone: string } {
-  const now = new Date()
+export function getZonedNow(timezone = config.timezone, now = new Date()): { date: string; time: string; timezone: string } {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: timezone,
     year: 'numeric',
@@ -130,7 +130,22 @@ function getEffectiveRealRecord(date: string): DailyExecutionRecord | undefined 
     .sort((a, b) => `${b.date}T${b.time}`.localeCompare(`${a.date}T${a.time}`))[0]
 }
 
-export function assertCanStartRealExecution(date: string): void {
+function wallClockAgeMs(record: DailyExecutionRecord, now: Date): number {
+  const zonedNow = getZonedNow(record.timezone, now)
+  const recordWallClock = Date.parse(`${record.date}T${record.time}Z`)
+  const nowWallClock = Date.parse(`${zonedNow.date}T${zonedNow.time}Z`)
+  if (!Number.isFinite(recordWallClock) || !Number.isFinite(nowWallClock)) return Number.NaN
+  return nowWallClock - recordWallClock
+}
+
+function canRecoverStaleInProgress(record: DailyExecutionRecord, now: Date): boolean {
+  if (record.state !== 'in_progress') return false
+  if (record.attempted !== 0 || record.sent !== 0 || record.failed !== 0) return false
+  const ageMs = wallClockAgeMs(record, now)
+  return Number.isFinite(ageMs) && ageMs >= STALE_IN_PROGRESS_AFTER_MS
+}
+
+export function assertCanStartRealExecution(date: string, now = new Date()): void {
   const sameDay = getEffectiveRealRecord(date)
   if (!sameDay) return
 
@@ -147,6 +162,14 @@ export function assertCanStartRealExecution(date: string): void {
       return
     }
     throw new Error(`[idempotencia] Envio real de ${date} (${config.timezone}) já registrado com falha. Reenvio automático bloqueado para evitar duplicidade.`)
+  }
+
+  if (canRecoverStaleInProgress(sameDay, now)) {
+    console.warn(
+      `[idempotencia] Execução in_progress de ${date} está stale há mais de 45 minutos e não registrou `
+      + 'qualquer tentativa/entrega; recovery seguro permitido.',
+    )
+    return
   }
 
   throw new Error(`[idempotencia] Existe execução real em andamento para ${date} (${config.timezone}). Estado incerto; envio bloqueado.`)
