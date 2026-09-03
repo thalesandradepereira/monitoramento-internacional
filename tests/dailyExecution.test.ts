@@ -87,6 +87,60 @@ test('contabilidade incompleta das tentativas mantém o bloqueio preventivo', ()
   assert.throws(() => mod.assertCanStartRealExecution('2099-01-06'), /Reenvio automático bloqueado/)
 })
 
+test('in_progress antigo sem qualquer tentativa é tratado como stale e permite recovery seguro', () => {
+  const { mod } = loadDailyExecution()
+  mod.persistExecutionRecord({
+    date: '2026-09-03',
+    time: '02:36:54',
+    timezone: 'America/Sao_Paulo',
+    state: 'in_progress',
+    mode: 'manual',
+    attempted: 0,
+    sent: 0,
+    failed: 0,
+  })
+
+  assert.doesNotThrow(() => mod.assertCanStartRealExecution('2026-09-03', new Date('2026-09-03T08:27:00Z')))
+})
+
+test('in_progress recente continua bloqueado mesmo sem tentativas', () => {
+  const { mod } = loadDailyExecution()
+  mod.persistExecutionRecord({
+    date: '2026-09-03',
+    time: '05:10:00',
+    timezone: 'America/Sao_Paulo',
+    state: 'in_progress',
+    mode: 'manual',
+    attempted: 0,
+    sent: 0,
+    failed: 0,
+  })
+
+  assert.throws(
+    () => mod.assertCanStartRealExecution('2026-09-03', new Date('2026-09-03T08:27:00Z')),
+    /Estado incerto/,
+  )
+})
+
+test('in_progress antigo com tentativa registrada continua bloqueado', () => {
+  const { mod } = loadDailyExecution()
+  mod.persistExecutionRecord({
+    date: '2026-09-03',
+    time: '02:36:54',
+    timezone: 'America/Sao_Paulo',
+    state: 'in_progress',
+    mode: 'manual',
+    attempted: 1,
+    sent: 0,
+    failed: 0,
+  })
+
+  assert.throws(
+    () => mod.assertCanStartRealExecution('2026-09-03', new Date('2026-09-03T08:27:00Z')),
+    /Estado incerto/,
+  )
+})
+
 test('classifica rejeição non-fast-forward como conflito recuperável', () => {
   const { mod } = loadDailyExecution()
   assert.equal(mod.isConcurrentPushRejection(new Error("! [rejected] HEAD -> main (non-fast-forward)")), true)
