@@ -1,4 +1,4 @@
-name: Publicar v1.1.6
+name: Publicar v1.1.7
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
     paths:
       - '.github/workflows/release.yml'
-      - 'scripts/prepare-release-v1.1.6.mjs'
+      - 'scripts/prepare-release-v1.1.7.mjs'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-v1.1.6
+  group: release-v1.1.7
   cancel-in-progress: false
 
 jobs:
@@ -25,30 +25,30 @@ jobs:
 
     steps:
       - name: Checkout main
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: main
           fetch-depth: 0
           fetch-tags: true
 
       - name: Setup Node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: '22'
           cache: npm
 
-      - name: Preparar metadados v1.1.6 em memória
-        run: node scripts/prepare-release-v1.1.6.mjs
+      - name: Preparar metadados v1.1.7 em memória
+        run: node scripts/prepare-release-v1.1.7.mjs
 
       - name: Validar metadados e artefatos de produção
         shell: bash
         run: |
           set -euo pipefail
-          node -e "const p=require('./package.json'); if (p.version !== '1.1.6') process.exit(1)"
-          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.6' || p.packages[''].version !== '1.1.6') process.exit(1)"
-          grep -Fq '**Versão / Version:** 1.1.6' README.md
-          grep -Fq '### Atualização operacional — 31/08/2026' README.md
-          grep -Fq '### Operational update — 2026-08-31' README.md
+          node -e "const p=require('./package.json'); if (p.version !== '1.1.7') process.exit(1)"
+          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.7' || p.packages[''].version !== '1.1.7') process.exit(1)"
+          grep -Fq '**Versão / Version:** 1.1.7' README.md
+          grep -Fq '### Atualização operacional — 03/09/2026' README.md
+          grep -Fq '### Operational update — 2026-09-03' README.md
           grep -Fq 'tests/*.test.mjs' package.json
           test ! -f recipients.txt
           RELEASE_DATE="$(TZ=America/Sao_Paulo date +%d-%m-%Y)"
@@ -82,7 +82,7 @@ jobs:
         run: npm --prefix infra/gcp-scheduler-relay test
 
       - name: Build do relay
-        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.6 infra/gcp-scheduler-relay
+        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.7 infra/gcp-scheduler-relay
 
       - name: Validar YAML e whitespace
         shell: bash
@@ -95,7 +95,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4 v1.1.5; do
+          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4 v1.1.5 v1.1.6; do
             gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
             git cat-file -e "$tag^{commit}"
             if git ls-tree -r --name-only "$tag" | grep -Eq '(^|/)recipients\.txt$'; then
@@ -138,7 +138,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           if ! git diff --quiet -- package.json package-lock.json README.md; then
             git add package.json package-lock.json README.md
-            git commit -m 'chore: preparar release v1.1.6'
+            git commit -m 'chore: preparar release v1.1.7'
             pushed=false
             for attempt in 1 2 3; do
               if git push origin HEAD:main; then
@@ -151,31 +151,36 @@ jobs:
           fi
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Criar release v1.1.6
+      - name: Criar release v1.1.7
         shell: bash
         env:
           RELEASE_SHA: ${{ steps.persist.outputs.sha }}
         run: |
           set -euo pipefail
-          if gh release view v1.1.6 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'Release v1.1.6 já existe; nenhuma duplicação será criada.'
+          if gh release view v1.1.7 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Release v1.1.7 já existe; nenhuma duplicação será criada.'
             exit 0
           fi
           cat > /tmp/release-notes.md <<'EOF'
-          ## Monitoramento Internacional v1.1.6
+          ## Monitoramento Internacional v1.1.7
 
-          Scheduler Chaos QA e hardening de publicação.
+          Release corretiva do incidente de quota Gemini e recuperação de execução abandonada de 03/09/2026.
 
           ### Correções
-          - Suite passa a executar também `tests/*.test.mjs` na raiz, fechando uma lacuna real de cobertura do CI.
-          - Publicação social exige que o dashboard datado e o alias público `/hoje` correspondam à edição atual antes do dispatch.
-          - Cache-busting e redirects são validados antes de liberar o publisher social.
-          - Controlador externo e idempotência diária permanecem como relógio/guard independentes do scheduler GitHub.
+          - Quota definitiva HTTP 429 do `gemini-3.6-flash` passa a ser fail-fast, sem retries inúteis.
+          - Circuit breaker evita novas chamadas ao modelo editorial após quota definitiva.
+          - Fallback controlado para `gemini-3.5-flash-lite` mantém a edição operacional.
+          - Estado `in_progress` abandonado pode ser recuperado somente após 45 minutos e apenas com `attempted=0`, `sent=0`, `failed=0`.
+          - Qualquer evidência de tentativa/entrega continua bloqueando recovery automático para preservar exact-once.
+          - README documenta a lacuna de QA e a cadeia temporal agora coberta.
 
           ### Evidências
-          - Run de hardening social GREEN: 33382960655.
-          - Suite completa incluindo chaos MJS, npm audit, TypeScript, Worker, relay GCP, Docker e YAML.
-          - GitHub Pages `/hoje` e dashboard atual validados com cache-busting.
-          - Instagram da data validado como completed com platform_id.
+          - RED stale recovery: run 33733637330.
+          - GREEN stale recovery: run 33733725525.
+          - Produção: run 33733907369, com fallback real após HTTP 429 e 7/7 e-mails aceitos pelo SMTP.
+          - Dashboard e `/hoje` da data publicados.
+          - Instagram da data concluído com `platform_id`.
+          - Execução posterior do Google Cloud Scheduler permaneceu idempotente sem duplicação.
+          - Release gate: suíte completa, npm audit, TypeScript, Worker, relay GCP, Docker, YAML, Pages e estado social.
           EOF
-          gh release create v1.1.6 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.6' --notes-file /tmp/release-notes.md
+          gh release create v1.1.7 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.7' --notes-file /tmp/release-notes.md
