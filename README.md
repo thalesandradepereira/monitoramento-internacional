@@ -8,7 +8,7 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.7<br>
+> **Versão / Version:** 1.1.8<br>
 > **Fuso operacional / Operational timezone:** `America/Sao_Paulo`<br>
 > **Objetivo / Purpose:** monitoramento diário bilíngue, dashboard, e-mail e integração social com múltiplas camadas de contingência.
 
@@ -21,6 +21,14 @@
 O **Monitoramento Mídia Internacional** é um pipeline automatizado que coleta notícias internacionais, filtra e deduplica conteúdo, usa Google Gemini para triagem e síntese editorial, produz versões em **PT-BR** e **EN-US**, gera um dashboard HTML diário e envia mensagens individualizadas aos destinatários ativos mantidos fora do GitHub.
 
 O projeto foi desenhado para operar com **fail-closed**, **idempotência diária** e **múltiplos relógios independentes**. Uma execução de contingência pode acontecer várias vezes no mesmo dia sem reenviar conteúdo quando o estado já está concluído.
+
+### Atualização operacional — 04/09/2026
+
+A v1.1.8 registra a validação operacional de produção de 04/09/2026. A edição diária alcançou estado `completed`, o dashboard `Dashboard-Monitoramento-04-09-2026.html` foi persistido, o alias `/hoje` apontou para a mesma data e o Instagram concluiu com `platform_id` não vazio.
+
+O failsafe externo do Google Cloud Scheduler foi comprovado novamente em produção pelo run `33860370126`, evento `repository_dispatch` com modo `gcp-scheduler`. O guard aceitou o target de mídia e, ao chegar ao passo de execução real, encontrou 04/09 já concluído e encerrou explicitamente sem novo envio. O job social subsequente foi ignorado, preservando idempotência e evitando Story duplicado.
+
+Essa evidência confirma operação automática diária, redundância entre relógios e proteção contra duplicidade no cenário observado. Como qualquer arquitetura dependente de serviços externos, a release não afirma disponibilidade matemática absoluta de provedores; ela documenta evidência real de produção e mantém os gates fail-safe existentes.
 
 ### Atualização operacional — 03/09/2026
 
@@ -327,6 +335,14 @@ A versão 1.1.4 consolida as correções do failsafe Google Cloud, a validação
 **Global Media Monitoring** is an automated pipeline that collects international news, filters and deduplicates content, uses Google Gemini for editorial triage and summarization, produces **PT-BR** and **EN-US** output, generates a daily HTML dashboard, and sends individualized e-mails to active recipients stored outside GitHub.
 
 The system is designed around **fail-closed behavior**, **daily idempotency**, and **multiple independent clocks**. Recovery attempts can run more than once without resending content after the operational date has already reached `completed`.
+
+### Operational update — 2026-09-04
+
+Version 1.1.8 records the 2026-09-04 production validation. The daily edition reached `completed`, `Dashboard-Monitoramento-04-09-2026.html` was persisted, the public `/hoje` alias pointed to the same date, and Instagram completed with a non-empty `platform_id`.
+
+The external Google Cloud Scheduler failsafe was proven again in production by run `33860370126`, a `repository_dispatch` execution in `gcp-scheduler` mode. The guard accepted the media target and the real execution step found September 4 already completed, then exited explicitly without another delivery. The downstream social job was skipped, preserving idempotency and avoiding a duplicate Story.
+
+This evidence confirms daily automatic operation, independent-clock redundancy, and duplicate protection for the observed production scenario. As with any architecture that depends on external providers, the release does not claim mathematical provider availability; it documents live production evidence while preserving the existing fail-safe gates.
 
 ### Operational update — 2026-09-03
 
