@@ -38,3 +38,12 @@ test('internal GitHub schedules remain independent and idempotent', () => {
   assert.match(watchdog, /cron: '29 5 \* \* \*'/)
   assert.match(watchdog, /cron: '29 6 \* \* \*'/)
 })
+
+
+test('scheduler update path avoids create-only --headers flag while create path keeps JSON content type', () => {
+  const updateLine = 'gcloud scheduler jobs update http "$job_name" "${common[@]}" >/dev/null'
+  const createBlock = blockStartingAt(deploy, 'gcloud scheduler jobs create http "$job_name"')
+  assert.match(deploy, new RegExp(updateLine.replace(/[.*+?^$()|[\]\\]/g, '\\$&')))
+  assert.doesNotMatch(deploy.slice(deploy.indexOf('local common=('), deploy.indexOf('# External clocks overlap')), /"--headers=Content-Type=application\/json"/)
+  assert.match(createBlock, /--headers=Content-Type=application\/json/)
+})
