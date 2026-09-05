@@ -8,8 +8,12 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.8<br>
-> **Fuso operacional / Operational timezone:** `America/Sao_Paulo`<br>
+> **Versão / Version:** 1.1.9
+>
+> **Fuso operacional / Operational timezone:** `America/Sao_Paulo`
+>
+> **Status de produção / Production status:** Google Cloud trigger mesh **LIVE + E2E validated** em 05/09/2026.
+>
 > **Objetivo / Purpose:** monitoramento diário bilíngue, dashboard, e-mail e integração social com múltiplas camadas de contingência.
 
 ---
@@ -18,41 +22,78 @@
 
 ### Visão executiva
 
-O **Monitoramento Mídia Internacional** é um pipeline automatizado que coleta notícias internacionais, filtra e deduplica conteúdo, usa Google Gemini para triagem e síntese editorial, produz versões em **PT-BR** e **EN-US**, gera um dashboard HTML diário e envia mensagens individualizadas aos destinatários ativos mantidos fora do GitHub.
+O **Monitoramento Mídia Internacional** coleta notícias internacionais, filtra e deduplica conteúdo, usa Google Gemini para triagem e síntese editorial, produz versões em **PT-BR** e **EN-US**, gera um dashboard HTML diário, envia e-mails individualizados e aciona o publisher social.
 
-O projeto foi desenhado para operar com **fail-closed**, **idempotência diária** e **múltiplos relógios independentes**. Uma execução de contingência pode acontecer várias vezes no mesmo dia sem reenviar conteúdo quando o estado já está concluído.
+A arquitetura opera com três princípios centrais:
 
-### Hardening de gatilhos — 05/09/2026
+- **fail-closed:** estado incerto ou entrega parcial nunca autoriza retry cego;
+- **idempotência diária:** uma data já concluída não gera novo e-mail ou nova Story;
+- **múltiplos relógios:** GitHub principal, watchdog e Google Cloud Scheduler podem acordar o pipeline de forma redundante.
 
-A investigação do incidente recorrente de 05/09/2026 confirmou ausência simultânea de runs `schedule` nos repositórios de mídia e publicação. A falha comum ocorreu antes do pipeline: o GitHub Actions não criou as execuções agendadas observadas naquela janela.
+### Release v1.1.9 — hardening final de produção em 05/09/2026
 
-O failsafe externo versionado no Google Cloud Scheduler existia, porém estava limitado a duas oportunidades tardias por alvo. O `deploy.sh` foi corrigido para criar uma malha externa sobreposta à janela de recuperação:
+A investigação do décimo dia consecutivo de incidentes encontrou uma causa comum: durante a janela observada, os repositórios de mídia e publicação não receberam os `schedule` runs esperados do GitHub Actions. A falha ocorreu antes da execução do pipeline.
 
-- **Mídia:** 03:11, 03:41, 04:11, 04:41, 05:11, 05:41, 06:11 e 06:41 BRT (`11,41 3-6 * * *`).
-- **Publisher:** 03:21, 03:51, 04:21, 04:51, 05:21, 05:51, 06:21 e 06:51 BRT (`21,51 3-6 * * *`).
+O failsafe externo do Google Cloud já existia, mas cobria apenas oportunidades tardias. A v1.1.9 consolida a malha externa ampliada e sua validação live:
 
-O publisher fica defasado em 10 minutos. Cada ativação continua protegida pela idempotência diária, validação de target/job/data, OIDC e retry limitado. O teste de regressão foi executado em RED no run `33955666834` e o gate completo passou em GREEN no run `33955788944`, cobrindo suíte completa, `npm audit`, TypeScript, Worker, relay GCP, sintaxe Bash, Docker, YAML e whitespace.
+| Alvo | Cron live | Horários em Brasília |
+|---|---|---|
+| Mídia | `11,41 3-6 * * *` | 03:11, 03:41, 04:11, 04:41, 05:11, 05:41, 06:11, 06:41 |
+| Publisher | `21,51 3-6 * * *` | 03:21, 03:51, 04:21, 04:51, 05:21, 05:51, 06:21, 06:51 |
 
-**Importante:** esta alteração atualiza o código de provisionamento. A nova cadência somente está ativa no Google Cloud real depois de reexecutar `infra/gcp-scheduler-relay/deploy.sh` no projeto de produção e confirmar os schedules live. O postmortem detalhado está em `POSTMORTEM-2026-09-05.md`.
+O publisher fica defasado em 10 minutos. Cada wake-up continua protegido por OIDC, allow-list de job/target, validação de data/frescor, retries limitados e estado autoritativo.
 
-### Recuperação operacional — 05/09/2026
+### Incidente de compatibilidade `gcloud` e correção
 
-O controlador externo pode usar reexecução específica de job como mecanismo auxiliar quando existe um run anterior válido e não há execução ativa. Esse mecanismo não é considerado relógio independente: uma reexecução pode ser aceita pela API e ainda permanecer pendente se o plano de execução do GitHub estiver degradado.
+O primeiro redeploy live de 05/09 atualizou o Cloud Run, mas falhou na atualização dos Scheduler Jobs porque a versão corrente do `gcloud scheduler jobs update http` rejeitou o argumento `--headers=Content-Type=application/json` no caminho de **update**.
 
-- A reexecução nunca substitui o Google Cloud Scheduler como relógio externo.
-- E-mails já concluídos não são reenviados para reparar Pages ou Instagram.
-- Falha de leitura, entrega parcial e estado incerto não autorizam tentativa forçada.
-- Atrasos do scheduler do GitHub e falhas dos serviços externos continuam possíveis.
+A correção foi implementada no PR **#60** e integrada no commit `d580eb95a5f34fd2a49cd46365437fc09b17bc1c`:
 
-### Atualização operacional — 04/09/2026
+- `--headers` permanece no caminho de criação do job;
+- o caminho de atualização deixa de passar o argumento incompatível;
+- teste de regressão garante que create/update não voltem a divergir incorretamente;
+- CI do PR: run `33965307627`, sucesso;
+- CI da `main` após merge: run `33965379023`, sucesso.
 
-A v1.1.8 registra a validação operacional de produção de 04/09/2026. A edição diária alcançou estado `completed`, o dashboard `Dashboard-Monitoramento-04-09-2026.html` foi persistido, o alias `/hoje` apontou para a mesma data e o Instagram concluiu com `platform_id` não vazio.
+### Evidência live de produção — 05/09/2026
 
-O failsafe externo do Google Cloud Scheduler foi comprovado novamente em produção pelo run `33860370126`, evento `repository_dispatch` com modo `gcp-scheduler`. O guard aceitou o target de mídia e, ao chegar ao passo de execução real, encontrou 04/09 já concluído e encerrou explicitamente sem novo envio. O job social subsequente foi ignorado, preservando idempotência e evitando Story duplicado.
+O redeploy final foi executado no projeto `tap-monitoramento-auto` e concluiu com:
 
-### Atualização operacional — 03/09/2026
+- Cloud Run revision `tap-github-scheduler-relay-00007-24r` servindo 100% do tráfego;
+- jobs `tap-monitoramento-media-failsafe` e `tap-instagram-publisher-failsafe` em estado `ENABLED`;
+- timezone `America/Sao_Paulo` nos dois jobs;
+- OIDC com service account dedicado;
+- novos crons persistidos no Cloud Scheduler;
+- versões antigas do secret de dispatch removidas, mantendo somente a versão ativa necessária.
 
-A v1.1.7 fecha o incidente de 03/09/2026, no qual a síntese editorial com `gemini-3.6-flash` atingiu a quota definitiva da Gemini API (HTTP 429). O pipeline agora classifica esgotamento definitivo de quota como não retentável, abre um circuit breaker para o modelo editorial e faz fallback controlado para `gemini-3.5-flash-lite`.
+#### E2E Mídia
+
+Um `gcloud scheduler jobs run tap-monitoramento-media-failsafe` gerou o GitHub run **`33965818735`** com evento `repository_dispatch` e conclusão `success`.
+
+O guard aceitou `target=media`, recalculou a data operacional como `2026-09-05` e o pipeline encontrou o estado diário já `completed`. Resultado: **encerrou sem novo envio de e-mail** e o job social subsequente foi `skipped`.
+
+O estado autoritativo de 05/09 permanece:
+
+```text
+state=completed
+mode=scheduled
+attempted=7
+sent=7
+failed=0
+```
+
+#### E2E Publisher
+
+O `gcloud scheduler jobs run tap-instagram-publisher-failsafe` gerou no repositório privado o run **`33965937669`**, também `success`.
+
+O publisher aceitou `repository_dispatch/gcp_scheduler`, encontrou `instagram.state=completed` e retornou:
+
+```text
+ready=false
+reason=existing_state_completed
+```
+
+Nenhuma imagem foi gerada e nenhuma chamada à Meta foi iniciada. O estado de 05/09 permaneceu `completed`, com `platform_id=18352903591218220` e sem Story duplicado.
 
 ### Arquitetura de produção
 
@@ -80,27 +121,64 @@ flowchart LR
 | Google Cloud — mídia | 03:11/03:41 até 06:41 | relógio externo para mídia |
 | Google Cloud — publisher | 03:21/03:51 até 06:51 | relógio externo para publicação |
 
-> As execuções repetidas são intencionais. O estado diário impede reenvio quando a data já está `completed`.
+As ativações redundantes são intencionais. O estado persistido é o gate que impede efeitos externos duplicados.
 
-### Estado da camada Google Cloud
+### Google Cloud Scheduler / Cloud Run
 
-O repositório contém uma implementação pronta para produção com Cloud Run privado, OIDC, Secret Manager, validação de job/target/data e provisionamento idempotente em `infra/gcp-scheduler-relay/deploy.sh`.
+A infraestrutura versionada está em:
 
-A camada foi validada em produção anteriormente. Após o hardening de 05/09/2026, **o novo código requer redeploy live** para que as janelas ampliadas substituam os schedules anteriores no Google Cloud.
+```text
+infra/gcp-scheduler-relay/
+```
 
-### Operação e diagnóstico
+Características principais:
 
-| Verificação | Resultado esperado |
-|---|---|
-| `state/daily-executions.json` | registro `completed` para a data |
-| `docs/Dashboard-Monitoramento-DD-MM-AAAA.html` | arquivo presente |
-| `/hoje` | aponta para a data corrente |
-| Logs de envio | `failed=0` |
-| CI | verde |
-| Watchdog | encerra sem duplicar quando o dia já está concluído |
-| GCP dispatch | aceito somente se job, target e horário forem válidos |
+1. Cloud Scheduler envia POST autenticado por OIDC.
+2. Cloud Run permanece privado e aceita somente o invoker autorizado.
+3. O relay valida job, target, data e frescor.
+4. A credencial GitHub fica no Secret Manager.
+5. O relay emite `repository_dispatch` para o repositório correto.
+6. O workflow valida novamente o evento antes de executar qualquer efeito real.
+7. O provisionamento é idempotente: redeploy atualiza recursos existentes.
 
-Em caso de incidente, consulte primeiro o estado persistido antes de reexecutar qualquer rotina real.
+### Idempotência e recuperação
+
+Antes de qualquer recuperação real:
+
+1. consulte `state/daily-executions.json`;
+2. confirme se existe run `queued` ou `in_progress`;
+3. valide dashboard datado e `/hoje`;
+4. nunca reenvie e-mail para reparar Pages ou Instagram;
+5. nunca force retry após entrega parcial ou estado ambíguo;
+6. trate re-run de job GitHub como mecanismo auxiliar, não como relógio independente.
+
+### QA e desenvolvimento
+
+```bash
+npm ci
+npm audit --audit-level=moderate
+npm test
+npx tsc --noEmit
+node --check worker/index.js
+node --check infra/gcp-scheduler-relay/src/server.mjs
+bash -n infra/gcp-scheduler-relay/deploy.sh
+npm --prefix infra/gcp-scheduler-relay test
+docker build -t tap-gcp-scheduler-relay:qa infra/gcp-scheduler-relay
+```
+
+O gate de release também valida YAML, whitespace, artefatos do dia, GitHub Pages `/hoje`, dashboard datado e estado social `completed` com `platform_id` não vazio.
+
+### Histórico recente
+
+| Versão | Data | Destaque |
+|---|---|---|
+| v1.1.7 | 03/09/2026 | circuit breaker/fallback Gemini e recuperação conservadora de stale `in_progress` |
+| v1.1.8 | 04/09/2026 | validação operacional diária e prova do failsafe externo anterior |
+| **v1.1.9** | **05/09/2026** | trigger mesh GCP ampliado, redeploy live, compatibilidade `gcloud` corrigida e E2E idempotente nos dois alvos |
+
+### Risco residual
+
+O Google Cloud Scheduler remove o **scheduler do GitHub** como relógio único, mas o GitHub Actions continua sendo o plano de execução. Uma indisponibilidade completa do GitHub Actions ainda pode impedir que um `repository_dispatch` seja executado. Eliminar também essa dependência exigiria um executor independente, por exemplo Cloud Run Jobs.
 
 ---
 
@@ -108,22 +186,33 @@ Em caso de incidente, consulte primeiro o estado persistido antes de reexecutar 
 
 ### Executive overview
 
-**Global Media Monitoring** is an automated pipeline that collects international news, filters and deduplicates content, uses Google Gemini for editorial triage and summarization, produces **PT-BR** and **EN-US** output, generates a daily HTML dashboard, and sends individualized e-mails to active recipients stored outside GitHub.
+**Global Media Monitoring** is an automated pipeline that collects and deduplicates international news, uses Google Gemini for editorial triage and summarization, generates **PT-BR** and **EN-US** output, publishes a daily HTML dashboard, sends individualized e-mails, and wakes the private social publisher.
 
-The system is designed around **fail-closed behavior**, **daily idempotency**, and **multiple independent clocks**.
+The system is built around **fail-closed behavior**, **daily idempotency**, and **multiple clocks**.
 
-### Trigger hardening — 2026-09-05
+### v1.1.9 — production hardening completed on 2026-09-05
 
-The recurring 2026-09-05 incident confirmed simultaneous absence of GitHub Actions `schedule` runs in both media and publisher repositories. The shared failure happened before pipeline execution.
+The recurring incident investigation found a shared pre-pipeline failure: expected GitHub Actions `schedule` runs were absent in both media and publisher repositories during the observed window.
 
-The versioned Google Cloud Scheduler failsafe existed, but provisioning only provided two late opportunities per target. `deploy.sh` now defines an overlapping external recovery mesh:
+The external Google Cloud failsafe has now been expanded and deployed live:
 
-- **Media:** 03:11, 03:41, 04:11, 04:41, 05:11, 05:41, 06:11 and 06:41 BRT (`11,41 3-6 * * *`).
-- **Publisher:** 03:21, 03:51, 04:21, 04:51, 05:21, 05:51, 06:21 and 06:51 BRT (`21,51 3-6 * * *`).
+- **Media:** `11,41 3-6 * * *` — 03:11 through 06:41 BRT every 30 minutes.
+- **Publisher:** `21,51 3-6 * * *` — 03:21 through 06:51 BRT every 30 minutes.
 
-Publisher wake-ups are staggered 10 minutes after media. Each wake-up remains protected by daily idempotency, target/job/date validation, OIDC and bounded retries. Regression evidence: RED run `33955666834`; full GREEN gate `33955788944`.
+The publisher is staggered 10 minutes after media. Repeated wake-ups remain safe because persistent state blocks duplicate effects after completion.
 
-**Important:** this changes the provisioning code. The new cadence becomes active in the real Google Cloud environment only after `infra/gcp-scheduler-relay/deploy.sh` is redeployed in production and the live schedules are verified. See `POSTMORTEM-2026-09-05.md`.
+### Live evidence
+
+- Cloud Run revision `tap-github-scheduler-relay-00007-24r` deployed and serving traffic.
+- Both Scheduler jobs are `ENABLED` in `America/Sao_Paulo` with OIDC.
+- Media E2E run `33965818735`: `repository_dispatch`, success, existing completed state detected, **no duplicate e-mail**.
+- Publisher E2E run `33965937669`: `repository_dispatch`, success, `ready=false / existing_state_completed`, **no image generation and no Meta publish call**.
+- September 5 media state remained `attempted=7`, `sent=7`, `failed=0`.
+- September 5 Instagram state remained `completed` with `platform_id=18352903591218220`.
+
+### `gcloud` compatibility fix
+
+The first live redeploy exposed a real compatibility issue: current `gcloud scheduler jobs update http` rejected the `--headers` argument. PR #60 fixed the update path while preserving the header on job creation and added regression coverage. PR CI run `33965307627` and post-merge main CI run `33965379023` both completed successfully.
 
 ### Scheduling layers
 
@@ -131,14 +220,12 @@ Publisher wake-ups are staggered 10 minutes after media. Each wake-up remains pr
 |---|---:|---|
 | GitHub primary | 02:17, 03:17 | primary execution + recovery |
 | GitHub watchdog | 04:29, 05:29, 06:29 | GitHub-side fallback |
-| Google Cloud — media | 03:11/03:41 through 06:41 | independent external clock for media |
-| Google Cloud — publisher | 03:21/03:51 through 06:51 | independent external clock for publishing |
-
-Repeated wake-ups are intentional and safe because persistent daily state prevents duplicate external effects after completion.
+| Google Cloud — media | 03:11/03:41 through 06:41 | external media clock |
+| Google Cloud — publisher | 03:21/03:51 through 06:51 | external publisher clock |
 
 ### Residual risk
 
-The Google Cloud layer removes the GitHub **scheduler** as a single clock. It does not remove GitHub Actions as the execution plane. A complete GitHub Actions outage may still prevent externally dispatched jobs from running. Eliminating that residual dependency would require an independent executor such as Cloud Run Jobs, not only an independent scheduler.
+Google Cloud removes GitHub **Scheduler** as the only clock. GitHub Actions is still the execution plane; a full Actions outage can still block externally dispatched work. Removing that residual dependency would require an independent executor such as Cloud Run Jobs.
 
 ---
 

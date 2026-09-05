@@ -1,4 +1,4 @@
-name: Publicar v1.1.8
+name: Publicar v1.1.9
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
     paths:
       - '.github/workflows/release.yml'
-      - 'scripts/prepare-release-v1.1.8.mjs'
+      - 'scripts/prepare-release-v1.1.9.mjs'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-v1.1.8
+  group: release-v1.1.9
   cancel-in-progress: false
 
 jobs:
@@ -37,19 +37,22 @@ jobs:
           node-version: '22'
           cache: npm
 
-      - name: Preparar metadados v1.1.8 em memória
-        run: node scripts/prepare-release-v1.1.8.mjs
+      - name: Preparar metadados v1.1.9 em memória
+        run: node scripts/prepare-release-v1.1.9.mjs
 
       - name: Validar metadados e artefatos de produção
         shell: bash
         run: |
           set -euo pipefail
-          node -e "const p=require('./package.json'); if (p.version !== '1.1.8') process.exit(1)"
-          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.8' || p.packages[''].version !== '1.1.8') process.exit(1)"
-          grep -Fq '**Versão / Version:** 1.1.8' README.md
-          grep -Fq '### Atualização operacional — 04/09/2026' README.md
-          grep -Fq '### Operational update — 2026-09-04' README.md
-          grep -Fq 'tests/*.test.mjs' package.json
+          node -e "const p=require('./package.json'); if (p.version !== '1.1.9') process.exit(1)"
+          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.9' || p.packages[''].version !== '1.1.9') process.exit(1)"
+          grep -Fq '**Versão / Version:** 1.1.9' README.md
+          grep -Fq '### Release v1.1.9 — hardening final de produção em 05/09/2026' README.md
+          grep -Fq '### v1.1.9 — production hardening completed on 2026-09-05' README.md
+          grep -Fq '33965818735' README.md
+          grep -Fq '33965937669' README.md
+          grep -Fq '11,41 3-6 * * *' README.md
+          grep -Fq '21,51 3-6 * * *' README.md
           test ! -f recipients.txt
           RELEASE_DATE="$(TZ=America/Sao_Paulo date +%d-%m-%Y)"
           ISO_DATE="$(TZ=America/Sao_Paulo date +%Y-%m-%d)"
@@ -64,7 +67,7 @@ jobs:
       - name: Auditoria de segurança
         run: npm audit --audit-level=moderate
 
-      - name: Testes completos, incluindo chaos MJS de raiz
+      - name: Testes completos
         run: npm test
 
       - name: TypeScript
@@ -82,7 +85,7 @@ jobs:
         run: npm --prefix infra/gcp-scheduler-relay test
 
       - name: Build do relay
-        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.8 infra/gcp-scheduler-relay
+        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.9 infra/gcp-scheduler-relay
 
       - name: Validar YAML e whitespace
         shell: bash
@@ -95,7 +98,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4 v1.1.5 v1.1.6 v1.1.7; do
+          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4 v1.1.5 v1.1.6 v1.1.7 v1.1.8; do
             gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
             git cat-file -e "$tag^{commit}"
             if git ls-tree -r --name-only "$tag" | grep -Eq '(^|/)recipients\.txt$'; then
@@ -138,7 +141,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           if ! git diff --quiet -- package.json package-lock.json README.md; then
             git add package.json package-lock.json README.md
-            git commit -m 'chore: preparar release v1.1.8'
+            git commit -m 'chore: preparar release v1.1.9'
             pushed=false
             for attempt in 1 2 3; do
               if git push origin HEAD:main; then
@@ -151,31 +154,41 @@ jobs:
           fi
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Criar release v1.1.8
+      - name: Criar release v1.1.9
         shell: bash
         env:
           RELEASE_SHA: ${{ steps.persist.outputs.sha }}
         run: |
           set -euo pipefail
-          if gh release view v1.1.8 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'Release v1.1.8 já existe; nenhuma duplicação será criada.'
+          if gh release view v1.1.9 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Release v1.1.9 já existe; nenhuma duplicação será criada.'
             exit 0
           fi
           cat > /tmp/release-notes.md <<'EOF'
-          ## Monitoramento Internacional v1.1.8
+          ## Monitoramento Internacional v1.1.9
 
-          Validação operacional de produção e prova real do failsafe externo em 04/09/2026.
+          Hardening de produção do plano de acionamento externo, após investigação do incidente recorrente de scheduler em 05/09/2026.
 
-          ### Evidências
-          - Edição de 04/09/2026 registrada como completed, com dashboard datado e alias /hoje coerentes.
-          - Instagram concluído com platform_id 18099829877013248 e attempts=1.
-          - Google Cloud Scheduler acionou automaticamente o run 33860370126 via repository_dispatch.
-          - O guard gcp-scheduler aceitou target=media e o pipeline encerrou por idempotência ao encontrar a data já completed.
-          - Nenhum novo e-mail foi enviado e o job social foi skipped, sem Story duplicado.
-          - CI mais recente da alteração operacional do dia: run 33851979747, success.
+          ### Evoluções
+          - Google Cloud Scheduler ampliado para uma malha externa de 8 wake-ups para mídia e 8 para publisher entre 03h e 06h BRT;
+          - schedules live: mídia `11,41 3-6 * * *` e publisher `21,51 3-6 * * *`;
+          - Cloud Run privado com OIDC, Secret Manager e provisionamento idempotente preservados;
+          - compatibilidade com a versão corrente do `gcloud scheduler jobs update http` corrigida no PR #60;
+          - teste de regressão adicionado para separar flags de create/update.
 
-          ### Postura
-          - Mantém fail-safe, idempotência diária e múltiplos relógios independentes.
-          - Esta release documenta evidência real de produção; não afirma disponibilidade matemática absoluta de serviços externos.
+          ### Evidência de produção
+          - Cloud Run revision `tap-github-scheduler-relay-00007-24r` em produção;
+          - media E2E: run `33965818735`, `repository_dispatch`, success e encerramento por idempotência sem novo e-mail;
+          - publisher E2E: run `33965937669`, success, `ready=false / existing_state_completed`, sem imagem nova e sem chamada à Meta;
+          - edição de 05/09 permaneceu `attempted=7`, `sent=7`, `failed=0`;
+          - Instagram de 05/09 permaneceu `completed` com `platform_id=18352903591218220`.
+
+          ### QA
+          - PR #60 CI: `33965307627` success;
+          - main CI após merge: `33965379023` success;
+          - release gate reexecuta npm audit, suíte completa, TypeScript, relay, Docker, YAML, Pages e validação social.
+
+          ### Risco residual
+          O Google Cloud remove o GitHub Scheduler como relógio único, mas GitHub Actions continua sendo o executor. Uma indisponibilidade completa do Actions ainda exige um executor externo para eliminação total dessa dependência.
           EOF
-          gh release create v1.1.8 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.8' --notes-file /tmp/release-notes.md
+          gh release create v1.1.9 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.9' --notes-file /tmp/release-notes.md
