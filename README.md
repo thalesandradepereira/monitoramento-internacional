@@ -8,9 +8,12 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.9  
-> **Fuso operacional / Operational timezone:** `America/Sao_Paulo`  
-> **Status de produção / Production status:** Google Cloud trigger mesh **LIVE + E2E validated** em 05/09/2026.  
+> **Versão / Version:** 1.1.9
+>
+> **Fuso operacional / Operational timezone:** `America/Sao_Paulo`
+>
+> **Status de produção / Production status:** Google Cloud trigger mesh **LIVE + E2E validated** em 05/09/2026.
+>
 > **Objetivo / Purpose:** monitoramento diário bilíngue, dashboard, e-mail e integração social com múltiplas camadas de contingência.
 
 ---
