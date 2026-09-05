@@ -22,13 +22,26 @@ O **Monitoramento Mídia Internacional** é um pipeline automatizado que coleta 
 
 O projeto foi desenhado para operar com **fail-closed**, **idempotência diária** e **múltiplos relógios independentes**. Uma execução de contingência pode acontecer várias vezes no mesmo dia sem reenviar conteúdo quando o estado já está concluído.
 
+### Recuperação operacional — 05/09/2026
+
+O controlador externo de Mídia passou a usar a operação específica de reexecução de job do GitHub Actions. Quando a edição está ausente e não há execução ativa, seleciona um run concluído de `monitoramento.yml` com origem `schedule` e reexecuta `rodar-monitoramento`. Para Instagram, após concluir a Mídia, pode reexecutar `detect-and-publish` de `publish.yml` com origem `schedule`, somente se não houver registro da data nem execução social ativa.
+
+A configuração do controlador pertence ao ChatGPT e não é implantada por este README. As janelas de verificação permanecem 02:35, 03:35, 04:35, 05:35 e 06:35 BRT.
+
+- O controlador não usa mais escrita em `ops/recover-media.txt` ou `ops/recover-instagram.txt` como atuador.
+- Reexecuções mantêm o `created_at` original: verifique `run_attempt`, `updated_at` e os jobs da tentativa mais recente.
+- A confirmação exige aumento da tentativa, término do job e estado da data atual; resposta aceita ou workflow verde isolado não comprova entrega.
+- E-mails já concluídos não são reenviados para reparar Pages ou Instagram.
+- Falha de leitura, entrega parcial e estado incerto não autorizam tentativa forçada.
+- Atrasos do scheduler do GitHub e falhas dos serviços externos continuam possíveis.
+
 ### Atualização operacional — 04/09/2026
 
 A v1.1.8 registra a validação operacional de produção de 04/09/2026. A edição diária alcançou estado `completed`, o dashboard `Dashboard-Monitoramento-04-09-2026.html` foi persistido, o alias `/hoje` apontou para a mesma data e o Instagram concluiu com `platform_id` não vazio.
 
 O failsafe externo do Google Cloud Scheduler foi comprovado novamente em produção pelo run `33860370126`, evento `repository_dispatch` com modo `gcp-scheduler`. O guard aceitou o target de mídia e, ao chegar ao passo de execução real, encontrou 04/09 já concluído e encerrou explicitamente sem novo envio. O job social subsequente foi ignorado, preservando idempotência e evitando Story duplicado.
 
-Essa evidência confirma operação automática diária, redundância entre relógios e proteção contra duplicidade no cenário observado. Como qualquer arquitetura dependente de serviços externos, a release não afirma disponibilidade matemática absoluta de provedores; ela documenta evidência real de produção e mantém os gates fail-safe existentes.
+Essa evidência confirma que o disparo externo chegou ao GitHub e que uma edição já concluída não foi reenviada; isoladamente, não comprova execução pontual nem recuperação de uma edição ausente. Como qualquer arquitetura dependente de serviços externos, a release não afirma disponibilidade matemática absoluta de provedores; ela documenta evidência real de produção e mantém os gates fail-safe existentes.
 
 ### Atualização operacional — 03/09/2026
 
@@ -336,13 +349,26 @@ A versão 1.1.4 consolida as correções do failsafe Google Cloud, a validação
 
 The system is designed around **fail-closed behavior**, **daily idempotency**, and **multiple independent clocks**. Recovery attempts can run more than once without resending content after the operational date has already reached `completed`.
 
+### Operational recovery — 2026-09-05
+
+The external Media controller now uses GitHub Actions' dedicated job rerun operation. When the edition is missing and no production run is active, it selects a completed `monitoramento.yml` run originally triggered by `schedule` and reruns `rodar-monitoramento`. After Media completes, it may similarly rerun `detect-and-publish` from a scheduled `publish.yml` run only when today's publication record and active social runs are both absent.
+
+The controller configuration belongs to ChatGPT and is not deployed by this README. Its checks remain scheduled for 02:35, 03:35, 04:35, 05:35, and 06:35 BRT.
+
+- The controller no longer writes recovery-marker files to initiate work.
+- A rerun preserves the original `created_at`; inspect `run_attempt`, `updated_at`, and the latest attempt's jobs.
+- Verification requires an increased attempt, job completion, and current-date application state.
+- Completed emails must never be resent to repair Pages or Instagram.
+- Read errors, partial delivery, and uncertain publication states do not authorize forced retries.
+- GitHub scheduler delays and external service failures remain possible.
+
 ### Operational update — 2026-09-04
 
 Version 1.1.8 records the 2026-09-04 production validation. The daily edition reached `completed`, `Dashboard-Monitoramento-04-09-2026.html` was persisted, the public `/hoje` alias pointed to the same date, and Instagram completed with a non-empty `platform_id`.
 
 The external Google Cloud Scheduler failsafe was proven again in production by run `33860370126`, a `repository_dispatch` execution in `gcp-scheduler` mode. The guard accepted the media target and the real execution step found September 4 already completed, then exited explicitly without another delivery. The downstream social job was skipped, preserving idempotency and avoiding a duplicate Story.
 
-This evidence confirms daily automatic operation, independent-clock redundancy, and duplicate protection for the observed production scenario. As with any architecture that depends on external providers, the release does not claim mathematical provider availability; it documents live production evidence while preserving the existing fail-safe gates.
+This evidence confirms that the external trigger reached GitHub and did not resend an already completed edition; by itself, it does not prove timely execution or recovery of a missing edition. As with any architecture that depends on external providers, the release does not claim mathematical provider availability; it documents live production evidence while preserving the existing fail-safe gates.
 
 ### Operational update — 2026-09-03
 
