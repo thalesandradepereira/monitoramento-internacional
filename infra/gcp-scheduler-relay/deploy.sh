@@ -220,7 +220,6 @@ upsert_job() {
     "--time-zone=America/Sao_Paulo"
     "--uri=${SERVICE_URL}${endpoint}"
     "--http-method=POST"
-    "--headers=Content-Type=application/json"
     "--message-body={}"
     "--oidc-service-account-email=$INVOKER_SA"
     "--oidc-token-audience=$SERVICE_URL"
@@ -237,7 +236,9 @@ upsert_job() {
     --location "$REGION" >/dev/null 2>&1; then
     gcloud scheduler jobs update http "$job_name" "${common[@]}" >/dev/null
   else
-    gcloud scheduler jobs create http "$job_name" "${common[@]}" >/dev/null
+    gcloud scheduler jobs create http "$job_name" \
+      "${common[@]}" \
+      --headers=Content-Type=application/json >/dev/null
   fi
 }
 
