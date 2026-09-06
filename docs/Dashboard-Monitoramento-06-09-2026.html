@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-qSb68hthuOMYP4zGP+Axoolg'; script-src 'nonce-qSb68hthuOMYP4zGP+Axoolg'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="qSb68hthuOMYP4zGP+Axoolg">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">06/09/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="qSb68hthuOMYP4zGP+Axoolg">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"Nyla Stone: a cantora de IA que virou fenômeno e se envolveu em uma disputa com uma sósia real","resumo":"A criação de Nyla Stone, uma artista gerada por inteligência artificial, acendeu debates na indústria cultural.\nO projeto ganhou rápida popularidade, mas desencadeou uma disputa ética e legal ao colidir com a imagem de uma pessoa real.\nA controvérsia destaca os desafios de direitos de imagem, autoria e identidade na era dos influenciadores virtuais.\nO caso reforça a urgência de regulamentações claras para o uso de IA na criação de personas digitais.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/06/nyla-stone-a-cantora-de-ia-que-virou-fenomeno-e-se-envolveu-em-uma-disputa-com-uma-sosia-real.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Apple Park: como é a sede da Apple e os bastidores do lançamento do iPhone","resumo":"Um olhar aprofundado revela os bastidores da icônica sede da Apple e sua estrutura arquitetônica futurista.\nO espaço foi desenhado para fomentar a inovação e serve de palco para os maiores lançamentos globais da marca.\nA preparação para a apresentação de novos iPhones envolve alto nível de sigilo, engenharia de ponta e rigoroso planejamento.\nA infraestrutura reflete a cultura corporativa da empresa na busca por perfeição em design e tecnologia.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/09/06/apple-park-como-e-a-sede-da-apple-e-os-bastidores-do-lancamento-do-iphone.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Pix bate recorde de transações liquidadas em um único dia","resumo":"O sistema de pagamentos instantâneos do Banco Central alcançou uma nova marca histórica no volume diário de operações.\nO feito consolida o Pix como a principal ferramenta financeira do cotidiano de milhões de pessoas e empresas.\nO crescimento contínuo demonstra a estabilidade da infraestrutura e a forte adesão à digitalização econômica no país.\nO impacto impulsiona a implantação de novas funcionalidades planejadas para o ecossistema de pagamentos.","link":"https://oglobo.globo.com/google/amp/economia/noticia/2026/09/05/pix-bate-recorde-de-transacoes-liquidadas-em-um-unico-dia.ghtml","categoria":"FINTECH","lang":"pt"},{"fonte":"jornaluniao.com.br","pais":"Brasil","titulo":"Tecnologia e IA reforçam alerta antecipado de tornados e tempestades no Paraná","resumo":"O estado do Paraná passou a adotar sistemas de inteligência artificial para prever eventos climáticos severos.\nA tecnologia analisa dados meteorológicos em tempo real, permitindo identificar tempestades com maior antecedência.\nEssa antecipação otimiza a resposta da Defesa Civil e auxilia na proteção de vidas e infraestrutura urbana.\nA iniciativa posiciona o monitoramento climático regional em um novo patamar de precisão científica.","link":"https://jornaluniao.com.br/noticias/tecnologia/tecnologia-e-ia-reforcam-alerta-antecipado-de-tornados-e-tempestades-no-parana/","categoria":"CIÊNCIA E TECNOLOGIA","lang":"pt"},{"fonte":"Exame","pais":"Brasil","titulo":"Cães sob medida? Startup edita DNA de beagles para tentar evitar alergias em humanos","resumo":"Uma startup de biotecnologia está utilizando técnicas de edição genética CRISPR no DNA de cães da raça beagle.\nO objetivo da pesquisa é neutralizar as proteínas responsáveis por desencadear reações alérgicas em seres humanos.\nEmbora a proposta prometa aproximar famílias e animais, o avanço reacende intensos debates éticos sobre manipulação genética.\nEspecialistas alertam para a necessidade de monitorar possíveis impactos na saúde e bem-estar dos animais.","link":"https://exame.com/ciencia/caes-sob-medida-startup-edita-dna-de-beagles-para-tentar-evitar-alergias-em-humanos/","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Estadão","pais":"Brasil","titulo":"Jornais invocam direitos autorais em acusação contra OpenAI e Microsoft por uso de conteúdos em IA","resumo":"Veículos de imprensa moveram ações judiciais contra OpenAI e Microsoft pelo uso não autorizado de reportagens.\nAs empresas são acusadas de treinar modelos de IA generativa utilizando acervos jornalísticos protegidos por direitos autorais.\nO imbróglio jurídico coloca em xeque os limites do uso justo de dados e o financiamento do jornalismo profissional.\nO desfecho do processo poderá redefinir acordos de licenciamento e modelos de negócios em toda a indústria de tecnologia.","link":"https://www.estadao.com.br/economia/negocios/jornais-invocam-direitos-autorais-em-acusacao-contra-openai-e-microsoft-por-uso-de-conteudos-em-ia/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Seu Dinheiro","pais":"Brasil","titulo":"Vale do Silício brasileiro: como esta cidade de 40 mil habitantes virou potência em tecnologia e empreendedorismo","resumo":"Um município brasileiro de pequeno porte vem se destacando ao se transformar em um polo de atração para startups.\nO ecossistema local combina incentivos públicos, formação acadêmica focada em inovação e forte cultura empreendedora.\nO crescimento acelerado atrai investimentos expressivos e gera empregos de alta qualificação no interior do país.\nO modelo bem-sucedido serve de referência para a descentralização do desenvolvimento tecnológico nacional.","link":"https://www.seudinheiro.com/2026/seu-negocio/vale-do-silicio-brasileiro-como-esta-cidade-de-40-mil-habitantes-virou-potencia-em-tecnologia-e-empreendedorismo-giov/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"TJPE","pais":"Brasil","titulo":"IA, soberania digital e jurisprudência em debate no Fórum Direito, Economia e Tecnologia","resumo":"Especialistas e juristas se reuniram para debater a soberania digital e os rumos da regulamentação da inteligência artificial.\nO fórum abordou os desafios de equilibrar o avanço tecnológico com a proteção de dados e a ordem jurídica nacional.\nOs debates destacaram a necessidade de diretrizes éticas para garantir a competitividade sem ferir direitos fundamentais.\nOs painéis reforçam a importância de uma governança sólida para guiar o ecossistema de inovação no Brasil.","link":"https://portal.tjpe.jus.br/web/portal/-/ia-soberania-digital-e-jurisprud%C3%AAncia-em-debate-no-f%C3%B3rum-direito-economia-e-tecnologia","categoria":"TECNOLOGIA E DIREITO","lang":"pt"},{"fonte":"Los Angeles Times","pais":"Estados Unidos","titulo":"Cientistas que estudaram leite de barata e assoar do nariz vencem o Prêmio Ig Nobel de ciência excêntrica","resumo":"A mais recente edição do Prêmio Ig Nobel prestou homenagem a pesquisas científicas inusitadas e divertidas ao redor do mundo.\nDentre os vencedores, destacaram-se investigações sobre os componentes nutricionais do leite de barata e os impactos físicos do ato de assustar um nariz entupido.\nO prêmio busca celebrar descobertas que primeiro fazem as pessoas rir e, em seguida, as fazem pensar sobre a ciência.","link":"https://www.latimes.com/science/story/2026-09-05/research-on-cockroach-milk-nose-blowing-wins-ig-nobel-prizes","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Estados Unidos","titulo":"Nvidia apresenta os primeiros notebooks equipados com seu novo superchip","resumo":"A Nvidia anunciou oficialmente o lançamento dos primeiros notebooks no mercado integrados com a sua nova arquitetura de superchip.\nOs novos dispositivos prometem revolucionar o processamento local de inteligência artificial e elevar o desempenho para criadores de conteúdo e profissionais.\nA iniciativa reforça a liderança da empresa no fornecimento de hardware avançado, levando capacidades de datacenters para computadores portáteis.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/09/05/nvidia-apresenta-primeiros-notebooks-equipados-com-seu-superchip.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"StorageReview.com","pais":"Estados Unidos","titulo":"VMware Explore 2026: Broadcom reforça aposta em nuvem privada e IA ativa","resumo":"Durante o evento VMware Explore 2026, a Broadcom revelou novos investimentos estratégicos para impulsionar a economia da nuvem privada.\nO foco principal da empresa é acelerar a adoção de sistemas de inteligência artificial agencial nas corporações globais.\nA movimentação visa oferecer maior soberania de dados, eficiência operacional e automação avançada para clientes empresariais.","link":"https://www.storagereview.com/pt/news/vmware-explore-2026-broadcom-doubles-down-on-private-cloud-economics-and-agentic-ai","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"KY3","pais":"Estados Unidos","titulo":"Como a tecnologia de drones ajudou equipes do Texas a combater incêndio de 220 acres","resumo":"Equipes de emergência no condado de Texas utilizaram tecnologia avançada de drones para combater um incêndio florestal de grandes proporções.\nOs equipamentos forneceram mapeamento térmico em tempo real e monitoramento das chamas, orientando as equipes em solo com segurança.\nA aplicação demonstra como a tecnologia de aeronaves não tripuladas está transformando o combate a desastres naturais e salvando vidas.","link":"https://www.ky3.com/2026/09/06/how-drone-technology-helped-texas-county-crews-battle-220-acre-wildfire/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Yahoo Sports","pais":"Estados Unidos","titulo":"LeBron James se junta à Polymarket enquanto mercados de predição atraem astros do esporte","resumo":"O astro do basquete LeBron James fechou uma parceria estratégica com a Polymarket, uma das maiores plataformas de mercados de predição do mundo.\nA adesão da estrela reflete o crescimento acelerado e a popularização das apostas de previsão em eventos esportivos e culturais.\nO movimento consolida a convergência entre grandes nomes do esporte, tecnologia blockchain e plataformas financeiras alternativas.","link":"https://sports.yahoo.com/articles/lebron-james-joins-polymarket-prediction-030739620.html","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"Yahoo Finance","pais":"Estados Unidos","titulo":"Por que o CEO da Micron Technology está sendo homenageado em Taiwan?","resumo":"O presidente da Micron Technology recebeu uma prestigiosa homenagem em Taiwan por suas contribuições ao setor global de semicondutores.\nA premiação destaca os investimentos contínuos da gigante de tecnologia no ecossistema de fabricação e pesquisa da ilha.\nA parceria reforça a importância estratégica de Taiwan na cadeia global de suprimentos de memória e chips avançados.","link":"https://finance.yahoo.com/technology/ai/articles/why-micron-technology-mu-ceo-181050654.html","categoria":"SEMICONDUTORES","lang":"pt"},{"fonte":"MLB.com","pais":"Estados Unidos","titulo":"Visualizando a tacada de Tyler Stephenson com tecnologia de rastreamento de bastão","resumo":"Analistas esportivos utilizaram sensores e câmeras de alta precisão para mapear a mecânica do swing do jogador de beisebol Tyler Stephenson.\nA tecnologia de rastreamento de bastão fornece métricas detalhadas como velocidade do impacto, trajetória e ângulo de saída da bola.\nO uso de dados científicos e visão computacional no esporte moderno vem redefinindo o treinamento e a performance de atletas de elite.","link":"https://www.mlb.com/reds/video/visualizing-tyler-stephenson-s-swing-using-bat-tracking-technology-x4084","categoria":"ESPORTES","lang":"pt"},{"fonte":"Yahoo Finance","pais":"Estados Unidos","titulo":"O que a Align Technology ganha com suas mudanças no conselho de administração?","resumo":"A Align Technology, fabricante dos alinhadores Invisalign, anunciou reformulações estratégicas na composição de seu conselho de administração.\nA inclusão de novos membros busca fortalecer a liderança da empresa em expansão digital e governança corporativa no setor de saúde.\nMercados e investidores avaliam como a reestruturação poderá impulsionar a inovação tecnológica e o crescimento da marca em longo prazo.","link":"https://finance.yahoo.com/markets/stocks/articles/does-align-technology-algn-gain-021322231.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Sortir à Paris","pais":"França","titulo":"Festa da Ciência 2026 em Chars (95): uma caminhada geológica pelo Vexin","resumo":"A Festa da Ciência de 2026 na comuna de Chars convida o público para uma caminhada geológica enriquecedora pela região de Vexin.\nO evento busca aproximar a comunidade das ciências da Terra por meio de uma exploração prática e guiada da história do solo local.\nEssa iniciativa destaca a relevância da conscientização ambiental e do ensino científico acessível para a preservação do patrimônio natural.","link":"https://www.sortiraparis.com/enfant-famille/articles/350025-fete-de-la-science-2026-a-chars-95-une-balade-geologique-dans-le-vexin","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"sciencepresse.qc.ca","pais":"França","titulo":"O gato de Schrödinger visto de outra perspectiva","resumo":"Uma nova análise científica propõe uma perspectiva inovadora sobre o famoso experimento mental do gato de Schrödinger na física quântica.\nA pesquisa reinterpreta os conceitos fundamentais de superposição e medição, desafiando a compreensão tradicional da transição quântica para a clássica.\nOs avanços nessa área de estudo prometem impulsionar o desenvolvimento do processamento de dados e da computação quântica moderna.","link":"https://www.sciencepresse.qc.ca/opinions/incursion-univers-science/2026/09/05/chat-schrodinger-autrement","categoria":"FÍSICA QUÂNTICA","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"Ciência, porcos e dinheiro: a corrida entre EUA e China para viabilizar transplantes de animais para humanos","resumo":"A disputa geopolítica e científica entre Estados Unidos e China está acelerando as pesquisas em xenotransplante, focadas na modificação genética de porcos.\nO avanço promissor busca resolver a escassez global de órgãos doadores, movimentando bilhões em investimentos no setor de biotecnologia.\nNo entanto, desafios éticos e riscos de rejeição imunológica ainda demandam rígidos ensaios clínicos antes de sua aplicação em larga escala.","link":"https://elpais.com/ciencia/2026-09-06/ciencia-cerdos-y-dinero-la-carrera-entre-ee-uu-y-china-por-hacer-viables-los-trasplantes-de-animales-a-humanos.html","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"IPMARK","pais":"Espanha","titulo":"Maica Castillo (Teads): «A tecnologia e a IA não são o futuro; são o motor do presente»","resumo":"Em entrevista, a executiva destaca como a inteligência artificial já transforma radicalmente o ecossistema de publicidade digital e novos negócios.\nA análise aborda a integração de ferramentas preditivas para otimizar campanhas e melhorar a experiência do usuário em tempo real.\nAlém disso, reforça que empresas que não adotarem a IA como pilar estratégico atual correm um alto risco de obsolescência no mercado.","link":"https://ipmark.com/entrevista/maica-castillo-teads-la-tecnologia-ia-no-son-futuro-son-motor-presente/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"El Confidencial","pais":"Espanha","titulo":"A febre da longevidade está à frente da ciência? O que realmente sabemos sobre desacelerar o envelhecimento","resumo":"O interesse por tratamentos anti-idade movimenta uma indústria milionária, mas a comunidade científica alerta para a falta de evidências sólidas.\nPesquisas recentes investigam marcadores moleculares e intervenções genéticas para estender a expectativa de vida com qualidade e saúde.\nContudo, especialistas reforçam que a prevenção básica e hábitos saudáveis ainda superam intervenções caratórias sem validação rigorosa.","link":"https://www.elconfidencial.com/salud/2026-09-06/fiebre-longevidad-envejecimiento_4417416/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"El Confidencial","pais":"Espanha","titulo":"O material 'made in Galicia' digno de um Nobel que promete nos poupar de um susto na conta de luz","resumo":"Pesquisadores galegos desenvolveram um novo material com propriedades térmicas revolucionárias que promete aumentar a eficiência energética doméstica.\nA inovação atua na otimização da retenção de calor, reduzindo significativamente o consumo de energia elétrica em residências e indústrias.\nO avanço posiciona a região como um polo de destaque na ciência dos materiais voltada para a sustentabilidade e economia do consumidor.","link":"https://www.elconfidencial.com/tecnologia/ciencia/2026-09-06/material-gallego-nobel-quimica-mof-evitar-susto-factura-luz_4418146/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"El Universo","pais":"Espanha","titulo":"O mito do 'cérebro reptiliano' cai por terra: a ciência derruba 70 anos de crenças sobre como tomamos decisões","resumo":"Novos estudos em neurociência desmistificam a teoria de que o cérebro humano é dividido em camadas evolutivas independentes para emoção e razão.\nA pesquisa demonstra que o processamento de decisões envolve uma rede interconectada e complexa em todo o órgão, redefinindo o comportamento.\nA descoberta abre caminho para abordagens terapêuticas e tratamentos mais precisos no campo da psiquiatria e da neurologia moderna.","link":"https://www.eluniverso.com/larevista/sociedad/el-mito-del-cerebro-reptiliano-se-derrumba-la-ciencia-tira-por-tierra-70-anos-de-creencias-sobre-como-tomamos-decisiones-nota/","categoria":"NEUROCIÊNCIA","lang":"pt"},{"fonte":"LNE","pais":"Espanha","titulo":"A ciência em um tweet: Ultrassons cerebrais","resumo":"O uso de ultrassom focalizado de alta intensidade surge como uma alternativa não invasiva promissora para tratar distúrbios neurológicos complexos.\nA técnica possibilita cruzar a barreira hematoencefálica com precisão para entregar medicamentos ou modular atividades neuronais sem cirurgia.\nO avanço representa um salto significativo no tratamento de condições graves como o Mal de Parkinson e diversos tipos de tumores cerebrais.","link":"https://www.lne.es/opinion/2026/09/06/ciencia-tuit-ultrasonidos-cerebrales-133950852.amp.html","categoria":"MEDICINA","lang":"pt"},{"fonte":"Ultima Hora","pais":"Espanha","titulo":"«O futebol não entende de gênero e a ciência fez com que a maternidade não tenha idade»","resumo":"A evolução dos tratamentos de fertilidade e da medicina esportiva está permitindo que atletas profissionais estendam suas carreiras de alto rendimento.\nO artigo analisa como as novas tecnologias biológicas quebram barreiras históricas e reconfiguram o planejamento familiar no esporte.\nEssa transformação impulsiona novas políticas de apoio, patrocínio e direitos trabalhistas para mulheres no cenário esportivo global.","link":"https://www.ultimahora.es/noticias/local/2026/09/06/2702211/futbol-entiende-genero-ciencia-conseguido-maternidad-tenga-edad.html","categoria":"CIÊNCIA E ESPORTE","lang":"pt"},{"fonte":"contacto.lu","pais":"Espanha","titulo":"O ar-condicionado de vestir: a tecnologia que começa a chegar a Luxemburgo","resumo":"Dispositivos vestíveis de climatização pessoal começam a se popularizar na Europa como uma solução direta contra ondas extremas de calor.\nUtilizando sistemas termoelétricos compactos integrados a roupas, a tecnologia oferece regulagem individual de temperatura com baixo consumo.\nA inovação aponta para um mercado emergente de wearables focados em bem-estar pessoal e adaptação prática às mudanças climáticas globais.","link":"https://www.contacto.lu/luxemburgo/o-ar-condicionado-que-se-veste-a-tecnologia-que-comeca-a-chegar-ao-luxemburgo/160046651.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"sueddeutsche.de","pais":"Alemanha","titulo":"Foguete de Munique alcança a órbita da Terra","resumo":"Um foguete desenvolvido em Munique atingiu com sucesso a órbita terrestre, marcando um marco histórico para o setor aeroespacial comercial da Alemanha. O feito impulsiona a competitividade europeia no mercado global de lançamento de pequenos satélites e novas tecnologias espaciais. A conquista abre portas para futuras missões científicas e comerciais independentes no continente.","link":"https://www.sueddeutsche.de/wirtschaft/isar-aerospace-raumfahrt-esa-li.3458924","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"plus.rtl.de","pais":"Alemanha","titulo":"Episódio 515: wirtschaft tv Talk - Especialista alerta: IA deve ser usada apenas de forma direcionada","resumo":"Durante o talk show econômico wirtschaft tv, um especialista destacou que a inteligência artificial não deve ser aplicada indiscriminadamente pelas empresas. O uso focado e estratégico é essencial para evitar desperdício de recursos e garantir retornos reais sobre o investimento. A discussão enfatiza a necessidade de planejamento rigoroso na adoção de tecnologias emergentes no mercado alemão.","link":"https://plus.rtl.de/wirtschaft-tv-p_17226/audio/wirtschaft-tv-talk-experte-warnt-ki-nur-gezielt-einsetzen-c_2110482","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Expresso","pais":"Alemanha","titulo":"Como a Volkswagen chegou ao ponto de cortar 100 mil empregos e fechar fábricas?","resumo":"A gigante automotiva Volkswagen enfrenta uma grave crise estrutural que a levou a planejar o corte de milhares de postos de trabalho e o fechamento de fábricas. O cenário reflete a pressão da transição para veículos elétricos, a concorrência asiática acirrada e a queda na demanda global. Essa reviravolta histórica gera profundas discussões sobre o futuro da indústria tradicional na Alemanha.","link":"https://expresso.pt/podcasts/economia-dia-a-dia/2026-09-05-como-e-que-a-volkswagen-chegou-ao-ponto-de-cortar-100-mil-empregos-e-fechar-fabricas--d8e5a781","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"MLB.com","pais":"Japão","titulo":"Visualizando o rebatimento de Munetaka Murakami usando tecnologia de rastreamento de bastão","resumo":"A aplicação de tecnologia avançada de rastreamento de bastão permite analisar detalhadamente a mecânica e a velocidade do rebatimento do jogador Munetaka Murakami. Essa inovação oferece novas perspectivas sobre o desempenho atlético e o treinamento esportivo moderno. O uso de dados precisos transforma a forma como atletas de alto rendimento aprimoram suas técnicas no esporte japonês.","link":"https://www.mlb.com/whitesox/video/visualizing-munetaka-murakami-s-swing-using-bat-tracking-technology-x2465","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"科学网—新闻","pais":"China","titulo":"Falece Zhai Qibin, renomado especialista no campo de segurança da informação e criptografia","resumo":"O falecimento de Zhai Qibin representa uma perda significativa para a comunidade acadêmica e científica da China. Ele deixou um legado duradouro na formação de especialistas e no avanço da segurança cibernética nacional. Sua trajetória continuará inspirando as futuras gerações de pesquisadores na área de criptografia.","link":"https://news.sciencenet.cn/htmlnews/2026/9/570957.shtm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"新华网","pais":"China","titulo":"Rumo a novas asas: A Universidade de Ciência e Tecnologia da China se destaca novamente!","resumo":"A renomada instituição reafirma seu papel de liderança na pesquisa científica e tecnológica de ponta no país. O reconhecimento ressalta o compromisso contínuo da universidade com a inovação de alto impacto e o desenvolvimento acadêmico. Suas recentes conquistas fortalecem a posição da China no cenário tecnológico global.","link":"https://www.news.cn/tech/20260906/6ab049fc72de40e5801d5f25123bc192/c.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"新浪财经","pais":"China","titulo":"Promovendo a inovação integrada entre tecnologias digitais, inteligentes e verdes","resumo":"Especialistas discutem a convergência entre a inteligência digital e a sustentabilidade ambiental como chave para o futuro industrial. A iniciativa busca acelerar a transição ecológica através do uso eficiente de ferramentas tecnológicas avançadas. Esse modelo integrado visa impulsionar um desenvolvimento econômico mais limpo e inteligente na China.","link":"https://finance.sina.cn/2026-09-06/detail-iniqvrfi0316622.d.html?vt=4\u0026wm=4007,4007,4007,4007////?vt","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"北京市人民政府门户网站","pais":"China","titulo":"Concurso de Instrumentos Científicos Avançados 'Maker China' é encerado com 24 projetos planejados para Huairou","resumo":"A competição de alta tecnologia concluiu sua etapa final com dezenas de projetos inovadores prontos para implementação prática. Huairou se consolida como um polo estratégico para o desenvolvimento e industrialização de instrumentos científicos. A medida atrai talentos e investimentos essenciais para o ecossistema de inovação local.","link":"https://www.beijing.gov.cn/fuwu/lqfw/gggs/202609/t20260906_4852263.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"北京市人民政府门户网站","pais":"China","titulo":"Yin Yong enfatiza durante pesquisa em Haidian a construção de sistema de serviços para indústrias futuras","resumo":"O dirigente destacou a importância de criar um suporte completo para todo o ciclo de vida das empresas de alta tecnologia. O foco é acelerar avanços científicos e promover a rápida aplicação prática de inovações disruptivas. A estratégia fortalece o distrito de Haidian como um epicentro de indústrias emergentes.","link":"https://www.beijing.gov.cn/gongkai/ldhd/202609/t20260906_4852251.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"人民网","pais":"China","titulo":"Grandes equipamentos nacionais viram parceiros científicos: 'Temporada Científica Yanqi' em Huairou usa interatividade para acender paixão pela ciência","resumo":"O festival científico em Huairou transformou infraestruturas tecnológicas de grande porte em atrações interativas e educativas. A iniciativa aproxima o público geral da ciência avançada por meio de jogos e experiências imersivas. O evento visa estimular a curiosidade científica e engajar a sociedade nas inovações do país.","link":"http://bj.people.com.cn/n2/2026/0906/c14540-41688027.html","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"人民网财经","pais":"China","titulo":"Indústria central de inteligência artificial de Guangdong ultrapassa 300 bilhões de iuanes","resumo":"A província de Guangdong registrou um marco histórico no setor de inteligência artificial, impulsionada por políticas de incentivo e forte demanda de mercado. Esse crescimento expressivo consolida a região como uma das potências tecnológicas mais dinâmicas do país. O avanço atrai novos investimentos e acelera a transformação digital da economia local.","link":"http://finance.people.com.cn/n1/2026/0906/c1004-40793217.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"ttplus.cn","pais":"China","titulo":"Hahaha Esports estreia na Cúpula de Tecnologia Esportiva da China 2026, remodelando ecossistema de transmissões com IA","resumo":"A empresa apresentou inovações baseadas em inteligência artificial voltadas para transformar a experiência de transmissão de eventos esportivos. A integração tecnológica promete maior interatividade e eficiência na produção de conteúdo para o público gamer. A iniciativa marca um novo capítulo na fusão entre esportes eletrônicos e tecnologia avançada.","link":"https://m.ttplus.cn/wiki/17975445.php","categoria":"ESPORTS","lang":"pt"},{"fonte":"Hindustan Times","pais":"Índia","titulo":"Do lixo ao triunfo: As maravilhas científicas recicladas de educador rendem prêmio nacional","resumo":"Um educador indiano foi premiado nacionalmente por criar projetos científicos inovadores utilizando materiais reciclados e descartados. A iniciativa transforma resíduos comuns em ferramentas pedagógicas de baixo custo para engajar estudantes. O reconhecimento destaca o impacto da criatividade na educação científica e na sustentabilidade ambiental dentro do país.","link":"https://www.hindustantimes.com/cities/chandigarh-news/from-trash-to-triumph-ut-educator-s-upcycled-science-wonders-earn-him-national-award-101788638206386.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"kakaku.com","pais":"Índia","titulo":"Equipado com novo motor de 200cc! A nova superesportiva da Yamaha 'YZF-R2' surge e é lançada na Índia","resumo":"A Yamaha anunciou oficialmente o lançamento da nova motocicleta superesportiva YZF-R2 no mercado indiano, equipada com um motor inédito de 200cc. O modelo chega para acirrar a competição no segmento de duas rodas de média cilindrada na região. A novidade combina design agressivo inspirado em pistas com especificações voltadas para o desempenho urbano e rodoviário.","link":"https://news.kakaku.com/prdnews/cd=kuruma/ctcd=7010/id=158626/","categoria":"LANÇAMENTO","lang":"pt"},{"fonte":"Down To Earth","pais":"Índia","titulo":"‘Grande perda para a ciência climática indiana’: Comunidade científica e sociedade civil lamentam falecimento de Krishna AchutaRao","resumo":"A comunidade científica indiana e diversos setores da sociedade civil expressaram profundo pesar pelo falecimento do renomado pesquisador Krishna AchutaRao. Ele era uma figura central nos estudos sobre mudanças climáticas e modelagem atmosférica no país. Sua partida representa uma lacuna significativa para o avanço das pesquisas científicas voltadas aos impactos ambientais na Índia.","link":"https://www.downtoearth.org.in/climate-change/major-loss-to-indian-climate-science-scientific-community-civil-society-mourn-demise-of-krishna-achutarao","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"e-global.pt","pais":"Portugal","titulo":"União Europeia destaca dez podcasts que aproximam a ciência do público, da inteligência artificial às alterações climáticas","resumo":"A União Europeia destacou uma seleção de dez podcasts inovadores voltados para a divulgação científica na Europa. A iniciativa aborda temas cruciais como inteligência artificial e mudanças climáticas de forma acessível. O objetivo é engajar o público jovem e a sociedade em geral nos debates tecnológicos atuais.","link":"https://e-global.pt/noticia/vida/ciencia/ue-destaca-dez-podcasts-que-aproximam-a-ciencia-do-publico-da-inteligencia-artificial-as-alteracoes-climaticas/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Diário dos Açores","pais":"Portugal","titulo":"Tecnologia 3D vai mapear pressão sobre as lapas e ajudar a gerir apanha nos Açores","resumo":"Pesquisadores utilizarão tecnologia de mapeamento 3D para analisar a pressão da pesca sobre a população de lapas nos Açores. O projeto visa fornecer dados precisos para garantir a sustentabilidade dessa atividade tradicional na região. A ferramenta tecnologica otimiza a gestão ambiental e protege a biodiversidade marinha local.","link":"https://diariodosacores.pt/2026/09/05/tecnologia-3d-vai-mapear-pressao-sobre-as-lapas-e-ajudar-a-gerir-apanha-nos-acores/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"sapo.pt","pais":"Portugal","titulo":"Castelo de Penha Garcia ganha nova iluminação cénica em tecnologia LED e valorização da zona envolvente","resumo":"O histórico Castelo de Penha Garcia recebeu um moderno projeto de iluminação cénica com tecnologia LED de alta eficiência energética. A intervenção valoriza o patrimônio arquitetônico e impulsiona o turismo noturno na região de Idanha-a-Nova. A iniciativa une inovação tecnológica, sustentabilidade e a preservação cultural portuguesa.","link":"https://sapo.pt/artigo/castelo-de-penha-garcia-com-nova-iluminacao-cenica-em-tecnologia-led-e-zona-envolvente-valorizada-6a9bfd96672edd257f356577","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"Ambiente e Energia cumprem integralmente metas do PRR com investimento superior a 1,8 mil milhões","resumo":"Os setores de Ambiente e Energia de Portugal atingiram com sucesso todas as metas estipuladas pelo Plano de Recuperação e Resiliência. O montante investido ultrapassou 1,8 bilhão de euros, impulsionando a transição verde e a modernização da infraestrutura nacional. Os resultados fortalecem o compromisso do país com a sustentabilidade e eficiência energética.","link":"https://jornaleconomico.sapo.pt/noticias/ambiente-e-energia-cumprem-integralmente-metas-do-prr-com-investimento-superior-a-18-mil-milhoes/","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"Diário do Distrito","pais":"Portugal","titulo":"Queda da dívida pública leva agência Fitch a elevar rating de Portugal para A+","resumo":"A agência de classificação de risco Fitch elevou o rating soberano de Portugal para A+, impulsionada pela consistente trajetória de queda da dívida pública. O reconhecimento reflete a solidez fiscal do país e melhora sua credibilidade nos mercados financeiros internacionais. Essa valorização econômica traz impactos positivos diretos para os custos de financiamento do Estado.","link":"https://diariodistrito.sapo.pt/divida-em-queda-leva-fitch-a-premiar-portugal-com-a/","categoria":"ECONOMIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Nyla Stone: The AI Singer Who Became a Phenomenon and Got Caught in a Dispute with a Real-Life Doppelgänger","resumo":"The creation of Nyla Stone, an artist generated by artificial intelligence, has sparked debates in the cultural industry.\nThe project gained rapid popularity, but triggered an ethical and legal dispute by colliding with the image of a real person.\nThe controversy highlights the challenges of image rights, authorship, and identity in the era of virtual influencers.\nThe case reinforces the urgency of clear regulations for the use of AI in creating digital personas.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/06/nyla-stone-a-cantora-de-ia-que-virou-fenomeno-e-se-envolveu-em-uma-disputa-com-uma-sosia-real.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Apple Park: Inside Apple's Headquarters and Behind the Scenes of the iPhone Launch","resumo":"An in-depth look reveals the behind-the-scenes of Apple's iconic headquarters and its futuristic architectural structure.\nThe space was designed to foster innovation and serves as the stage for the brand's biggest global launches.\nPreparation for unveiling new iPhones involves a high level of secrecy, cutting-edge engineering, and rigorous planning.\nThe infrastructure reflects the company's corporate culture in its pursuit of perfection in design and technology.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/09/06/apple-park-como-e-a-sede-da-apple-e-os-bastidores-do-lancamento-do-iphone.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Pix Breaks Record for Settled Transactions in a Single Day","resumo":"The Central Bank's instant payment system has reached a new historic milestone in the daily volume of operations.\nThe achievement consolidates Pix as the main financial tool in the daily lives of millions of people and businesses.\nContinuous growth demonstrates the stability of the infrastructure and strong adherence to economic digitization in the country.\nThe impact drives the implementation of new features planned for the payment ecosystem.","link":"https://oglobo.globo.com/google/amp/economia/noticia/2026/09/05/pix-bate-recorde-de-transacoes-liquidadas-em-um-unico-dia.ghtml","categoria":"FINTECH","lang":"en"},{"fonte":"jornaluniao.com.br","pais":"Brazil","titulo":"Technology and AI Reinforce Early Warnings for Tornadoes and Storms in Paraná","resumo":"The state of Paraná has begun adopting artificial intelligence systems to predict severe weather events.\nThe technology analyzes meteorological data in real time, making it possible to identify storms further in advance.\nThis early notice optimizes Civil Defense responses and helps protect lives and urban infrastructure.\nThe initiative places regional climate monitoring at a new level of scientific precision.","link":"https://jornaluniao.com.br/noticias/tecnologia/tecnologia-e-ia-reforcam-alerta-antecipado-de-tornados-e-tempestades-no-parana/","categoria":"SCIENCE AND TECHNOLOGY","lang":"en"},{"fonte":"Exame","pais":"Brazil","titulo":"Custom Dogs? Startup Edits Beagle DNA to Try to Prevent Allergies in Humans","resumo":"A biotechnology startup is using CRISPR gene-editing techniques on the DNA of beagle dogs.\nThe goal of the research is to neutralize the proteins responsible for triggering allergic reactions in humans.\nAlthough the proposal promises to bring families and pets closer together, the advancement reignites intense ethical debates over genetic manipulation.\nExperts warn of the need to monitor potential impacts on the health and well-being of the animals.","link":"https://exame.com/ciencia/caes-sob-medida-startup-edita-dna-de-beagles-para-tentar-evitar-alergias-em-humanos/","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Estadão","pais":"Brazil","titulo":"Newspapers Invoke Copyrights in Accusation Against OpenAI and Microsoft Over AI Content Use","resumo":"Media outlets have filed lawsuits against OpenAI and Microsoft for the unauthorized use of news reports.\nThe companies are accused of training generative AI models using copyrighted journalistic archives.\nThe legal tangle calls into question the limits of fair use of data and the financing of professional journalism.\nThe outcome of the lawsuit could redefine licensing agreements and business models across the tech industry.","link":"https://www.estadao.com.br/economia/negocios/jornais-invocam-direitos-autorais-em-acusacao-contra-openai-e-microsoft-por-uso-de-conteudos-em-ia/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Seu Dinheiro","pais":"Brazil","titulo":"Brazilian Silicon Valley: How This Town of 40,000 Residents Became a Tech and Entrepreneurship Powerhouse","resumo":"A small Brazilian municipality has been standing out by transforming itself into an attraction hub for startups.\nThe local ecosystem combines public incentives, academic training focused on innovation, and a strong entrepreneurial culture.\nAccelerated growth attracts significant investments and generates highly qualified jobs in the country's interior.\nThe successful model serves as a reference for the decentralization of national technological development.","link":"https://www.seudinheiro.com/2026/seu-negocio/vale-do-silicio-brasileiro-como-esta-cidade-de-40-mil-habitantes-virou-potencia-em-tecnologia-e-empreendedorismo-giov/","categoria":"INNOVATION","lang":"en"},{"fonte":"TJPE","pais":"Brazil","titulo":"AI, Digital Sovereignty, and Jurisprudence Under Debate at the Law, Economy, and Technology Forum","resumo":"Experts and legal scholars gathered to debate digital sovereignty and the direction of artificial intelligence regulation.\nThe forum addressed the challenges of balancing technological advancement with data protection and the national legal order.\nDiscussions highlighted the need for ethical guidelines to guarantee competitiveness without harming fundamental rights.\nThe panels reinforce the importance of solid governance to guide the innovation ecosystem in Brazil.","link":"https://portal.tjpe.jus.br/web/portal/-/ia-soberania-digital-e-jurisprud%C3%AAncia-em-debate-no-f%C3%B3rum-direito-economia-e-tecnologia","categoria":"TECHNOLOGY AND LAW","lang":"en"},{"fonte":"Los Angeles Times","pais":"United States","titulo":"Scientists Who Studied Cockroach Milk and Nose-Blowing Win Ig Nobel Prize for Eccentric Science","resumo":"The latest edition of the Ig Nobel Prize paid tribute to unusual and amusing scientific research from around the world.\nAmong the winners, investigations into the nutritional components of cockroach milk and the physical impacts of blowing a stuffy nose stood out.\nThe prize aims to celebrate discoveries that first make people laugh and then make them think about science.","link":"https://www.latimes.com/science/story/2026-09-05/research-on-cockroach-milk-nose-blowing-wins-ig-nobel-prizes","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"United States","titulo":"Nvidia Unveils First Laptops Powered by Its New Superchip","resumo":"Nvidia officially announced the launch of the first laptops on the market integrated with its new superchip architecture.\nThe new devices promise to revolutionize local artificial intelligence processing and elevate performance for content creators and professionals.\nThe initiative reinforces the company's leadership in supplying advanced hardware, bringing datacenter capabilities to portable computers.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/09/05/nvidia-apresenta-primeiros-notebooks-equipados-com-seu-superchip.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"StorageReview.com","pais":"United States","titulo":"VMware Explore 2026: Broadcom Doubles Down on Private Cloud Economics and Agentic AI","resumo":"During the VMware Explore 2026 event, Broadcom revealed new strategic investments to boost the private cloud economy.\nThe company's main focus is to accelerate the adoption of agentic artificial intelligence systems in global corporations.\nThe move aims to offer greater data sovereignty, operational efficiency, and advanced automation for enterprise clients.","link":"https://www.storagereview.com/pt/news/vmware-explore-2026-broadcom-doubles-down-on-private-cloud-economics-and-agentic-ai","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"KY3","pais":"United States","titulo":"How Drone Technology Helped Texas Crews Battle a 220-Acre Wildfire","resumo":"Emergency crews in Texas County used advanced drone technology to fight a large-scale wildfire.\nThe equipment provided real-time thermal mapping and flame monitoring, safely guiding ground teams.\nThe application demonstrates how unmanned aerial vehicle technology is transforming natural disaster response and saving lives.","link":"https://www.ky3.com/2026/09/06/how-drone-technology-helped-texas-county-crews-battle-220-acre-wildfire/","categoria":"INNOVATION","lang":"en"},{"fonte":"Yahoo Sports","pais":"United States","titulo":"LeBron James Joins Polymarket as Prediction Markets Attract Sports Stars","resumo":"Basketball star LeBron James has entered into a strategic partnership with Polymarket, one of the world's largest prediction market platforms.\nThe star's endorsement reflects the accelerated growth and popularization of forecasting bets on sporting and cultural events.\nThe move solidifies the convergence between big names in sports, blockchain technology, and alternative financial platforms.","link":"https://sports.yahoo.com/articles/lebron-james-joins-polymarket-prediction-030739620.html","categoria":"TRENDS","lang":"en"},{"fonte":"Yahoo Finance","pais":"United States","titulo":"Why Micron Technology's CEO Is Being Honored in Taiwan","resumo":"The chairman of Micron Technology received a prestigious honor in Taiwan for his contributions to the global semiconductor industry.\nThe award highlights the technology giant's continuous investments in the island's manufacturing and research ecosystem.\nThe partnership reinforces Taiwan's strategic importance in the global memory and advanced chip supply chain.","link":"https://finance.yahoo.com/technology/ai/articles/why-micron-technology-mu-ceo-181050654.html","categoria":"SEMICONDUCTORS","lang":"en"},{"fonte":"MLB.com","pais":"United States","titulo":"Visualizing Tyler Stephenson's Swing Using Bat-Tracking Technology","resumo":"Sports analysts used high-precision sensors and cameras to map the swing mechanics of baseball player Tyler Stephenson.\nBat-tracking technology provides detailed metrics such as impact speed, trajectory, and the ball's exit angle.\nThe use of scientific data and computer vision in modern sports is redefining the training and performance of elite athletes.","link":"https://www.mlb.com/reds/video/visualizing-tyler-stephenson-s-swing-using-bat-tracking-technology-x4084","categoria":"SPORTS","lang":"en"},{"fonte":"Yahoo Finance","pais":"United States","titulo":"What does Align Technology gain from its board of directors changes?","resumo":"Align Technology, the manufacturer of Invisalign clear aligners, has announced strategic overhauls in the composition of its board of directors.\nThe inclusion of new members aims to strengthen the company's leadership in digital expansion and corporate governance within the healthcare sector.\nMarkets and investors are evaluating how this restructuring could drive technological innovation and long-term brand growth.","link":"https://finance.yahoo.com/markets/stocks/articles/does-align-technology-algn-gain-021322231.html","categoria":"BUSINESS","lang":"en"},{"fonte":"Sortir à Paris","pais":"France","titulo":"Fête de la Science 2026 in Chars (95): A geological walk through Vexin","resumo":"The 2026 Fête de la Science in the commune of Chars invites the public on an enriching geological walk through the Vexin region.\nThe event seeks to bring the community closer to Earth sciences through a practical, guided exploration of local soil history.\nThis initiative highlights the importance of environmental awareness and accessible science education for the preservation of natural heritage.","link":"https://www.sortiraparis.com/enfant-famille/articles/350025-fete-de-la-science-2026-a-chars-95-une-balade-geologique-dans-le-vexin","categoria":"SCIENCE","lang":"en"},{"fonte":"sciencepresse.qc.ca","pais":"France","titulo":"Schrödinger's cat seen from another perspective","resumo":"A new scientific analysis proposes an innovative perspective on the famous Schrödinger's cat thought experiment in quantum physics.\nThe research reinterprets the fundamental concepts of superposition and measurement, challenging the traditional understanding of the transition from quantum to classical.\nAdvances in this field of study promise to drive the development of modern data processing and quantum computing.","link":"https://www.sciencepresse.qc.ca/opinions/incursion-univers-science/2026/09/05/chat-schrodinger-autrement","categoria":"QUANTUM PHYSICS","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"Science, pigs, and money: The race between the US and China to make animal-to-human transplants viable","resumo":"The geopolitical and scientific rivalry between the United States and China is accelerating xenotransplantation research, focusing on the genetic modification of pigs.\nThis promising breakthrough aims to resolve the global shortage of donor organs, injecting billions in investments into the biotechnology sector.\nHowever, ethical challenges and the risk of immune rejection still demand rigorous clinical trials before large-scale application.","link":"https://elpais.com/ciencia/2026-09-06/ciencia-cerdos-y-dinero-la-carrera-entre-ee-uu-y-china-por-hacer-viables-los-trasplantes-de-animales-a-humanos.html","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"IPMARK","pais":"Spain","titulo":"Maica Castillo (Teads): 'Technology and AI are not the future; they are the engine of the present'","resumo":"In an interview, the executive highlights how artificial intelligence is already radically transforming the digital advertising ecosystem and new business models.\nThe analysis covers the integration of predictive tools to optimize campaigns and improve the user experience in real time.\nFurthermore, she stresses that companies failing to adopt AI as a current strategic pillar face a high risk of market obsolescence.","link":"https://ipmark.com/entrevista/maica-castillo-teads-la-tecnologia-ia-no-son-futuro-son-motor-presente/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"El Confidencial","pais":"Spain","titulo":"Is the longevity fever ahead of science? What we really know about slowing down aging","resumo":"Interest in anti-aging treatments is fueling a multimillion-dollar industry, but the scientific community warns of a lack of solid evidence.\nRecent research investigates molecular markers and genetic interventions to extend healthspan and life expectancy.\nNonetheless, experts emphasize that basic prevention and healthy habits still outperform expensive interventions lacking rigorous validation.","link":"https://www.elconfidencial.com/salud/2026-09-06/fiebre-longevidad-envejecimiento_4417416/","categoria":"SCIENCE","lang":"en"},{"fonte":"El Confidencial","pais":"Spain","titulo":"The 'made in Galicia' material worthy of a Nobel that promises to save us from a shock on our electricity bill","resumo":"Galician researchers have developed a new material with revolutionary thermal properties that promises to increase household energy efficiency.\nThe innovation optimizes heat retention, significantly reducing electricity consumption in homes and industries.\nThis breakthrough positions the region as a standout hub for materials science focused on sustainability and consumer savings.","link":"https://www.elconfidencial.com/tecnologia/ciencia/2026-09-06/material-gallego-nobel-quimica-mof-evitar-susto-factura-luz_4418146/","categoria":"INNOVATION","lang":"en"},{"fonte":"El Universo","pais":"Spain","titulo":"The myth of the 'reptilian brain' debunked: Science overthrows 70 years of beliefs on how we make decisions","resumo":"New neuroscience studies debunk the theory that the human brain is divided into independent evolutionary layers for emotion and reason.\nResearch demonstrates that decision-making involves an interconnected and complex network throughout the entire organ, redefining behavior.\nThis discovery paves the way for more precise therapeutic approaches and treatments in the fields of modern psychiatry and neurology.","link":"https://www.eluniverso.com/larevista/sociedad/el-mito-del-cerebro-reptiliano-se-derrumba-la-ciencia-tira-por-tierra-70-anos-de-creencias-sobre-como-tomamos-decisiones-nota/","categoria":"NEUROSCIENCE","lang":"en"},{"fonte":"LNE","pais":"Spain","titulo":"Science in a tweet: Brain ultrasounds","resumo":"The use of high-intensity focused ultrasound is emerging as a promising, non-invasive alternative to treat complex neurological disorders.\nThe technique makes it possible to cross the blood-brain barrier with precision to deliver medication or modulate neuronal activity without surgery.\nThis advance represents a significant leap forward in treating severe conditions such as Parkinson's disease and various types of brain tumors.","link":"https://www.lne.es/opinion/2026/09/06/ciencia-tuit-ultrasonidos-cerebrales-133950852.amp.html","categoria":"MEDICINE","lang":"en"},{"fonte":"Ultima Hora","pais":"Spain","titulo":"'Football knows no gender, and science has ensured motherhood has no age'","resumo":"The evolution of fertility treatments and sports medicine is enabling professional female athletes to extend their high-performance careers.\nThe article analyzes how new biological technologies are breaking historical barriers and reshaping family planning in sports.\nThis transformation drives new support policies, sponsorships, and labor rights for women on the global sports stage.","link":"https://www.ultimahora.es/noticias/local/2026/09/06/2702211/futbol-entiende-genero-ciencia-conseguido-maternidad-tenga-edad.html","categoria":"SCIENCE AND SPORTS","lang":"en"},{"fonte":"contacto.lu","pais":"Spain","titulo":"The wearable air conditioner: The technology starting to arrive in Luxembourg","resumo":"Wearable personal climate control devices are starting to gain popularity in Europe as a direct solution to extreme heatwaves.\nUsing compact thermoelectric systems integrated into clothing, the technology offers individual temperature regulation with low energy consumption.\nThe innovation points to an emerging market for wearables focused on personal well-being and practical adaptation to global climate change.","link":"https://www.contacto.lu/luxemburgo/o-ar-condicionado-que-se-veste-a-tecnologia-que-comeca-a-chegar-ao-luxemburgo/160046651.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"sueddeutsche.de","pais":"Germany","titulo":"Munich-based rocket reaches Earth orbit","resumo":"A rocket developed in Munich has successfully reached Earth orbit, marking a historic milestone for Germany's commercial aerospace sector.\nThe feat boosts European competitiveness in the global market for small satellite launches and new space technologies.\nThis achievement opens doors for future independent scientific and commercial missions on the continent.","link":"https://www.sueddeutsche.de/wirtschaft/isar-aerospace-raumfahrt-esa-li.3458924","categoria":"SCIENCE","lang":"en"},{"fonte":"plus.rtl.de","pais":"Germany","titulo":"Episode 515: wirtschaft tv Talk - Expert warns: AI should only be used in a targeted manner","resumo":"During the economic talk show wirtschaft tv, an expert pointed out that artificial intelligence should not be applied indiscriminately by companies.\nA focused and strategic use is essential to avoid wasting resources and to guarantee real returns on investment.\nThe discussion emphasizes the need for rigorous planning when adopting emerging technologies in the German market.","link":"https://plus.rtl.de/wirtschaft-tv-p_17226/audio/wirtschaft-tv-talk-experte-warnt-ki-nur-gezielt-einsetzen-c_2110482","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Expresso","pais":"Germany","titulo":"How did Volkswagen reach the point of cutting 100,000 jobs and closing factories?","resumo":"Automotive giant Volkswagen is facing a severe structural crisis that has led it to plan the elimination of thousands of jobs and the closure of factories.\nThe scenario reflects the pressure of the transition to electric vehicles, fierce Asian competition, and a drop in global demand.\nThis historic turnaround is sparking deep discussions about the future of traditional industry in Germany.","link":"https://expresso.pt/podcasts/economia-dia-a-dia/2026-09-05-como-e-que-a-volkswagen-chegou-ao-ponto-de-cortar-100-mil-empregos-e-fechar-fabricas--d8e5a781","categoria":"BUSINESS","lang":"en"},{"fonte":"MLB.com","pais":"Japan","titulo":"Visualizing Munetaka Murakami's swing using bat-tracking technology","resumo":"The application of advanced bat-tracking technology makes it possible to analyze in detail the mechanics and swing speed of player Munetaka Murakami.\nThis innovation offers new perspectives on athletic performance and modern sports training.\nThe use of precise data is transforming how high-performance athletes refine their techniques in Japanese sports.","link":"https://www.mlb.com/whitesox/video/visualizing-munetaka-murakami-s-swing-using-bat-tracking-technology-x2465","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"科学网—新闻","pais":"China","titulo":"Zhai Qibin, Renowned Expert in Information Security and Cryptography, Passes Away","resumo":"The passing of Zhai Qibin represents a significant loss for China's academic and scientific community. He leaves behind a lasting legacy in the training of specialists and the advancement of national cybersecurity. His career will continue to inspire future generations of researchers in the field of cryptography.","link":"https://news.sciencenet.cn/htmlnews/2026/9/570957.shtm","categoria":"SCIENCE","lang":"en"},{"fonte":"新华网","pais":"China","titulo":"Spreading New Wings: University of Science and Technology of China Shines Again!","resumo":"The renowned institution reaffirms its leadership role in cutting-edge scientific and technological research nationwide. This recognition highlights the university's ongoing commitment to high-impact innovation and academic development. Its recent achievements strengthen China's position on the global technology stage.","link":"https://www.news.cn/tech/20260906/6ab049fc72de40e5801d5f25123bc192/c.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"新浪财经","pais":"China","titulo":"Promoting Integrated Innovation Across Digital, Smart, and Green Technologies","resumo":"Experts discuss the convergence of digital intelligence and environmental sustainability as the key to the industrial future. The initiative seeks to accelerate the ecological transition through the efficient use of advanced technological tools. This integrated model aims to drive cleaner, smarter economic development in China.","link":"https://finance.sina.cn/2026-09-06/detail-iniqvrfi0316622.d.html?vt=4\u0026wm=4007,4007,4007,4007////?vt","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"北京市人民政府门户网站","pais":"China","titulo":"'Maker China' Advanced Scientific Instruments Competition Concludes with 24 Projects Slated for Huairou","resumo":"The high-tech competition wrapped up its final stage with dozens of innovative projects ready for practical implementation. Huairou is cementing its status as a strategic hub for the development and industrialization of scientific instruments. The move attracts essential talent and investment to the local innovation ecosystem.","link":"https://www.beijing.gov.cn/fuwu/lqfw/gggs/202609/t20260906_4852263.html","categoria":"INNOVATION","lang":"en"},{"fonte":"北京市人民政府门户网站","pais":"China","titulo":"During Haidian Research Tour, Yin Yong Emphasizes Building a Service System for Future Industries","resumo":"The official highlighted the importance of creating comprehensive support for the entire lifecycle of high-tech enterprises. The focus is on accelerating scientific breakthroughs and promoting the rapid practical application of disruptive innovations. This strategy strengthens Haidian District as an epicenter for emerging industries.","link":"https://www.beijing.gov.cn/gongkai/ldhd/202609/t20260906_4852251.html","categoria":"BUSINESS","lang":"en"},{"fonte":"人民网","pais":"China","titulo":"Major National Equipment Becomes Scientific Partner: 'Yanqi Science Season' in Huairou Uses Interactivity to Ignite Passion for Science","resumo":"The science festival in Huairou transformed large-scale technological infrastructure into interactive, educational attractions. The initiative brings the general public closer to advanced science through games and immersive experiences. The event aims to stimulate scientific curiosity and engage society in the country's innovations.","link":"http://bj.people.com.cn/n2/2026/0906/c14540-41688027.html","categoria":"EDUCATION","lang":"en"},{"fonte":"人民网财经","pais":"China","titulo":"Guangdong's Core Artificial Intelligence Industry Surpasses 300 Billion Yuan","resumo":"Guangdong Province reached a historic milestone in the artificial intelligence sector, driven by incentive policies and strong market demand. This expressive growth cements the region as one of the country's most dynamic tech powerhouses. The advancement attracts new investments and accelerates the digital transformation of the local economy.","link":"http://finance.people.com.cn/n1/2026/0906/c1004-40793217.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"ttplus.cn","pais":"China","titulo":"Hahaha Esports Debuts at the 2026 China Esports Technology Summit, Reshaping the Broadcasting Ecosystem with AI","resumo":"The company introduced AI-driven innovations aimed at transforming the broadcast experience for sports events. The technological integration promises greater interactivity and production efficiency for gaming audiences. The initiative marks a new chapter in the fusion of electronic sports and advanced technology.","link":"https://m.ttplus.cn/wiki/17975445.php","categoria":"ESPORTS","lang":"en"},{"fonte":"Hindustan Times","pais":"India","titulo":"From Trash to Triumph: Educator's Upcycled Science Wonders Earn National Award","resumo":"An Indian educator was nationally recognized for creating innovative science projects using recycled and discarded materials. The initiative turns common waste into low-cost pedagogical tools to engage students. The accolade highlights the impact of creativity on science education and environmental sustainability across the country.","link":"https://www.hindustantimes.com/cities/chandigarh-news/from-trash-to-triumph-ut-educator-s-upcycled-science-wonders-earn-him-national-award-101788638206386.html","categoria":"SCIENCE","lang":"en"},{"fonte":"kakaku.com","pais":"India","titulo":"Equipped with a New 200cc Engine! Yamaha's New 'YZF-R2' Supersport Debuts and Launches in India","resumo":"Yamaha officially announced the launch of the new YZF-R2 supersport motorcycle in the Indian market, featuring an unprecedented 200cc engine. The model arrives to intensify competition in the region's mid-displacement two-wheeler segment. The novelty combines track-inspired aggressive design with specifications geared toward urban and highway performance.","link":"https://news.kakaku.com/prdnews/cd=kuruma/ctcd=7010/id=158626/","categoria":"LAUNCHES","lang":"en"},{"fonte":"Down To Earth","pais":"India","titulo":"'Major Loss to Indian Climate Science': Scientific Community and Civil Society Mourn the Demise of Krishna AchutaRao","resumo":"The Indian scientific community and various civil society sectors expressed deep sorrow over the passing of renowned researcher Krishna AchutaRao. He was a central figure in studies on climate change and atmospheric modeling in the country. His departure leaves a significant gap in the advancement of scientific research focused on environmental impacts in India.","link":"https://www.downtoearth.org.in/climate-change/major-loss-to-indian-climate-science-scientific-community-civil-society-mourn-demise-of-krishna-achutarao","categoria":"SCIENCE","lang":"en"},{"fonte":"e-global.pt","pais":"Portugal","titulo":"European Union Highlights Ten Podcasts Bringing Science Closer to the Public, from Artificial Intelligence to Climate Change","resumo":"The European Union highlighted a selection of ten innovative podcasts focused on science communication in Europe. The initiative addresses crucial topics such as artificial intelligence and climate change in an accessible way. The goal is to engage young audiences and society at large in current technological debates.","link":"https://e-global.pt/noticia/vida/ciencia/ue-destaca-dez-podcasts-que-aproximam-a-ciencia-do-publico-da-inteligencia-artificial-as-alteracoes-climaticas/","categoria":"SCIENCE","lang":"en"},{"fonte":"Diário dos Açores","pais":"Portugal","titulo":"3D Technology to Map Pressure on Limpets and Help Manage Harvesting in the Azores","resumo":"Researchers will use 3D mapping technology to analyze fishing pressure on limpet populations in the Azores. The project aims to provide accurate data to ensure the sustainability of this traditional activity in the region. The technological tool optimizes environmental management and protects local marine biodiversity.","link":"https://diariodosacores.pt/2026/09/05/tecnologia-3d-vai-mapear-pressao-sobre-as-lapas-e-ajudar-a-gerir-apanha-nos-acores/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"sapo.pt","pais":"Portugal","titulo":"Penha Garcia Castle Gains New Scenic LED Lighting and Surrounding Area Upgrades","resumo":"The historic Penha Garcia Castle received a modern scenic lighting project featuring high-energy-efficiency LED technology. The intervention enhances the architectural heritage and boosts night tourism in the Idanha-a-Nova region. The initiative combines technological innovation, sustainability, and Portuguese cultural preservation.","link":"https://sapo.pt/artigo/castelo-de-penha-garcia-com-nova-iluminacao-cenica-em-tecnologia-led-e-zona-envolvente-valorizada-6a9bfd96672edd257f356577","categoria":"INNOVATION","lang":"en"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"Environment and Energy Sectors Fully Meet PRR Targets with Investments Exceeding 1.8 Billion","resumo":"Portugal's Environment and Energy sectors successfully met all targets outlined by the Recovery and Resilience Plan (PRR). Invested funds surpassed 1.8 billion euros, driving the green transition and the modernization of national infrastructure. The results reinforce the country's commitment to sustainability and energy efficiency.","link":"https://jornaleconomico.sapo.pt/noticias/ambiente-e-energia-cumprem-integralmente-metas-do-prr-com-investimento-superior-a-18-mil-milhoes/","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"Diário do Distrito","pais":"Portugal","titulo":"Drop in public debt leads Fitch agency to upgrade Portugal's rating to A+","resumo":"Credit rating agency Fitch has upgraded Portugal's sovereign rating to A+, driven by the consistent downward trajectory of public debt. The recognition reflects the country's fiscal strength and enhances its credibility in international financial markets. This economic upgrade brings direct positive impacts to the state's financing costs.","link":"https://diariodistrito.sapo.pt/divida-em-queda-leva-fitch-a-premiar-portugal-com-a/","categoria":"ECONOMY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
