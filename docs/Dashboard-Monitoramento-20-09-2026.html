@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-krQqMP/d8s96tRS6jjf7Ib/d'; script-src 'nonce-krQqMP/d8s96tRS6jjf7Ib/d'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="krQqMP/d8s96tRS6jjf7Ib/d">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">20/09/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="krQqMP/d8s96tRS6jjf7Ib/d">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Diário do Comércio","pais":"Brasil","titulo":"Pagamentos biométricos: tecnologia lê veias da mão para autorizar Pix em menos de 0,3 segundo","resumo":"Uma nova solução tecnológica baseada no escaneamento das veias da palma da mão promete revolucionar o mercado de pagamentos no Brasil.\nA ferramenta elimina a necessidade de senhas, cartões ou smartphones, realizando transações como o Pix em um tempo recorde inferior a 0,3 segundo.\nAlém da alta precisão biométrica, a inovação traz camadas adicionais de segurança para combater fraudes e acelerar o atendimento físico.","link":"https://diariodocomercio.com.br/mix/adeus-senha-cartao-e-celular-tecnologia-le-as-veias-da-mao-para-autorizar-pix-e-pagamentos-em-menos-de-03-segundo/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Anthropic, OpenAI, Google e SpaceXAI são acusadas de conluio para desacelerar avanços em IA","resumo":"Um grupo de acusadores deu início a uma ação legal alegando um suposto acordo ilícito entre gigantes globais da tecnologia para limitar a expansão da IA.\nSegundo a denúncia, Anthropic, OpenAI, Google e a divisão espacial do ecossistema de Musk teriam coordenado esforços para conter o ritmo de inovações concorrentes.\nA polêmica ressalta os crescentes conflitos regulatórios e concorrenciais que moldam o futuro do setor da inteligência artificial no cenário mundial.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/19/acao-judicial-eua-anthropic-openai-spacexai-google-acordo-ilegal-desacelerar-desenvolvimento-ia.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Pesquisadores utilizam IA Claude da Anthropic para invadir sistemas da OpenAI","resumo":"Especialistas em cibersegurança demonstraram como o modelo de inteligência artificial Claude foi capaz de identificar e explorar vulnerabilidades na infraestrutura da OpenAI.\nO experimento acendeu um alerta global na indústria sobre o potencial de modelos avançados de linguagem servirem como ferramentas sofisticadas para ataques virtuais.\nA descoberta reforça a urgência na criação de barreiras éticas e mecanismos de defesa mais robustos para proteger sistemas críticos de IA.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/19/pesquisadores-dizem-ter-hackeado-openai-usando-ia-claude-da-anthropic.ghtml","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"CEO da Nvidia descarta apocalipse provocado por inteligência artificial até 2030","resumo":"O líder da Nvidia, Jensen Huang, minimizou os temores existenciais exagerados sobre os riscos destrutivos da inteligência artificial para a humanidade.\nO executivo cravou que há zero de chance de a IA causar o fim do mundo nos próximos anos, destacando a segurança dos sistemas em desenvolvimento.\nSua declaração busca reorientar o debate público para os benefícios produtivos da tecnologia, rebatendo previsões alarmistas do setor.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/19/ceo-da-nvidia-diz-que-ia-nao-vai-acabar-com-o-mundo-ate-2030-0percent-de-chance.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Globo","pais":"Brasil","titulo":"Sensor biodegradável à base de amido indica o nível de umidade em embalagens de alimentos","resumo":"Cientistas desenvolveram um sensor inovador feito de amido que muda de cor ao detectar variações nos níveis de umidade dentro de embalagens alimentícias.\nA tecnologia oferece uma solução visual e simples para sinalizar a integridade dos produtos sem a necessidade de abrir ou danificar os pacotes.\nO avanço promete reduzir o desperdício de alimentos na cadeia de distribuição e elevar a segurança dos consumidores de forma sustentável.","link":"https://revistagalileu.globo.com/google/amp/tecnologia/noticia/2026/09/sensor-a-base-de-amido-muda-de-cor-para-indicar-umidade-em-embalagens-de-alimentos.ghtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Novo fóssil descoberto na Europa revela espécie inédita de dinossauro gigante","resumo":"Paleontólogos anunciaram a identificação de um fóssil extraordinário na Europa pertencente a uma espécie de dinossauro gigante até então desconhecida pela ciência.\nOs restos mortais encontrados trazem novas pistas valiosas sobre a evolução e a distribuição geográfica desses grandes répteis no continente europeu.\nA descoberta amplia o conhecimento sobre os ecossistemas pré-históricos e demonstra que a região ainda abriga importantes segredos paleontológicos.","link":"https://www1.folha.uol.com.br/ciencia/2026/09/fossil-revela-dinossauro-gigante-inedito-na-europa.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Estadão","pais":"Brasil","titulo":"Empresa de apostas nos EUA utiliza IA para identificar e explorar apostadores propensos a perdas","resumo":"Uma investigação revelou que uma grande operadora norte-americana de apostas usou algoritmos de inteligência artificial para rastrear usuários propensos a perder dinheiro.\nO sistema analisava o comportamento dos clientes para personalizar incentivos e manter o engajamento de apostadores vulneráveis na plataforma.\nA revelação reacendeu debates éticos no setor de apostas online sobre o uso predatório de tecnologias preditivas e a falta de regulação protetiva.","link":"https://www.estadao.com.br/economia/gigante-americana-das-bets-usa-ia-para-encontrar-apostadores-mais-propensos-a-perder/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Trump anuncia a criação de força-tarefa e a nomeação de um 'czar da inteligência artificial'","resumo":"O ex-presidente norte-americano Donald Trump revelou planos para estabelecer uma autoridade central com a meta de orientar os avanços tecnológicos dos EUA.\nA estratégia contempla a nomeação de um executivo dedicado a monitorar a regulamentação e impulsionar a competitividade do país no setor de IA.\nA medida reflete a geopolítica tecnológica crescente, onde superpotências buscam garantir a liderança no desenvolvimento de sistemas autônomos.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/19/trump-anuncia-que-vai-criar-czar-da-ia.ghtml","categoria":"POLÍTICA PÚBLICA","lang":"pt"},{"fonte":"timesofindia.indiatimes.com","pais":"Estados Unidos","titulo":"Mark Zuckerberg confirma divisão da indústria de tecnologia sobre regulação de IA","resumo":"O CEO da Meta, Mark Zuckerberg, indicou que o setor de tecnologia está fragmentado em relação às regulamentações de inteligência artificial.\nEnquanto empresas como OpenAI e Anthropic defendem diretrizes mais rígidas para conter riscos, outras visam o desenvolvimento aberto e acelerado.\nEsse impasse expõe os diferentes interesses comerciais e estratégicos sobre o futuro da inovação em IA no cenário global.","link":"https://timesofindia.indiatimes.com/technology/tech-news/mark-zuckerberg-confirms-technology-industry-is-divided-on-ai-regulation-tells-openai-and-anthropic-your-ai-agents-your-/articleshow/134364246.cms","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"BBC Sky at Night Magazine","pais":"Estados Unidos","titulo":"Júpiter cor-de-rosa? A ciência por trás da visão psicodélica do gigante gasoso","resumo":"Uma nova imagem em tom rosa-choque de Júpiter revelou detalhes fascinantes sobre os processos atmosféricos do maior planeta do sistema solar.\nOs cientistas utilizam comprimentos de onda de luz específicos para mapear variações de altitude, nuvens de amônia e tempestades gigantescas.\nEssas observações detalhadas ajudam a entender a composição interna e a evolução dos planetas gasosos no universo.","link":"https://www.skyatnightmagazine.com/news/hubble-ultraviolet-jupiter-image","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"MLB.com","pais":"Estados Unidos","titulo":"Visualizando a batida de Griffin Conine com tecnologia de rastreamento de tacos","resumo":"A tecnologia de rastreamento de tacos está transformando a análise de desempenho no beisebol profissional ao monitorar o atleta Griffin Conine.\nSensores e câmeras de alta velocidade capturam métricas cruciais como velocidade de rotação, ângulo de ataque e ponto de impacto.\nEssa abordagem baseada em dados permite ajustes biomecânicos precisos para maximizar a eficiência e a potência do jogador.","link":"https://www.mlb.com/marlins/video/visualizing-griffin-conine-s-swing-using-bat-tracking-technology-x9382","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ScienceDaily","pais":"Estados Unidos","titulo":"Caçadores de Furacões revelam 4 sinais de alerta de que uma tempestade vai se intensificar","resumo":"Especialistas em meteorologia aérea identificaram quatro indicadores críticos que antecedem o rápido fortalecimento de um furacão.\nA medição de pressão no olho da tempestade, ventos internos e padrões de umidade fornecem dados essenciais durante as missões.\nEssas descobertas são fundamentais para aprimorar modelos de previsão e emitir alertas precoces para comunidades em risco.","link":"https://www.sciencedaily.com/releases/2026/09/260919031037.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Boston Globe","pais":"Estados Unidos","titulo":"Como desacelerar a IA sem desestabilizar a economia","resumo":"Especialistas discutem abordagens para impor limites ao avanço descontrolado da inteligência artificial sem prejudicar a economia global.\nA proposta busca equilibrar a governança ética com a manutenção dos incentivos financeiros que impulsionam o setor tecnológico.\nA implementação de salvaguardas graduais visa mitigar riscos sem comprometer os ganhos de produtividade gerados pela tecnologia.","link":"https://www.bostonglobe.com/2026/09/20/business/ai-threat-slowdown-pause-economy/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"MLB.com","pais":"Estados Unidos","titulo":"Visualizando a batida de Heliot Ramos com tecnologia de rastreamento de tacos","resumo":"O uso de tecnologia avançada de rastreamento de movimento aplicada ao atleta Heliot Ramos oferece uma nova visão sobre a física no beisebol.\nAo converter cada balanço do taco em modelos tridimensionais, treinadores identificam padrões mecânicos sutis e otimizam o impacto.\nA análise computadorizada constante redefine a preparação técnica e melhora a consistência dos jogadores em campo.","link":"https://www.mlb.com/yankees/video/visualizing-heliot-ramos-swing-using-bat-tracking-technology-x4166","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"BBC","pais":"Estados Unidos","titulo":"Trump afirma que EUA criarão 'Força de IA' e nomearão 'Czar' da inteligência artificial","resumo":"Donald Trump anunciou planos para estabelecer uma estrutura federal dedicada ao avanço da inteligência artificial nos Estados Unidos.\nA iniciativa prevê a criação de uma força-tarefa especial e a nomeação de um czar para liderar a estratégia de tecnologia nacional.\nO objetivo central é garantir o domínio tecnológico norte-americano na corrida global e acelerar a inovação no setor.","link":"https://www.bbc.com/news/articles/cqlykr2vrv04o","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"The Guardian","pais":"Estados Unidos","titulo":"Kevin Warsh pode ser a voz da razão, mas conseguirá acalmar a economia dos EUA?","resumo":"A possível atuação de Kevin Warsh em posições de liderança gera debates sobre os rumos da política monetária dos Estados Unidos.\nReconhecido por sua experiência financeira, o executivo enfrenta o desafio de conter a inflação sem interromper o crescimento.\nAnalistas avaliam se suas propostas serão suficientes para acalmar os mercados em um momento de incerteza econômica.","link":"https://www.theguardian.com/business/2026/sep/19/kevin-warsh-interest-rate-hike","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"swarajyamag.com","pais":"França","titulo":"Naval Group da França e Nibe Assinam Acordo para Fortalecer a Construção Naval e Tecnologia Marítima da Índia","resumo":"O Naval Group francês e a empresa indiana Nibe Limited assinaram um Memorando de Entendimento focado no fortalecimento das capacidades tecnológicas e de construção naval da Índia.\nA parceria estratégica busca impulsionar a inovação industrial e a transferência de tecnologia no setor de defesa marítima.\nO acordo reforça a colaboração bilateral entre os dois países, promovendo o avanço em engenharia naval e infraestrutura de alta tecnologia.","link":"https://swarajyamag.com/defence/frances-naval-group-nibe-sign-mou-to-strengthen-indias-naval-shipbuilding-and-maritime-technology-capabilities","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"La Tribune","pais":"França","titulo":"Pesquisa: Como a Inteligência Artificial Está se Impondo no Cotidiano dos Franceses?","resumo":"Uma nova pesquisa analisa a penetração da inteligência artificial no dia a dia da população francesa, avaliando percepções sobre produtividade e informação.\nO levantamento destaca o impacto crescente das ferramentas de IA no mercado de trabalho e as preocupações com a potencial eliminação de empregos.\nOs resultados mostram uma transição cultural em que a tecnologia deixa de ser uma novidade para se tornar elemento central no cotidiano profissional e pessoal.","link":"https://www.latribune.fr/article/la-tribune-dimanche/societe/60532542367837/sondage-suppression-demplois-moyen-pour-sinformer-productivite-comment-lia-s-impose-t-elle-dans-le-quotidien-des-francais","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"RFI","pais":"França","titulo":"Até Onde Vai a Ciência? Quem Eram os Denisovanos?","resumo":"Investigações científicas recentes lançam nova luz sobre os denisovanos, uma espécie de hominídeo extinto que viveu contemporaneamente aos neandertais e humanos modernos.\nAtravés de análises genéticas e fósseis avançadas, arqueólogos e geneticistas buscam compreender o impacto do DNA denisovano na evolução humana atual.\nA reportagem explora as fronteiras da paleontologia e da ciência moderna ao reconstruir os hábitos, migrações e o legado biológico desse misterioso ancestral.","link":"https://www.rfi.fr/fr/podcasts/jusqu-o%C3%B9-va-la-science/20260920-qui-%C3%A9taient-les-d%C3%A9nisoviens","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Midi Libre","pais":"França","titulo":"Detectar Ninhos de Vespas Asiáticas com Mais Eficiência Graças à Tecnologia","resumo":"A proliferação de vespas asiáticas na França tem sido combatida com o uso de inovações tecnológicas avançadas, como drones e dispositivos de rastreamento.\nEssas novas ferramentas permitem a detecção precoce de ninhos em áreas de difícil acesso, reduzindo significativamente os danos à biodiversidade local e à apicultura.\nA aplicação da tecnologia na preservação ambiental demonstra como soluções digitais podem proteger o ecossistema contra espécies invasoras de forma eficiente.","link":"https://www.midilibre.fr/2026/09/20/detecter-les-nids-de-frelons-asiatiques-plus-efficacement-grace-a-la-technologie-13559742.php","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Fondation Recherche Alzheimer","pais":"França","titulo":"Mel e Alzheimer: O Que Realmente Diz a Ciência","resumo":"Pesquisas recentes examinaram as propriedades antioxidantes e anti-inflamatórias do mel e seu potencial impacto na prevenção de doenças neurodegenerativas como o Alzheimer.\nEspecialistas analisam os dados científicos atuais para separar mitos e evidências reais sobre os benefícios do alimento na saúde cerebral.\nEmbora os resultados preliminares sejam promissores em laboratório, a ciência reforça a importância de estudos clínicos mais aprofundados antes de definir conclusões terapêuticas.","link":"https://alzheimer-recherche.org/recherche-et-alzheimer/miel-alzheimer/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"L'Usine Nouvelle","pais":"França","titulo":"Alexandra Plançon, Engenheira de Ciência de Dados na Assystem, Aplica Sua Expertise ao Setor Nuclear","resumo":"A engenheira de dados Alexandra Plançon destaca o papel fundamental da inteligência de dados na otimização e segurança do setor de energia nuclear francês.\nAtuando na empresa Assystem, sua equipe desenvolve modelos preditivos e algoritmos avançados para aprimorar a eficiência operacional de instalações complexas.\nA iniciativa ilustra como a ciência de dados moderna pode ser direcionada ao bem comum e à sustentabilidade energética do país.","link":"https://www.usinenouvelle.com/industrie/trophee-des-femmes-de-l-industrie/alexandra-plancon-ingenieure-en-data-science-chez-assystem-met-son-expertise-au-service-du-nucleaire-et-du-bien-commun.DZSHVP3RTRHLTBO55DQW4QY6S4.html","categoria":"CIÊNCIA DE DADOS","lang":"pt"},{"fonte":"Les Echos","pais":"França","titulo":"Deterioração Persistente das Perspectivas Orçamentárias: Agência Scope Ratings Rebaixa a Nota da França","resumo":"A agência de classificação de risco Scope Ratings rebaixou a nota de crédito da França, citando a piora contínua do déficit público e da dívida soberana do país.\nA decisão reflete as incertezas políticas recentes e as dificuldades do governo francês em implementar reformas fiscais e conter gastos públicos.\nO rebaixamento pressiona as finanças francesas e sinaliza desafios crescentes para a estabilidade econômica e atratividade de investimentos na região.","link":"https://www.lesechos.fr/economie-france/budget-fiscalite/deterioration-persistante-des-perspectives-budgetaires-lagence-scope-ratings-degrade-la-note-de-la-france-2252510","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Isle of Wight County Press","pais":"Inglaterra","titulo":"Empresa da Ilha de Man espera que nova tecnologia de filtro de óleo se torne global","resumo":"Uma empresa sediada em uma ilha britânica desenvolveu uma nova tecnologia de filtragem de óleo com potencial para revolucionar a manutenção industrial.\nO sistema promete aumentar significativamente a eficiência operacional e reduzir o impacto ambiental causado pelo descarte de lubrificantes.\nCom o avanço dos testes técnicos, a empresa planeja expandir a comercialização da inovação para o mercado global nos próximos anos.","link":"https://www.countypress.co.uk/news/26551079.isle-wight-business-high-hopes-new-oil-filter-technology/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"KFDA | NewsChannel 10 | Amarillo Texas","pais":"Inglaterra","titulo":"Reino Unido instala tecnologia de escaneamento facial com IA em residências estudantis","resumo":"Universidades e residências estudantis no Reino Unido começaram a implementar sistemas de escaneamento facial impulsionados por inteligência artificial.\nA tecnologia busca reforçar a segurança dos edifícios e otimizar a gestão de acesso dos moradores de forma automatizada.\nContudo, a instalação desses dispositivos levanta importantes discussões éticas sobre privacidade, vigilância em massa e proteção de dados pessoais.","link":"https://www.newschannel10.com/video/2026/09/20/uk-installs-ai-facial-scanning-technology-residence-halls/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"くるまのニュース","pais":"Inglaterra","titulo":"Renascido após 30 anos: Novo carro esportivo monoposto de 250 cv e menos de 600 kg é lançado no Reino Unido","resumo":"A fabricante britânica Analog Automotive apresentou o VHPK, um novo carro esportivo monoposto desenvolvido sobre a plataforma do icônico Lotus Elise.\nO modelo chama a atenção por seu corpo ultraleve de menos de 600 kg, equipado com câmbio manual e motor de mais de 250 cavalos de potência.\nO lançamento marca o retorno dos esportivos puros e analógicos, combinando nostalgia ao alto desempenho técnico.","link":"https://kuruma-news.jp/photo/1113370","categoria":"AUTOMOBILÍSTICO","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Trump criará 'Força de IA' para monitorar tecnologia com o avanço do receio sobre agentes autônomos","resumo":"Diante das crescentes preocupações com agentes autônomos fora de controle, Donald Trump anunciou a criação de uma força-tarefa voltada para a inteligência artificial.\nO novo grupo terá a missão de monitorar o avanço acelerado das tecnologias emergentes e estabelecer diretrizes de segurança.\nA iniciativa reflete o aumento da pressão pública e governamental por maior regulação e supervisão sobre empresas de tecnologia.","link":"https://www.theguardian.com/us-news/2026/sep/19/donald-trump-ai-force","categoria":"POLÍTICA DIGITAL","lang":"pt"},{"fonte":"Financial Times","pais":"Inglaterra","titulo":"Trump anuncia 'Força de IA' enquanto cresce o alarme sobre o avanço tecnológico","resumo":"O anúncio de uma 'Força de IA' por Donald Trump ocorre em meio ao aumento do alerta global em relação à velocidade das inovações em inteligência artificial.\nA proposta visa criar uma estrutura governamental para acompanhar o impacto dos sistemas inteligentes na sociedade e na economia.\nA medida destaca a busca por controle sobre plataformas tecnológicas emergentes antes que causem instabilidades maiores.","link":"https://www.ft.com/content/bcbfe352-9e9f-4ef5-81b2-2e01505b8477?syn-25a6b1a6=1","categoria":"GOVERNANÇA","lang":"pt"},{"fonte":"Deia","pais":"Espanha","titulo":"A inteligência artificial pode aniquilar a humanidade?","resumo":"O avanço acelerado da inteligência artificial levanta debates profundos sobre os riscos existenciais que essas tecnologias podem representar para o futuro humano.\nEspecialistas e pesquisadores analisam cenários de perda de controle, ética e segurança nos sistemas autônomos.\nA discussão reforça a necessidade urgente de regulamentações globais e salvaguardas para conter possíveis ameaças tecnológicas.","link":"https://www.deia.eus/ciencia-y-tecnologia/2026/09/20/inteligencia-artificial-aniquilar-humanidad-11564286.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Eldía","pais":"Espanha","titulo":"Como Tenerife descobriu a geotermia: 20 anos de ciência e 3.000 metros de rocha para alcançar a energia vulcânica","resumo":"Após duas décadas de pesquisas científicas e perfurações profundas na ilha de Tenerife, especialistas conseguiram mapear o potencial de energia geotérmica vulcânica.\nO avanço representa um marco para a transição energética sustentável e a autonomia de recursos nas Ilhas Canárias.\nA descoberta comprova a viabilidade de explorar o calor do subsolo para a geração de energia limpa e renovável.","link":"https://www.eldia.es/tenerife/2026/09/20/descubrio-tenerife-geotermia-20-anos-134466945.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Infodefensa","pais":"Espanha","titulo":"Um drone turco Bayraktar TB2 com tecnologia Aselsan detecta, geolocaliza e neutraliza radar por meio de mísseis ou guerra eletrônica","resumo":"O drone militar Bayraktar TB2 demonstrou novas capacidades táticas ao integrar subsistemas avançados desenvolvidos pela empresa Aselsan.\nA tecnologia permite a identificação precisa de alvos e a neutralização de radares inimigos por meio de guerra eletrônica ou ataques diretos.\nEsse progresso destaca o impacto da inovação tecnológica na modernização dos sistemas de defesa e combate autônomo.","link":"https://www.infodefensa.com/texto-diario/mostrar/6020415/aselsan-integra-guerra-electronica-radar-sar-ataque-electronico-bayraktar-tb2","categoria":"TECNOLOGIA MILITAR","lang":"pt"},{"fonte":"Canarias en Pleno","pais":"Espanha","titulo":"Agência Tributária das Canárias gastará 4,1 milhões em tecnologia Microsoft","resumo":"A Agência Tributária das Canárias aprovou um investimento significativo de mais de quatro milhões de euros para renovar sua infraestrutura digital.\nO contrato prevê a aquisição de licenças e ferramentas da Microsoft para modernizar os serviços públicos e reforçar a segurança dos dados.\nO movimento visa acelerar a transformação digital e otimizar a eficiência operacional das arrecadações fiscais da região.","link":"https://www.canariasenpleno.com/la-agencia-tributaria-canaria-licita-41-millones-en-microsoft-53-500-euros-en-2027-y-25-millones-en-2028/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Cinco Días","pais":"Espanha","titulo":"Os robotáxis em Madri, um embate entre tecnologia acelerada e regulação lenta","resumo":"A chegada iminente dos veículos autônomos à capital espanhola evidencia o descompasso entre a rápida evolução tecnológica e as normas vigentes.\nEnquanto as empresas realizam testes para viabilizar os robotáxis em Madri, autoridades locais buscam criar um quadro regulatório adequado e seguro.\nO cenário reflete os desafios urbanos, legais e de infraestrutura para a adoção em massa do transporte sem motorista.","link":"https://cincodias.elpais.com/companias/2026-09-20/los-robotaxis-en-madrid-un-pulso-entre-tecnologia-acelerada-y-regulacion-lenta.html","categoria":"MOBILIDADE URBANA","lang":"pt"},{"fonte":"El Español","pais":"Espanha","titulo":"Como Alonso Chen trabalha para que a tecnologia cuide do seu pet: \"Não são apenas gadgets, têm valor prático\"","resumo":"O empreendedor Alonso Chen desenvolve soluções de tecnologia focadas na saúde, bem-estar e monitoramento contínuo de animais de estimação.\nSeus projetos priorizam a funcionalidade prática e o impacto real no cotidiano dos tutores, indo além de meros dispositivos eletrônicos.\nA iniciativa reflete o crescimento do mercado de pet tech e a integração de dados para melhorar a qualidade de vida dos animais.","link":"https://www.elespanol.com/omicrono/tecnologia/20260920/trabaja-alonso-chen-tecnologia-cuide-mascota-no-solo-gadgets-valor-practico/1003744383071_0.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Agencia de noticias","pais":"Espanha","titulo":"'Relações perigosas', um quadrinho sobre o desmantelamento da ciência na ditadura","resumo":"Uma nova obra em quadrinhos retrata os impactos e retrocessos sofridos pela comunidade científica espanhola durante o período da ditadura militar.\nO livro combina resgate histórico e arte sequencial para ilustrar o desmonte de instituições e a perseguição a pesquisadores.\nO lançamento destaca a importância do incentivo contínuo à pesquisa e da preservação da memória científica nacional.","link":"https://efe.com/cultura/2026-09-19/relaciones-peligrosas-comic-ciencia-dictadura/","categoria":"CIÊNCIA E CULTURA","lang":"pt"},{"fonte":"fvw|TravelTalk","pais":"Alemanha","titulo":"Política, IA e Vendas: O Segundo Dia em Imagens","resumo":"O segundo dia do evento destacou o impacto crescente da inteligência artificial nas estratégias de vendas e nos debates políticos atuais.\nLideranças e especialistas se reuniram para discutir a integração de novas tecnologias e a automação de processos comerciais.\nO encontro evidenciou como a IA está transformando o setor produtivo e moldando as decisões estratégicas das empresas.","link":"https://www.fvw.de/galerien/Politik-AI-Vertrieb---Tag-zwei-in-Bildern-4315","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Science et vie","pais":"Alemanha","titulo":"Ao Fugir de Tempestade na Antártida, Pesquisadores Alemães Descobrem Ilha Desconhecida","resumo":"Uma equipe de cientistas alemães a bordo de um navio de pesquisa descobriu uma nova ilha na Antártida enquanto tentava se abrigar de uma forte tempestade.\nO território não constava em nenhum mapa oficial e foi revelado devido ao recuo acelerado das geleiras na região.\nA descoberta abre novas oportunidades de estudo sobre o impacto das mudanças climáticas e a geografia polar.","link":"https://www.science-et-vie.com/nature-et-environnement/en-fuyant-une-tempete-en-antarctique-des-chercheurs-allemands-decouvrent-une-ile-qui-napparait-sur-aucune-carte-235083.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"DIE ZEIT","pais":"Alemanha","titulo":"Caça F-35 dos EUA: Tecnologia Secreta Teria Vazado para Hong Kong","resumo":"Informações confidenciais sobre a tecnologia dos caças stealth F-35 das Forças Armadas dos Estados Unidos teriam sido interceptadas e enviadas para Hong Kong.\nO vazamento acendeu o alerta em agências de segurança e inteligência ocidentais sobre espionagem industrial e militar.\nO caso ressalta a vulnerabilidade de dados estratégicos de alta tecnologia em meio a crescentes tensões geopolíticas.","link":"https://www.zeit.de/politik/ausland/2026-09/f-35-cockpithaube-tarnkappentechnologie-china-lockheed-martin-gxe","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Le Monde.fr","pais":"Alemanha","titulo":"Na Alemanha, Friedrich Merz Arrisca Sua Sobrevivência Política nas Eleições Regionais","resumo":"O líder conservador alemão Friedrich Merz enfrenta um momento decisivo para seu futuro político durante as eleições regionais deste fim de semana.\nO resultado das urnas deve medir a força da oposição e testar a estabilidade do cenário político no país.\nO pleito é visto como um termômetro determinante para as próximas eleições federais na Alemanha.","link":"https://www.lemonde.fr/international/article/2026/09/19/en-allemagne-le-chancelier-friedrich-merz-plus-conteste-que-jamais-avant-les-elections-regionales-du-20-septembre_6777434_3210.html","categoria":"POLÍTICA","lang":"pt"},{"fonte":"北海道新聞デジタル","pais":"Japão","titulo":"Ucrânia Solicita Cúpula ao Japão para Promover Cooperação em Tecnologia de Drones","resumo":"O governo da Ucrânia solicitou oficialmente uma reunião de cúpula com o Japão com o objetivo de fortalecer a cooperação bilateral no desenvolvimento e aplicação de tecnologias de drones.\nA iniciativa visa aproveitar a expertise tecnológica japonesa para aprimorar capacidades operacionais e de reconstrução no cenário pós-conflito.\nA parceria estratégica pode impulsionar inovações no setor de veículos aéreos não tripulados e consolidar o apoio internacional japonês à nação ucraniana.","link":"https://www.hokkaido-np.co.jp/article/1374410/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"O que é o Carregamento AVS Previsto para o iPhone 18? Análise das Diferenças para Tecnologias Atuais","resumo":"Um novo relatório técnico detalha o funcionamento da tecnologia de carregamento AVS, apontada como uma das grandes novidades planejadas para as futuras gerações do iPhone.\nO sistema promete otimizar a eficiência energética e reduzir significativamente o aquecimento durante a recarga em comparação com os métodos tradicionais e sem fio.\nA inovação pode redefinir os padrões da indústria de smartphones ao prolongar a vida útil das baterias e oferecer maior conveniência aos usuários.","link":"https://news.yahoo.co.jp/expert/articles/3aa40b29907c5675591215e3b020c31728f071c6","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Canon Aprimora Aplicativo de Transmissão ao Vivo e Apresenta Tecnologia de Filmagem 3D na TGS","resumo":"A Canon anunciou atualizações significativas em seus aplicativos voltados para transmissões ao vivo, além de apresentar soluções avançadas de captura de vídeo em 3D durante a Tokyo Game Show.\nA empresa busca expandir sua presença no mercado de criação de conteúdo digital e produções imersivas para criadores e gamers.\nA nova suíte tecnológica promete facilitar a produção de conteúdos de alta qualidade e impulsionar a adoção de mídias tridimensionais no ecossistema de streaming.","link":"https://news.yahoo.co.jp/articles/c352f9b44de145aff0075da423c86acf5076cb07","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"QAB 琉球朝日放送","pais":"Japão","titulo":"Nos Bastidores do Aeroporto de Narita: A Nova Era de Colaboração entre Humanos e Robôs","resumo":"O Aeroporto Internacional de Narita está implementando tecnologias de ponta e sistemas robóticos para otimizar operações de logística, segurança e atendimento aos passageiros.\nA iniciativa destaca uma nova era de colaboração em que robôs autônomos realizam tarefas complexas e repetitivas ao lado da equipe humana.\nO projeto visa mitigar a escassez de mão de obra no setor aeroportuário do Japão e elevar os padrões de eficiência e segurança operacional.","link":"https://www.qab.co.jp/quebee/video/000534685/","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Newscast.jp","pais":"Japão","titulo":"Relatório Global sobre IA para Ciência Prevê Crescimento de 28,9% até 2026","resumo":"Um novo estudo global sobre a aplicação de Inteligência Artificial na ciência projeta um crescimento anual expressivo de 28,9% na indústria nos próximos anos.\nO relatório analisa a participação de mercado, o cenário competitivo e o impacto transformador da IA em pesquisas farmacêuticas, física e ciências dos materiais.\nO avanço dessas ferramentas promete acelerar descobertas científicas cruciais e revolucionar a metodologia de pesquisa e desenvolvimento em escala mundial.","link":"https://newscast.jp/smart/news/3267230","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Diário do Comércio","pais":"Brazil","titulo":"Biometric payments: technology reads hand veins to authorize Pix in under 0.3 seconds","resumo":"A new technological solution based on palm vein scanning promises to revolutionize the payment market in Brazil.\nThe tool eliminates the need for passwords, cards, or smartphones, completing transactions like Pix in a record time of under 0.3 seconds.\nIn addition to high biometric precision, the innovation brings additional layers of security to combat fraud and speed up physical service.","link":"https://diariodocomercio.com.br/mix/adeus-senha-cartao-e-celular-tecnologia-le-as-veias-da-mao-para-autorizar-pix-e-pagamentos-em-menos-de-03-segundo/","categoria":"INNOVATION","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Anthropic, OpenAI, Google, and SpaceXAI accused of collusion to slow down AI advances","resumo":"A group of complainants has initiated legal action alleging an illicit agreement among global tech giants to limit the expansion of AI.\nAccording to the complaint, Anthropic, OpenAI, Google, and the space division of Musk's ecosystem allegedly coordinated efforts to contain the pace of competing innovations.\nThe controversy highlights the growing regulatory and competitive conflicts shaping the future of the artificial intelligence sector on the global stage.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/19/acao-judicial-eua-anthropic-openai-spacexai-google-acordo-ilegal-desacelerar-desenvolvimento-ia.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Researchers use Anthropic's Claude AI to breach OpenAI systems","resumo":"Cybersecurity experts demonstrated how the Claude artificial intelligence model was able to identify and exploit vulnerabilities in OpenAI's infrastructure.\nThe experiment triggered a global alert in the industry regarding the potential for advanced language models to serve as sophisticated tools for cyberattacks.\nThe discovery reinforces the urgency of creating ethical barriers and more robust defense mechanisms to protect critical AI systems.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/19/pesquisadores-dizem-ter-hackeado-openai-usando-ia-claude-da-anthropic.ghtml","categoria":"DIGITAL SECURITY","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Nvidia CEO rules out artificial intelligence apocalypse by 2030","resumo":"Nvidia leader Jensen Huang downplayed exaggerated existential fears regarding the destructive risks of artificial intelligence to humanity.\nThe executive stated there is a zero percent chance of AI causing the end of the world in the coming years, highlighting the safety of the systems under development.\nHis statement seeks to refocus the public debate on the productive benefits of the technology, countering alarmist predictions from the sector.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/19/ceo-da-nvidia-diz-que-ia-nao-vai-acabar-com-o-mundo-ate-2030-0percent-de-chance.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Globo","pais":"Brazil","titulo":"Starch-based biodegradable sensor indicates moisture levels in food packaging","resumo":"Scientists have developed an innovative sensor made from starch that changes color when it detects variations in moisture levels inside food packaging.\nThe technology offers a simple, visual solution to signal product integrity without the need to open or damage the packages.\nThe breakthrough promises to reduce food waste in the distribution chain and enhance consumer safety sustainably.","link":"https://revistagalileu.globo.com/google/amp/tecnologia/noticia/2026/09/sensor-a-base-de-amido-muda-de-cor-para-indicar-umidade-em-embalagens-de-alimentos.ghtml","categoria":"SCIENCE","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"New fossil discovered in Europe reveals unprecedented giant dinosaur species","resumo":"Paleontologists announced the identification of an extraordinary fossil in Europe belonging to a giant dinosaur species previously unknown to science.\nThe remains found provide valuable new clues about the evolution and geographical distribution of these large reptiles on the European continent.\nThe discovery expands knowledge about prehistoric ecosystems and demonstrates that the region still harbors important paleontological secrets.","link":"https://www1.folha.uol.com.br/ciencia/2026/09/fossil-revela-dinossauro-gigante-inedito-na-europa.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"Estadão","pais":"Brazil","titulo":"US betting company uses AI to identify and exploit gamblers prone to losses","resumo":"An investigation revealed that a major North American betting operator used artificial intelligence algorithms to track users prone to losing money.\nThe system analyzed customer behavior to customize incentives and maintain the engagement of vulnerable gamblers on the platform.\nThe revelation reignited ethical debates in the online betting sector regarding the predatory use of predictive technologies and the lack of protective regulation.","link":"https://www.estadao.com.br/economia/gigante-americana-das-bets-usa-ia-para-encontrar-apostadores-mais-propensos-a-perder/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Trump announces creation of task force and appointment of an 'AI czar'","resumo":"Former US President Donald Trump revealed plans to establish a central authority with the goal of guiding US technological advancements.\nThe strategy includes the appointment of an executive dedicated to monitoring regulation and boosting the country's competitiveness in the AI sector.\nThe move reflects growing technological geopolitics, where superpowers seek to ensure leadership in the development of autonomous systems.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/19/trump-anuncia-que-vai-criar-czar-da-ia.ghtml","categoria":"PUBLIC POLICY","lang":"en"},{"fonte":"timesofindia.indiatimes.com","pais":"United States","titulo":"Mark Zuckerberg confirms tech industry division over AI regulation","resumo":"Meta CEO Mark Zuckerberg indicated that the tech sector is fragmented regarding artificial intelligence regulations.\nWhile companies like OpenAI and Anthropic advocate for stricter guidelines to curb risks, others aim for open and accelerated development.\nThis impasse exposes different commercial and strategic interests regarding the future of AI innovation on the global stage.","link":"https://timesofindia.indiatimes.com/technology/tech-news/mark-zuckerberg-confirms-technology-industry-is-divided-on-ai-regulation-tells-openai-and-anthropic-your-ai-agents-your-/articleshow/134364246.cms","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"BBC Sky at Night Magazine","pais":"United States","titulo":"Pink Jupiter? The science behind the gas giant's psychedelic view","resumo":"A new hot-pink image of Jupiter has revealed fascinating details about the atmospheric processes of the solar system's largest planet.\nScientists use specific light wavelengths to map altitude variations, ammonia clouds, and massive storms.\nThese detailed observations help us understand the internal composition and evolution of gas planets in the universe.","link":"https://www.skyatnightmagazine.com/news/hubble-ultraviolet-jupiter-image","categoria":"SCIENCE","lang":"en"},{"fonte":"MLB.com","pais":"United States","titulo":"Visualizing Griffin Conine's swing with bat-tracking technology","resumo":"Bat-tracking technology is transforming performance analysis in professional baseball by monitoring athlete Griffin Conine.\nSensors and high-speed cameras capture crucial metrics such as rotational speed, attack angle, and impact point.\nThis data-driven approach allows for precise biomechanical adjustments to maximize the player's efficiency and power.","link":"https://www.mlb.com/marlins/video/visualizing-griffin-conine-s-swing-using-bat-tracking-technology-x9382","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ScienceDaily","pais":"United States","titulo":"Hurricane hunters reveal 4 warning signs that a storm is about to intensify","resumo":"Aerial meteorology experts have identified four critical indicators that precede the rapid strengthening of a hurricane.\nMeasuring pressure in the storm's eye, internal winds, and moisture patterns provides essential data during missions.\nThese findings are fundamental for improving forecasting models and issuing early warnings to at-risk communities.","link":"https://www.sciencedaily.com/releases/2026/09/260919031037.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"The Boston Globe","pais":"United States","titulo":"How to slow down AI without destabilizing the economy","resumo":"Experts discuss approaches to imposing limits on the uncontrolled advance of artificial intelligence without harming the global economy.\nThe proposal seeks to balance ethical governance with the maintenance of financial incentives driving the tech sector.\nThe implementation of gradual safeguards aims to mitigate risks without compromising the productivity gains generated by the technology.","link":"https://www.bostonglobe.com/2026/09/20/business/ai-threat-slowdown-pause-economy/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"MLB.com","pais":"United States","titulo":"Visualizing Heliot Ramos's swing with bat-tracking technology","resumo":"The use of advanced motion-tracking technology applied to athlete Heliot Ramos offers a new perspective on the physics of baseball.\nBy converting each bat swing into three-dimensional models, trainers identify subtle mechanical patterns and optimize impact.\nConstant computerized analysis redefines technical preparation and improves player consistency on the field.","link":"https://www.mlb.com/yankees/video/visualizing-heliot-ramos-swing-using-bat-tracking-technology-x4166","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"BBC","pais":"United States","titulo":"Trump says US will create 'AI Force' and name artificial intelligence 'Czar'","resumo":"Donald Trump announced plans to establish a federal structure dedicated to advancing artificial intelligence in the United States.\nThe initiative outlines the creation of a special task force and the appointment of a czar to lead the national technology strategy.\nThe core objective is to secure North American technological dominance in the global race and accelerate innovation in the sector.","link":"https://www.bbc.com/news/articles/cqlykr2vrv04o","categoria":"TRENDS","lang":"en"},{"fonte":"The Guardian","pais":"United States","titulo":"Kevin Warsh may be the voice of reason, but can he calm the US economy?","resumo":"Kevin Warsh's potential appointment to leadership roles sparks debate over the direction of US monetary policy. Recognized for his financial expertise, the executive faces the challenge of curbing inflation without halting growth. Analysts are assessing whether his proposals will be enough to calm the markets at a time of economic uncertainty.","link":"https://www.theguardian.com/business/2026/sep/19/kevin-warsh-interest-rate-hike","categoria":"BUSINESS","lang":"en"},{"fonte":"swarajyamag.com","pais":"France","titulo":"France's Naval Group and Nibe Sign Agreement to Strengthen India's Shipbuilding and Maritime Technology","resumo":"France's Naval Group and India-based Nibe Limited have signed a Memorandum of Understanding focused on strengthening India's technological capabilities and shipbuilding. The strategic partnership seeks to drive industrial innovation and technology transfer in the maritime defense sector. The agreement reinforces bilateral collaboration between the two countries, promoting advancements in naval engineering and high-tech infrastructure.","link":"https://swarajyamag.com/defence/frances-naval-group-nibe-sign-mou-to-strengthen-indias-naval-shipbuilding-and-maritime-technology-capabilities","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"La Tribune","pais":"France","titulo":"Survey: How Is Artificial Intelligence Making Its Way Into the Daily Lives of the French?","resumo":"A new survey analyzes the penetration of artificial intelligence into the daily routine of the French population, assessing perceptions of productivity and information. The study highlights the growing impact of AI tools in the job market and concerns over potential job losses. The results show a cultural transition where technology is shifting from a novelty to a central element in professional and personal daily life.","link":"https://www.latribune.fr/article/la-tribune-dimanche/societe/60532542367837/sondage-suppression-demplois-moyen-pour-sinformer-productivite-comment-lia-s-impose-t-elle-dans-le-quotidien-des-francais","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"RFI","pais":"France","titulo":"How Far Does Science Go? Who Were the Denisovans?","resumo":"Recent scientific investigations shed new light on the Denisovans, an extinct hominin species that lived contemporaneously with Neanderthals and modern humans. Through advanced genetic and fossil analyses, archaeologists and geneticists seek to understand the impact of Denisovan DNA on current human evolution. The report explores the frontiers of paleontology and modern science by reconstructing the habits, migrations, and biological legacy of this mysterious ancestor.","link":"https://www.rfi.fr/fr/podcasts/jusqu-o%C3%B9-va-la-science/20260920-qui-%C3%A9taient-les-d%C3%A9nisoviens","categoria":"SCIENCE","lang":"en"},{"fonte":"Midi Libre","pais":"France","titulo":"Detecting Asian Hornet Nests More Efficiently Thanks to Technology","resumo":"The proliferation of Asian hornets in France has been combated using advanced technological innovations, such as drones and tracking devices. These new tools enable the early detection of nests in hard-to-reach areas, significantly reducing damage to local biodiversity and beekeeping. The application of technology in environmental preservation demonstrates how digital solutions can efficiently protect ecosystems against invasive species.","link":"https://www.midilibre.fr/2026/09/20/detecter-les-nids-de-frelons-asiatiques-plus-efficacement-grace-a-la-technologie-13559742.php","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Fondation Recherche Alzheimer","pais":"France","titulo":"Honey and Alzheimer's: What Science Really Says","resumo":"Recent research has examined the antioxidant and anti-inflammatory properties of honey and its potential impact on preventing neurodegenerative diseases such as Alzheimer's. Experts analyze current scientific data to separate myths from actual evidence regarding the food's benefits for brain health. Although preliminary results are promising in the laboratory, science reinforces the importance of more in-depth clinical studies before defining therapeutic conclusions.","link":"https://alzheimer-recherche.org/recherche-et-alzheimer/miel-alzheimer/","categoria":"SCIENCE","lang":"en"},{"fonte":"L'Usine Nouvelle","pais":"France","titulo":"Alexandra Plançon, Data Science Engineer at Assystem, Applies Her Expertise to the Nuclear Sector","resumo":"Data engineer Alexandra Plançon highlights the fundamental role of data intelligence in the optimization and safety of the French nuclear energy sector. Working at Assystem, her team develops predictive models and advanced algorithms to enhance the operational efficiency of complex facilities. The initiative illustrates how modern data science can be directed toward the common good and the country's energy sustainability.","link":"https://www.usinenouvelle.com/industrie/trophee-des-femmes-de-l-industrie/alexandra-plancon-ingenieure-en-data-science-chez-assystem-met-son-expertise-au-service-du-nucleaire-et-du-bien-commun.DZSHVP3RTRHLTBO55DQW4QY6S4.html","categoria":"DATA SCIENCE","lang":"en"},{"fonte":"Les Echos","pais":"France","titulo":"Persistent Deterioration of Budgetary Outlook: Scope Ratings Agency Downgrades France's Credit Rating","resumo":"Credit rating agency Scope Ratings has downgraded France's credit rating, citing the continuous worsening of the country's public deficit and sovereign debt. The decision reflects recent political uncertainties and the French government's difficulties in implementing fiscal reforms and curbing public spending. The downgrade puts pressure on French finances and signals growing challenges for economic stability and investment attractiveness in the region.","link":"https://www.lesechos.fr/economie-france/budget-fiscalite/deterioration-persistante-des-perspectives-budgetaires-lagence-scope-ratings-degrade-la-note-de-la-france-2252510","categoria":"ECONOMY","lang":"en"},{"fonte":"Isle of Wight County Press","pais":"England","titulo":"Isle of Man Company Hopes New Oil Filter Technology Will Go Global","resumo":"A British island-based company has developed a new oil filtration technology with the potential to revolutionize industrial maintenance. The system promises to significantly increase operational efficiency and reduce the environmental impact caused by lubricant disposal. With the advancement of technical tests, the company plans to expand the commercialization of the innovation to the global market in the coming years.","link":"https://www.countypress.co.uk/news/26551079.isle-wight-business-high-hopes-new-oil-filter-technology/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"KFDA | NewsChannel 10 | Amarillo Texas","pais":"England","titulo":"UK Installs AI Facial Scanning Technology in Student Residence Halls","resumo":"Universities and student housing in the United Kingdom have begun implementing facial scanning systems powered by artificial intelligence. The technology seeks to enhance building security and streamline access management for residents in an automated manner. However, the installation of these devices raises important ethical discussions regarding privacy, mass surveillance, and personal data protection.","link":"https://www.newschannel10.com/video/2026/09/20/uk-installs-ai-facial-scanning-technology-residence-halls/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"くるまのニュース","pais":"England","titulo":"Reborn After 30 Years: New 250-HP, Under-600-kg Single-Seater Sports Car Launched in the UK","resumo":"British manufacturer Analog Automotive has unveiled the VHPK, a new single-seater sports car developed on the platform of the iconic Lotus Elise. The model draws attention for its ultralight body of under 600 kg, equipped with a manual transmission and an engine generating over 250 horsepower. The launch marks the return of pure, analog sports cars, combining nostalgia with high technical performance.","link":"https://kuruma-news.jp/photo/1113370","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Trump to Create 'AI Force' to Monitor Technology Amid Growing Fears Over Autonomous Agents","resumo":"Amid growing concerns over runaway autonomous agents, Donald Trump has announced the creation of a task force dedicated to artificial intelligence. The new group will have the mission of monitoring the rapid advancement of emerging technologies and establishing safety guidelines. The initiative reflects an increase in public and governmental pressure for greater regulation and oversight of technology companies.","link":"https://www.theguardian.com/us-news/2026/sep/19/donald-trump-ai-force","categoria":"DIGITAL POLICY","lang":"en"},{"fonte":"Financial Times","pais":"England","titulo":"Trump Announces 'AI Force' as Alarm Grows Over Technological Advancement","resumo":"Donald Trump's announcement of an 'AI Force' comes amid heightened global alarm regarding the speed of artificial intelligence innovations. The proposal aims to create a governmental structure to track the impact of intelligent systems on society and the economy. The measure highlights the pursuit of control over emerging technological platforms before they cause major instabilities.","link":"https://www.ft.com/content/bcbfe352-9e9f-4ef5-81b2-2e01505b8477?syn-25a6b1a6=1","categoria":"GOVERNANCE","lang":"en"},{"fonte":"Deia","pais":"Spain","titulo":"Can Artificial Intelligence Annihilate Humanity?","resumo":"The accelerated advancement of artificial intelligence raises profound debates about the existential risks these technologies may pose to the human future. Experts and researchers are analyzing scenarios involving the loss of control, ethics, and safety in autonomous systems. The discussion reinforces the urgent need for global regulations and safeguards to contain potential technological threats.","link":"https://www.deia.eus/ciencia-y-tecnologia/2026/09/20/inteligencia-artificial-aniquilar-humanidad-11564286.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Eldía","pais":"Spain","titulo":"How Tenerife Discovered Geothermics: 20 Years of Science and 3,000 Meters of Rock to Reach Volcanic Energy","resumo":"After two decades of scientific research and deep drilling on the island of Tenerife, experts have successfully mapped the potential of volcanic geothermal energy. The breakthrough represents a milestone for sustainable energy transition and resource autonomy in the Canary Islands. The discovery proves the feasibility of harnessing subsurface heat for the generation of clean, renewable energy.","link":"https://www.eldia.es/tenerife/2026/09/20/descubrio-tenerife-geotermia-20-anos-134466945.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Infodefensa","pais":"Spain","titulo":"A Turkish Bayraktar TB2 Drone with Aselsan Technology Detects, Geolocates, and Neutralizes Radar via Missiles or Electronic Warfare","resumo":"The Bayraktar TB2 military drone has demonstrated new tactical capabilities by integrating advanced subsystems developed by the company Aselsan.\nThe technology allows for the precise identification of targets and the neutralization of enemy radars through electronic warfare or direct strikes.\nThis progress highlights the impact of technological innovation on the modernization of defense systems and autonomous combat.","link":"https://www.infodefensa.com/texto-diario/mostrar/6020415/aselsan-integra-guerra-electronica-radar-sar-ataque-electronico-bayraktar-tb2","categoria":"MILITARY TECHNOLOGY","lang":"en"},{"fonte":"Canarias en Pleno","pais":"Spain","titulo":"Canary Islands Tax Agency to Spend 4.1 Million on Microsoft Technology","resumo":"The Canary Islands Tax Agency has approved a significant investment of over four million euros to overhaul its digital infrastructure.\nThe contract provides for the acquisition of Microsoft licenses and tools to modernize public services and reinforce data security.\nThe move aims to accelerate digital transformation and optimize the operational efficiency of the region's tax collection.","link":"https://www.canariasenpleno.com/la-agencia-tributaria-canaria-licita-41-millones-en-microsoft-53-500-euros-en-2027-y-25-millones-en-2028/","categoria":"BUSINESS","lang":"en"},{"fonte":"Cinco Días","pais":"Spain","titulo":"Robotaxis in Madrid: A Clash Between Accelerated Technology and Slow Regulation","resumo":"The imminent arrival of autonomous vehicles in the Spanish capital highlights the mismatch between rapid technological evolution and current regulations.\nWhile companies conduct tests to make robotaxis viable in Madrid, local authorities seek to create an appropriate and secure regulatory framework.\nThe scenario reflects the urban, legal, and infrastructural challenges facing the mass adoption of driverless transportation.","link":"https://cincodias.elpais.com/companias/2026-09-20/los-robotaxis-en-madrid-un-pulso-entre-tecnologia-acelerada-y-regulacion-lenta.html","categoria":"URBAN MOBILITY","lang":"en"},{"fonte":"El Español","pais":"Spain","titulo":"How Alonso Chen Works to Make Technology Care for Your Pet: \"They Aren't Just Gadgets, They Have Practical Value\"","resumo":"Entrepreneur Alonso Chen develops technology solutions focused on the health, well-being, and continuous monitoring of pets.\nHis projects prioritize practical functionality and real-world impact on the daily lives of pet owners, going beyond mere electronic devices.\nThe initiative reflects the growth of the pet tech market and the integration of data to improve animals' quality of life.","link":"https://www.elespanol.com/omicrono/tecnologia/20260920/trabaja-alonso-chen-tecnologia-cuide-mascota-no-solo-gadgets-valor-practico/1003744383071_0.html","categoria":"INNOVATION","lang":"en"},{"fonte":"Agencia de noticias","pais":"Spain","titulo":"'Dangerous Relations': A Comic Book About the Dismantling of Science Under the Dictatorship","resumo":"A new graphic novel portrays the impacts and setbacks suffered by the Spanish scientific community during the military dictatorship.\nThe book combines historical recovery and sequential art to illustrate the dismantling of institutions and the persecution of researchers.\nThe release highlights the importance of continuous support for research and the preservation of national scientific memory.","link":"https://efe.com/cultura/2026-09-19/relaciones-peligrosas-comic-ciencia-dictadura/","categoria":"SCIENCE AND CULTURE","lang":"en"},{"fonte":"fvw|TravelTalk","pais":"Germany","titulo":"Politics, AI, and Sales: Day Two in Pictures","resumo":"The second day of the event highlighted the growing impact of artificial intelligence on sales strategies and current political debates.\nLeaders and experts gathered to discuss the integration of new technologies and the automation of commercial processes.\nThe meeting demonstrated how AI is transforming the productive sector and shaping the strategic decisions of companies.","link":"https://www.fvw.de/galerien/Politik-AI-Vertrieb---Tag-zwei-in-Bildern-4315","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Science et vie","pais":"Germany","titulo":"Fleeing an Antarctic Storm, German Researchers Discover Unknown Island","resumo":"A team of German scientists aboard a research vessel discovered a new island in Antarctica while trying to take shelter from a severe storm.\nThe territory was not listed on any official map and was revealed due to the accelerated retreat of glaciers in the region.\nThe discovery opens up new opportunities for study regarding the impact of climate change and polar geography.","link":"https://www.science-et-vie.com/nature-et-environnement/en-fuyant-une-tempete-en-antarctique-des-chercheurs-allemands-decouvrent-une-ile-qui-napparait-sur-aucune-carte-235083.html","categoria":"SCIENCE","lang":"en"},{"fonte":"DIE ZEIT","pais":"Germany","titulo":"US F-35 Fighter Jets: Secret Technology Allegedly Leaked to Hong Kong","resumo":"Confidential information regarding the stealth technology of the United States Armed Forces' F-35 fighter jets was reportedly intercepted and sent to Hong Kong.\nThe leak has raised alarms among Western security and intelligence agencies concerning industrial and military espionage.\nThe case underscores the vulnerability of high-tech strategic data amidst growing geopolitical tensions.","link":"https://www.zeit.de/politik/ausland/2026-09/f-35-cockpithaube-tarnkappentechnologie-china-lockheed-martin-gxe","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Le Monde.fr","pais":"Germany","titulo":"In Germany, Friedrich Merz Risks His Political Survival in Regional Elections","resumo":"German conservative leader Friedrich Merz faces a decisive moment for his political future during this weekend's regional elections.\nThe ballot results are expected to gauge the strength of the opposition and test the stability of the country's political landscape.\nThe election is seen as a crucial barometer for upcoming federal elections in Germany.","link":"https://www.lemonde.fr/international/article/2026/09/19/en-allemagne-le-chancelier-friedrich-merz-plus-conteste-que-jamais-avant-les-elections-regionales-du-20-septembre_6777434_3210.html","categoria":"POLITICS","lang":"en"},{"fonte":"北海道新聞デジタル","pais":"Japan","titulo":"Ukraine Requests Summit with Japan to Promote Cooperation in Drone Technology","resumo":"The Ukrainian government has officially requested a summit meeting with Japan aimed at strengthening bilateral cooperation in the development and application of drone technologies.\nThe initiative seeks to leverage Japanese technological expertise to enhance operational and reconstruction capabilities in the post-conflict scenario.\nThe strategic partnership could drive innovations in the unmanned aerial vehicle sector and consolidate Japanese international support for the Ukrainian nation.","link":"https://www.hokkaido-np.co.jp/article/1374410/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"What Is AVS Charging Expected for the iPhone 18? An Analysis of Differences from Current Technologies","resumo":"A new technical report details the operation of AVS charging technology, pointed to as one of the major new features planned for future generations of the iPhone.\n_The system promises to optimize energy efficiency and significantly reduce heating during recharging compared to traditional and wireless methods.\nThe innovation could redefine smartphone industry standards by extending battery life and offering greater convenience to users.","link":"https://news.yahoo.co.jp/expert/articles/3aa40b29907c5675591215e3b020c31728f071c6","categoria":"INNOVATION","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Canon Enhances Live Streaming App and Unveils 3D Filming Technology at TGS","resumo":"Canon has announced significant updates to its apps geared toward live streaming, in addition to presenting advanced 3D video capture solutions during the Tokyo Game Show.\nThe company aims to expand its presence in the digital content creation and immersive production market for creators and gamers.\nThe new technology suite promises to facilitate the production of high-quality content and drive the adoption of three-dimensional media within the streaming ecosystem.","link":"https://news.yahoo.co.jp/articles/c352f9b44de145aff0075da423c86acf5076cb07","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"QAB 琉球朝日放送","pais":"Japan","titulo":"Behind the Scenes at Narita Airport: The New Era of Human-Robot Collaboration","resumo":"Narita International Airport is implementing cutting-edge technologies and robotic systems to optimize logistics, security, and passenger service operations.\nThe initiative highlights a new era of collaboration where autonomous robots perform complex and repetitive tasks alongside human staff.\nThe project aims to mitigate labor shortages in Japan's airport sector and elevate standards of operational efficiency and safety.","link":"https://www.qab.co.jp/quebee/video/000534685/","categoria":"ROBOTICS","lang":"en"},{"fonte":"Newscast.jp","pais":"Japan","titulo":"Global AI for Science Report Forecasts 28.9% Growth by 2026","resumo":"A new global study on the application of Artificial Intelligence in science projects an impressive annual industry growth of 28.9% in the coming years.\nThe report analyzes market share, the competitive landscape, and the transformative impact of AI in pharmaceutical research, physics, and materials science.\nThe advancement of these tools promises to accelerate crucial scientific discoveries and revolutionize research and development methodology on a global scale.","link":"https://newscast.jp/smart/news/3267230","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
