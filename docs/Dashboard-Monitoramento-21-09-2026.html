@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-oUMk6eSsjVpZc+dn/k0ZRp8h'; script-src 'nonce-oUMk6eSsjVpZc+dn/k0ZRp8h'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="oUMk6eSsjVpZc+dn/k0ZRp8h">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">21/09/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="oUMk6eSsjVpZc+dn/k0ZRp8h">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"Cérebro de mosca é mapeado com IA e viabiliza simulações digitais","resumo":"Cientistas utilizaram inteligência artificial avançada para realizar o mapeamento completo do cérebro de uma mosca.\nA partir desse modelo digitalizado, pesquisadores conseguiram simular o funcionamento neural para executar tarefas complexas.\nEssa inovação abre novos caminhos para a neurociência, aprendizado de máquina e automação de sistemas digitais.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/20/cerebro-de-mosca-e-mapeado-com-ia-e-vira-computador-para-jogar-videogame-e-investir-em-cripto.ghtml","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Diário do Litoral","pais":"Brasil","titulo":"Nova biometria vascular transforma mãos em cartões de pagamento","resumo":"Uma nova tecnologia biométrica baseada no escaneamento das veias sob a pele promete revolucionar o setor de pagamentos.\nO sistema identifica padrões vasculares únicos do usuário, garantindo transações rápidas e altamente seguras.\nA inovação já começou a ser testada em larga escala, substituindo cartões físicos e celulares na rotina de consumidores.","link":"https://www.diariodolitoral.com.br/cotidiano/nova-biometria-promete-transformar-sua-mao-em-cartao-tecnologia-le-veias-sob-a-pele-e-ja-movimenta-pagamentos/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Ilha remota abriga treinamento de hackers contra guerras cibernéticas","resumo":"Especialistas em segurança da informação estão se reunindo em uma localização isolada para simular grandes ataques virtuais.\nO objetivo do treinamento intensivo é fortalecer as defesas de infraestruturas críticas globais contra ciberataques de alta complexidade.\nA iniciativa reflete a crescente preocupação internacional com guerras invisíveis travadas no espaço digital.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/20/a-remota-ilha-onde-hackers-se-preparam-para-nos-defender-de-uma-guerra-invisivel.ghtml","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"El Niño atípico impulsionado pelo aquecimento global desafia cientistas","resumo":"O surgimento de um fenômeno 'El Niño atípico', agravado pelo aquecimento global, está dificultando previsões meteorológicas.\nCientistas enfrentam barreiras para mapear a intensidade e a frequência de eventos climáticos extremos ao redor do mundo.\nO cenário acende alertas para a necessidade urgente de adaptação e novas abordagens na modelagem climática global.","link":"https://oglobo.globo.com/mundo/clima-e-ciencia/noticia/2026/09/21/embalado-pelo-aquecimento-global-el-nino-atipico-impoe-desafio-a-ciencia-e-torna-impacto-de-extremos-imprevisivel.ghtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Metrópoles","pais":"Brasil","titulo":"Implante coclear de alta tecnologia devolve audição a jovem mineira","resumo":"O avanço da tecnologia auditiva permitiu que uma jovem de Minas Gerais recuperasse a capacidade de ouvir após anos de limitação.\nO procedimento utilizou um implante coclear moderno, que estimula diretamente o nervo auditivo com alta precisão.\nO caso exemplifica o impacto positivo dos dispositivos médicos de última geração na qualidade de vida dos pacientes.","link":"https://www.metropoles.com/minas-gerais/implante-coclear-a-tecnologia-que-devolveu-a-audicao-a-jovem-mineira","categoria":"SAÚDE","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Microsoft defende que rivalidade com a China não deve barrar regulação da IA","resumo":"A Microsoft manifestou que a competição tecnológica com a China não pode servir de pretexto para estagnar a regulação da IA.\nA empresa defende a criação de diretrizes éticas e de segurança claras para mitigar os riscos associados ao uso da tecnologia.\nO posicionamento destaca a urgência de governança global diante do ritmo acelerado de avanço dos modelos generativos.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/09/20/china-nao-deve-ser-usada-como-justificativa-para-evitar-regulacao-da-ia-diz-microsoft.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Jornal da USP","pais":"Brasil","titulo":"Avaliação combinada melhora o rastreamento precoce da pré-eclâmpsia","resumo":"Pesquisadores desenvolveram um método combinado de rastreamento que identifica o risco de pré-eclâmpsia no início da gestação.\nA abordagem integra exames laboratoriais e dados clínicos para aumentar a precisão diagnóstica em consultas de pré-natal.\nA descoberta representa um avanço significativo para a saúde materna, permitindo intervenções precoces e seguras.","link":"https://jornal.usp.br/podcast/avaliacao-combinada-melhora-rastreamento-da-pre-eclampsia-desde-o-inicio-da-gestacao/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"br.investing.com","pais":"Brasil","titulo":"Estratégias de Inteligência Artificial divergem no setor de tecnologia e finanças","resumo":"Um estudo revela que a adoção de estratégias de IA está tomando caminhos distintos entre empresas de tecnologia e finanças.\nEnquanto o setor de tecnologia acelera investimentos e inovação contínua, o segmento financeiro enfrenta retração na área.\nA disparidade reflete desafios regulatórios e incertezas quanto ao retorno sobre o investimento nessas ferramentas.","link":"https://br.investing.com/news/stock-market-news/estrategias-de-ia-divergem-em-9-pontos-com-alta-da-tecnologia-e-queda-do-setor-financeiro-2070253","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Marvell Technology","pais":"Estados Unidos","titulo":"Marvell apresentará demonstrações inéditas de tecnologia óptica de 2nm para IA","resumo":"A Marvell anunciou que apresentará as primeiras demonstrações da indústria de tecnologia óptica de 2 nanômetros voltada para a infraestrutura de centros de dados de inteligência artificial.\nO avanço busca atender à crescente demanda por largura de banda e eficiência energética no processamento de cargas de trabalho complexas.\nAs inovações prometem otimizar a interconexão de chips e transformar o desempenho de servidores de alto desempenho no mercado global.","link":"https://investor.marvell.com/news-events/press-releases/detail/1034/marvell-to-showcase-industry-first-2nm-optical-technology-demos-for-ai-data-center-infrastructure-at-ecoc-2026","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"WION","pais":"Estados Unidos","titulo":"O que a tecnologia de 2nm da TSMC significa para a Apple","resumo":"A transição da TSMC para o processo de fabricação de chips em 2 nanômetros trará impactos significativos para os futuros dispositivos da Apple.\nA novidade promete entregar saltos expressivos em eficiência energética e capacidade de processamento, essenciais para recursos avançados de inteligência artificial nos iPhones e Macs.\nCom essa mudança, a gigante de Cupertino visa manter sua posição de liderança no mercado de semicondutores e dispositivos premium.","link":"https://www.wionews.com/photos/what-tsmc-s-2nm-technology-means-for-apple-1789647148778","categoria":"HARDWARE","lang":"pt"},{"fonte":"eurekalert.org","pais":"Estados Unidos","titulo":"Filme mais fino que um fio de cabelo bloqueia ondas eletromagnéticas e esconde calor","resumo":"Cientistas desenvolveram uma película extremamente fina, com espessura inferior à de um fio de cabelo humano, capaz de bloquear radiação eletromagnética e mascarar assinaturas térmicas.\nEssa inovação em engenharia de materiais possui forte apelo para aplicações de camuflagem, tecnologias militares e proteção de eletrônicos sensíveis.\nA novidade representa um avanço expressivo na manipulação de ondas de calor e frequência com estruturas ultraleves.","link":"https://www.eurekalert.org/news-releases/1144386","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"AZoM","pais":"Estados Unidos","titulo":"Avanço em telas flexíveis por meio de dopagem molecular inovadora de polímeros","resumo":"Pesquisadores alcançaram um marco no desenvolvimento de telas flexíveis utilizando uma nova técnica de dopagem molecular em polímeros.\nA abordagem melhora consideravelmente a condutividade e a durabilidade dos materiais sem comprometer sua flexibilidade e transparência original.\nO progresso abre caminho para uma nova geração de eletrônicos vestíveis e dispositivos dobráveis muito mais eficientes e resistentes.","link":"https://www.azom.com/news.aspx?newsID=65819","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Advanced Science News","pais":"Estados Unidos","titulo":"Tecnologias quânticas simples e escaláveis surgem como nova promessa","resumo":"O especialista Roy Zektzer destaca abordagens inovadoras para tornar as tecnologias quânticas mais simples, acessíveis e escaláveis para aplicação prática.\nO objetivo é superar as barreiras de complexidade e os altos custos que atualmente limitam a expansão da computação quântica e de seus sensores.\nO avanço promete acelerar a integração desses sistemas avançados em setores críticos como criptografia, medicina e inteligência de dados.","link":"https://www.advancedsciencenews.com/roy-zektzer-simple-scalable-quantum-technologies/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Yahoo Finance","pais":"Estados Unidos","titulo":"Instabilidade no setor de IA coloca mercados e economia dos EUA em risco","resumo":"Analistas alertam que as avaliações astronômicas e as elevadas expectativas em torno da inteligência artificial podem estar criando uma bolha financeira nos Estados Unidos.\nO crescimento desproporcional do setor frente ao retorno financeiro real gera temores de uma correção de mercado capaz de desestabilizar a economia norte-americana.\nO cenário acende um alerta sobre a sustentabilidade do ritmo atual de investimentos maciços em infraestrutura de IA.","link":"https://finance.yahoo.com/technology/ai/articles/ai-wobbly-house-cards-puts-130000622.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The Washington Post","pais":"Estados Unidos","titulo":"Donald Trump e filhos investem fortemente na economia de IA e rejeitam desaceleração","resumo":"A família de Donald Trump está realizando investimentos significativos na economia de inteligência artificial, posicionando-se estrategicamente no setor tecnológico em expansão.\nO movimento ocorre em meio à resistência do ex-presidente aos apelos de especialistas e reguladores por uma desaceleração no desenvolvimento da tecnologia.\nA iniciativa reflete a aposta comercial da família no avanço contínuo e sem restrições do mercado de IA.","link":"https://www.washingtonpost.com/politics/2026/09/20/trump-family-large-ai-related-investments-create-possible-conflicts/","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"SÁBADO","pais":"Estados Unidos","titulo":"Trump planeja nomear 'czar' de inteligência artificial para supervisionar tecnologia","resumo":"Donald Trump estuda a criação de um cargo específico de autoridade máxima, apelidado de 'czar' de inteligência artificial, para coordenar e supervisionar diretrizes tecnológicas no país.\nA medida visa centralizar as políticas governamentais relativas ao setor e acelerar a competitividade americana frente a rivais globais como a China.\nA nomeação pode remodelar o cenário regulatório e impulsionar diretrizes voltadas à inovação irrestrita.","link":"https://www.sabado.pt/mundo/detalhe/trump-planeia-nomear-um-czar-da-inteligencia-artificial-para-supervisionar-a-tecnologia","categoria":"POLÍTICA DIGITAL","lang":"pt"},{"fonte":"Zonebourse Suisse","pais":"França","titulo":"A tecnologia impulsiona as bolsas asiáticas e o petróleo recua","resumo":"O setor de tecnologia liderou a recuperação das bolsas de valores asiáticas, impulsionado pelo otimismo global em torno de inovações digitais.\nAo mesmo tempo, os preços do petróleo registraram quedas no mercado internacional, aliviando pressões inflacionárias na região.\nEssa dinâmica financeira reflete como o avanço tecnológico continua sendo o principal motor do crescimento econômico global.","link":"https://ch.zonebourse.com/actualite-bourse/la-technologie-porte-les-bourses-asiatiques-le-petrole-reflue-ce785adbd88ff227","categoria":"MERCADO","lang":"pt"},{"fonte":"Zonebourse Suisse","pais":"França","titulo":"CATL desenvolve nova tecnologia de baterias para veículos norte-americanos","resumo":"A gigante chinesa de baterias CATL anunciou o desenvolvimento de uma nova tecnologia energética voltada para o mercado dos Estados Unidos.\nA inovação visa contornar restrições comerciais e acelerar a transição global para a mobilidade elétrica sustentável.\nO projeto tem o potencial de impactar diretamente a cadeia de suprimentos da indústria automotiva e baratear veículos elétricos.","link":"https://ch.zonebourse.com/actualite-bourse/catl-developpe-une-nouvelle-technologie-de-batterie-pour-les-vehicules-americains-ce785adbd98afe2d","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"tv5monde","pais":"França","titulo":"Estados Unidos discutem com a China mecanismo de diálogo sobre inteligência artificial","resumo":"Representantes dos Estados Unidos e da China realizaram reuniões para estruturar um canal contínuo de comunicação sobre segurança em IA.\nO objetivo principal é mitigar riscos globais associados aos sistemas avançados de aprendizado de máquina e automação militar.\nA iniciativa reflete a urgência de normas internacionais para evitar acidentes estratégicos envolvendo tecnologias emergentes.","link":"https://information.tv5monde.com/economie/les-etats-unis-ont-discute-avec-la-chine-dun-mecanisme-de-dialogue-sur-lia-2838382","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Zonebourse Suisse","pais":"França","titulo":"Tecnologia eleva ações asiáticas enquanto cotações do petróleo caem","resumo":"Empresas do ramo tecnológico puxaram para cima os índices acionários na Ásia, demonstrando a resiliência do setor de inovação.\nA desaceleração nas cotações do petróleo contribuiu para conter receios econômicos e incentivar investimentos em ativos de risco.\nO movimento consolida a relevância estratégica da tecnologia na manutenção da estabilidade financeira dos mercados orientais.","link":"https://ch.zonebourse.com/actualite-bourse/la-technologie-tire-les-actions-asiatiques-vers-le-haut-le-petrole-reflue-ce785adad08cff23","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Boursorama","pais":"França","titulo":"Após derrotas eleitorais marcantes, chanceler Merz enfrenta o desafio de se reestruturar","resumo":"O cenário político europeu foi agitado após importantes reveses eleitorais sofridos pelas forças governamentais lideradas pelo chanceler.\nO resultado reflete o descontentamento popular com políticas econômicas e sociais, exigindo novas abordagens estratégicas.\nOs desdobramentos dessa crise política podem redefinir alianças regionais e impactar os rumos legislativos do continente.","link":"https://www.boursorama.com/actualite-economique/actualites-amp/apres-de-cinglantes-defaites-electorales-le-chancelier-merz-au-defi-de-se-relancer-4fbfaf0bf74bd10732aa5300a326c86f","categoria":"POLÍTICA","lang":"pt"},{"fonte":"Le Parisien","pais":"França","titulo":"Donald Trump e seu grupo investem pesado em IA e reacendem suspeitas de conflito de interesses","resumo":"Investimentos de grande porte do clã Trump no setor de inteligência artificial geraram fortes debates sobre ética e influência política.\nCríticos alertam para possíveis conflitos de interesse entre regulamentações futuras do setor e o patrimônio pessoal do ex-presidente.\nA controvérsia ressalta a forte interseção entre os grandes fluxos de capital da IA e as dinâmicas do poder político global.","link":"https://www.leparisien.fr/international/etats-unis/donald-trump-et-son-clan-investissent-massivement-dans-lia-relancant-les-soupcons-de-conflits-dinterets-20-09-2026-NZJMUDXG65EURCHV3XEW2AFFVQ.php","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Wales 247","pais":"Inglaterra","titulo":"Cinema do Penarth Pier receberá grande atualização tecnológica","resumo":"O histórico cinema localizado no Penarth Pier passará por uma significativa modernização em seus sistemas de som e projeção. A atualização tecnológica visa revitalizar o espaço cultural, oferecendo uma experiência audiovisual de última geração para os visitantes locais e turistas.\nCom esse investimento, o local busca preservar seu valor patrimonial enquanto se adapta às exigências contemporâneas da indústria cinematográfica.","link":"https://www.wales247.co.uk/penarth-pier-cinema-to-get-major-technology-upgrade","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"unsw.edu.au","pais":"Inglaterra","titulo":"Processamento de fala: a tecnologia que está mudando silenciosamente nossa comunicação","resumo":"A tecnologia de processamento de fala tem se consolidado como uma das ferramentas mais transformadoras na interação entre humanos e dispositivos digitais.\nPresente em assistentes virtuais, transcrições automáticas e sistemas de acessibilidade, essa inovação redefine a forma como nos comunicamos diariamente.\nO avanço contínuo dos algoritmos promete tornar as interações ainda mais fluidas, personalizadas e acessíveis globalmente.","link":"https://www.unsw.edu.au/newsroom/news/2026/09/speech-processing-technology-changing-communication","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Chefe da Nvidia rejeita temores de extinção por IA como 'narrativas do apocalipse'","resumo":"O CEO da Nvidia descartou publicamente os alertas extremista sobre o risco de extinção humana provocado pela inteligência artificial, classificando-os como visões catastróficas.\nEle defendeu que o foco da indústria deve permanecer no desenvolvimento prático, na segurança e na regulamentação responsável da tecnologia.\nA declaração reforça a posição das líderes de tecnologia em favor do otimismo e da expansão dos benefícios da IA na sociedade.","link":"https://www.bbc.co.uk/news/articles/cr5ye7p13jg7o","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Camas inteligentes e sensores de movimento: este é o futuro do cuidado da demência?","resumo":"O uso de camas inteligentes e sensores de movimento surge como uma alternativa inovadora para transformar o monitoramento de pacientes com demência.\nEssas tecnologias auxiliam cuidadores na prevenção de acidentes e na análise do padrão de sono e comportamento dos idosos em tempo real.\nA implementação dessas ferramentas busca garantir maior autonomia, segurança e qualidade de vida no acompanhamento médico contínuo.","link":"https://www.bbc.com/news/articles/c3056d456gro","categoria":"SAÚDE","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"Engenheiro espanhol impulsiona da Califórnia nova geração de fábricas autônomas com IA e robótica","resumo":"Um engenheiro espanhol estabelecido na Califórnia está liderando o desenvolvimento de fábricas autônomas que combinam inteligência artificial avançada e robótica.\nO projeto visa transformar a indústria manufatureira global ao otimizar processos industriais e reduzir drasticamente custos operacionais.\nA iniciativa posiciona a inovação liderada por talentos espanhóis na vanguarda da automação industrial no ecossistema de tecnologia dos EUA.","link":"https://www.eldebate.com/ciencia/20260921/ingeniero-espanol-impulsa-desde-california-nueva-generacion-fabricas-autonomas-ia-robotica_457935.html","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"El Mundo","pais":"Espanha","titulo":"Pânico sobre IA coloca em xeque planos dos bancos espanhóis após redesenho de modelos tecnológicos","resumo":"As instituições financeiras da Espanha enfrentam incertezas operacionais enquanto tentam adaptar seus sistemas às rápidas evoluções da inteligência artificial.\nApós investirem pesado na reformulação de seus modelos operacionais, o temor sobre riscos reputacionais e regulatórios paralisa novos avanços.\nO cenário evidencia os desafios do setor bancário em equilibrar inovação tecnológica acelerada e conformidade de segurança rigorosa.","link":"https://www.elmundo.es/economia/empresas/2026/09/21/6aad1f30fc6c83aa048b45b8.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Eldía","pais":"Espanha","titulo":"Ciência descobre potencial farmacológico e cosmético em oito espécies da flora de Tenerife","resumo":"Pesquisadores identificaram propriedades promissoras para a indústria farmacêutica e de cosméticos em oito plantas nativas da ilha de Tenerife.\nO estudo destaca a rica biodiversidade do arquipélago das Canárias como uma fonte valiosa para novos tratamentos e produtos de cuidados pessoais.\nA descoberta abre portas para novos investimentos em pesquisa científica sustentável e valorização da flora local espanhola.","link":"https://www.eldia.es/tenerife/2026/09/20/ciencia-halla-potencial-farmacologico-cosmetico-tenerife-134262130.html","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Xataka","pais":"Espanha","titulo":"Ciência reavalia o papel do ovo na saúde e desmistifica relação com o colesterol","resumo":"Novos estudos científicos estão questionando o antigo dogma de que o consumo diário de ovos seria prejudicial para os níveis de colesterol.\nPesquisas recentes indicam que o impacto dos ovos no perfil lipídico é significativamente menor do que se acreditava no passado.\nA mudança de perspectiva traz mais clareza para a nutrição moderna e ajuda a desconstruir mitos alimentares históricos.","link":"https://www.xataka.com/medicina-y-salud/durante-anos-nos-dijeron-que-huevo-era-enemigo-colesterol-ciencia-empieza-a-contar-otra-historia","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"MarketScreener España","pais":"Espanha","titulo":"CATL desenvolve nova tecnologia de baterias para veículos elétricos nos Estados Unidos","resumo":"A gigante das baterias CATL revelou avanços no desenvolvimento de sistemas de armazenamento de energia direcionados ao mercado norte-americano.\nA nova tecnologia promete aumentar a autonomia dos veículos elétricos e reduzir o tempo de recarga de forma considerável.\nEsse movimento estratégico busca consolidar a presença da empresa na transição energética global e na eletrificação do transporte.","link":"https://es.marketscreener.com/noticias/catl-desarrolla-una-nueva-tecnolog-a-de-bater-as-para-veh-culos-en-estados-unidos-ce785adbd98afe2d","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"esmartcity","pais":"Espanha","titulo":"Fundación ONCE e Círculo Tecnológico da Catalunha promovem tecnologia inclusiva","resumo":"Uma nova parceria entre a Fundación ONCE e o Círculo Tecnológico da Catalunha visa impulsionar soluções tecnológicas acessíveis para todos.\nO projeto focará em desenvolver ferramentas digitais adaptadas às necessidades de pessoas com deficiência ou mobilidade reduzida.\nA iniciativa reforça o compromisso da região com a inclusão social por meio do uso responsável e humano da tecnologia.","link":"https://www.esmartcity.es/2026/09/21/fundacion-once-y-circulo-tecnologico-cataluna-impulsara-tecnologia-inclusiva","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"RTVE.es","pais":"Espanha","titulo":"Sánchez leva à ONU política migratória e batalha contra 'tecnoligarcas' após crise em Ceuta","resumo":"O presidente do governo espanhol, Pedro Sánchez, discursou na ONU abordando os desafios migratórios e a influência excessiva das grandes empresas de tecnologia.\nSánchez enfatizou a necessidade de regulamentar o poder dos 'tecnoligarcas' para proteger a democracia e os direitos dos cidadãos no ambiente digital.\nA posição reforça o papel da Espanha no debate internacional sobre a governança global das plataformas tecnológicas.","link":"https://www.rtve.es/noticias/20260921/sanchez-lleva-onu-politica-migratoria-crisis-ceuta-batalla-tecnoligarcas/17231452.shtml","categoria":"POLÍTICA DIGITAL","lang":"pt"},{"fonte":"Investing.com España","pais":"Espanha","titulo":"Estratégias de IA divergem enquanto tecnologia sobe e setor financeiro recua","resumo":"O mercado global reflete uma crescente divergência nas estratégias de adoção de inteligência artificial entre diferentes setores corporativos.\nEnquanto as empresas de tecnologia registram valorização contínua impulsionadas por IA, as instituições financeiras enfrentam quedas.\nA disparidade sinaliza incertezas sobre o retorno financeiro imediato dos massivos investimentos realizados em tecnologias emergentes.","link":"https://es.investing.com/news/stock-market-news/las-estrategias-de-ia-divergen-9-puntos-mientras-la-tecnologia-sube-y-los-valores-financieros-caen-3841696","categoria":"MERCADO","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Fly brain mapped with AI, enabling digital simulations","resumo":"Scientists used advanced artificial intelligence to perform a complete mapping of a fly's brain.\nUsing this digitized model, researchers successfully simulated neural functioning to perform complex tasks.\nThis innovation opens new paths for neuroscience, machine learning, and the automation of digital systems.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/20/cerebro-de-mosca-e-mapeado-com-ia-e-vira-computador-para-jogar-videogame-e-investir-em-cripto.ghtml","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Diário do Litoral","pais":"Brazil","titulo":"New vascular biometrics turns hands into payment cards","resumo":"A new biometric technology based on scanning veins under the skin promises to revolutionize the payment sector.\nThe system identifies the user's unique vascular patterns, ensuring fast and highly secure transactions.\nThe innovation has begun large-scale testing, replacing physical cards and cell phones in consumers' daily routines.","link":"https://www.diariodolitoral.com.br/cotidiano/nova-biometria-promete-transformar-sua-mao-em-cartao-tecnologia-le-veias-sob-a-pele-e-ja-movimenta-pagamentos/","categoria":"INNOVATION","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Remote island hosts hacker training against cyber warfare","resumo":"Information security specialists are gathering in an isolated location to simulate large-scale virtual attacks.\nThe goal of the intensive training is to strengthen the defenses of critical global infrastructures against highly complex cyberattacks.\nThe initiative reflects growing international concern over invisible wars fought in the digital space.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/20/a-remota-ilha-onde-hackers-se-preparam-para-nos-defender-de-uma-guerra-invisivel.ghtml","categoria":"DIGITAL SECURITY","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Atypical El Niño driven by global warming challenges scientists","resumo":"The emergence of an 'atypical El Niño' phenomenon, worsened by global warming, is complicating weather forecasts.\nScientists face barriers in mapping the intensity and frequency of extreme weather events around the world.\nThis scenario raises red flags regarding the urgent need for adaptation and new approaches in global climate modeling.","link":"https://oglobo.globo.com/mundo/clima-e-ciencia/noticia/2026/09/21/embalado-pelo-aquecimento-global-el-nino-atipico-impoe-desafio-a-ciencia-e-torna-impacto-de-extremos-imprevisivel.ghtml","categoria":"SCIENCE","lang":"en"},{"fonte":"Metrópoles","pais":"Brazil","titulo":"High-tech cochlear implant restores hearing to young woman from Minas Gerais","resumo":"Advances in hearing technology have allowed a young woman from Minas Gerais to recover her ability to hear after years of impairment.\nThe procedure utilized a modern cochlear implant, which directly stimulates the auditory nerve with high precision.\nThe case exemplifies the positive impact of next-generation medical devices on patients' quality of life.","link":"https://www.metropoles.com/minas-gerais/implante-coclear-a-tecnologia-que-devolveu-a-audicao-a-jovem-mineira","categoria":"HEALTH","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Microsoft argues that rivalry with China should not block AI regulation","resumo":"Microsoft has stated that technological competition with China should not serve as a pretext to stall AI regulation.\nThe company advocates for the creation of clear ethical and safety guidelines to mitigate risks associated with the technology's use.\nThe stance highlights the urgency of global governance in the face of the accelerated pace of generative model advancements.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/09/20/china-nao-deve-ser-usada-como-justificativa-para-evitar-regulacao-da-ia-diz-microsoft.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Jornal da USP","pais":"Brazil","titulo":"Combined assessment improves early screening for preeclampsia","resumo":"Researchers have developed a combined screening method that identifies the risk of preeclampsia early in pregnancy.\nThe approach integrates laboratory tests and clinical data to increase diagnostic precision during prenatal visits.\nThe discovery represents a significant breakthrough for maternal health, allowing for early and safe interventions.","link":"https://jornal.usp.br/podcast/avaliacao-combinada-melhora-rastreamento-da-pre-eclampsia-desde-o-inicio-da-gestacao/","categoria":"SCIENCE","lang":"en"},{"fonte":"br.investing.com","pais":"Brazil","titulo":"Artificial Intelligence strategies diverge in technology and finance sectors","resumo":"A study reveals that the adoption of AI strategies is taking distinct paths between tech and finance companies.\nWhile the tech sector accelerates investments and continuous innovation, the financial segment faces a contraction in the area.\nThe disparity reflects regulatory challenges and uncertainties regarding the return on investment in these tools.","link":"https://br.investing.com/news/stock-market-news/estrategias-de-ia-divergem-em-9-pontos-com-alta-da-tecnologia-e-queda-do-setor-financeiro-2070253","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Marvell Technology","pais":"United States","titulo":"Marvell to showcase industry-first 2nm optical technology demos for AI","resumo":"Marvell announced it will showcase the industry's first demonstrations of 2-nanometer optical technology aimed at AI data center infrastructure.\nThe advancement seeks to meet the growing demand for bandwidth and energy efficiency in processing complex workloads.\nThese innovations promise to optimize chip interconnection and transform the performance of high-performance servers in the global market.","link":"https://investor.marvell.com/news-events/press-releases/detail/1034/marvell-to-showcase-industry-first-2nm-optical-technology-demos-for-ai-data-center-infrastructure-at-ecoc-2026","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"WION","pais":"United States","titulo":"What TSMC's 2nm technology means for Apple","resumo":"TSMC's transition to the 2-nanometer chip manufacturing process will bring significant impacts to future Apple devices.\nThe new development promises to deliver expressive leaps in energy efficiency and processing capacity, essential for advanced artificial intelligence features on iPhones and Macs.\nWith this shift, the Cupertino giant aims to maintain its leading position in the semiconductor and premium device market.","link":"https://www.wionews.com/photos/what-tsmc-s-2nm-technology-means-for-apple-1789647148778","categoria":"HARDWARE","lang":"en"},{"fonte":"eurekalert.org","pais":"United States","titulo":"Film thinner than a human hair blocks electromagnetic waves and hides heat","resumo":"Scientists have developed an extremely thin film, thinner than a human hair, capable of blocking electromagnetic radiation and masking thermal signatures.\nThis innovation in materials engineering holds strong appeal for camouflage applications, military technologies, and the protection of sensitive electronics.\nThe novelty represents an expressive advance in manipulating heat and frequency waves using ultralight structures.","link":"https://www.eurekalert.org/news-releases/1144386","categoria":"SCIENCE","lang":"en"},{"fonte":"AZoM","pais":"United States","titulo":"Breakthrough in flexible displays via innovative molecular polymer doping","resumo":"Researchers have reached a milestone in the development of flexible displays using a new molecular doping technique in polymers.\nThe approach considerably improves the conductivity and durability of materials without compromising their original flexibility and transparency.\nThis progress paves the way for a new generation of much more efficient and resilient wearable electronics and foldable devices.","link":"https://www.azom.com/news.aspx?newsID=65819","categoria":"INNOVATION","lang":"en"},{"fonte":"Advanced Science News","pais":"United States","titulo":"Simple and scalable quantum technologies emerge as a new promise","resumo":"Specialist Roy Zektzer highlights innovative approaches to make quantum technologies simpler, more accessible, and scalable for practical application.\nThe goal is to overcome the barriers of complexity and high costs that currently limit the expansion of quantum computing and its sensors.\nThe advancement promises to accelerate the integration of these advanced systems into critical sectors such as cryptography, medicine, and data intelligence.","link":"https://www.advancedsciencenews.com/roy-zektzer-simple-scalable-quantum-technologies/","categoria":"SCIENCE","lang":"en"},{"fonte":"Yahoo Finance","pais":"United States","titulo":"Instability in the AI sector puts US markets and economy at risk","resumo":"Analysts warn that astronomical valuations and lofty expectations surrounding artificial intelligence may be creating a financial bubble in the United States.\nThe sector's disproportionate growth relative to actual financial returns raises fears of a market correction capable of destabilizing the US economy.\nThe scenario sounds an alarm regarding the sustainability of the current pace of massive investments in AI infrastructure.","link":"https://finance.yahoo.com/technology/ai/articles/ai-wobbly-house-cards-puts-130000622.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The Washington Post","pais":"United States","titulo":"Donald Trump and sons invest heavily in the AI economy and reject slowdown","resumo":"Donald Trump's family is making significant investments in the artificial intelligence economy, positioning themselves strategically in the expanding tech sector.\nThe move comes amid the former president's resistance to calls from experts and regulators to slow down the technology's development.\nThe initiative reflects the family's commercial bet on the continuous and unrestricted advancement of the AI market.","link":"https://www.washingtonpost.com/politics/2026/09/20/trump-family-large-ai-related-investments-create-possible-conflicts/","categoria":"TRENDS","lang":"en"},{"fonte":"SÁBADO","pais":"United States","titulo":"Trump plans to appoint artificial intelligence 'czar' to oversee technology","resumo":"Donald Trump is exploring the creation of a dedicated high-authority position, dubbed the artificial intelligence 'czar', to coordinate and supervise technological guidelines in the country.\nThe measure aims to centralize government policies regarding the sector and accelerate American competitiveness against global rivals like China.\nThe appointment could reshape the regulatory landscape and drive policies focused on unrestricted innovation.","link":"https://www.sabado.pt/mundo/detalhe/trump-planeia-nomear-um-czar-da-inteligencia-artificial-para-supervisionar-a-tecnologia","categoria":"DIGITAL POLICY","lang":"en"},{"fonte":"Zonebourse Suisse","pais":"France","titulo":"Technology boosts Asian stock markets as oil prices decline","resumo":"The technology sector led the recovery of Asian stock exchanges, driven by global optimism surrounding digital innovations.\nAt the same time, oil prices recorded drops in the international market, easing inflationary pressures in the region.\nThis financial dynamic reflects how technological advancement continues to be the main driver of global economic growth.","link":"https://ch.zonebourse.com/actualite-bourse/la-technologie-porte-les-bourses-asiatiques-le-petrole-reflue-ce785adbd88ff227","categoria":"MARKET","lang":"en"},{"fonte":"Zonebourse Suisse","pais":"France","titulo":"CATL develops new battery technology for North American vehicles","resumo":"Chinese battery giant CATL has announced the development of a new energy technology aimed at the United States market.\nThe innovation seeks to circumvent trade restrictions and accelerate the global transition to sustainable electric mobility.\nThe project has the potential to directly impact the automotive industry supply chain and make electric vehicles more affordable.","link":"https://ch.zonebourse.com/actualite-bourse/catl-developpe-une-nouvelle-technologie-de-batterie-pour-les-vehicules-americains-ce785adbd98afe2d","categoria":"INNOVATION","lang":"en"},{"fonte":"tv5monde","pais":"France","titulo":"United States discusses artificial intelligence dialogue mechanism with China","resumo":"Representatives from the United States and China have held meetings to structure an ongoing communication channel on AI safety.\nThe main objective is to mitigate global risks associated with advanced machine learning systems and military automation.\nThe initiative reflects the urgency of international standards to prevent strategic accidents involving emerging technologies.","link":"https://information.tv5monde.com/economie/les-etats-unis-ont-discute-avec-la-chine-dun-mecanisme-de-dialogue-sur-lia-2838382","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Zonebourse Suisse","pais":"France","titulo":"Technology lifts Asian stocks while oil prices drop","resumo":"Technology companies drove stock indices higher in Asia, demonstrating the resilience of the innovation sector.\nThe slowdown in oil prices helped contain economic fears and encourage investment in risk assets.\nThe move consolidates the strategic relevance of technology in maintaining the financial stability of eastern markets.","link":"https://ch.zonebourse.com/actualite-bourse/la-technologie-tire-les-actions-asiatiques-vers-le-haut-le-petrole-reflue-ce785adad08cff23","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Boursorama","pais":"France","titulo":"Following striking electoral defeats, Chancellor Merz faces the challenge of restructuring","resumo":"The European political scene was shaken after major electoral setbacks suffered by the governmental forces led by the chancellor.\nThe result reflects popular discontent with economic and social policies, demanding new strategic approaches.\nThe developments of this political crisis could redefine regional alliances and impact the continent's legislative course.","link":"https://www.boursorama.com/actualite-economique/actualites-amp/apres-de-cinglantes-defaites-electorales-le-chancelier-merz-au-defi-de-se-relancer-4fbfaf0bf74bd10732aa5300a326c86f","categoria":"POLITICS","lang":"en"},{"fonte":"Le Parisien","pais":"France","titulo":"Donald Trump and his inner circle invest heavily in AI, reigniting conflict of interest suspicions","resumo":"Large-scale investments by the Trump clan in the artificial intelligence sector have sparked fierce debates over ethics and political influence.\nCritics warn of potential conflicts of interest between future industry regulations and the former president's personal wealth.\nThe controversy highlights the strong intersection between large flows of AI capital and the dynamics of global political power.","link":"https://www.leparisien.fr/international/etats-unis/donald-trump-et-son-clan-investissent-massivement-dans-lia-relancant-les-soupcons-de-conflits-dinterets-20-09-2026-NZJMUDXG65EURCHV3XEW2AFFVQ.php","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Wales 247","pais":"England","titulo":"Penarth Pier Cinema to receive major technology upgrade","resumo":"The historic cinema located on Penarth Pier will undergo a significant modernization of its sound and projection systems. The technological update aims to revitalize the cultural space, offering a state-of-the-art audiovisual experience for local visitors and tourists.\nWith this investment, the venue seeks to preserve its heritage value while adapting to the contemporary demands of the film industry.","link":"https://www.wales247.co.uk/penarth-pier-cinema-to-get-major-technology-upgrade","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"unsw.edu.au","pais":"England","titulo":"Speech processing: The technology quietly changing our communication","resumo":"Speech processing technology has established itself as one of the most transformative tools in the interaction between humans and digital devices.\nPresent in virtual assistants, automatic transcriptions, and accessibility systems, this innovation redefines the way we communicate daily.\nThe continuous advancement of algorithms promises to make interactions even more fluid, personalized, and globally accessible.","link":"https://www.unsw.edu.au/newsroom/news/2026/09/speech-processing-technology-changing-communication","categoria":"INNOVATION","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"Nvidia chief dismisses AI extinction fears as 'doomsday narratives'","resumo":"The Nvidia CEO publicly dismissed extremist warnings about the risk of human extinction caused by artificial intelligence, classifying them as catastrophic visions.\nHe argued that the industry's focus must remain on practical development, safety, and responsible regulation of the technology.\nThe statement reinforces the position of tech leaders in favor of optimism and the expansion of AI benefits in society.","link":"https://www.bbc.co.uk/news/articles/cr5ye7p13jg7o","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"Smart beds and motion sensors: Is this the future of dementia care?","resumo":"The use of smart beds and motion sensors emerges as an innovative alternative to transform the monitoring of dementia patients.\nThese technologies assist caregivers in preventing accidents and analyzing the sleep patterns and behavior of the elderly in real time.\nThe implementation of these tools aims to ensure greater autonomy, safety, and quality of life in continuous medical monitoring.","link":"https://www.bbc.com/news/articles/c3056d456gro","categoria":"HEALTH","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"Spanish engineer drives new generation of autonomous factories with AI and robotics from California","resumo":"A Spanish engineer based in California is leading the development of autonomous factories that combine advanced artificial intelligence and robotics.\nThe project aims to transform global manufacturing by optimizing industrial processes and drastically reducing operational costs.\nThe initiative positions innovation led by Spanish talent at the forefront of industrial automation within the US tech ecosystem.","link":"https://www.eldebate.com/ciencia/20260921/ingeniero-espanol-impulsa-desde-california-nueva-generacion-fabricas-autonomas-ia-robotica_457935.html","categoria":"ROBOTICS","lang":"en"},{"fonte":"El Mundo","pais":"Spain","titulo":"AI panic puts Spanish banks' plans in check after technological model redesign","resumo":"Financial institutions in Spain face operational uncertainties as they try to adapt their systems to the rapid evolutions of artificial intelligence.\nAfter investing heavily in the overhaul of their operating models, fear of reputational and regulatory risks is halting further advances.\nThe scenario highlights the banking sector's challenges in balancing accelerated technological innovation with rigorous safety compliance.","link":"https://www.elmundo.es/economia/empresas/2026/09/21/6aad1f30fc6c83aa048b45b8.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Eldía","pais":"Spain","titulo":"Science discovers pharmacological and cosmetic potential in eight Tenerife flora species","resumo":"Researchers have identified promising properties for the pharmaceutical and cosmetics industries in eight native plants on the island of Tenerife.\nThe study highlights the rich biodiversity of the Canary archipelago as a valuable source for new treatments and personal care products.\nThe discovery opens doors to new investments in sustainable scientific research and the enhancement of Spanish local flora.","link":"https://www.eldia.es/tenerife/2026/09/20/ciencia-halla-potencial-farmacologico-cosmetico-tenerife-134262130.html","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Xataka","pais":"Spain","titulo":"Science reevaluates the role of eggs in health and demystifies relationship with cholesterol","resumo":"New scientific studies are questioning the long-standing dogma that daily egg consumption is harmful to cholesterol levels.\nRecent research indicates that the impact of eggs on the lipid profile is significantly lower than previously believed.\nThis shift in perspective brings greater clarity to modern nutrition and helps dismantle historical dietary myths.","link":"https://www.xataka.com/medicina-y-salud/durante-anos-nos-dijeron-que-huevo-era-enemigo-colesterol-ciencia-empieza-a-contar-otra-historia","categoria":"SCIENCE","lang":"en"},{"fonte":"MarketScreener España","pais":"Spain","titulo":"CATL Develops New Electric Vehicle Battery Technology in the United States","resumo":"Battery giant CATL has unveiled advancements in the development of energy storage systems targeted at the North American market.\nThe new technology promises to significantly increase electric vehicle range and reduce recharge times.\nThis strategic move aims to solidify the company's presence in the global energy transition and transportation electrification.","link":"https://es.marketscreener.com/noticias/catl-desarrolla-una-nueva-tecnolog-a-de-bater-as-para-veh-culos-en-estados-unidos-ce785adbd98afe2d","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"esmartcity","pais":"Spain","titulo":"Fundación ONCE and Catalonia Tech Circle Promote Inclusive Technology","resumo":"A new partnership between Fundación ONCE and the Catalonia Tech Circle aims to drive accessible technological solutions for everyone.\nThe project will focus on developing digital tools adapted to the needs of people with disabilities or reduced mobility.\nThe initiative reinforces the region's commitment to social inclusion through the responsible and humane use of technology.","link":"https://www.esmartcity.es/2026/09/21/fundacion-once-y-circulo-tecnologico-cataluna-impulsara-tecnologia-inclusiva","categoria":"INNOVATION","lang":"en"},{"fonte":"RTVE.es","pais":"Spain","titulo":"Sánchez Brings Migration Policy and Battle Against 'Techno-Oligarchs' to the UN Following Ceuta Crisis","resumo":"Spanish Prime Minister Pedro Sánchez addressed the UN, tackling migration challenges and the excessive influence of big tech companies.\nSánchez emphasized the need to regulate the power of 'techno-oligarchs' to protect democracy and citizen rights in the digital environment.\nThe stance reinforces Spain's role in the international debate on global governance of tech platforms.","link":"https://www.rtve.es/noticias/20260921/sanchez-lleva-onu-politica-migratoria-crisis-ceuta-batalla-tecnoligarcas/17231452.shtml","categoria":"DIGITAL POLITICS","lang":"en"},{"fonte":"Investing.com España","pais":"Spain","titulo":"AI Strategies Diverge as Tech Rises and the Financial Sector Retreats","resumo":"The global market reflects a growing divergence in artificial intelligence adoption strategies across different corporate sectors.\nWhile tech companies register continuous gains driven by AI, financial institutions face declines.\nThe disparity signals uncertainty regarding the immediate financial return on massive investments made in emerging technologies.","link":"https://es.investing.com/news/stock-market-news/las-estrategias-de-ia-divergen-9-puntos-mientras-la-tecnologia-sube-y-los-valores-financieros-caen-3841696","categoria":"MARKET","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
