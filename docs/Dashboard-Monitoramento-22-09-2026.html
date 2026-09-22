@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-t/sH1Cshfyln0n8C9cVZ0CQ8'; script-src 'nonce-t/sH1Cshfyln0n8C9cVZ0CQ8'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="t/sH1Cshfyln0n8C9cVZ0CQ8">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">22/09/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="t/sH1Cshfyln0n8C9cVZ0CQ8">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"brasil247.com","pais":"Brasil","titulo":"Alibaba promete a IA mais poderosa do mundo e prevê estágio inicial da tecnologia","resumo":"A gigante chinesa de tecnologia Alibaba anunciou novos investimentos para desenvolver o modelo de inteligência artificial mais avançado do mercado.\nA empresa ressalta que a revolução dos ecossistemas de IA ainda está apenas em seus estágios iniciais de maturidade.\nEssa iniciativa promete intensificar a corrida global pela supremacia tecnológica entre grandes corporações ocidentais e orientais.\nCom a expansão da infraestrutura, espera-se que a tecnologia transforme diversos setores produtivos nos próximos anos.","link":"https://www.brasil247.com/tecnologia/alibaba-promete-a-ia-mais-poderosa-do-mundo-e-ve-tecnologia-ainda-em-fase-inicial/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"((o))eco | Jornalismo Ambiental","pais":"Brasil","titulo":"Ciência identifica nova espécie de felino na Bolívia após um século","resumo":"Após cem anos de pesquisas e investigações na América do Sul, cientistas finalmente confirmaram a identificação de uma nova espécie de felino na Bolívia.\nO achado representa um marco histórico para a zoologia e destaca a extrema riqueza e fragilidade da biodiversidade nas florestas tropicais.\nA descoberta ressalta a urgência e a necessidade contínua de políticas públicas voltadas à preservação ambiental.\nEspecialistas acreditam que o estudo ajudará a criar estratégias de conservação mais eficazes para o ecossistema local.","link":"https://oeco.org.br/noticias/depois-de-100-anos-ciencia-identifica-nova-especie-de-felino-na-bolivia/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Governo investiga chatbots de IA projetados para simular amizade e relacionamentos","resumo":"O governo deu início a investigações sobre aplicativos de inteligência artificial voltados a criar conexões afetivas e relacionamentos simulados.\nA preocupação central gira em torno da coleta indevida de dados pessoais, além dos potenciais impactos na saúde mental dos usuários.\nO movimento reflete um alerta global crescente quanto aos limites éticos e à regulamentação dos chamados 'companheiros de IA'.\nÓrgãos de proteção do consumidor exigem mais transparência sobre como esses algoritmos operam e manipulam comportamentos.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/21/companheiros-de-ia-governo-pede-investigacao-contra-chatbots-que-simulam-amizade-e-romance.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Valor Econômico","pais":"Brasil","titulo":"AstraPay desenvolve tecnologia para integrar Pix com a chinesa UnionPay","resumo":"A AstraPay criou uma solução tecnológica inovadora capaz de traduzir e integrar o sistema Pix a canais financeiros de pagamento internacionais.\nAtravés de uma parceria estratégica com a gigante chinesa UnionPay, o ecossistema busca facilitar transações entre brasileiros e o mercado asiático.\nO avanço simplifica o comércio e o turismo internacional ao conectar o modelo de pagamentos instantâneos do Brasil com uma infraestrutura global.\nA novidade posiciona o mercado de fintechs brasileiras na vanguarda da interoperabilidade financeira mundial.","link":"https://valor.globo.com/financas/noticia/2026/09/21/astrapay-desenvolve-tecnologia-que-traduz-o-pix-para-outros-canais-e-faz-acordo-com-gigante-chinesa-unionpay.ghtml","categoria":"FINTECH","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Ciência busca novos tratamentos e diagnósticos para cânceres causados por HPV","resumo":"Pesquisadores estão desenvolvendo diagnósticos mais precoces e novas abordagens terapêuticas para combater tumores associados ao papilomavírus humano (HPV).\nOs estudos focam em terapias direcionadas e testes moleculares avançados para aumentar a eficácia do tratamento e reduzir efeitos colaterais.\nA inovação científica representa um avanço crucial na oncologia, com o potencial de salvar milhares de vidas anualmente no mundo.\nEspecialistas destacam que a combinação de vacinação, exames preventivos e novas tecnologias será vital para controlar a doença.","link":"https://www1.folha.uol.com.br/equilibrioesaude/2026/09/ciencia-busca-novos-tratamentos-e-exames-para-canceres-causados-pelo-hpv.shtml","categoria":"SAÚDE","lang":"pt"},{"fonte":"Valor Econômico","pais":"Brasil","titulo":"Expansão da inteligência artificial gera forte demanda por energia e produtividade","resumo":"A rápida adoção da inteligência artificial no setor corporativo ultrapassou o campo estritamente tecnológico e começou a afetar a matriz energética global.\nO funcionamento de grandes data centers voltados para o treinamento de modelos exige cargas massivas de eletricidade e infraestrutura reforçada.\nEnquanto empresas buscam saltos expressivos de produtividade, a indústria busca alternativas sustentáveis para alimentar essa escalada computacional.\nO cenário evidencia o desafio de conciliar a inovação digital com metas globais de eficiência energética e sustentabilidade.","link":"https://valor.globo.com/brasil/agenda-global-2026/noticia/2026/09/21/expansao-da-ia-vai-alem-da-tecnologia-demanda-por-energia-e-produtividade-ganham-espaco.ghtml","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"Diário da Guanabara","pais":"Brasil","titulo":"Carros elétricos ganham espaço no mercado e motoristas destacam economia","resumo":"A transição para a mobilidade elétrica avança de forma acelerada no Brasil, impulsionada pela busca por sustentabilidade e menor custo operacional.\nMotoristas que migraram para os veículos eletrificados relatam reduções significativas de gastos em comparação com os combustíveis tradicionais.\nO movimento força a expansão da infraestrutura de carregamento urbano e o surgimento de novas opções no mercado automotivo nacional.\nAnalistas preveem que a queda nos preços das baterias tornará a tecnologia cada vez mais acessível e dominante no setor.","link":"https://dgrj.com.br/dnews/adeus-gasolina-carros-eletricos-avancam-e-motoristas-relatam-economia","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"exame.com","pais":"Brasil","titulo":"Bilionários da tecnologia investem em preparativos para cenários apocalípticos","resumo":"Executivos e bilionários do setor de tecnologia estão destinando quantias milionárias à construção de bunkers luxuosos e sistemas de subsistência.\nA busca por refúgios isolados e tecnologias autossuficientes reflete o receio com colapsos climáticos, crises geopolíticas e inteligência artificial descontrolada.\nEssa tendência inusitada chama a atenção do mercado e gera debates éticos sobre a responsabilidade social dos magnatas da inovação.\nO comportamento evidencia a paranoia corporativa diante de incertezas globais e transformações profundas na sociedade.","link":"https://exame.com/tecnologia/como-os-bilionarios-da-tecnologia-estao-se-preparando-para-o-fim-do-mundo/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ScienceAlert","pais":"Estados Unidos","titulo":"Astrônomos Detectam Sinais de Rádio Vindo Diretamente de um Exoplaneta Pela Primeira Vez","resumo":"Pela primeira vez na história da astronomia, pesquisadores conseguiram captar emissões de rádio diretas originadas de um planeta fora do Sistema Solar.\nA descoberta abre novas possibilidades para analisar o campo magnético do exoplaneta e compreender como ele interage com sua estrela hospedeira.\nO avanço é um marco fundamental na busca por mundos habitáveis, pois campos magnéticos são essenciais para proteger atmosferas planetárias.","link":"https://www.sciencealert.com/astronomers-detect-radio-signals-coming-directly-from-an-exoplanet-for-the-first-time","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"sciencedaily.com","pais":"Estados Unidos","titulo":"Cientistas Descobrem Primeira Nova Espécie de Pinguim em Mais de 100 Anos","resumo":"Pesquisadores identificaram uma nova espécie de pinguim, marcando a primeira descoberta do tipo em mais de um século na ciência biológica.\nO achado foi consolidado por meio de análises genéticas detalhadas e comparações morfológicas com populações previamente catalogadas.\nEssa revelação reforça a importância de proteger os ecossistemas polares e amplia nossa compreensão sobre a biodiversidade marinha atual.","link":"https://www.sciencedaily.com/releases/2026/09/260920222410.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ScienceDaily","pais":"Estados Unidos","titulo":"Novo Processo Converte Resíduos Plásticos em Gasolina e Combustível Diesel","resumo":"Cientistas desenvolveram um método químico inovador capaz de transformar detritos plásticos descartados em combustíveis de alta qualidade.\nA tecnologia promete mitigar o grave problema do acúmulo de lixo nos oceanos e aterros, oferecendo uma alternativa de reciclagem eficiente.\nSe aplicada em escala industrial, a descoberta pode redefinir a gestão de resíduos sólidos e diminuir a dependência da extração fóssil direta.","link":"https://www.sciencedaily.com/releases/2026/09/260920222405.htm","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Jornal de Negócios","pais":"Estados Unidos","titulo":"Trump Quer Criar \"Força Especial Para IA\" e Nomear Novo \"Czar\" Para Esta Tecnologia","resumo":"Donald Trump anunciou a intenção de estabelecer uma força-tarefa governamental voltada inteiramente para impulsionar o desenvolvimento da inteligência artificial.\nA iniciativa prevê a criação da figura de um \"czar\" de IA para liderar as diretrizes tecnológicas e garantir a competitividade dos EUA no setor.\nA proposta reflete a crescente centralidade estratégica da IA no cenário político global e nas discussões de segurança nacional e economia.","link":"https://www.jornaldenegocios.pt/empresas/tecnologias/detalhe/trump-quer-criar-forca-especial-para-ia-e-nomear-novo-czar-para-esta-tecnologia","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"13wham.com","pais":"Estados Unidos","titulo":"Nova York Implementa Novas Regulamentações de IA Diante da Rápida Evolução Tecnológica","resumo":"O estado de Nova York aprovou um conjunto de regras rigorosas voltadas para supervisionar o uso e o desenvolvimento da inteligência artificial.\nA medida busca mitigar riscos associados ao uso indevido de algoritmos, proteger a privacidade dos cidadãos e garantir a transparência nos sistemas automáticos.\nA iniciativa serve como um importante precedente regulatório nos Estados Unidos enquanto o avanço acelerado da IA desafia leis tradicionais.","link":"https://13wham.com/news/local/new-york-rolls-out-new-ai-regulations-as-technology-rapidly-evolves","categoria":"REGULAÇÃO","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"Telescópio James Webb da NASA Explora Árvore Genealógica de Objetos Distantes Recém-Descobertos","resumo":"O Telescópio Espacial James Webb capturou dados inéditos que ajudam os astrônomos a mapear a origem e evolução de corpos celestes distantes.\nAs observações detalhadas permitem correlacionar diferentes objetos espaciais e entender como se formaram no início do universo.\nEsse estudo avança consideravelmente a astrofísica moderna ao revelar detalhes sobre os componentes primordiais da nossa galáxia e arredores.","link":"https://science.nasa.gov/missions/webb/nasa-webb-explores-family-tree-of-newly-discovered-distant-objects/","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"Reuters","pais":"Estados Unidos","titulo":"EUA Destinam US$ 99 Milhões para Perfuração Geotérmica e Projetos Tecnológicos","resumo":"O governo dos Estados Unidos anunciou um investimento substancial de US$ 99 milhões destinado ao avanço da energia geotérmica no país.\nOs recursos financiarão projetos de perfuração profunda e tecnologias de ponta para tornar a captação de calor da Terra mais viável e barata.\nO incentivo busca acelerar a transição para fontes de energia limpa e renovável, fortalecendo a segurança energética nacional.","link":"https://www.reuters.com/business/energy/us-awards-99-million-geothermal-drilling-technology-projects-2026-09-21/","categoria":"ENERGIA","lang":"pt"},{"fonte":"Marvell Technology","pais":"Estados Unidos","titulo":"Marvell Apresentará Demonstrações Pioneiras de Tecnologia Óptica de 2nm para Infraestrutura de Data Centers de IA na ECOC 2026","resumo":"A Marvell Technology se prepara para exibir suas primeiras soluções de interconexão óptica fabricadas em processo de 2 nanômetros.\nVoltada especialmente para data centers de inteligência artificial, a inovação visa reduzir drasticamente o consumo de energia e aumentar a largura de banda.\nO avanço é visto como vital para sustentar a próxima geração de modelos supercomplexos de aprendizado de máquina e processamento em nuvem.","link":"https://www.marvell.com/company/newsroom/marvell-industry-first-2nm-optical-technology-ai-data-center-infrastructure-ecoc-2026.html","categoria":"HARDWARE","lang":"pt"},{"fonte":"Unidivers","pais":"França","titulo":"Festa da Ciência 2026 em Côtes-d’Armor: três territórios e três formas de compartilhar o conhecimento científico","resumo":"A Festa da Ciência de 2026 no departamento de Côtes-d’Armor mobiliza diferentes comunidades locais para promover o saber científico junto ao público.\nO evento destaca abordagens variadas de divulgação, aproximando pesquisadores, estudantes e cidadãos em oficinas interativas e palestras.\nEssa iniciativa reforça a importância do engajamento regional no incentivo e na democratização da cultura científica na França.","link":"https://unidivers.fr/fete-de-la-science-cotes-armor/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Investing.com France","pais":"França","titulo":"Economia dos EUA retoma crescimento no 3º trimestre, enquanto alta dos juros ameaça ritmo de expansão","resumo":"A economia americana demonstrou sinais de recuperação no terceiro trimestre, superando expectativas iniciais do mercado financeiro.\nNo entanto, o aumento sustentado das taxas de juros por parte do Federal Reserve impõe fortes pressões e riscos sobre o ritmo futuro de expansão econômica.\nAnalistas alertam que o custo de crédito elevado pode desestimular investimentos cruciais e desacelerar o consumo nos próximos meses.","link":"https://fr.investing.com/analysis/leconomie-us-reprend-au-t3-alors-que-la-hausse-des-taux-menace-cette-dynamique-200457841","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Boursorama","pais":"França","titulo":"Segundo o BID, inteligência artificial pode impulsionar economia da América Latina e Caribe em 5,1% em uma década","resumo":"Um estudo divulgado pelo Banco Interamericano de Desenvolvimento indica que a adoção de inteligência artificial pode elevar o PIB da América Latina e do Caribe em até 5,1% ao longo de dez anos.\nO relatório destaca que o ganho de produtividade e a automação de processos serão os principais motores desse impacto econômico regional.\nPara alcançar esse potencial, os países precisam investir massivamente em infraestrutura digital e capacitação profissional.","link":"https://www.boursorama.com/bourse/actualites-amp/selon-la-bid-l-ia-pourrait-stimuler-l-economie-de-l-amerique-latine-et-des-caraibes-de-5-1-sur-une-decennie-mais-les-salaires-risqueraient-de-baisser-fab398d8e311df04531aafd1b67a862b","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Observatoire de Paris","pais":"França","titulo":"Observatório de Paris - PSL confirma participação na Festa da Ciência 2026","resumo":"O Observatório de Paris - PSL integrará a programação oficial da Festa da Ciência 2026, abrindo suas portas para apresentar avanços astronômicos recentes ao público.\nA instituição planeja realizar exposições, atividades interativas e palestras ministradas por astrônomos e pesquisadores renomados.\nA iniciativa visa despertar a vocação científica em jovens e aproximar a sociedade das últimas descobertas sobre o universo.","link":"https://observatoiredeparis.psl.eu/l-observatoire-de-paris-psl-5638.html","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"euractiv.com","pais":"França","titulo":"Dívida pública da França atinge o nível mais alto desde 1978","resumo":"A dívida pública da França registrou uma alta histórica, alcançando seu patamar mais elevado em relação ao PIB desde o ano de 1978.\nEsse crescimento acentuado amplia a pressão sobre o governo francês para implementar reformas fiscais e conter os gastos públicos em curto prazo.\nO cenário gera preocupações entre economistas e blocos europeus quanto à estabilidade orçamentária do país diante dos desafios globais atuais.","link":"https://www.euractiv.com/news/frances-debt-climbs-to-highest-since-1978/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Humanos continuam evoluindo nos últimos 18 mil anos: cabelos ruivos são pista fundamental segundo estudo de Harvard","resumo":"Uma nova pesquisa conduzida pela Universidade de Harvard revela que a evolução da espécie humana continuou em ritmo acelerado nos últimos 18 mil anos.\nA análise genética aponta que a prevalência de características como o cabelo ruivo serve como um indicador-chave dessas adaptações recentes.\nO estudo desafia a ideia tradicional de que o desenvolvimento evolutivo humano havia desacelerado após o surgimento das primeiras civilizações.","link":"https://www.science-et-vie.com/science-et-culture/evolution/depuis-18-000-ans-lhumain-naurait-pas-fini-devoluer-les-cheveux-roux-seraient-un-indice-cle-selon-harvard-237280.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Research Professional News","pais":"Inglaterra","titulo":"Brian Cox: corte no projeto CERN do UKRI 'prejudica a base científica'","resumo":"O renomado físico Brian Cox criticou publicamente os cortes orçamentários realizados pela UK Research and Innovation em projetos ligados ao CERN.\nSegundo Cox, a redução de investimentos compromete gravemente a infraestrutura de pesquisa e a competitividade científica do Reino Unido.\nA decisão gera forte preocupação entre pesquisadores que dependem do ecossistema de alta tecnologia e inovação internacional.","link":"https://www.researchprofessionalnews.com/rr-news-uk-research-councils-2026-9-brian-cox-ukri-s-cern-project-cut-damages-science-base/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Yahoo Finance UK","pais":"Inglaterra","titulo":"Hitachi Rail lança 'Enhanced by HMAX™' e integrará tecnologia em todos os novos trens a partir de 2027","resumo":"A Hitachi Rail anunciou que passará a incorporar sua nova plataforma digital HMAX em todo o material rodante fabricado a partir de 2027.\nA tecnologia utiliza inteligência artificial e análise preditiva para otimizar a manutenção de frotas e elevar os padrões de segurança operacional.\nO movimento reflete a busca contínua por inovação e digitalização nos sistemas de transporte do setor ferroviário.","link":"https://uk.finance.yahoo.com/news/hitachi-rail-launches-enhanced-hmax-050000529.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The York Press","pais":"Inglaterra","titulo":"Empresa de North Yorkshire investe £1,1 mi em nova tecnologia laser em sua sede","resumo":"Uma empresa sediada em North Yorkshire destinou mais de um milhão de libras para a aquisição de equipamentos com tecnologia laser de última geração.\nO investimento produtivo visa ampliar a capacidade operacional, reduzindo o consumo energético e elevando a precisão dos processos fabris.\nA estratégia reafirma o papel do setor industrial britânico na adoção de tecnologias de ponta para ganhar competitividade.","link":"https://www.yorkpress.co.uk/news/26568560.econ-engineering-invests-1-1m-new-laser-technology/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Daily Echo","pais":"Inglaterra","titulo":"Milhares aproveitam o Festival Britânico de Ciência em Southampton","resumo":"O Festival Britânico de Ciência reuniu milhares de visitantes em Southampton para promover a divulgação científica e tecnológica de forma interativa.\nO evento contou com workshops, palestras de pesquisadores renomados e exposições tecnológicas voltadas para todas as idades.\nA iniciativa visa aproximar o público geral das inovações acadêmicas e incentivar o interesse das novas gerações pela ciência.","link":"https://www.dailyecho.co.uk/news/26569392.thousands-enjoy-british-science-festival-university-southampton/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Google é multada em mais de €400 milhões por regulador irlandês devido ao uso de dados de localização","resumo":"O órgão regulador de proteção de dados da Irlanda impôs uma multa expressiva ao Google por conta de suas práticas de rastreamento de localização.\nA investigação apontou violações às normas de privacidade da União Europeia quanto à transparência e consentimento do usuário.\nO veredito reforça a crescente pressão governamental sobre gigantes de tecnologia no tratamento de dados pessoais.","link":"https://www.theguardian.com/technology/2026/sep/21/google-is-fined-more-than-400m-by-irish-regulator-over-its-use-of-location-data","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Emergency Services Times","pais":"Inglaterra","titulo":"Polícia de Thames Valley se prepara para o próximo capítulo da ciência forense","resumo":"A força policial de Thames Valley anunciou investimentos e atualizações tecnológicas para modernizar suas operações de investigação forense.\nA iniciativa visa incorporar ferramentas analíticas avançadas e técnicas genéticas ágeis na resolução de crimes complexos.\nCom a renovação, as autoridades locais buscam aumentar a precisão técnica e otimizar os prazos dos processos investigativos.","link":"https://emergencyservicestimes.com/2026/09/22/thames-valley-police-prepares-for-next-chapter-in-forensic-science/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Anadolu Ajansı","pais":"Inglaterra","titulo":"IA pode colocar em risco as 'bases' da economia do Reino Unido, alerta ex-ministro","resumo":"Um ex-ministro do Reino Unido fez um alerta incisivo sobre os impactos iminentes do avanço descontrolado da inteligência artificial nas estruturas econômicas.\nEle ressaltou que a automação acelerada pode desestabilizar o mercado de trabalho tradicional antes que haja uma regulamentação adequada.\nO pronunciamento intensifica os debates sobre políticas públicas necessárias para mitigar os riscos socioeconômicos da tecnologia.","link":"https://www.aa.com.tr/en/europe/ai-could-put-foundations-of-uk-economy-at-risk-ex-minister-warns/4063638","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Maior interesse de bebês do sexo feminino por rostos traz pistas para o debate entre genética e meio ambiente","resumo":"Um novo estudo científico revelou que bebês do sexo feminino demonstram uma atenção significativamente maior para rostos humanos do que para objetos.\nA descoberta fornece dados valiosos para a histórica discussão entre os fatores biológicos e o desenvolvimento social do indivíduo.\nPesquisadores destacam que a observação precoce pode auxiliar na identificação de padrões neurodesenvolvimentais futuros.","link":"https://www.theguardian.com/science/2026/sep/21/baby-girls-boys-interest-faces-nature-nurture","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"brasil247.com","pais":"Brazil","titulo":"Alibaba Promises World's Most Powerful AI and Predicts Early Stage of Technology","resumo":"Chinese tech giant Alibaba has announced new investments to develop the most advanced artificial intelligence model on the market.\nThe company emphasizes that the AI ecosystem revolution is still only in its early stages of maturity.\nThis initiative promises to intensify the global race for technological supremacy between Western and Eastern corporations.\nWith the expansion of infrastructure, the technology is expected to transform various productive sectors in the coming years.","link":"https://www.brasil247.com/tecnologia/alibaba-promete-a-ia-mais-poderosa-do-mundo-e-ve-tecnologia-ainda-em-fase-inicial/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"((o))eco | Jornalismo Ambiental","pais":"Brazil","titulo":"Science Identifies New Feline Species in Bolivia After a Century","resumo":"After a hundred years of research and investigations in South America, scientists have finally confirmed the identification of a new feline species in Bolivia.\nThe finding represents a historic milestone for zoology and highlights the extreme richness and fragility of biodiversity in tropical rainforests.\nThe discovery underscores the urgency and continuous need for public policies aimed at environmental preservation.\nExperts believe the study will help create more effective conservation strategies for the local ecosystem.","link":"https://oeco.org.br/noticias/depois-de-100-anos-ciencia-identifica-nova-especie-de-felino-na-bolivia/","categoria":"SCIENCE","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Government Investigates AI Chatbots Designed to Simulate Friendship and Relationships","resumo":"The government has launched investigations into artificial intelligence applications aimed at creating emotional connections and simulated relationships.\nThe central concern revolves around the improper collection of personal data, in addition to potential impacts on users' mental health.\nThe move reflects a growing global alert regarding the ethical limits and regulation of so-called 'AI companions.'\nConsumer protection agencies are demanding more transparency on how these algorithms operate and manipulate behaviors.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/21/companheiros-de-ia-governo-pede-investigacao-contra-chatbots-que-simulam-amizade-e-romance.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Valor Econômico","pais":"Brazil","titulo":"AstraPay Develops Technology to Integrate Pix with China's UnionPay","resumo":"AstraPay has created an innovative technological solution capable of translating and integrating the Pix system into international payment financial channels.\nThrough a strategic partnership with Chinese giant UnionPay, the ecosystem seeks to facilitate transactions between Brazilians and the Asian market.\nThe breakthrough simplifies international trade and tourism by connecting Brazil's instant payment model with global infrastructure.\nThe novelty positions the Brazilian fintech market at the forefront of global financial interoperability.","link":"https://valor.globo.com/financas/noticia/2026/09/21/astrapay-desenvolve-tecnologia-que-traduz-o-pix-para-outros-canais-e-faz-acordo-com-gigante-chinesa-unionpay.ghtml","categoria":"FINTECH","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"Science Seeks New Treatments and Diagnostics for Cancers Caused by HPV","resumo":"Researchers are developing earlier diagnoses and new therapeutic approaches to combat tumors associated with the human papillomavirus (HPV).\nStudies focus on targeted therapies and advanced molecular tests to increase treatment efficacy and reduce side effects.\nScientific innovation represents a crucial breakthrough in oncology, with the potential to save thousands of lives annually worldwide.\nExperts point out that the combination of vaccination, preventive screenings, and new technologies will be vital to controlling the disease.","link":"https://www1.folha.uol.com.br/equilibrioesaude/2026/09/ciencia-busca-novos-tratamentos-e-exames-para-canceres-causados-pelo-hpv.shtml","categoria":"HEALTH","lang":"en"},{"fonte":"Valor Econômico","pais":"Brazil","titulo":"Artificial Intelligence Expansion Generates Strong Demand for Energy and Productivity","resumo":"The rapid adoption of artificial intelligence in the corporate sector has moved beyond strictly technological grounds and begun affecting the global energy grid.\nThe operation of large data centers dedicated to model training requires massive electrical loads and reinforced infrastructure.\nWhile companies pursue expressive jumps in productivity, the industry is searching for sustainable alternatives to fuel this computational escalation.\nThe scenario highlights the challenge of reconciling digital innovation with global energy efficiency and sustainability goals.","link":"https://valor.globo.com/brasil/agenda-global-2026/noticia/2026/09/21/expansao-da-ia-vai-alem-da-tecnologia-demanda-por-energia-e-produtividade-ganham-espaco.ghtml","categoria":"TRENDS","lang":"en"},{"fonte":"Diário da Guanabara","pais":"Brazil","titulo":"Electric Cars Gain Market Share as Drivers Highlight Savings","resumo":"The transition to electric mobility is advancing rapidly in Brazil, driven by the pursuit of sustainability and lower operating costs.\nDrivers who have switched to electrified vehicles report significant expense reductions compared to traditional fuels.\nThe trend is forcing the expansion of urban charging infrastructure and the emergence of new options in the national automotive market.\nAnalysts predict that falling battery prices will make the technology increasingly accessible and dominant in the sector.","link":"https://dgrj.com.br/dnews/adeus-gasolina-carros-eletricos-avancam-e-motoristas-relatam-economia","categoria":"INNOVATION","lang":"en"},{"fonte":"exame.com","pais":"Brazil","titulo":"Tech Billionaires Invest in Preparations for Apocalyptic Scenarios","resumo":"Tech executives and billionaires are allocating millions to the construction of luxury bunkers and subsistence systems.\nThe search for isolated refuges and self-sufficient technologies reflects fears of climate collapse, geopolitical crises, and runaway artificial intelligence.\nThis unusual trend has caught the market's attention and sparked ethical debates regarding the social responsibility of innovation magnates.\nThe behavior highlights corporate paranoia in the face of global uncertainties and profound societal transformations.","link":"https://exame.com/tecnologia/como-os-bilionarios-da-tecnologia-estao-se-preparando-para-o-fim-do-mundo/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ScienceAlert","pais":"United States","titulo":"Astronomers Detect Radio Signals Coming Directly From an Exoplanet for the First Time","resumo":"For the first time in the history of astronomy, researchers have captured direct radio emissions originating from a planet outside the Solar System.\nThe discovery opens new possibilities for analyzing the exoplanet's magnetic field and understanding how it interacts with its host star.\nThe breakthrough is a fundamental milestone in the search for habitable worlds, as magnetic fields are essential for protecting planetary atmospheres.","link":"https://www.sciencealert.com/astronomers-detect-radio-signals-coming-directly-from-an-exoplanet-for-the-first-time","categoria":"ASTRONOMY","lang":"en"},{"fonte":"sciencedaily.com","pais":"United States","titulo":"Scientists Discover First New Penguin Species in Over 100 Years","resumo":"Researchers have identified a new penguin species, marking the first discovery of its kind in biological science in over a century.\nThe finding was consolidated through detailed genetic analysis and morphological comparisons with previously cataloged populations.\nThis revelation reinforces the importance of protecting polar ecosystems and broadens our understanding of current marine biodiversity.","link":"https://www.sciencedaily.com/releases/2026/09/260920222410.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"ScienceDaily","pais":"United States","titulo":"New Process Converts Plastic Waste Into Gasoline and Diesel Fuel","resumo":"Scientists have developed an innovative chemical method capable of transforming discarded plastic debris into high-quality fuels.\nThe technology promises to mitigate the severe problem of accumulated waste in oceans and landfills, offering an efficient recycling alternative.\nIf applied on an industrial scale, the discovery could redefine solid waste management and decrease dependence on direct fossil extraction.","link":"https://www.sciencedaily.com/releases/2026/09/260920222405.htm","categoria":"INNOVATION","lang":"en"},{"fonte":"Jornal de Negócios","pais":"United States","titulo":"Trump Wants to Create \"AI Task Force\" and Appoint New Technology \"Czar\"","resumo":"Donald Trump has announced his intention to establish a government task force entirely dedicated to boosting artificial intelligence development.\nThe initiative provides for the creation of an AI \"czar\" role to lead technological guidelines and ensure U.S. competitiveness in the sector.\nThe proposal reflects the growing strategic centrality of AI in the global political landscape and in national security and economic discussions.","link":"https://www.jornaldenegocios.pt/empresas/tecnologias/detalhe/trump-quer-criar-forca-especial-para-ia-e-nomear-novo-czar-para-esta-tecnologia","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"13wham.com","pais":"United States","titulo":"New York Rolls Out New AI Regulations as Technology Rapidly Evolves","resumo":"New York State has approved a set of rigorous rules aimed at overseeing the use and development of artificial intelligence.\nThe measure seeks to mitigate risks associated with the misuse of algorithms, protect citizens' privacy, and ensure transparency in automated systems.\nThe initiative serves as an important regulatory precedent in the United States as the accelerated advancement of AI challenges traditional laws.","link":"https://13wham.com/news/local/new-york-rolls-out-new-ai-regulations-as-technology-rapidly-evolves","categoria":"REGULATION","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"NASA's James Webb Telescope Explores Family Tree of Newly Discovered Distant Objects","resumo":"The James Webb Space Telescope has captured unprecedented data that helps astronomers map the origin and evolution of distant celestial bodies.\nDetailed observations allow scientists to correlate different space objects and understand how they formed in the early universe.\nThis study significantly advances modern astrophysics by revealing details about the primordial components of our galaxy and its surroundings.","link":"https://science.nasa.gov/missions/webb/nasa-webb-explores-family-tree-of-newly-discovered-distant-objects/","categoria":"ASTRONOMY","lang":"en"},{"fonte":"Reuters","pais":"United States","titulo":"US Awards $99 Million for Geothermal Drilling and Technology Projects","resumo":"The United States government has announced a substantial investment of $99 million directed toward advancing geothermal energy in the country.\nThe funds will finance deep-drilling projects and cutting-edge technologies to make capturing Earth's heat more viable and affordable.\nThe incentive seeks to accelerate the transition to clean and renewable energy sources, strengthening national energy security.","link":"https://www.reuters.com/business/energy/us-awards-99-million-geothermal-drilling-technology-projects-2026-09-21/","categoria":"ENERGY","lang":"en"},{"fonte":"Marvell Technology","pais":"United States","titulo":"Marvell to Showcase Pioneer 2nm Optical Technology Demos for AI Data Center Infrastructure at ECOC 2026","resumo":"Marvell Technology is preparing to display its first optical interconnect solutions manufactured using a 2-nanometer process.\nTargeted specifically at artificial intelligence data centers, the innovation aims to drastically reduce energy consumption and increase bandwidth.\nThe advancement is seen as vital to sustain the next generation of hyper-complex machine learning models and cloud processing.","link":"https://www.marvell.com/company/newsroom/marvell-industry-first-2nm-optical-technology-ai-data-center-infrastructure-ecoc-2026.html","categoria":"HARDWARE","lang":"en"},{"fonte":"Unidivers","pais":"France","titulo":"2026 Science Festival in Côtes-d’Armor: Three Regions and Three Ways to Share Scientific Knowledge","resumo":"The 2026 Science Festival in the Côtes-d’Armor department is mobilizing different local communities to promote scientific knowledge among the public.\nThe event highlights varied approaches to outreach, bringing researchers, students, and citizens closer together through interactive workshops and lectures.\nThis initiative reinforces the importance of regional engagement in encouraging and democratizing scientific culture in France.","link":"https://unidivers.fr/fete-de-la-science-cotes-armor/","categoria":"SCIENCE","lang":"en"},{"fonte":"Investing.com France","pais":"France","titulo":"US Economy Resumes Growth in Q3, While Rising Interest Rates Threaten Expansion Pace","resumo":"The American economy showed signs of recovery in the third quarter, beating initial financial market expectations.\nHowever, sustained interest rate hikes by the Federal Reserve impose heavy pressures and risks on the future pace of economic expansion.\nAnalysts warn that high credit costs could discourage crucial investments and slow down consumer spending in the coming months.","link":"https://fr.investing.com/analysis/leconomie-us-reprend-au-t3-alors-que-la-hausse-des-taux-menace-cette-dynamique-200457841","categoria":"ECONOMY","lang":"en"},{"fonte":"Boursorama","pais":"France","titulo":"According to IDB, Artificial Intelligence Could Boost Latin America and Caribbean Economy by 5.1% in a Decade","resumo":"A study released by the Inter-American Development Bank indicates that the adoption of artificial intelligence could raise the GDP of Latin America and the Caribbean by up to 5.1% over ten years.\nThe report highlights that productivity gains and process automation will be the main drivers of this regional economic impact.\nTo achieve this potential, countries must invest massively in digital infrastructure and professional training.","link":"https://www.boursorama.com/bourse/actualites-amp/selon-la-bid-l-ia-pourrait-stimuler-l-economie-de-l-amerique-latine-et-des-caraibes-de-5-1-sur-une-decennie-mais-les-salaires-risqueraient-de-baisser-fab398d8e311df04531aafd1b67a862b","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Observatoire de Paris","pais":"France","titulo":"Paris Observatory - PSL Confirms Participation in the 2026 Science Festival","resumo":"The Paris Observatory - PSL will join the official lineup of the 2026 Science Festival, opening its doors to showcase recent astronomical breakthroughs to the public.\nThe institution plans to hold exhibitions, interactive activities, and lectures given by renowned astronomers and researchers.\nThe initiative aims to spark scientific vocations in youth and bring society closer to the latest discoveries about the universe.","link":"https://observatoiredeparis.psl.eu/l-observatoire-de-paris-psl-5638.html","categoria":"ASTRONOMY","lang":"en"},{"fonte":"euractiv.com","pais":"France","titulo":"France's Public Debt Reaches Highest Level Since 1978","resumo":"France's public debt recorded a historic high, reaching its highest level relative to GDP since 1978.\nThis sharp growth increases pressure on the French government to implement fiscal reforms and curb public spending in the short term.\nThe scenario raises concerns among economists and European blocs regarding the country's budgetary stability amid current global challenges.","link":"https://www.euractiv.com/news/frances-debt-climbs-to-highest-since-1978/","categoria":"BUSINESS","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"Humans Continue Evolving Over the Last 18,000 Years: Red Hair Is a Crucial Clue, According to Harvard Study","resumo":"New research conducted by Harvard University reveals that human evolution has continued at an accelerated pace over the past 18,000 years.\nGenetic analysis points out that the prevalence of traits like red hair serves as a key indicator of these recent adaptations.\nThe study challenges the traditional idea that human evolutionary development had slowed down after the rise of the first civilizations.","link":"https://www.science-et-vie.com/science-et-culture/evolution/depuis-18-000-ans-lhumain-naurait-pas-fini-devoluer-les-cheveux-roux-seraient-un-indice-cle-selon-harvard-237280.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Research Professional News","pais":"England","titulo":"Brian Cox: UKRI's CERN Project Cut 'Damages Scientific Base'","resumo":"Renowned physicist Brian Cox publicly criticized budget cuts made by UK Research and Innovation to projects linked to CERN.\nAccording to Cox, the reduction in investments severely compromises research infrastructure and the UK's scientific competitiveness.\nThe decision sparks strong concern among researchers who depend on the high-tech ecosystem and international innovation.","link":"https://www.researchprofessionalnews.com/rr-news-uk-research-councils-2026-9-brian-cox-ukri-s-cern-project-cut-damages-science-base/","categoria":"SCIENCE","lang":"en"},{"fonte":"Yahoo Finance UK","pais":"England","titulo":"Hitachi Rail Launches 'Enhanced by HMAX™' and Will Integrate Technology Into All New Trains Starting in 2027","resumo":"Hitachi Rail announced that it will begin incorporating its new HMAX digital platform into all rolling stock manufactured from 2027 onward.\nThe technology uses artificial intelligence and predictive analytics to optimize fleet maintenance and raise operational safety standards.\nThe move reflects the continuous pursuit of innovation and digitalization in the rail transport sector.","link":"https://uk.finance.yahoo.com/news/hitachi-rail-launches-enhanced-hmax-050000529.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The York Press","pais":"England","titulo":"North Yorkshire Company Invests £1.1M in New Laser Technology at Its Headquarters","resumo":"A North Yorkshire-based company has allocated over one million pounds for the acquisition of cutting-edge laser technology equipment.\nThe productive investment aims to expand operational capacity, reduce energy consumption, and raise the precision of manufacturing processes.\nThe strategy reaffirms the role of the British industrial sector in adopting state-of-the-art technologies to gain competitiveness.","link":"https://www.yorkpress.co.uk/news/26568560.econ-engineering-invests-1-1m-new-laser-technology/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Daily Echo","pais":"England","titulo":"Thousands Enjoy the British Science Festival in Southampton","resumo":"The British Science Festival brought together thousands of visitors in Southampton to promote scientific and technological outreach interactively.\nThe event featured workshops, lectures by renowned researchers, and technological exhibitions aimed at all ages.\nThe initiative aims to bring the general public closer to academic innovations and encourage the interest of new generations in science.","link":"https://www.dailyecho.co.uk/news/26569392.thousands-enjoy-british-science-festival-university-southampton/","categoria":"SCIENCE","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Google Fined Over €400 Million by Irish Regulator Over Use of Location Data","resumo":"Ireland's data protection regulator imposed a substantial fine on Google over its location-tracking practices.\nThe investigation pointed to violations of European Union privacy rules regarding user transparency and consent.\nThe verdict reinforces growing government pressure on tech giants regarding the handling of personal data.","link":"https://www.theguardian.com/technology/2026/sep/21/google-is-fined-more-than-400m-by-irish-regulator-over-its-use-of-location-data","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Emergency Services Times","pais":"England","titulo":"Thames Valley Police Prepares for the Next Chapter in Forensic Science","resumo":"The Thames Valley police force announced investments and technological upgrades to modernize its forensic investigation operations.\nThe initiative aims to incorporate advanced analytical tools and agile genetic techniques in solving complex crimes.\nWith the renewal, local authorities seek to increase technical precision and optimize the timelines of investigative processes.","link":"https://emergencyservicestimes.com/2026/09/22/thames-valley-police-prepares-for-next-chapter-in-forensic-science/","categoria":"INNOVATION","lang":"en"},{"fonte":"Anadolu Ajansı","pais":"England","titulo":"AI Could Put 'Foundations' of UK Economy at Risk, Ex-Minister Warns","resumo":"A former UK minister issued a sharp warning about the imminent impacts of the unchecked advancement of artificial intelligence on economic structures.\nHe stressed that accelerated automation could destabilize the traditional labor market before proper regulation is in place.\nThe statement intensifies debates over public policies needed to mitigate the socioeconomic risks of the technology.","link":"https://www.aa.com.tr/en/europe/ai-could-put-foundations-of-uk-economy-at-risk-ex-minister-warns/4063638","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Greater Interest of Baby Girls in Faces Provides Clues to Nature-Nurture Debate","resumo":"A new scientific study revealed that baby girls demonstrate significantly greater attention to human faces than to objects.\nThe discovery provides valuable data for the historic discussion between biological factors and the individual's social development.\nResearchers highlight that early observation can assist in identifying future neurodevelopmental patterns.","link":"https://www.theguardian.com/science/2026/sep/21/baby-girls-boys-interest-faces-nature-nurture","categoria":"SCIENCE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
