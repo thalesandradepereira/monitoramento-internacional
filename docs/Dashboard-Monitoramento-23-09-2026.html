@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-ovLGL3eplr+W6Hn+/OV8cfXR'; script-src 'nonce-ovLGL3eplr+W6Hn+/OV8cfXR'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="ovLGL3eplr+W6Hn+/OV8cfXR">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">23/09/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="ovLGL3eplr+W6Hn+/OV8cfXR">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"Sam Altman, da OpenAI, e Dario Amodei, da Anthropic, participam de reunião do Conselho de Segurança da ONU","resumo":"Os líderes das principais empresas de desenvolvimento de inteligência artificial do mundo participaram de um encontro histórico no Conselho de Segurança da ONU.\nA reunião abordou os riscos globais, a governança internacional e os impactos geoestratégicos da evolução acelerada dos modelos de IA.\nO debate sinaliza um movimento global sem precedentes para estabelecer limites e diretrizes de segurança no avanço tecnológico exponencial.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/23/sam-altman-da-openai-e-dario-amodei-da-anthropic-participam-de-reuniao-do-conselho-de-seguranca-da-onu.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Brasil 247","pais":"Brasil","titulo":"Trump rejeita regulação global da inteligência artificial e projeta domínio tecnológico","resumo":"Em declarações recentes, o ex-presidente americano se posicionou de forma contrária à criação de estruturas internacionais para regular a inteligência artificial.\nSegundo ele, a corrida pelo domínio da tecnologia será decisiva e a liderança isolada deve ser o objetivo primário das nações.\nA postura contrasta com os esforços da diplomacia global para mitigar riscos sistêmicos e estabelecer padrões éticos comuns.","link":"https://www.brasil247.com/tecnologia/trump-rejeita-regulacao-global-da-inteligencia-artificial-e-diz-que-quem-dominar-tecnologia-sera-vencedor/","categoria":"GEOPOLÍTICA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Vale do Silício cria sua própria escola e propõe alternativa à universidade na era da IA","resumo":"Líderes do ecossistema de tecnologia da Califórnia estão investindo em novos modelos educacionais focados nas demandas reais do mercado de IA.\nA proposta busca substituir o formato acadêmico tradicional por programas práticos e altamente adaptados ao ritmo de inovação das startups.\nA iniciativa reflete uma crescente desconexão entre o currículo universitário convencional e as habilidades exigidas pela nova economia digital.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/23/vale-do-silicio-cria-sua-propria-escola-e-propoe-alternativa-a-universidade-na-era-da-ia.ghtml","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Pioneira da inteligência artificial faz apelo por supervisão independente da tecnologia","resumo":"Uma das figuras fundamentais no desenvolvimento da inteligência artificial alertou para a urgência de mecanismos externos e independentes de fiscalização.\nA especialista enfatizou que a autorregulação por parte das Big Techs é insuficiente para conter riscos e vieses no uso massivo de modelos generativos.\nA proposta busca garantir transparência e alinhamento do progresso científico com os interesses da sociedade civil.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/22/pioneira-da-inteligencia-artificial-faz-apelo-por-supervisao-independente-para-a-tecnologia.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"VEJA RIO","pais":"Brasil","titulo":"Viagra: os benefícios que a ciência descobriu além da ereção","resumo":"Pesquisas científicas recentes revelam que o sildenafila, princípio ativo do Viagra, possui aplicações promissoras em diversas outras áreas da medicina.\nEstudos indicam potenciais efeitos protetores contra doenças neurodegenerativas, além de benefícios na saúde cardiovascular e no tratamento de hipertensão pulmonar.\nA descoberta reacende o interesse da comunidade médica em redirecionar fármacos conhecidos para novas abordagens terapêuticas.","link":"https://vejario.abril.com.br/coluna/fabiano-serfaty/viagra-os-beneficios-que-a-ciencia-descobriu-alem-da-erecao/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Comissão da ONU alerta: Super El Niño pode tirar 2% do PIB","resumo":"Um relatório divulgado pela Comissão da ONU fez um alerta contundente sobre os impactos econômicos decorrentes do fenômeno climático Super El Niño.\nA estimativa sugere que eventos climáticos extremos podem causar uma perda de até 2% no Produto Interno Bruto de países afetados.\nO diagnóstico reforça a urgência de estratégias de mitigação e adaptação para proteger setores vitais como a agricultura e a infraestrutura.","link":"https://g1.globo.com/economia/noticia/2026/09/23/comissao-da-onu-alerta-que-super-el-nino-pode-levar-milhoes-a-pobreza-e-tirar-2percent-do-pib-da-america-latina-entenda.ghtml","categoria":"CLIMA","lang":"pt"},{"fonte":"Quatro Rodas","pais":"Brasil","titulo":"Toyota adota tecnologia da Leapmotor para ampliar vendas de veículos elétricos","resumo":"A montadora japonesa Toyota firmou parceria estratégica visando incorporar soluções tecnológicas de eletromobilidade desenvolvidas pela Leapmotor.\nA aliança busca acelerar a transição elétrica da fabricante e impulsionar suas metas operacionais para alcançar expressivas marcas de vendas globais.\nO movimento destaca a crescente influência de startups de tecnologia automotiva na reestruturação das grandes montadoras tradicionais.","link":"https://quatrorodas.abril.com.br/carros-eletricos/toyota-tera-tecnologia-igual-da-leapmotor-para-vender-400-000-carros/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Neusa Amato: o centenário de uma das pioneiras da física brasileira","resumo":"O Ministério da Ciência, Tecnologia e Inovação presta homenagem ao centenário de Neusa Amato, nome fundamental para a pesquisa científica no Brasil.\nA cientista teve papel de destaque nos estudos sobre física de partículas e no desenvolvimento de laboratórios de ponta no país.\nA celebração ressalta o legado e a importância histórica das mulheres na consolidação do ecossistema científico nacional.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/neusa-amato-o-centenario-de-uma-das-pioneiras-da-fisica-brasileira","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ScienceDaily","pais":"Estados Unidos","titulo":"Pela primeira vez, cientistas observam o som saltar entre estados quânticos","resumo":"Físicos alcançaram um marco histórico ao observar diretamente fonons saltando entre diferentes estados quânticos.\nA descoberta permite entender como a energia acústica se comporta no nível atômico com extrema precisão.\nEssa conquista pode impulsionar o desenvolvimento de novos componentes para computação quântica e sensores ultrassensíveis.\nO avanço abre novos caminhos para a manipulação da matéria e da informação em escala subatômica.","link":"https://www.sciencedaily.com/releases/2026/09/260921081054.htm","categoria":"FÍSICA QUÂNTICA","lang":"pt"},{"fonte":"ScienceDaily","pais":"Estados Unidos","titulo":"Robô voador minúsculo do MIT fica 450% mais rápido com inteligência artificial","resumo":"Pesquisadores do MIT integraram algoritmos de inteligência artificial a micro-robôs voadores do tamanho de insetos.\nA nova tecnologia permitiu aumentar a velocidade de voo das pequenas máquinas em impressionantes 450%.\nAlém do ganho de velocidade, o sistema de IA aprimorou drasticamente a estabilidade e a capacidade de desvio de obstáculos.\nEsses pequenos drones podem ser cruciais em futuras missões de resgate e monitoramento ambiental em locais de difícil acesso.","link":"https://www.sciencedaily.com/releases/2026/09/260921081114.htm","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"ScienceDaily","pais":"Estados Unidos","titulo":"Novo medicamento promete quebrar a resistência do câncer aos tratamentos","resumo":"Uma nova classe de medicamentos desenvolvida nos Estados Unidos mostrou capacidade de superar a resistência tumoral a terapias convencionais.\nO composto atua bloqueando vias metabólicas específicas que as células cancerígenas utilizam para sobreviver à quimioterapia.\nResultados pré-clínicos demonstraram que o tratamento potencializa a eficácia dos fármacos já existentes no mercado.\nA novidade representa uma importante esperança no combate a formas agressivas e recorrentes da doença.","link":"https://www.sciencedaily.com/releases/2026/09/260921081112.htm","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Business Wire","pais":"Estados Unidos","titulo":"Estudo revela tecnologia CAR-T adaptativa para combater mutações do câncer","resumo":"Cientistas criaram uma plataforma adaptativa de células CAR-T que pode ser modificada de acordo com as alterações do tumor.\nO sistema permite reconfigurar as células de defesa do paciente para reconhecer novas mutações em tempo recorde.\nCom a abordagem flexível, os médicos conseguem impedir que a doença escape da resposta imunológica durante o tratamento.\nA inovação representa um salto no avanço da imunoterapia personalizada contra tumores complexos.","link":"https://www.businesswire.com/news/home/20260922700545/en/Study-Unveils-Plug-and-Play-CAR-T-Technology-Designed-to-Adapt-as-Cancer-Changes","categoria":"MEDICINA","lang":"pt"},{"fonte":"Paraná Central","pais":"Estados Unidos","titulo":"Trump rejeita limites à IA e critica governança global da tecnologia","resumo":"O presidente Donald Trump manifestou forte oposição à criação de regulamentações severas para o desenvolvimento da inteligência artificial.\nDurante seu pronunciamento, o líder norte-americano criticou os acordos internacionais de governança tecnológica impostos por blocos globais.\nA postura visa garantir que os Estados Unidos mantenham a liderança mundial na corrida de inovação e infraestrutura de IA.\nA declaração gera debates entre especialistas sobre os riscos éticos e a segurança da expansão desimpedida da tecnologia.","link":"https://paranacentral.com.br/trump-rejeita-limitar-ia-e-critica-governanca-global-da-tecnologia","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"elmon.cat","pais":"Estados Unidos","titulo":"Astronauta da NASA revela após 23 anos como nossas cidades mudam de cor","resumo":"O astronauta da NASA Donald Pettit compartilhou observações registradas durante mais de duas décadas de missões orbitais.\nAs fotografias revelam a transição gradual da iluminação urbana, substituindo lâmpadas amarelas de sódio por LEDs brancos e azuis.\nEssa mudança no espectro luminoso das metrópoles impacta o consumo de energia e a poluição luminosa global.\nOs dados coletados do espaço ajudam cientistas a monitorar a urbanização e a eficiência energética do planeta.","link":"https://elmon.cat/amb-curiositat/es/ciencia-es/donald-pettit-astronauta-de-la-nasa-revela-tras-23-anos-como-nuestras-ciudades-cambian-de-color-10192/","categoria":"CIÊNCIA ESPACIAL","lang":"pt"},{"fonte":"NASA (.gov)","pais":"Estados Unidos","titulo":"NASA lança novos experimentos e carga a bordo da missão Northrop Grumman CRS-24","resumo":"A NASA enviou com sucesso uma nova leva de experimentos científicos e suprimentos rumo à Estação Espacial Internacional.\nA missão espacial da Northrop Grumman carrega tecnologias focadas em pesquisas de biologia, física e materiais em microgravidade.\nOs dados obtidos com os experimentos a bordo apoiarão futuras missões lunares e a presença humana sustentável no espaço.\nO lançamento reforça a contínua cooperação entre a agência espacial e o setor privado aeroespacial.","link":"https://www.nasa.gov/news-release/nasa-science-cargo-launch-aboard-northrop-grumman-crs-24/","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"U.S. News \u0026 World Report","pais":"Estados Unidos","titulo":"Pesquisa: usuários de IA nos EUA estão entre os menos otimistas sobre melhorias na vida","resumo":"Um novo estudo revela que os norte-americanos estão céticos quanto aos impactos positivos da inteligência artificial em suas rotinas.\nApesar do alto índice de adoção da tecnologia no país, a confiança de que a IA trará benefícios reais permanece baixa.\nPreocupações com a segurança do emprego, privacidade de dados e desinformação sustentam essa percepção cautelosa.\nOs resultados apontam para um desafio crescente de aceitação social à medida que as ferramentas de IA se proliferam.","link":"https://www.usnews.com/news/national-news/articles/2026-09-23/survey-american-ai-users-are-among-the-least-optimistic-that-technology-will-make-their-lives-better","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Clubic","pais":"França","titulo":"Apple já quer adotar uma tecnologia do iPhone Duo em seus futuros iPhone Pro","resumo":"A Apple está planejando integrar uma tecnologia desenvolvida para o iPhone Duo em suas próximas gerações da linha Pro. A iniciativa busca aprimorar a usabilidade, o desempenho e a integração de componentes nos futuros smartphones. Essa estratégia demonstra o empenho da empresa em reaproveitar soluções avançadas para manter sua liderança no mercado premium.","link":"https://www.clubic.com/actualite-630829-apple-veut-deja-reprendre-une-technologie-de-l-iphone-duo-sur-ses-futurs-iphone-pro.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"France 24","pais":"França","titulo":"Diante do avanço do deserto, criadores nômades da Mongólia recorrem à tecnologia","resumo":"Os criadores nômades na Mongólia estão adotando soluções tecnológicas para enfrentar os efeitos severos da desertificação. O uso de imagens de satélite e aplicativos móveis auxilia na localização de pastagens e no manejo de água. Essa transformação digital mostra como a inovação é fundamental para preservar tradições e garantir a subsistência contra o clima.","link":"https://www.france24.com/fr/info-en-continu/20260923-face-%C3%A0-l-avanc%C3%A9e-du-d%C3%A9sert-les-%C3%A9leveurs-nomades-de-mongolie-se-tournent-vers-la-technologie","categoria":"CIÊNCIA E TECNOLOGIA","lang":"pt"},{"fonte":"Presse Agence","pais":"França","titulo":"Tecnologia B2B: Positive lança servidores MCP para unificar inteligência artificial, marketing e vendas","resumo":"A Positive lançou em Paris seus novos servidores MCP, criados para unificar inteligência artificial, marketing e vendas no setor B2B. A novidade visa otimizar fluxos de trabalho corporativos, automatizar processos e potencializar a análise de dados estratégicos. A iniciativa marca uma evolução importante na eficiência e digitalização de operações comerciais.","link":"https://presseagence.fr/paris-technologie-b2b-positive-lance-ses-serveurs-mcp-pour-unifier-ia-marketing-et-ventes/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"tv5monde","pais":"França","titulo":"Reino Unido quer avançar na supervisão da IA no G20, mas Trump resiste","resumo":"O Reino Unido está buscando ampliar a supervisão global sobre a inteligência artificial durante a cúpula do G20. No entanto, a proposta encontra resistência de Donald Trump, que defende menor regulamentação para acelerar o desenvolvimento tecnológico. O debate evidencia o impasse entre o controle ético da IA e a competitividade econômica das grandes potências.","link":"https://information.tv5monde.com/economie/le-royaume-uni-veut-faire-avancer-la-supervision-de-lia-au-g20-trump-resiste-2838611","categoria":"POLÍTICA DIGITAL","lang":"pt"},{"fonte":"ScienceDaily","pais":"Inglaterra","titulo":"O LHC acaba de descartar outro local de esconderijo para buracos negros quânticos","resumo":"O Large Hadron Collider (LHC) concluiu uma nova fase de análises descartando hipóteses sobre a criação de buracos negros quânticos microscópicos em determinadas faixas de energia.\nEssa descoberta impõe novos limites teóricos para modelos da física além do Modelo Padrão, refinando nossa compreensão do universo em escalas subatômicas.\nO resultado redireciona pesquisas futuras para novas fronteiras conceituais e experimentais na física de partículas.","link":"https://www.sciencedaily.com/releases/2026/09/260922005649.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ember-energy.org","pais":"Inglaterra","titulo":"A eletrofortificação da Grã-Bretanha: a próxima transição tecnológica nacional","resumo":"A Grã-Bretanha está iniciando uma fase de modernização massiva de sua infraestrutura energética, batizada de eletrofortificação, visando sustentar a transição para energias limpas e a alta demanda da era digital.\nEsse movimento impulsionará a integração de redes inteligentes, armazenamento de bateria e eletrificação do transporte e aquecimento em todo o país.\nO plano posiciona a segurança energética e a inovação tecnológica no centro da estratégia de desenvolvimento britânica.","link":"https://ember-energy.org/latest-insights/the-electro-fortification-of-britain-the-next-national-technology-transition/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"George Osborne, da OpenAI, afirma que oposição local a data centers está atrasando o Reino Unido","resumo":"George Osborne, conselheiro da OpenAI, alertou que a resistência de comunidades locais à construção de data centers está prejudicando a competitividade do Reino Unido na corrida global de inteligência artificial.\nA escassez de infraestrutura de processamento pode desacelerar a adoção de tecnologias emergentes e o crescimento econômico impulsionado pelo setor de tecnologia.\nO debate evidencia o desafio de equilibrar desenvolvimento urbano, demandas ambientais e avanços tecnológicos de grande escala.","link":"https://www.theguardian.com/politics/2026/sep/22/george-osborne-ai-datacentre-nimbys-holding-back-britain","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Big techs dizem que IA pode encontrar a cura para o câncer. Onde ela está?","resumo":"Grandes empresas de tecnologia frequentemente promovem o potencial da inteligência artificial para revolucionar a medicina e descobrir tratamentos eficazes contra o câncer.\nNo entanto, cientistas e médicos destacam os desafios biológicos complexos e a necessidade de validação clínica rigorosa que desaceleram essas promessas.\nO cenário atual mostra um progresso promissor no diagnóstico precoce, mas reforça que a busca por tratamentos definitivos exige tempo e colaboração multidisciplinar.","link":"https://www.theguardian.com/science/ng-interactive/2026/sep/23/big-tech-claims-ai-health-medical-advancement-cure-for-cancer","categoria":"TECNOLOGIA E SAÚDE","lang":"pt"},{"fonte":"GOV.UK","pais":"Inglaterra","titulo":"Oportunidade de financiamento é lançada para fortalecer a ciência regulatória e apoiar a inovação na saúde no Reino Unido","resumo":"O Reino Unido anunciou uma nova iniciativa de financiamento destinada a aprimorar a ciência regulatória e acelerar a introdução de inovações tecnológicas na área de saúde.\nO objetivo é criar um ecossistema mais ágil e seguro para a aprovação de novos tratamentos, dispositivos médicos e terapias avançadas.\nA medida busca consolidar a liderança científica britânica, atrair investimentos internacionais e garantir benefícios diretos aos pacientes.","link":"https://www.gov.uk/government/news/funding-opportunity-launched-to-strengthen-uk-regulatory-science-and-support-healthcare-innovation--2","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"OpenAI's Sam Altman and Anthropic's Dario Amodei participate in UN Security Council meeting","resumo":"The leaders of the world's leading artificial intelligence development companies participated in a historic meeting at the UN Security Council.\nThe meeting addressed global risks, international governance, and the geostrategic impacts of the accelerated evolution of AI models.\nThe debate signals an unprecedented global movement to establish limits and safety guidelines for exponential technological advancement.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/23/sam-altman-da-openai-e-dario-amodei-da-anthropic-participam-de-reuniao-do-conselho-de-seguranca-da-onu.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Brasil 247","pais":"Brazil","titulo":"Trump rejects global AI regulation and projects technological dominance","resumo":"In recent statements, the former US president took a stance against the creation of international structures to regulate artificial intelligence.\nAccording to him, the race for dominance in the technology will be decisive, and isolated leadership should be the primary goal of nations.\nThis stance contrasts with global diplomatic efforts to mitigate systemic risks and establish common ethical standards.","link":"https://www.brasil247.com/tecnologia/trump-rejeita-regulacao-global-da-inteligencia-artificial-e-diz-que-quem-dominar-tecnologia-sera-vencedor/","categoria":"GEOPOLITICS","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Silicon Valley creates its own school, proposing an alternative to universities in the AI era","resumo":"Leaders of the California technology ecosystem are investing in new educational models focused on the real demands of the AI market.\nThe proposal aims to replace the traditional academic format with practical programs highly adapted to the pace of innovation of startups.\nThe initiative reflects a growing disconnect between conventional university curricula and the skills demanded by the new digital economy.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/23/vale-do-silicio-cria-sua-propria-escola-e-propoe-alternativa-a-universidade-na-era-da-ia.ghtml","categoria":"EDUCATION","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Artificial intelligence pioneer calls for independent oversight of the technology","resumo":"One of the fundamental figures in the development of artificial intelligence warned of the urgency for external and independent oversight mechanisms.\nThe expert emphasized that self-regulation by Big Tech is insufficient to contain risks and biases in the massive use of generative models.\nThe proposal seeks to ensure transparency and align scientific progress with the interests of civil society.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/22/pioneira-da-inteligencia-artificial-faz-apelo-por-supervisao-independente-para-a-tecnologia.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"VEJA RIO","pais":"Brazil","titulo":"Viagra: The benefits science has discovered beyond erections","resumo":"Recent scientific research reveals that sildenafil, the active ingredient in Viagra, has promising applications in various other areas of medicine.\nStudies indicate potential protective effects against neurodegenerative diseases, as well as benefits for cardiovascular health and the treatment of pulmonary hypertension.\nThe discovery rekindles the medical community's interest in repurposing known drugs for new therapeutic approaches.","link":"https://vejario.abril.com.br/coluna/fabiano-serfaty/viagra-os-beneficios-que-a-ciencia-descobriu-alem-da-erecao/","categoria":"SCIENCE","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"UN Commission warns: Super El Niño could wipe out 2% of GDP","resumo":"A report released by a UN Commission issued a strong warning about the economic impacts resulting from the Super El Niño climate phenomenon.\nThe estimate suggests that extreme weather events could cause a loss of up to 2% in the Gross Domestic Product of affected countries.\nThe diagnosis reinforces the urgency of mitigation and adaptation strategies to protect vital sectors such as agriculture and infrastructure.","link":"https://g1.globo.com/economia/noticia/2026/09/23/comissao-da-onu-alerta-que-super-el-nino-pode-levar-milhoes-a-pobreza-e-tirar-2percent-do-pib-da-america-latina-entenda.ghtml","categoria":"CLIMATE","lang":"en"},{"fonte":"Quatro Rodas","pais":"Brazil","titulo":"Toyota adopts Leapmotor technology to boost electric vehicle sales","resumo":"Japanese automaker Toyota has signed a strategic partnership aimed at incorporating electromobility technological solutions developed by Leapmotor.\nThe alliance seeks to accelerate the manufacturer's electric transition and drive its operational goals to achieve significant global sales milestones.\nThe move highlights the growing influence of automotive tech startups in restructuring major traditional automakers.","link":"https://quatrorodas.abril.com.br/carros-eletricos/toyota-tera-tecnologia-igual-da-leapmotor-para-vender-400-000-carros/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"Neusa Amato: The centennial of one of the pioneers of Brazilian physics","resumo":"The Ministry of Science, Technology, and Innovation pays tribute to the centennial of Neusa Amato, a fundamental name for scientific research in Brazil.\nThe scientist played a prominent role in particle physics studies and the development of cutting-edge laboratories in the country.\nThe celebration highlights the legacy and historical importance of women in consolidating the national scientific ecosystem.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/neusa-amato-o-centenario-de-uma-das-pioneiras-da-fisica-brasileira","categoria":"SCIENCE","lang":"en"},{"fonte":"ScienceDaily","pais":"United States","titulo":"For the first time, scientists observe sound jumping between quantum states","resumo":"Physicists have achieved a historical milestone by directly observing phonons jumping between different quantum states.\nThe discovery allows us to understand how acoustic energy behaves at the atomic level with extreme precision.\nThis achievement could boost the development of new components for quantum computing and ultrasensitive sensors.\nThe breakthrough opens new paths for the manipulation of matter and information at the subatomic scale.","link":"https://www.sciencedaily.com/releases/2026/09/260921081054.htm","categoria":"QUANTUM PHYSICS","lang":"en"},{"fonte":"ScienceDaily","pais":"United States","titulo":"MIT's tiny flying robot becomes 450% faster with artificial intelligence","resumo":"MIT researchers have integrated artificial intelligence algorithms into insect-sized flying micro-robots.\nThe new technology has made it possible to increase the flight speed of the small machines by an impressive 450%.\nIn addition to speed gains, the AI system has drastically improved stability and obstacle-avoidance capabilities.\nThese tiny drones could be crucial in future rescue missions and environmental monitoring in hard-to-reach locations.","link":"https://www.sciencedaily.com/releases/2026/09/260921081114.htm","categoria":"ROBOTICS","lang":"en"},{"fonte":"ScienceDaily","pais":"United States","titulo":"New drug promises to break cancer's resistance to treatments","resumo":"A new class of drugs developed in the United States has shown the ability to overcome tumor resistance to conventional therapies.\nThe compound works by blocking specific metabolic pathways that cancer cells use to survive chemotherapy.\nPreclinical results have demonstrated that the treatment enhances the efficacy of drugs already existing on the market.\nThe novelty represents major hope in the fight against aggressive and recurrent forms of the disease.","link":"https://www.sciencedaily.com/releases/2026/09/260921081112.htm","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Business Wire","pais":"United States","titulo":"Study unveils adaptive CAR-T technology to combat cancer mutations","resumo":"Scientists have created an adaptive CAR-T cell platform that can be modified according to tumor alterations.\nThe system allows reconfiguring the patient's defense cells to recognize new mutations in record time.\nWith this flexible approach, doctors can prevent the disease from escaping the immune response during treatment.\nThe innovation represents a leap forward in personalized immunotherapy against complex tumors.","link":"https://www.businesswire.com/news/home/20260922700545/en/Study-Unveils-Plug-and-Play-CAR-T-Technology-Designed-to-Adapt-as-Cancer-Changes","categoria":"MEDICINE","lang":"en"},{"fonte":"Paraná Central","pais":"United States","titulo":"Trump rejects limits on AI and criticizes global technology governance","resumo":"President Donald Trump has expressed strong opposition to the creation of strict regulations for the development of artificial intelligence.\nDuring his speech, the North American leader criticized international technology governance agreements imposed by global blocs.\nThe stance aims to ensure that the United States maintains world leadership in the race for innovation and AI infrastructure.\nThe statement has sparked debate among experts over the ethical risks and safety of the unimpeded expansion of the technology.","link":"https://paranacentral.com.br/trump-rejeita-limitar-ia-e-critica-governanca-global-da-tecnologia","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"elmon.cat","pais":"United States","titulo":"NASA astronaut reveals after 23 years how our cities are changing color","resumo":"NASA astronaut Donald Pettit has shared observations recorded over more than two decades of orbital missions.\nThe photographs reveal the gradual transition of urban lighting, replacing yellow sodium lamps with white and blue LEDs.\nThis shift in the light spectrum of metropolises impacts energy consumption and global light pollution.\nData collected from space helps scientists monitor urbanization and the planet's energy efficiency.","link":"https://elmon.cat/amb-curiositat/es/ciencia-es/donald-pettit-astronauta-de-la-nasa-revela-tras-23-anos-como-nuestras-ciudades-cambian-de-color-10192/","categoria":"SPACE SCIENCE","lang":"en"},{"fonte":"NASA (.gov)","pais":"United States","titulo":"NASA launches new experiments and cargo aboard Northrop Grumman CRS-24 mission","resumo":"NASA has successfully sent a new batch of scientific experiments and supplies toward the International Space Station.\nThe Northrop Grumman space mission carries technologies focused on research in biology, physics, and materials in microgravity.\nData obtained from the onboard experiments will support future lunar missions and sustainable human presence in space.\nThe launch reinforces the ongoing cooperation between the space agency and the private aerospace sector.","link":"https://www.nasa.gov/news-release/nasa-science-cargo-launch-aboard-northrop-grumman-crs-24/","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"U.S. News \u0026 World Report","pais":"United States","titulo":"Survey: US AI Users Among the Least Optimistic About Life Improvements","resumo":"A new study reveals that Americans are skeptical about the positive impacts of artificial intelligence on their daily lives.\nDespite the high adoption rate of the technology in the country, confidence that AI will bring real benefits remains low.\nConcerns over job security, data privacy, and misinformation underpin this cautious perception.\nThe findings point to a growing challenge of social acceptance as AI tools proliferate.","link":"https://www.usnews.com/news/national-news/articles/2026-09-23/survey-american-ai-users-are-among-the-least-optimistic-that-technology-will-make-their-lives-better","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Clubic","pais":"France","titulo":"Apple Already Wants to Adopt iPhone Duo Technology in Future iPhone Pro Models","resumo":"Apple is planning to integrate a technology developed for the iPhone Duo into upcoming generations of its Pro line. The initiative aims to enhance usability, performance, and component integration in future smartphones. This strategy demonstrates the company's commitment to reusing advanced solutions to maintain its leadership in the premium market.","link":"https://www.clubic.com/actualite-630829-apple-veut-deja-reprendre-une-technologie-de-l-iphone-duo-sur-ses-futurs-iphone-pro.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"France 24","pais":"France","titulo":"Facing the Advance of the Desert, Mongolian Nomadic Herders Turn to Technology","resumo":"Nomadic herders in Mongolia are adopting technological solutions to cope with the severe effects of desertification. The use of satellite imagery and mobile apps helps locate pastures and manage water resources. This digital transformation shows how innovation is essential to preserve traditions and ensure survival against climate challenges.","link":"https://www.france24.com/fr/info-en-continu/20260923-face-%C3%A0-l-avanc%C3%A9e-du-d%C3%A9sert-les-%C3%A9leveurs-nomades-de-mongolie-se-tournent-vers-la-technologie","categoria":"SCIENCE AND TECHNOLOGY","lang":"en"},{"fonte":"Presse Agence","pais":"France","titulo":"B2B Technology: Positive Launches MCP Servers to Unify Artificial Intelligence, Marketing, and Sales","resumo":"Positive has launched its new MCP servers in Paris, designed to unify artificial intelligence, marketing, and sales in the B2B sector. The new release aims to optimize corporate workflows, automate processes, and enhance strategic data analysis. This initiative marks a major evolution in the efficiency and digitization of commercial operations.","link":"https://presseagence.fr/paris-technologie-b2b-positive-lance-ses-serveurs-mcp-pour-unifier-ia-marketing-et-ventes/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"tv5monde","pais":"France","titulo":"UK Wants to Push Forward AI Oversight at the G20, But Trump Resists","resumo":"The United Kingdom is seeking to expand global oversight of artificial intelligence during the G20 summit. However, the proposal faces resistance from Donald Trump, who advocates for lighter regulation to accelerate technological development. This debate highlights the impasse between ethical AI control and the economic competitiveness of major powers.","link":"https://information.tv5monde.com/economie/le-royaume-uni-veut-faire-avancer-la-supervision-de-lia-au-g20-trump-resiste-2838611","categoria":"DIGITAL POLICY","lang":"en"},{"fonte":"ScienceDaily","pais":"United Kingdom","titulo":"The LHC Just Ruled Out Another Hiding Spot for Quantum Black Holes","resumo":"The Large Hadron Collider (HLC) has concluded a new phase of analysis, ruling out hypotheses regarding the creation of microscopic quantum black holes in certain energy ranges.\nThis discovery imposes new theoretical limits on physics models beyond the Standard Model, refining our understanding of the universe at subatomic scales.\nThe result redirects future research toward new conceptual and experimental frontiers in particle physics.","link":"https://www.sciencedaily.com/releases/2026/09/260922005649.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"ember-energy.org","pais":"United Kingdom","titulo":"The Electro-Fortification of Britain: The Next National Technology Transition","resumo":"Britain is initiating a massive modernization phase of its energy infrastructure, dubbed electro-fortification, aimed at supporting the clean energy transition and the high demand of the digital age.\nThis movement will drive the integration of smart grids, battery storage, and the electrification of transport and heating nationwide.\nThe plan places energy security and technological innovation at the center of the British development strategy.","link":"https://ember-energy.org/latest-insights/the-electro-fortification-of-britain-the-next-national-technology-transition/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"United Kingdom","titulo":"OpenAI's George Osborne Says Local Opposition to Data Centers Is Holding Back the UK","resumo":"George Osborne, an advisor to OpenAI, warned that community resistance to building data centers is harming the UK's competitiveness in the global artificial intelligence race.\nThe shortage of processing infrastructure could slow down the adoption of emerging technologies and economic growth driven by the tech sector.\nThe debate highlights the challenge of balancing urban development, environmental demands, and large-scale technological advancements.","link":"https://www.theguardian.com/politics/2026/sep/22/george-osborne-ai-datacentre-nimbys-holding-back-britain","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The Guardian","pais":"United Kingdom","titulo":"Big Tech Claims AI Can Find a Cure for Cancer. Where Is It?","resumo":"Major tech companies frequently tout the potential of artificial intelligence to revolutionize medicine and discover effective cancer treatments.\nHowever, scientists and doctors highlight the complex biological challenges and the need for rigorous clinical validation that slow down these promises.\nThe current landscape shows promising progress in early diagnosis, but reinforces that the pursuit of definitive treatments takes time and multidisciplinary collaboration.","link":"https://www.theguardian.com/science/ng-interactive/2026/sep/23/big-tech-claims-ai-health-medical-advancement-cure-for-cancer","categoria":"TECHNOLOGY AND HEALTH","lang":"en"},{"fonte":"GOV.UK","pais":"United Kingdom","titulo":"Funding Opportunity Launched to Strengthen Regulatory Science and Support Healthcare Innovation in the UK","resumo":"The UK has announced a new funding initiative aimed at enhancing regulatory science and accelerating the introduction of technological innovations in healthcare.\nThe goal is to create a more agile and secure ecosystem for the approval of new treatments, medical devices, and advanced therapies.\nThe measure seeks to consolidate British scientific leadership, attract international investment, and deliver direct benefits to patients.","link":"https://www.gov.uk/government/news/funding-opportunity-launched-to-strengthen-uk-regulatory-science-and-support-healthcare-innovation--2","categoria":"INNOVATION","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
