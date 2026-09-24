@@ -34,6 +34,43 @@ const paisesPermitidos = [
   'Alemanha', 'Japão', 'China', 'Índia', 'Portugal'
 ]
 
+export function assertEditorialCoverage(failedCountries: string[]): void {
+  const unique = [...new Set(failedCountries.map(pais => pais.trim()).filter(Boolean))]
+  if (unique.length === 0) return
+
+  throw new Error(
+    `[summarize] Cobertura editorial incompleta: falha em ${unique.join(', ')}. Publicação bloqueada para evitar edição parcial.`,
+  )
+}
+
+export function limitarTopicosComDiversidade(
+  topicosPorPais: Map<string, Topico[]>,
+  maxTopicos: number,
+): Topico[] {
+  if (!Number.isFinite(maxTopicos) || maxTopicos <= 0) return []
+
+  const limite = Math.floor(maxTopicos)
+  const filas = [...topicosPorPais.values()].map(topicos => [...topicos])
+  const selecionados: Topico[] = []
+
+  while (selecionados.length < limite) {
+    let adicionou = false
+
+    for (const fila of filas) {
+      const proximo = fila.shift()
+      if (!proximo) continue
+
+      selecionados.push(proximo)
+      adicionou = true
+      if (selecionados.length >= limite) break
+    }
+
+    if (!adicionou) break
+  }
+
+  return selecionados
+}
+
 function normalizarPais(pais: string): string | null {
   if (!pais) return null
   const p = pais.toLowerCase().trim()
@@ -130,7 +167,8 @@ ${JSON.stringify(lote.map(n => ({ id: n.id, titulo: n.titulo, fonte: n.fonte }))
   }
 
   console.log('[summarize] PASSO 2: Decisão Qualitativa. Resumindo cada país separadamente para evitar truncamento.')
-  const topicosFinais: Topico[] = []
+  const topicosPorPais = new Map<string, Topico[]>()
+  const falhasPaises: string[] = []
   const modelosSemQuota = new Set<string>()
 
   let totalCandidatos = 0
@@ -186,7 +224,11 @@ ${JSON.stringify(lote.map(n => ({ id: n.id, titulo: n.titulo, fonte: n.fonte }))
 
     if (modelosSemQuota.has(config.gemini.models.summary)
       && modelosSemQuota.has(config.gemini.models.summaryFallback)) {
-      console.error('[summarize] Todos os modelos de resumo estão sem quota; encerrando Passo 2 sem retries inúteis.')
+      console.error('[summarize] Todos os modelos de resumo estão sem quota; bloqueando cobertura editorial restante.')
+      const indiceAtual = paisesPermitidos.indexOf(pais)
+      for (const pendente of paisesPermitidos.slice(indiceAtual)) {
+        if (candidatosPorPais[pendente].length > 0) falhasPaises.push(pendente)
+      }
       break
     }
 
@@ -235,13 +277,18 @@ ${JSON.stringify(payloadPais, null, 2)}
         } as Topico
       }).filter(Boolean) as Topico[]
 
-      topicosFinais.push(...aprovados)
+      topicosPorPais.set(pais, aprovados)
       console.log(`[summarize] IA retornou ${aprovados.length} notícias para ${pais}.`)
     } catch (err) {
+      falhasPaises.push(pais)
       console.error(`[summarize] Erro no JSON de consolidação do Passo 2 para o país ${pais}:`, err)
     }
   }
 
-  console.log(`[summarize] Processamento Diamante concluído. Retornando ${topicosFinais.length} tópicos supremos.`)
+  assertEditorialCoverage(falhasPaises)
+  const topicosFinais = limitarTopicosComDiversidade(topicosPorPais, config.maxTopicos)
+  console.log(
+    `[summarize] Processamento Diamante concluído. Retornando ${topicosFinais.length} tópicos supremos (MAX_TOPICOS=${config.maxTopicos}).`,
+  )
   return topicosFinais
 }
