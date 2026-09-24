@@ -47,7 +47,8 @@ A v1.1.10 corrige a causa raiz e endurece o fail-safe editorial:
 - TDD RED: run `36000119423` — **4 falhas esperadas**, reproduzindo a quota real e os contratos ainda inexistentes;
 - TDD GREEN: run `36000295410` — testes-alvo aprovados após a correção;
 - CI completo: run `36000497178` — audit, suíte completa, TypeScript, Worker, relay GCP, Docker, YAML e whitespace **aprovados**;
-- nenhuma alteração foi feita em scheduler, destinatários, estado persistente, dashboard visual ou publisher social.
+- nenhuma alteração foi feita em scheduler, destinatários, estado persistente, dashboard visual ou publisher social;
+- o release gate repete audit, testes, TypeScript, infraestrutura, Pages e validação social após o merge em `main`.
 
 ### Release v1.1.9 — hardening final de produção em 05/09/2026
 
@@ -226,7 +227,8 @@ v1.1.10 hardens the editorial fail-safe:
 
 - TDD RED: run `36000119423` — **4 expected failures** reproducing the production quota message and missing policy contracts;
 - TDD GREEN: run `36000295410` — targeted regression suite passed after the fix;
-- Full CI: run `36000497178` — security audit, complete tests, TypeScript, Worker, GCP relay, Docker, YAML and whitespace **passed**.
+- Full CI: run `36000497178` — security audit, complete tests, TypeScript, Worker, GCP relay, Docker, YAML and whitespace **passed**;
+- the release gate repeats audit, tests, TypeScript, infrastructure, Pages and social validation after merge to `main`.
 
 ### v1.1.9 — production hardening completed on 2026-09-05
 
