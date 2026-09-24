@@ -52,6 +52,8 @@ export function isGeminiQuotaExhausted(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error)
   return /exceeded your current quota/i.test(message)
     || /quota exceeded for metric:/i.test(message)
+    || /rate limit exceeded[^\n]*requests per day[^\n]*free tier/i.test(message)
+    || /limit:\s*\d+\s+requests per day on free tier/i.test(message)
 }
 
 export function isRetryableGeminiError(error: unknown): boolean {

@@ -8,7 +8,7 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.9
+> **Versão / Version:** 1.1.10
 >
 > **Fuso operacional / Operational timezone:** `America/Sao_Paulo`
 >
@@ -29,6 +29,26 @@ A arquitetura opera com três princípios centrais:
 - **fail-closed:** estado incerto ou entrega parcial nunca autoriza retry cego;
 - **idempotência diária:** uma data já concluída não gera novo e-mail ou nova Story;
 - **múltiplos relógios:** GitHub principal, watchdog e Google Cloud Scheduler podem acordar o pipeline de forma redundante.
+
+### Release v1.1.10 — resiliência editorial e quota Gemini em 24/09/2026
+
+A edição de 24/09/2026 expôs uma falha de **degradação silenciosa**: a coleta encontrou **939 notícias únicas**, a triagem selecionou **117 candidatas**, mas o modelo editorial `gemini-3.6-flash` atingiu o limite gratuito de **20 requests/day** após concluir o Brasil. O pipeline aceitou as falhas dos demais países e publicou somente **8 matérias brasileiras** como se a execução estivesse completa.
+
+A v1.1.10 corrige a causa raiz e endurece o fail-safe editorial:
+
+- a mensagem real `Rate limit exceeded ... requests per day on Free Tier` passa a ser classificada como **quota diária esgotada**, sem retries inúteis;
+- o fallback `gemini-3.5-flash-lite` é acionado imediatamente quando a quota diária do modelo editorial primário se esgota;
+- qualquer país com candidatos que falhe na consolidação editorial passa a **bloquear a publicação inteira**, evitando dashboard/e-mail parcial silencioso;
+- `MAX_TOPICOS` passa a ser um **teto global efetivo**, com seleção round-robin entre países para preservar diversidade geográfica;
+- `nodemailer` foi atualizado para `9.1.1`, eliminando os advisories que faziam o `npm audit --audit-level=moderate` falhar.
+
+#### Evidência de QA v1.1.10
+
+- TDD RED: run `36000119423` — **4 falhas esperadas**, reproduzindo a quota real e os contratos ainda inexistentes;
+- TDD GREEN: run `36000295410` — testes-alvo aprovados após a correção;
+- CI completo: run `36000497178` — audit, suíte completa, TypeScript, Worker, relay GCP, Docker, YAML e whitespace **aprovados**;
+- nenhuma alteração foi feita em scheduler, destinatários, estado persistente, dashboard visual ou publisher social;
+- o release gate repete audit, testes, TypeScript, infraestrutura, Pages e validação social após o merge em `main`.
 
 ### Release v1.1.9 — hardening final de produção em 05/09/2026
 
@@ -174,7 +194,8 @@ O gate de release também valida YAML, whitespace, artefatos do dia, GitHub Page
 |---|---|---|
 | v1.1.7 | 03/09/2026 | circuit breaker/fallback Gemini e recuperação conservadora de stale `in_progress` |
 | v1.1.8 | 04/09/2026 | validação operacional diária e prova do failsafe externo anterior |
-| **v1.1.9** | **05/09/2026** | trigger mesh GCP ampliado, redeploy live, compatibilidade `gcloud` corrigida e E2E idempotente nos dois alvos |
+| **v1.1.10** | **24/09/2026** | quota Gemini corrigida, fallback efetivo, fail-closed editorial, MAX_TOPICOS global e Nodemailer saneado |
+| v1.1.9 | 05/09/2026 | trigger mesh GCP ampliado, redeploy live, compatibilidade `gcloud` corrigida e E2E idempotente nos dois alvos |
 
 ### Risco residual
 
@@ -189,6 +210,25 @@ O Google Cloud Scheduler remove o **scheduler do GitHub** como relógio único, 
 **Global Media Monitoring** is an automated pipeline that collects and deduplicates international news, uses Google Gemini for editorial triage and summarization, generates **PT-BR** and **EN-US** output, publishes a daily HTML dashboard, sends individualized e-mails, and wakes the private social publisher.
 
 The system is built around **fail-closed behavior**, **daily idempotency**, and **multiple clocks**.
+
+### v1.1.10 — editorial resilience and Gemini quota hardening on 2026-09-24
+
+The 2026-09-24 edition exposed a **silent degradation** failure: collection found **939 unique articles**, triage selected **117 candidates**, but `gemini-3.6-flash` hit its Free Tier **20 requests/day** limit after Brazil. Failures for the remaining countries were swallowed and the pipeline published only **8 Brazilian stories** as a successful edition.
+
+v1.1.10 hardens the editorial fail-safe:
+
+- the real `Rate limit exceeded ... requests per day on Free Tier` message is classified as **daily quota exhaustion**, avoiding useless retries;
+- `gemini-3.5-flash-lite` is used immediately as fallback when the primary editorial model exhausts daily quota;
+- any candidate-bearing country that fails editorial consolidation now **blocks the whole publication**, preventing silent partial dashboards/e-mails;
+- `MAX_TOPICOS` is now an **effective global cap**, using round-robin selection across countries to preserve geographic diversity;
+- `nodemailer` was updated to `9.1.1`, clearing the advisories that blocked `npm audit --audit-level=moderate`.
+
+#### v1.1.10 QA evidence
+
+- TDD RED: run `36000119423` — **4 expected failures** reproducing the production quota message and missing policy contracts;
+- TDD GREEN: run `36000295410` — targeted regression suite passed after the fix;
+- Full CI: run `36000497178` — security audit, complete tests, TypeScript, Worker, GCP relay, Docker, YAML and whitespace **passed**;
+- the release gate repeats audit, tests, TypeScript, infrastructure, Pages and social validation after merge to `main`.
 
 ### v1.1.9 — production hardening completed on 2026-09-05
 

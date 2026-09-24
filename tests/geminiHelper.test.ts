@@ -20,7 +20,13 @@ test('quota diária/RPD esgotada é distinguida de rate limit transitório', () 
   const quotaError = new Error(
     '429 You exceeded your current quota. Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash',
   )
+  const productionQuotaError = new Error(
+    '429 Rate limit exceeded for model gemini-3.6-flash (limit: 20 requests per day on Free Tier). Please retry in 11s or upgrade your tier at https://ai.dev/rate-limit.',
+  )
+
   assert.equal(isGeminiQuotaExhausted(quotaError), true)
+  assert.equal(isGeminiQuotaExhausted(productionQuotaError), true)
+  assert.equal(isRetryableGeminiError(productionQuotaError), false)
   assert.equal(isGeminiQuotaExhausted(new Error('429 Too Many Requests. Please retry in 15s.')), false)
   assert.equal(isGeminiQuotaExhausted(new Error('503 service unavailable')), false)
 })
