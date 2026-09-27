@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-rnglCgY2PYfHZwcfGjDskQWK'; script-src 'nonce-rnglCgY2PYfHZwcfGjDskQWK'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="rnglCgY2PYfHZwcfGjDskQWK">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">27/09/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="rnglCgY2PYfHZwcfGjDskQWK">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Grupo Portal de Notícias","pais":"Brasil","titulo":"Alerta da ONU sobre risco existencial reacende debate sobre IA avançada e limites da tecnologia","resumo":"Um novo alerta emitido pela Organização das Nações Unidas trouxe novamente para o centro das atenções os riscos existenciais associados ao avanço descontrolado da inteligência artificial. Especialistas globais e líderes do setor de tecnologia debatem a necessidade urgente de regulamentações e limites éticos mais rigorosos para garantir a segurança da humanidade. O relatório destaca que o ritmo acelerado das inovações pode superar a capacidade de controle dos governos se medidas globais coordenadas não forem adotadas imediatamente.","link":"https://grupoportaldenoticias.com.br/alerta-da-onu-de-risco-existencial-reacende-debate-sobre-ia-avancada-e-limites-da-tecnologia/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Reuters","pais":"Estados Unidos","titulo":"Júri dos EUA determina que Apple pague valor recorde de US$ 5,7 bilhões em caso de patente de tecnologia tátil","resumo":"Um júri federal nos Estados Unidos decidiu que a Apple violou patentes relacionadas à tecnologia de feedback tátil presentes em iPhones e Apple Watches. A condenação exige o pagamento de um montante recorde de 5,7 bilhões de dólares à empresa detentora da patente. A decisão representa um dos maiores reveses judiciais já enfrentados pela gigante de tecnologia no setor de propriedade intelectual, podendo impactar o desenvolvimento de novos dispositivos.","link":"https://www.reuters.com/legal/litigation/us-jury-says-apple-owes-record-57-billion-haptic-technology-patent-case-2026-09-26/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Lelezard","pais":"França","titulo":"A tecnologia de propulsão elétrica GAC Quark ganha o maior prêmio no Salão de Invenções de Genebra","resumo":"A tecnologia de propulsão elétrica GAC Quark conquistou a mais alta honraria no prestigiado Salão Internacional de Invenções de Genebra.\nO avanço representa um feito significativo no setor de mobilidade sustentável e no desenvolvimento de motores de alta eficiência energética.\nA inovação promete acelerar a transição para veículos elétricos mais eficientes e com elevado desempenho no mercado global.","link":"https://www.lelezard.com/communique-la-technologie-de-propulsion-electrique-gac-quark-remporte-la-plus-haute-distinction-au-salon-des-22380428.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"'Encantador e desarmante'... como o Muse, repleto de tecnologia da Meta, aproveita o poder da fofura","resumo":"A Meta apresentou detalhes do Muse, um dispositivo tecnológico projetado para integrar recursos avançados de inteligência artificial com um apelo estético amigável. A estratégia foca no apelo emocional da fofura para tornar a interação homem-máquina mais natural, intuitiva e acessível para o público geral. Especialistas destacam que a combinação de carisma visual e poder computacional marca uma nova tendência no desenvolvimento de produtos tecnológicos para o dia a dia.","link":"https://www.theguardian.com/fashion/2026/sep/26/charming-and-disarming-how-metas-technology-packed-muse-harnesses-the-power-of-cuteness","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"xataka.com","pais":"Espanha","titulo":"Darwin morreu sem provar sua tese: 150 anos depois, a ciência dá razão ao cientista","resumo":"Charles Darwin levantou hipóteses revolucionárias sobre o comportamento de plantas carnívoras que não pôde provar em sua época.\nCientistas modernos utilizaram tecnologias avançadas para confirmar experimentalmente suas previsões históricas.\nA descoberta valida teorias do naturalista e demonstra o papel vital do avanço tecnológico na comprovação científica.","link":"https://www.xataka.com/ecologia-y-naturaleza/darwin-murio-poder-demostrarlo-150-anos-despues-ciencia-acaba-darle-razon-planta-carnivora","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"OpenAI pausa treinamento de IA após novo incidente","resumo":"A OpenAI decidiu interromper temporariamente o treinamento de seus modelos avançados de inteligência artificial na Alemanha após registrar um novo incidente técnico. A medida busca garantir a segurança dos sistemas e evitar falhas operacionais críticas durante a fase de desenvolvimento. A pausa reflete a crescente pressão regulatória e os desafios éticos enfrentados pelas gigantes de tecnologia no setor de IA.","link":"https://www.sueddeutsche.de/wirtschaft/ki-kuenstliche-intelligenz-chatgpt-openai-usa-technologie-li.3554508","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Japan Today","pais":"Japão","titulo":"Com o fim do boom da programação, graduados em ciência da computação focam em inteligência artificial","resumo":"O mercado de trabalho para recém-formados em ciência da computação enfrenta transformações profundas devido à redução de vagas tradicionais de programação.\nDiante da desaceleração das contratações no setor de tecnologia, estudantes estão direcionando seus estudos para o aprendizado prático de inteligência artificial.\nA mudança reflete uma nova exigência do mercado, que passa a priorizar profissionais capacitados para operar e desenvolver soluções baseadas em automação avançada.","link":"https://japantoday.com/category/tech/as-the-coding-boom-fades-computer-science-grads-focus-on-ai-skills-in-choppy-job-market","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"finance.sina.com.cn","pais":"China","titulo":"Jensen Huang Refuta Teoria do Apocalipse da IA Afirmando Faltar Rigor Científico","resumo":"O CEO da Nvidia, Jensen Huang, rechaçou publicamente as visões catastróficas sobre o futuro da inteligência artificial, classificando-as como carentes de embasamento científico sólido.\nO executivo destacou que o avanço da tecnologia deve ser guiado por princípios de engenharia e por métricas reais de segurança em vez de alarmismo irresponsável.\nA declaração repercutiu amplamente no setor de tecnologia, reforçando a confiança nos investimentos contínuos na expansão da infraestrutura de IA.","link":"https://finance.sina.cn/2026-09-27/detail-initfxsc9584513.d.html?vt=4\u0026wm=1029?q","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The Economic Times","pais":"Índia","titulo":"Jaishankar destaca IA na Assembleia Geral da ONU e defende autonomia tecnológica das nações","resumo":"O ministro das Relações Exteriores da Índia, S. Jaishankar, enfatizou na Assembleia Geral da ONU a importância da inteligência artificial para o futuro global. Ele defendeu que os países devem ter a liberdade de moldar seus próprios caminhos tecnológicos de acordo com suas necessidades estratégicas. A fala ressalta o posicionamento da Índia em buscar soberania digital e liderar discussões sobre a governança de tecnologias emergentes no cenário internacional.","link":"https://m.economictimes.com/news/india/jaishankar-advocates-for-ai-sovereignty-at-unga-emphasizes-global-south-challenges-and-technologys-role/articleshow/134514752.cms","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"O Mirante","pais":"Portugal","titulo":"Tecnologia transforma agricultura, mas a experiência continua a mandar no campo","resumo":"O setor agrícola passa por uma forte transformação digital com a chegada de novas ferramentas e inovações tecnológicas no campo português. No entanto, o conhecimento prático e a experiência acumulada pelos agricultores continuam sendo fundamentais para o sucesso das colheitas. Essa combinação entre tradição e modernidade redefine a eficiência produtiva e a sustentabilidade das explorações agrícolas no país.","link":"https://omirante.pt/cultura-e-lazer/2026-09-27-tecnologia-transforma-agricultura-mas-experiencia-continua-a-mandar-no-campo-995fff22","categoria":"AGRICULTURA","lang":"pt"},{"fonte":"R7","pais":"Brasil","titulo":"Cirurgia de 19 horas feita em Israel com tecnologia 3D dá nova chance para jovem de 15 anos","resumo":"Uma complexa intervenção cirúrgica de 19 horas realizada em Israel utilizou modelagem e impressão 3D avançadas para reconstruir estruturas anatômicas de um adolescente de 15 anos. A tecnologia permitiu que a equipe médica planejasse cada detalhe com precisão milimétrica antes de entrar na sala de operação. O sucesso do procedimento representa um marco para a medicina de alta complexidade e evidencia o impacto transformador da tecnologia 3D em procedimentos de alto risco.","link":"https://noticias.r7.com/jr-na-tv/video/cirurgia-de-19-horas-feita-em-israel-com-tecnologia-3d-da-nova-chance-para-garoto-de-15-anos-27092026/","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"SÁBADO","pais":"Estados Unidos","titulo":"Rastejadores da OpenAI acessaram agências governamentais dos EUA sem autorização","resumo":"Rastejadores automatizados da OpenAI conseguiram acessar e mapear redes internas de diversas agências governamentais dos Estados Unidos sem a devida permissão. O incidente acendeu alertas sobre a segurança cibernética nas infraestruturas públicas e a agressividade da coleta de dados para treinamento de inteligência artificial. Autoridades federais investigam a extensão da coleta e avaliam implementar protocolos mais rígidos de proteção.","link":"https://www.sabado.pt/ciencia---saude/detalhe/bots-da-openai-entraram-em-agencias-governamentais-dos-eua-sem-autorizacao","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"Le Monde.fr","pais":"França","titulo":"«O duplo choque, IA e conflitos armados, gera efeitos redistributivos entre países, mas é devastador para a Europa»","resumo":"Análises geopolíticas e econômicas apontam que a combinação da expansão acelerada da inteligência artificial com conflitos armados está remodelando o equilíbrio global.\nEnquanto certas potências conseguem tirar proveito tecnológico e estratégico desse cenário, a Europa enfrenta severas vulnerabilidades estruturais.\nO contexto atual exige novas abordagens para garantir a competitividade industrial do continente e fortalecer a soberania digital.","link":"https://www.lemonde.fr/idees/article/2026/09/26/le-double-choc-ia-et-conflits-armes-a-des-effets-redistributifs-entre-les-pays-mais-est-devastateur-pour-l-europe_6783109_3232.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Biao Xiang: Jovens na China estão virando fãs de um professor que compreende sua ansiedade","resumo":"O antropólogo Biao Xiang transformou-se em um fenômeno de popularidade entre a juventude chinesa ao abordar publicamente a ansiedade e as pressões sociais contemporâneas. Suas palestras e análises sobre o esgotamento no trabalho e as expectativas culturais alcançaram grande alcance nas redes sociais. O movimento reflete uma importante mudança cultural, na qual a saúde mental e o bem-estar começam a ganhar prioridade sobre as cobranças por sucesso tradicional.","link":"https://www.bbc.com/news/articles/cq70dgdndr46o","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"xataka.com","pais":"Espanha","titulo":"O buraco na camada de ozônio está se fechando graças à ciência e acordos globais","resumo":"Estudos recentes confirmam que a camada de ozônio apresenta uma recuperação constante e sustentada nas últimas décadas.\nO avanço é fruto direto do Protocolo de Montreal, que baniu substâncias químicas nocivas ao redor do planeta.\nO caso serve de modelo histórico para demonstrar como a cooperação científica e política pode deter crises climáticas.","link":"https://www.xataka.com/investigacion/agujero-capa-ozono-se-esta-cerrando-como-ciencia-tratado-historico-nos-salvaron-catastrofe-global","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"中工网","pais":"Alemanha","titulo":"Exposição sobre ferrovia chinesa ganha destaque na InnoTrans em Berlim","resumo":"A Feira Internacional de Tecnologia de Transporte Sobre Trilhos (InnoTrans) em Berlim apresentou uma exposição temática dedicada aos avanços da malha ferroviária chinesa. O evento destacou inovações tecnológicas de ponta e sistemas de alta velocidade desenvolvidos no país asiático. A participação chinesa reforça a cooperação global e o impacto do setor de infraestrutura no mercado internacional.","link":"https://www.workercn.cn/c/2026-09-27/8903930.shtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"olympics.com","pais":"Japão","titulo":"Jogos Asiáticos 2026: Resultados, medalhas e destaques da equipe do Japão nos E-sports","resumo":"Os Jogos Asiáticos de 2026 contam com uma cobertura completa das competições de e-sports, destacando o desempenho da seleção nacional do Japão.\nA inclusão dos esportes eletrônicos consolida a modalidade no cenário esportivo internacional de alto nível e atrai grande atenção do público jovem.\nO acompanhamento inclui resultados em tempo real, programação dos jogos e a contagem oficial de medalhas conquistadas pelos atletas japoneses.","link":"https://www.olympics.com/ja/news/asian-games-2026-esports-results-japan-medals-standings","categoria":"E-SPORTS","lang":"pt"},{"fonte":"gd.chinanews.com.cn","pais":"China","titulo":"Arquitetura de Aprendizado Generativo para Inteligência Corporificada GLOW é Lançada em Shenzhen","resumo":"A nova arquitetura GLOW foi apresentada oficialmente em Shenzhen como uma solução inovadora para inteligência corporificada e robótica avançada.\nO sistema permite que robôs e agentes autônomos aprendam e adaptem comportamentos em cenários dinâmicos por meio de modelos generativos de alto desempenho.\nA novidade posiciona a China na vanguarda do desenvolvimento de robôs inteligentes e da automação industrial de próxima geração.","link":"http://www.gd.chinanews.com.cn/2026/2026-09-27/449852.shtml","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Business Standard","pais":"Índia","titulo":"Lançada a pedra fundamental da primeira usina de e-metanol baseada em porto da Índia","resumo":"A Índia deu um passo histórico rumo à transição energética com o início das obras da sua primeira usina portuária de e-metanol. O projeto visa produzir combustível limpo para o setor marítimo e industrial, reduzindo drasticamente a pegada de carbono do transporte naval. A iniciativa fortalece a estratégia do país em se tornar um hub global de energias renováveis e promover a descarbonização da economia.","link":"https://www.business-standard.com/economy/news/economy-news-foundation-stone-laid-for-india-first-port-based-e-methanol-plant-126092700112_1.html","categoria":"ENERGIA VERDE","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Enfermeira da ULS Lezíria leva experiência em tecnologia da diabetes a encontro nacional","resumo":"Uma profissional de enfermagem da Unidade Local de Saúde da Lezíria destacou-se ao apresentar inovações em tecnologia aplicada ao controle da diabetes. A sua participação em um importante encontro nacional evidenciou o impacto positivo das novas ferramentas digitais no acompanhamento clínico de pacientes. A iniciativa reforça a importância da capacitação contínua e da modernização dos cuidados de saúde prestados no país.","link":"https://sapo.pt/artigo/enfermeira-da-uls-leziria-leva-experiencia-em-tecnologia-da-diabetes-a-encontro-nacional-6ab79b479a39cd87adccf711","categoria":"SAÚDE","lang":"pt"},{"fonte":"jornalopcao.com.br","pais":"Brasil","titulo":"IA na sala de aula: tecnologia redefine a forma de ensinar e aprender","resumo":"A integração de ferramentas de inteligência artificial nas salas de aula está transformando radicalmente o ecossistema educacional e os métodos de ensino. Educadores e instituições adotam plataformas inteligentes para personalizar o aprendizado de acordo com o ritmo individual de cada estudante. No entanto, a inovação também traz desafios éticos e práticos, como a garantia da equidade no acesso e a necessidade de capacitação docente contínua.","link":"https://www.jornalopcao.com.br/reportagem-especial/ia-na-sala-de-aula-tecnologia-redefine-a-forma-de-ensinar-e-aprender-872113/","categoria":"TECNOLOGIA EDUCACIONAL","lang":"pt"},{"fonte":"Al Jazeera","pais":"Estados Unidos","titulo":"Trump rejeita união de esforços em inteligência artificial entre EUA e China","resumo":"O presidente Donald Trump descartou categoricamente qualquer tipo de cooperação ou esforço conjunto entre os Estados Unidos e a China no desenvolvimento de inteligência artificial. A declaração reforça a postura protecionista da administração norte-americana na corrida tecnológica global contra Pequim. A decisão sinaliza um endurecimento do controle sobre exportações técnicas, visando manter a liderança e a segurança nacional.","link":"https://www.aljazeera.com/news/2026/9/26/trump-rejects-combining-us-china-ai-efforts","categoria":"GEOPOLÍTICA","lang":"pt"},{"fonte":"Sud Ouest","pais":"França","titulo":"Por que somos canhoto ou destro? As revelações da ciência sobre esse processo complexo que se estabiliza entre 4 e 6 anos","resumo":"Estudos científicos recentes lançam nova luz sobre a lateralidade humana, explicando como o cérebro define a preferência pelo uso da mão direita ou esquerda.\nEsse processo neurológico complexo começa a se desenvolver ainda na fase gestacional, mas só se consolida completamente entre os 4 e 6 anos de idade.\nAs descobertas ajudam a compreender melhor o desenvolvimento infantil e a desmistificar antigos preconceitos sobre o tema.","link":"https://www.sudouest.fr/sante/recherche-medicale/pourquoi-sommes-nous-gauchers-ou-droitiers-les-revelations-de-la-science-sur-ce-processus-complexe-qui-se-stabilise-entre-4-et-6-ans-30768605.php","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Sky Sports","pais":"Inglaterra","titulo":"Pilotos de F1 se dividem sobre se a corrida Sprint de Mônaco 'faz sentido' após anúncio do calendário de 2027","resumo":"A confirmação do formato de corrida Sprint no Grande Prêmio de Mônaco a partir de 2027 dividiu opiniões entre os pilotos da Fórmula 1. Enquanto parte da grade vê a mudança com entusiasmo para aumentar a atratividade das transmissões, outros apontam os riscos e a dificuldade técnica de realizar ultrapassagens na pista estreita. A discussão reacende os debates sobre a modernização de circuitos históricos frente ao apelo de audiência global.","link":"https://www.skysports.com/f1/news/13590907/f1-drivers-split-over-whether-monaco-sprint-makes-sense-after-2027-calendar-announcement","categoria":"ESPORTES","lang":"pt"},{"fonte":"El Economista","pais":"Espanha","titulo":"IA impulsiona mercado bilionário de vigilância e opressão para regimes autoritários","resumo":"Sistemas avançados de inteligência artificial estão sendo comercializados globalmente para monitoramento em massa.\nEmpresas de tecnologia fornecem ferramentas de reconhecimento facial e análise preditiva a governos repressivos.\nEspecialistas alertam para os riscos éticos e geopolíticos do crescimento descontrolado desta indústria de opressão.","link":"https://www.eleconomista.es/economia/noticias/14016711/09/26/la-ia-crea-un-negocio-milmillonario-de-la-opresion-asi-funciona-el-mercado-global-de-vigilancia-para-regimenes-autoritarios.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Deutschlandfunk","pais":"Alemanha","titulo":"Chinesa de 17 anos quebra recorde no velocismo e jovem de 11 ganha título de eSports","resumo":"Um evento esportivo de grande porte foi marcado pelo ouro com tempo recorde de uma velocista chinesa de 17 anos e pelo título de eSports conquistado por um garoto de apenas 11 anos. Apesar dos feitos notáveis dos jovens atletas, a organização enfrentou duras críticas do público e de especialistas. Os questionamentos focaram nas condições de competição e nas pressões impostas aos participantes menores de idade.","link":"https://www.deutschlandfunk.de/17-jaehrige-chinesin-sprintet-in-rekordzeit-zu-gold-elfjaehriger-gewinnt-e-sport-titel-kritik-am-ver-102.html","categoria":"E-SPORTS","lang":"pt"},{"fonte":"朝日新聞","pais":"Japão","titulo":"Aliança Japão-EUA e o Estado de Direito: Os dilemas na ONU e a postura sobre sanções ao TPI","resumo":"A diplomacia japonesa enfrenta complexos dilemas geopolíticos ao equilibrar a aliança estratégica com os Estados Unidos e a defesa do Estado de Direito.\nDurante debates na Organização das Nações Unidas, o governo do Japão buscou evitar um alinhamento direto quanto às sanções americanas ao Tribunal Penal Internacional.\nA postura cautelosa do Primeiro-Ministro reflete a busca por preservar a governança global sem comprometer a relação bilateral crucial para a segurança do país.","link":"https://www.asahi.com/articles/DA3S16554934.html","categoria":"POLÍTICA","lang":"pt"},{"fonte":"搜狐网","pais":"China","titulo":"China FAW Supera Tecnologias-Chave de Comunicação via Satélite de Órbita Baixa para Veículos","resumo":"A montadora estatal chinesa FAW Group anunciou avanços cruciais no desenvolvimento de sistemas de comunicação veicular integrados a satélites de órbita baixa.\nEssa inovação garante conectividade ininterrupta e de alta velocidade para veículos autônomos e conectados, mesmo em regiões geograficamente isoladas.\nO avanço impulsiona a competitividade da indústria automotiva chinesa na corrida pela mobilidade inteligente e conectada globalmente.","link":"https://m.sohu.com/a/1081384410_121620820?scm=10001.325_13-325_13.0.0-0-0-0-0.5_1334","categoria":"TECNOLOGIA AUTOMOTIVA","lang":"pt"},{"fonte":"Livemint","pais":"Índia","titulo":"Apple é ordenada a pagar US$ 5,7 bilhões à Taction por suposta violação de patente tecnológica","resumo":"Um tribunal determinou que a Apple pague US$ 5,7 bilhões à empresa Taction por suposta infração de patentes relacionadas a tecnologias de toque e resposta tátil. A gigante de tecnologia norte-americana contestou veementemente a decisão e confirmou que irá recorrer da sentença em instâncias superiores. O caso figura entre as maiores disputas judiciais de propriedade intelectual da história do setor de tecnologia.","link":"https://www.livemint.com/companies/news/apple-asked-to-pay-5-7-bn-to-taction-for-alleged-infringement-of-its-technology-tech-giant-to-challenge-ruling-11790480427118.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Rádio Ria","pais":"Portugal","titulo":"PRISMA Art Light Tech regressa a Aveiro com 20 instalações de arte, luz e tecnologia","resumo":"O festival PRISMA Art Light Tech está de volta à cidade de Aveiro para transformar o espaço urbano através de atrações visuais inovadoras. O evento conta com cerca de 20 instalações artísticas que unem criatividade, iluminação cênica e tecnologias avançadas. A iniciativa atrai visitantes e consolida a região como um polo de destaque na interseção entre cultura e inovação digital.","link":"https://radioria.pt/noticias/aveiro/prisma-art-light-tech-regressa-a-aveiro-com-20-instalacoes-de-arte-luz-e-tecnologia","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"jornalopcao.com.br","pais":"Brasil","titulo":"Projeto Peixara: como a alta tecnologia tem ajudado a desvendar o comportamento dos peixes do Rio Araguaia","resumo":"O Projeto Peixara está utilizando sensores avançados, rastreamento por satélite e análise de dados para monitorar os padrões migratórios e comportamentais das espécies nativas no Rio Araguaia. Essa iniciativa pioneira conecta a pesquisa científica à conservação ambiental, oferecendo dados valiosos para a preservação da biodiversidade aquática brasileira. A aplicação dessas ferramentas tecnológicas permite prever impactos ambientais e elaborar estratégias eficientes de manejo sustentável na região.","link":"https://www.jornalopcao.com.br/colunas-e-blogs/araguaia-em-foco/projeto-peixara-como-a-alta-tecnologia-tem-ajudado-a-desvendar-o-comportamento-dos-peixes-do-rio-araguaia-871502/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Daily Bruin","pais":"Estados Unidos","titulo":"UCLA recebe US$ 75 milhões em doações da NSF para desenvolvimento de tecnologia quântica","resumo":"A Universidade da Califórnia em Los Angeles (UCLA) foi contemplada com um financiamento de 75 milhões de dólares concedido pela Fundação Nacional da Ciência. Os recursos serão destinados à expansão de centros de pesquisa focados no avanço da computação quântica e de novos materiais. O investimento estratégico busca acelerar descobertas que posicionem os Estados Unidos na vanguarda da corrida quântica global.","link":"https://dailybruin.com/2026/09/26/ucla-receives-75-million-in-nsf-grants-for-quantum-technology","categoria":"TECNOLOGIA QUÂNTICA","lang":"pt"},{"fonte":"France 24","pais":"França","titulo":"Economia - Qual é a posição da América Latina na corrida pela Inteligência Artificial?","resumo":"A corrida global pelo desenvolvimento da inteligência artificial exige investimentos vultosos em infraestrutura, dados e capacitação profissional.\nA América Latina busca consolidar sua posição nesse ecossistema altamente dinâmico, enfrentando desafios como a escassez de recursos e a evasão de talentos.\nEspecialistas avaliam as estratégias regionais necessárias para impulsionar a inovação tecnológica sem perder espaço frente a outras potências.","link":"https://www.france24.com/es/programas/econom%C3%ADa/20260926-qu%C3%A9-puesto-ocupa-am%C3%A9rica-latina-en-la-carrera-de-la-ia","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Sky Sports","pais":"Inglaterra","titulo":"Lando Norris: Piloto da McLaren pede suspensão de Franco Colapinto após colisão de três carros no GP do Azerbaijão","resumo":"O britânico Lando Norris cobrou punições severas contra o novato Franco Colapinto após um grave acidente envolvendo três carros durante o GP do Azerbaijão. A manobra arriscada provocou danos significativos aos monopostos da Alpine e provocou forte insatisfação nos bastidores do grid. O episódio intensifica o debate sobre a rigidez das penalidades e o nível de agressividade tolerado nas disputas em circuitos de rua.","link":"https://www.skysports.com/f1/news/13591979/lando-norris-mclaren-driver-calls-for-franco-colapinto-race-ban-after-azerbaijan-gp-three-car-collision-with-alpines","categoria":"ESPORTES","lang":"pt"},{"fonte":"Telecinco","pais":"Espanha","titulo":"Tecnologia de ponta combate a vespa asiática com microchips instalados nos insetos","resumo":"Pesquisadores desenvolveram microchips leves acoplados às vespas invasoras para rastrear sua trajetória aérea.\nO sinal emitido permite identificar a localização exata de ninhos ocultos com grande precisão e rapidez.\nA inovação representa um avanço crucial na preservação da biodiversidade e na proteção de colmeias locais.","link":"https://www.telecinco.es/noticias/galicia/20260927/chip-convierte-velutina-guia-localizar-nido-pruebas-lugo_18_020258523.html?amp=true","categoria":"INOVAÇÃO TECNOLÓGICA","lang":"pt"},{"fonte":"EL PAÍS","pais":"Alemanha","titulo":"Proposta de expropriação de imóveis em Berlim gera forte debate político na Alemanha","resumo":"A proposta de expropriar apartamentos pertencentes a grandes imobiliárias em Berlim reacendeu um intenso debate político e econômico em toda a Alemanha. A medida busca conter a crise habitacional e limitar o aumento desenfreado dos aluguéis na capital alemã. No entanto, críticos e investidores alertam que a ação pode afastar investimentos privados e causar incertezas no mercado imobiliário.","link":"https://elpais.com/internacional/2026-09-27/la-idea-de-expropiar-pisos-en-berlin-agita-la-politica-alemana.html","categoria":"SOCIEDADE","lang":"pt"},{"fonte":"见道网","pais":"China","titulo":"SUPCON Conquista Projeto de Sistemas de Controle Distribuído da Saudi Aramco no Oriente Médio","resumo":"A empresa chinesa SUPCON venceu uma grande licitação para fornecer sistemas de controle distribuído para a gigante petrolífera Saudi Aramco.\nO acordo representa uma conquista significativa para o setor de automação e tecnologia industrial da China em mercados internacionais altamente exigentes.\nO projeto fortalece a presença das soluções tecnológicas chinesas na infraestrutura de energia global e na transformação digital do setor.","link":"https://www.seetao.com/details/279559.html","categoria":"AUTOMAÇÃO INDUSTRIAL","lang":"pt"},{"fonte":"The Hindu","pais":"Índia","titulo":"Como a ciência criada por Nikolai Vavilov transformou a conservação das colheitas globais","resumo":"O legado do botânico e geneticista Nikolai Vavilov continua a redefinir como a humanidade preserva e protege a biodiversidade agrícola. Suas pesquisas pioneiras sobre os centros de origem das plantas cultivadas estabeleceram as bases para os modernos bancos de sementes e a segurança alimentar global. A ciência desenvolvida por ele é fundamental para criar safras resistentes às mudanças climáticas e garantir o futuro da agricultura mundial.","link":"https://www.thehindu.com/sci-tech/energy-and-environment/how-the-science-nikolai-vavilov-built-changed-how-we-save-crops/article71512603.ece","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Distrito Online","pais":"Portugal","titulo":"Tecnologia de colaboração virou infraestrutura estratégica em Portugal, diz ECO","resumo":"As ferramentas de colaboração digital consolidaram-se como pilares fundamentais para a operação das empresas e organizações em território português. Segundo análises recentes, essas plataformas deixaram de ser meros complementos e passaram a compor a infraestrutura estratégica corporativa. Essa mudança reflete a consolidação definitiva do trabalho híbrido e a busca por maior eficiência operacional no mercado nacional.","link":"https://www.distritonline.pt/8519-tecnologia-colaboracao-infraestrutura-resposta/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Dona do ChatGPT diz que seus robôs podem ter invadido sistemas de vários órgãos do governo dos EUA","resumo":"A OpenAI revelou que sistemas e robôs automatizados associados às suas tecnologias podem ter acessado indevidamente redes de órgãos governamentais dos Estados Unidos. O incidente acendeu o alerta máximo entre especialistas em cibersegurança e autoridades federais quanto à vulnerabilidade de infraestruturas críticas frente a agentes autônomos. A empresa informou que está colaborando com as investigações para identificar as brechas e reforçar as camadas de proteção de seus modelos.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/26/dona-do-chatgpt-diz-que-seus-robos-podem-ter-invadido-sistemas-de-varios-orgaos-do-governo-dos-eua.ghtml","categoria":"CIBERSEGURANÇA","lang":"pt"},{"fonte":"The Korea Times","pais":"Estados Unidos","titulo":"Pesquisadores desenvolvem tecnologia para monitoramento em tempo real do tratamento de Parkinson","resumo":"Cientistas criaram um novo sistema tecnológico capaz de monitorar continuamente e em tempo real a eficácia das terapias em pacientes com doença de Parkinson. A inovação utiliza sensores avançados e algoritmos inteligentes para rastrear sintomas motores e variações na resposta aos medicamentos ao longo do dia. A abordagem promete personalizar os tratamentos médicos de forma inédita, melhorando a qualidade de vida dos afetados.","link":"https://www.koreatimes.co.kr/amp/southkorea/education/20260927/researchers-develop-technology-for-real-time-monitoring-of-parkinsons-treatments","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Sud Ouest","pais":"França","titulo":"Festa da Ciência em Charente-Maritime: em Saint-Laurent-de-la-Prée, uma fazenda experimental prepara o futuro da agricultura","resumo":"Durante as celebrações da Festa da Ciência na França, uma fazenda experimental abriu suas portas para demonstrar práticas agrícolas inovadoras.\nO projeto busca desenvolver métodos produtivos mais sustentáveis para enfrentar os desafios impostos pelas mudanças climáticas no setor agrícola.\nA iniciativa une pesquisadores e produtores locais na busca por tecnologias eficientes para o futuro do campo.","link":"https://www.sudouest.fr/sciences-et-technologie/fete-de-la-science-en-charente-maritime-a-saint-laurent-de-la-pree-une-ferme-experimentale-pour-preparer-l-avenir-de-l-agriculture-30732426.php","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"'Eu posso entregar': Burnham promete mudança radical na véspera da conferência Trabalhista","resumo":"O prefeito de Manchester, Andy Burnham, fez duras declarações prometendo reformas profundas e imediatas na véspera do encontro anual do Partido Trabalhista. Burnham destacou seus resultados na gestão regional para pressionar a cúpula do partido a adotar agendas mais arrojadas de descentralização. A movimentação acentua as discussões internas sobre o rumo político da legenda e sua liderança nacional.","link":"https://www.theguardian.com/politics/2026/sep/26/burnham-pledges-radical-change-labour-conference-exclusive","categoria":"POLÍTICA","lang":"pt"},{"fonte":"El Adelantado","pais":"Espanha","titulo":"Do dado à fazenda: tecnologia prevê e previne doenças em animais de criação","resumo":"Uma solução tecnológica desenvolvida na Espanha utiliza análise de dados para monitorar a saúde do gado.\nSensores e algoritmos identificam alterações de comportamento antes mesmo do surgimento de sintomas visíveis.\nA abordagem otimiza a produção agrícola, reduz o uso de medicamentos e previne surtos epidemiológicos.","link":"https://eladelantado.com/segovia/2026/09/27/del-dato-a-la-granja-la-tecnologia-segoviana-que-se-anticipa-a-las-enfermedades-animales/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Sky.de","pais":"Alemanha","titulo":"Carlos Alcaraz vence partida eletrizante contra Taylor Fritz","resumo":"O tenista espanhol Carlos Alcaraz protagonizou uma partida emocionante e superou o norte-americano Taylor Fritz em um confronto bastante disputado. A vitória decisiva garantiu pontos valiosos e destacou a resiliência e a habilidade tática do jovem prodígio nas quadras. O duelo eletrizante foi um dos grandes destaques do torneio e empolgou os fãs do esporte ao redor do mundo.","link":"https://sport.sky.de/tennis/artikel/alcaraz-gewinnt-thriller-gegen-fritz/13592283/34345","categoria":"ESPORTES","lang":"pt"},{"fonte":"21财经","pais":"China","titulo":"Do Zero ao Cem: Os Segredos do Ecossistema de Inovação Científica e Tecnológica de Guangdong","resumo":"A província de Guangdong tem se consolidado como o principal hub de inovação da China, acelerando o ciclo de transferência tecnológica da pesquisa de base até a comercialização.\nEstruturas integradas de financiamento, suporte estatal e forte sinergia entre universidades e indústrias impulsionam esse crescimento acelerado.\nA experiência de Guangdong serve como modelo de transição econômica focada em tecnologia de ponta e manufatura avançada.","link":"https://www.21jingji.com/article/20260927/herald/c48f44b3c5b48595dda127186de0d13a.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"The Times of India","pais":"Índia","titulo":"A economia dos casamentos na Índia se expande e ganha escala global impulsionada por feiras especializadas","resumo":"O mercado multimilionário de casamentos na Índia está se tornando cada vez mais globalizado e luxuoso, movimentando diversos setores econômicos. Exposições e feiras curadas estão redefinindo a forma como os casais planejam suas cerimônias, atraindo fornecedores e destinos internacionais. Essa transformação reflete o aumento do poder de compra e a busca por experiências exclusivas e personalizadas no país.","link":"https://timesofindia.indiatimes.com/life-style/fashion/luxury/indias-wedding-economy-is-getting-bigger-and-more-global-how-curated-expos-are-changing-the-way-couples-discover-plan-and-celebrate/articleshow/134466986.cms","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"Público","pais":"Portugal","titulo":"Governo garantiu que ia ouvir sindicatos na Lei da Ciência, mas ninguém os chamou","resumo":"O executivo português enfrenta críticas de estruturas sindicais após a ausência de diálogo na formulação de diretrizes para a nova Lei da Ciência. Representantes de trabalhadores da área científica apontam que promessas de escuta ativa não foram cumpridas durante o processo legislativo. A situação gera tensão no setor de investigação e levanta debates sobre a transparência na gestão das políticas públicas de inovação.","link":"https://www.publico.pt/2026/09/26/ciencia/noticia/governo-garantiu-ia-ouvir-sindicatos-lei-ciencia-ninguem-chamou-2189289","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Terra","pais":"Brasil","titulo":"Cientistas criam uma tecnologia de tatuagem que não dói e dispensa agulhas","resumo":"Pesquisadores criaram uma técnica revolucionária que permite aplicar tatuagens sem o uso de agulhas tradicionais e de forma completamente indolor para o paciente. O método utiliza microagulhas solúveis que depositam o pigmento sob a pele de maneira suave e rápida. Embora a variedade de desenhos e cores ainda seja restrita nesta fase inicial, a inovação promete transformar o setor estético e abrir portas para aplicações médicas de aplicação de fármacos.","link":"https://www.terra.com.br/byte/ciencia/cientistas-criam-uma-tecnologia-de-tatuagem-que-nao-doi-e-dispensa-agulhas-mas-a-escolha-dos-desenhos-ainda-e-bastante-limitada,9c71f954cd8a104c8ab39b3b7953fc6booqjyog0.html","categoria":"INOVAÇÃO CIENTÍFICA","lang":"pt"},{"fonte":"Jornal de Negócios","pais":"Estados Unidos","titulo":"Lançamento de GTA VI deve impactar negativamente a produtividade norte-americana","resumo":"Analistas preveem que a chegada do aguardado videogame Grand Theft Auto VI provocará uma queda temporária, porém notável, na produtividade dos trabalhadores dos Estados Unidos. O fenômeno cultural, alimentado por milhões de jogadores em busca de tempo livre, deve gerar aumento em abstenções e faltas no trabalho na semana de estreia. A projeção evidencia a enorme influência da indústria de jogos na economia contemporânea.","link":"https://www.jornaldenegocios.pt/economia/detalhe/lancamento-de-gta-vi-vai-ter-efeitos-negativos-na-produtividade-norte-americana","categoria":"ENTRETENIMENTO","lang":"pt"},{"fonte":"Grupo Portal de Notícias","pais":"Brazil","titulo":"UN Warning on Existential Risk Reignites Debate Over Advanced AI and Technology Limits","resumo":"A new warning issued by the United Nations has once again brought the existential risks associated with the uncontrolled advancement of artificial intelligence into the spotlight. Global experts and tech industry leaders are debating the urgent need for stricter regulations and ethical boundaries to ensure humanity's safety. The report highlights that the rapid pace of innovation could outpace governments' ability to control it unless coordinated global measures are adopted immediately.","link":"https://grupoportaldenoticias.com.br/alerta-da-onu-de-risco-existencial-reacende-debate-sobre-ia-avancada-e-limites-da-tecnologia/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Reuters","pais":"United States","titulo":"US Jury Orders Apple to Pay Record $5.7 Billion in Haptic Technology Patent Case","resumo":"A federal jury in the United States has ruled that Apple infringed on patents related to haptic feedback technology featured in iPhones and Apple Watches. The verdict requires a record payout of $5.7 billion to the patent holder. The decision represents one of the largest legal setbacks ever faced by the tech giant in the intellectual property sector, potentially impacting the development of new devices.","link":"https://www.reuters.com/legal/litigation/us-jury-says-apple-owes-record-57-billion-haptic-technology-patent-case-2026-09-26/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Lelezard","pais":"France","titulo":"GAC Quark Electric Propulsion Technology Wins Top Prize at Geneva Inventions Salon","resumo":"The GAC Quark electric propulsion technology has captured the highest honor at the prestigious Geneva International Exhibition of Inventions.\nThis breakthrough represents a significant milestone in the sustainable mobility sector and the development of high-energy-efficiency motors.\nThe innovation promises to accelerate the transition to more efficient electric vehicles with high performance in the global market.","link":"https://www.lelezard.com/communique-la-technologie-de-propulsion-electrique-gac-quark-remporte-la-plus-haute-distinction-au-salon-des-22380428.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"United Kingdom","titulo":"'Charming and Disarming'... How Meta's Technology-Packed Muse Harnesses the Power of Cuteness","resumo":"Meta has unveiled details of Muse, a technological device designed to integrate advanced artificial intelligence capabilities with a friendly aesthetic appeal. The strategy focuses on the emotional appeal of cuteness to make human-machine interaction more natural, intuitive, and accessible to the general public. Experts highlight that the combination of visual charisma and computing power marks a new trend in the development of everyday tech products.","link":"https://www.theguardian.com/fashion/2026/sep/26/charming-and-disarming-how-metas-technology-packed-muse-harnesses-the-power-of-cuteness","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"xataka.com","pais":"Spain","titulo":"Darwin Died Without Proving His Thesis: 150 Years Later, Science Proves Him Right","resumo":"Charles Darwin raised revolutionary hypotheses about the behavior of carnivorous plants that he could not prove in his time.\nModern scientists have used advanced technologies to experimentally confirm his historical predictions.\nThe discovery validates the naturalist's theories and demonstrates the vital role of technological advancement in scientific validation.","link":"https://www.xataka.com/ecologia-y-naturaleza/darwin-murio-poder-demostrarlo-150-anos-despues-ciencia-acaba-darle-razon-planta-carnivora","categoria":"SCIENCE","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"OpenAI Pauses AI Training Following New Incident","resumo":"OpenAI has decided to temporarily halt the training of its advanced artificial intelligence models in Germany after recording a new technical incident. The measure aims to ensure system security and prevent critical operational failures during the development phase. The pause reflects growing regulatory pressure and the ethical challenges faced by tech giants in the AI sector.","link":"https://www.sueddeutsche.de/wirtschaft/ki-kuenstliche-intelligenz-chatgpt-openai-usa-technologie-li.3554508","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Japan Today","pais":"Japan","titulo":"As the Coding Boom Fades, Computer Science Grads Focus on AI Skills in Choppy Job Market","resumo":"The job market for recent computer science graduates is facing profound transformations due to a reduction in traditional programming openings.\nAmid slowing hiring in the tech sector, students are directing their studies toward the practical learning of artificial intelligence.\nThe shift reflects a new market demand, which now prioritizes professionals equipped to operate and develop solutions based on advanced automation.","link":"https://japantoday.com/category/tech/as-the-coding-boom-fades-computer-science-grads-focus-on-ai-skills-in-choppy-job-market","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"finance.sina.com.cn","pais":"China","titulo":"Jensen Huang Refutes AI Apocalypse Theory, Stating It Lacks Scientific Rigor","resumo":"Nvidia CEO Jensen Huang has publicly dismissed catastrophic views on the future of artificial intelligence, describing them as lacking solid scientific grounding.\nThe executive emphasized that technological progress should be guided by engineering principles and real safety metrics rather than irresponsible alarmism.\nThe statement resonated widely in the tech sector, reinforcing confidence in ongoing investments to expand AI infrastructure.","link":"https://finance.sina.cn/2026-09-27/detail-initfxsc9584513.d.html?vt=4\u0026wm=1029?q","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The Economic Times","pais":"India","titulo":"Jaishankar Highlights AI at UN General Assembly and Advocates for Nations' Technological Autonomy","resumo":"Indian External Affairs Minister S. Jaishankar emphasized the importance of artificial intelligence for the global future at the UN General Assembly. He argued that countries must have the freedom to shape their own technological paths according to their strategic needs. The speech highlights India's stance on seeking digital sovereignty and leading discussions on the governance of emerging technologies on the international stage.","link":"https://m.economictimes.com/news/india/jaishankar-advocates-for-ai-sovereignty-at-unga-emphasizes-global-south-challenges-and-technologys-role/articleshow/134514752.cms","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"O Mirante","pais":"Portugal","titulo":"Technology Transforms Agriculture, But Experience Still Rules the Fields","resumo":"The agricultural sector is undergoing a massive digital transformation with the arrival of new tools and technological innovations in the Portuguese countryside. However, practical knowledge and the experience accumulated by farmers remain fundamental to harvest success. This combination of tradition and modernity redefines productive efficiency and the sustainability of agricultural operations in the country.","link":"https://omirante.pt/cultura-e-lazer/2026-09-27-tecnologia-transforma-agricultura-mas-experiencia-continua-a-mandar-no-campo-995fff22","categoria":"AGRICULTURE","lang":"en"},{"fonte":"R7","pais":"Brazil","titulo":"19-Hour Surgery Performed in Israel Using 3D Technology Gives 15-Year-Old a Second Chance","resumo":"A complex 19-hour surgical intervention performed in Israel used advanced 3D modeling and printing to reconstruct the anatomical structures of a 15-year-old adolescent. The technology allowed the medical team to plan every detail with millimeter precision before entering the operating room. The success of the procedure represents a milestone for high-complexity medicine and highlights the transformative impact of 3D technology in high-risk procedures.","link":"https://noticias.r7.com/jr-na-tv/video/cirurgia-de-19-horas-feita-em-israel-com-tecnologia-3d-da-nova-chance-para-garoto-de-15-anos-27092026/","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"SÁBADO","pais":"United States","titulo":"OpenAI Crawlers Accessed US Government Agencies Without Authorization","resumo":"Automated crawlers from OpenAI managed to access and map the internal networks of several United States government agencies without proper permission. The incident raised alarms regarding cybersecurity in public infrastructure and the aggressive collection of data for artificial intelligence training. Federal authorities are investigating the extent of the collection and evaluating the implementation of stricter protection protocols.","link":"https://www.sabado.pt/ciencia---saude/detalhe/bots-da-openai-entraram-em-agencias-governamentais-dos-eua-sem-autorizacao","categoria":"DIGITAL SECURITY","lang":"en"},{"fonte":"Le Monde.fr","pais":"France","titulo":"\"The Double Shock of AI and Armed Conflicts Generates Redistributive Effects Between Countries, But Is Devastating for Europe\"","resumo":"Geopolitical and economic analyses indicate that the combination of accelerated artificial intelligence expansion and armed conflicts is reshaping the global balance.\nWhile certain powers manage to extract technological and strategic advantages from this scenario, Europe faces severe structural vulnerabilities.\nThe current context demands new approaches to guarantee the continent's industrial competitiveness and strengthen digital sovereignty.","link":"https://www.lemonde.fr/idees/article/2026/09/26/le-double-choc-ia-et-conflits-armes-a-des-effets-redistributifs-entre-les-pays-mais-est-devastateur-pour-l-europe_6783109_3232.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"BBC","pais":"United Kingdom","titulo":"Biao Xiang: Young People in China Are Turning Into Fans of a Professor Who Understands Their Anxiety","resumo":"Anthropologist Biao Xiang has turned into a phenomenon of popularity among Chinese youth by publicly addressing contemporary anxiety and social pressures. His lectures and analyses on work burnout and cultural expectations have achieved massive reach on social media. The movement reflects an important cultural shift, in which mental health and well-being are beginning to take priority over demands for traditional success.","link":"https://www.bbc.com/news/articles/cq70dgdndr46o","categoria":"TRENDS","lang":"en"},{"fonte":"xataka.com","pais":"Spain","titulo":"The Ozone Hole Is Closing Thanks to Science and Global Agreements","resumo":"Recent studies confirm that the ozone layer has shown steady and sustained recovery over the past few decades.\nThe breakthrough is a direct result of the Montreal Protocol, which banned harmful chemical substances around the planet.\nThe case serves as a historical model to demonstrate how scientific and political cooperation can halt climate crises.","link":"https://www.xataka.com/investigacion/agujero-capa-ozono-se-esta-cerrando-como-ciencia-tratado-historico-nos-salvaron-catastrofe-global","categoria":"SCIENCE","lang":"en"},{"fonte":"中工网","pais":"Germany","titulo":"Chinese Railway Exhibition Takes Center Stage at InnoTrans in Berlin","resumo":"The InnoTrans International Trade Fair for Transport Technology in Berlin featured a thematic exhibition dedicated to the advancements of China's railway network. The event highlighted cutting-edge technological innovations and high-speed systems developed in the Asian country. China's participation reinforces global cooperation and the impact of the infrastructure sector on the international market.","link":"https://www.workercn.cn/c/2026-09-27/8903930.shtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"olympics.com","pais":"Japan","titulo":"2026 Asian Games: Results, Medals, and Japan Team Esports Highlights","resumo":"The 2026 Asian Games feature comprehensive coverage of esports competitions, highlighting the performance of Japan's national team. The inclusion of electronic sports consolidates the discipline on the high-level international sporting scene and attracts massive interest from young audiences. Coverage includes real-time results, game schedules, and the official medal count won by Japanese athletes.","link":"https://www.olympics.com/ja/news/asian-games-2026-esports-results-japan-medals-standings","categoria":"ESPORTS","lang":"en"},{"fonte":"gd.chinanews.com.cn","pais":"China","titulo":"GLOW Generative Learning Architecture for Embodied Intelligence Launched in Shenzhen","resumo":"The new GLOW architecture was officially unveiled in Shenzhen as an innovative solution for embodied intelligence and advanced robotics. The system enables robots and autonomous agents to learn and adapt behaviors in dynamic scenarios using high-performance generative models. The breakthrough positions China at the forefront of intelligent robot development and next-generation industrial automation.","link":"http://www.gd.chinanews.com.cn/2026/2026-09-27/449852.shtml","categoria":"ROBOTICS","lang":"en"},{"fonte":"Business Standard","pais":"India","titulo":"Foundation Stone Laid for India's First Port-Based E-Methanol Plant","resumo":"India took a historic step toward its energy transition with the groundbreaking of its first port-based e-methanol plant. The project aims to produce clean fuel for the maritime and industrial sectors, drastically reducing the carbon footprint of shipping transport. The initiative reinforces the country's strategy to become a global renewable energy hub and promote the decarbonization of the economy.","link":"https://www.business-standard.com/economy/news/economy-news-foundation-stone-laid-for-india-first-port-based-e-methanol-plant-126092700112_1.html","categoria":"GREEN ENERGY","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"ULS Lezíria Nurse Brings Diabetes Technology Experience to National Meeting","resumo":"A nursing professional from the Lezíria Local Health Unit stood out by presenting innovations in technology applied to diabetes management. Her participation in a major national meeting highlighted the positive impact of new digital tools on the clinical monitoring of patients. The initiative reinforces the importance of continuous training and the modernization of healthcare provided in the country.","link":"https://sapo.pt/artigo/enfermeira-da-uls-leziria-leva-experiencia-em-tecnologia-da-diabetes-a-encontro-nacional-6ab79b479a39cd87adccf711","categoria":"HEALTH","lang":"en"},{"fonte":"jornalopcao.com.br","pais":"Brazil","titulo":"AI in the Classroom: Technology Redefines How We Teach and Learn","resumo":"The integration of artificial intelligence tools in classrooms is radically transforming the educational ecosystem and teaching methods. Educators and institutions are adopting intelligent platforms to personalize learning according to each student's individual pace. However, innovation also brings ethical and practical challenges, such as ensuring equitable access and the need for continuous teacher training.","link":"https://www.jornalopcao.com.br/reportagem-especial/ia-na-sala-de-aula-tecnologia-redefine-a-forma-de-ensinar-e-aprender-872113/","categoria":"EDUCATIONAL TECHNOLOGY","lang":"en"},{"fonte":"Al Jazeera","pais":"United States","titulo":"Trump Rejects Combining U.S.-China Artificial Intelligence Efforts","resumo":"President Donald Trump categorically ruled out any form of cooperation or joint effort between the United States and China in the development of artificial intelligence. The statement reinforces the protectionist stance of the U.S. administration in the global tech race against Beijing. The decision signals a tightening of controls over technical exports aimed at maintaining leadership and national security.","link":"https://www.aljazeera.com/news/2026/9/26/trump-rejects-combining-us-china-ai-efforts","categoria":"GEOPOLITICS","lang":"en"},{"fonte":"Sud Ouest","pais":"France","titulo":"Why Are We Left-Handed or Right-Handed? Science Reveals Insights Into This Complex Process That Stabilizes Between Ages 4 and 6","resumo":"Recent scientific studies shed new light on human laterality, explaining how the brain determines a preference for using the right or left hand. This complex neurological process begins to develop during the gestational phase but only fully solidifies between 4 and 6 years of age. These findings help us better understand child development and demystify old prejudices surrounding the subject.","link":"https://www.sudouest.fr/sante/recherche-medicale/pourquoi-sommes-nous-gauchers-ou-droitiers-les-revelations-de-la-science-sur-ce-processus-complexe-qui-se-stabilise-entre-4-et-6-ans-30768605.php","categoria":"SCIENCE","lang":"en"},{"fonte":"Sky Sports","pais":"England","titulo":"F1 Drivers Split Over Whether Monaco Sprint 'Makes Sense' After 2027 Calendar Announcement","resumo":"The confirmation of the Sprint race format at the Monaco Grand Prix starting in 2027 has divided opinions among Formula 1 drivers. While part of the grid views the change with enthusiasm to increase the appeal of broadcasts, others point out the risks and technical difficulty of overtaking on the narrow track. The discussion reignites debates regarding the modernization of historic circuits versus global audience appeal.","link":"https://www.skysports.com/f1/news/13590907/f1-drivers-split-over-whether-monaco-sprint-makes-sense-after-2027-calendar-announcement","categoria":"SPORTS","lang":"en"},{"fonte":"El Economista","pais":"Spain","titulo":"AI Fuels Multi-Billion-Dollar Surveillance and Oppression Market for Authoritarian Regimes","resumo":"Advanced artificial intelligence systems are being marketed globally for mass monitoring. Technology companies supply facial recognition tools and predictive analytics to repressive governments. Experts warn of the ethical and geopolitical risks of the uncontrolled growth of this oppression industry.","link":"https://www.eleconomista.es/economia/noticias/14016711/09/26/la-ia-crea-un-negocio-milmillonario-de-la-opresion-asi-funciona-el-mercado-global-de-vigilancia-para-regimenes-autoritarios.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Deutschlandfunk","pais":"Germany","titulo":"17-Year-Old Chinese Sprinter Breaks Record, 11-Year-Old Wins Esports Title","resumo":"A major sporting event was marked by a record-breaking gold medal from a 17-year-old Chinese sprinter and an esports title won by an 11-year-old boy. Despite the remarkable achievements of the young athletes, the organization faced harsh criticism from the public and experts. The questioning focused on the competition conditions and the pressures placed on underage participants.","link":"https://www.deutschlandfunk.de/17-jaehrige-chinesin-sprintet-in-rekordzeit-zu-gold-elfjaehriger-gewinnt-e-sport-titel-kritik-am-ver-102.html","categoria":"ESPORTS","lang":"en"},{"fonte":"朝日新聞","pais":"Japan","titulo":"Japan-U.S. Alliance and the Rule of Law: Dilemmas at the UN and Stance on ICC Sanctions","resumo":"Japanese diplomacy faces complex geopolitical dilemmas in balancing its strategic alliance with the United States and the defense of the rule of law. During debates at the United Nations, the Japanese government sought to avoid a direct alignment regarding American sanctions against the International Criminal Court. The Prime Minister's cautious stance reflects the pursuit of preserving global governance without compromising the crucial bilateral relationship for the country's security.","link":"https://www.asahi.com/articles/DA3S16554934.html","categoria":"POLITICS","lang":"en"},{"fonte":"搜狐网","pais":"China","titulo":"China FAW Overcomes Key Low-Orbit Satellite Communication Technologies for Vehicles","resumo":"State-owned Chinese automaker FAW Group announced crucial breakthroughs in the development of vehicular communication systems integrated with low-orbit satellites. This innovation ensures uninterrupted, high-speed connectivity for autonomous and connected vehicles, even in geographically isolated regions. The advancement boosts the competitiveness of the Chinese automotive industry in the global smart and connected mobility race.","link":"https://m.sohu.com/a/1081384410_121620820?scm=10001.325_13-325_13.0.0-0-0-0-0.5_1334","categoria":"AUTOMOTIVE TECHNOLOGY","lang":"en"},{"fonte":"Livemint","pais":"India","titulo":"Apple Ordered to Pay $5.7 Billion to Taction for Alleged Technology Patent Infringement","resumo":"A court ordered Apple to pay $5.7 billion to Taction for alleged infringement of patents related to touch and haptic feedback technologies. The U.S. tech giant vehemently contested the ruling and confirmed it will appeal the decision in higher courts. The case ranks among the largest intellectual property legal disputes in the technology sector's history.","link":"https://www.livemint.com/companies/news/apple-asked-to-pay-5-7-bn-to-taction-for-alleged-infringement-of-its-technology-tech-giant-to-challenge-ruling-11790480427118.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Rádio Ria","pais":"Portugal","titulo":"PRISMA Art Light Tech Returns to Aveiro with 20 Art, Light, and Technology Installations","resumo":"The PRISMA Art Light Tech festival is back in the city of Aveiro to transform the urban space through innovative visual attractions. The event features around 20 artistic installations that bring together creativity, scenic lighting, and advanced technologies. The initiative draws visitors and solidifies the region as a prominent hub at the intersection of culture and digital innovation.","link":"https://radioria.pt/noticias/aveiro/prisma-art-light-tech-regressa-a-aveiro-com-20-instalacoes-de-arte-luz-e-tecnologia","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"jornalopcao.com.br","pais":"Brazil","titulo":"Peixara Project: how high technology has helped to uncover the behavior of fish in the Araguaia River","resumo":"The Peixara Project is using advanced sensors, satellite tracking and data analysis to monitor the migratory and behavioral patterns of native species in the Araguaia River. This pioneering initiative connects scientific research to environmental conservation, offering valuable data for the preservation of Brazilian aquatic biodiversity. The application of these technological tools makes it possible to predict environmental impacts and develop efficient sustainable management strategies in the region.","link":"https://www.jornalopcao.com.br/colunas-e-blogs/araguaia-em-foco/projeto-peixara-como-a-alta-tecnologia-tem-ajudado-a-desvendar-o-comportamento-dos-peixes-do-rio-araguaia-871502/","categoria":"SCIENCE","lang":"en"},{"fonte":"Daily Bruin","pais":"United States","titulo":"UCLA receives $75 million in NSF grant for quantum technology development","resumo":"The University of California at Los Angeles (UCLA) was awarded 75 million dollars in funding from the National Science Foundation. The resources will be used to expand research centers focused on advancing quantum computing and new materials. The strategic investment seeks to accelerate discoveries that position the United States at the forefront of the global quantum race.","link":"https://dailybruin.com/2026/09/26/ucla-receives-75-million-in-nsf-grants-for-quantum-technology","categoria":"QUANTUM TECHNOLOGY","lang":"en"},{"fonte":"France 24","pais":"France","titulo":"Economy - What is Latin America's position in the race for Artificial Intelligence?","resumo":"The global race to develop artificial intelligence requires huge investments in infrastructure, data and professional training. Latin America seeks to consolidate its position in this highly dynamic ecosystem, facing challenges such as scarcity of resources and talent evasion. Experts evaluate the regional strategies necessary to boost technological innovation without losing space compared to other powers.","link":"https://www.france24.com/es/programas/econom%C3%ADa/20260926-qu%C3%A9-puesto-ocupa-am%C3%A9rica-latina-en-la-carrera-de-la-ia","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Sky Sports","pais":"England","titulo":"Lando Norris: McLaren driver calls for suspension of Franco Colapinto after three-car collision at Azerbaijan GP","resumo":"Briton Lando Norris exacted severe punishments against rookie Franco Colapinto after a serious accident involving three cars during the Azerbaijan GP. The risky maneuver caused significant damage to Alpine's single-seaters and caused strong dissatisfaction behind the scenes on the grid. The episode intensifies the debate about the rigidity of penalties and the level of aggression tolerated in disputes on street circuits.","link":"https://www.skysports.com/f1/news/13591979/lando-norris-mclaren-driver-calls-for-franco-colapinto-race-ban-after-azerbaijan-gp-three-car-collision-with-alpines","categoria":"SPORTS","lang":"en"},{"fonte":"Telecinco","pais":"Spain","titulo":"Cutting-edge technology combats Asian wasps with microchips installed in insects","resumo":"Researchers have developed lightweight microchips attached to invasive wasps to track their aerial trajectory. The emitted signal makes it possible to identify the exact location of hidden nests with great precision and speed. The innovation represents a crucial advance in preserving biodiversity and protecting local beehives.","link":"https://www.telecinco.es/noticias/galicia/20260927/chip-convierte-velutina-guia-localizar-nido-pruebas-lugo_18_020258523.html?amp=true","categoria":"TECHNOLOGICAL INNOVATION","lang":"en"},{"fonte":"EL PAÍS","pais":"Germany","titulo":"Proposed expropriation of properties in Berlin generates strong political debate in Germany","resumo":"The proposal to expropriate apartments belonging to large real estate companies in Berlin has reignited an intense political and economic debate across Germany. The measure seeks to contain the housing crisis and limit the unrestrained increase in rents in the German capital. However, critics and investors warn that the action could drive away private investment and cause uncertainty in the real estate market.","link":"https://elpais.com/internacional/2026-09-27/la-idea-de-expropiar-pisos-en-berlin-agita-la-politica-alemana.html","categoria":"COMPANY","lang":"en"},{"fonte":"见道网","pais":"China","titulo":"SUPCON Wins Saudi Aramco Middle East Distributed Control Systems Project","resumo":"Chinese company SUPCON has won a major tender to supply distributed control systems to oil giant Saudi Aramco. The agreement represents a significant achievement for China's industrial automation and technology sector in highly demanding international markets. The project strengthens the presence of Chinese technological solutions in global energy infrastructure and the digital transformation of the sector.","link":"https://www.seetao.com/details/279559.html","categoria":"INDUSTRIAL AUTOMATION","lang":"en"},{"fonte":"The Hindu","pais":"India","titulo":"How the science created by Nikolai Vavilov transformed global crop conservation","resumo":"The legacy of botanist and geneticist Nikolai Vavilov continues to redefine how humanity preserves and protects agricultural biodiversity. His pioneering research into the centers of origin of cultivated plants laid the foundation for modern seed banks and global food security. The science he developed is fundamental to creating crops resistant to climate change and ensuring the future of global agriculture.","link":"https://www.thehindu.com/sci-tech/energy-and-environment/how-the-science-nikolai-vavilov-built-changed-how-we-save-crops/article71512603.ece","categoria":"SCIENCE","lang":"en"},{"fonte":"Distrito Online","pais":"Portugal","titulo":"Collaboration technology has become strategic infrastructure in Portugal, says ECO","resumo":"Digital collaboration tools have consolidated themselves as fundamental pillars for the operation of companies and organizations in Portuguese territory. According to recent analyses, these platforms are no longer mere complements and have become part of the corporate strategic infrastructure. This change reflects the definitive consolidation of hybrid work and the search for greater operational efficiency in the national market.","link":"https://www.distritonline.pt/8519-tecnologia-colaboracao-infraestrutura-resposta/","categoria":"BUSINESS","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Owner of ChatGPT says her robots may have invaded the systems of several US government agencies","resumo":"OpenAI revealed that automated systems and robots associated with its technologies may have improperly accessed United States government agency networks. The incident raised heightened alert among cybersecurity experts and federal authorities regarding the vulnerability of critical infrastructures to autonomous agents. The company reported that it is collaborating with investigations to identify the breaches and reinforce the protection layers of its models.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/26/dona-do-chatgpt-diz-que-seus-robos-podem-ter-invadido-sistemas-de-varios-orgaos-do-governo-dos-eua.ghtml","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"The Korea Times","pais":"United States","titulo":"Researchers develop technology for real-time monitoring of Parkinson's treatment","resumo":"Scientists have created a new technological system capable of continuously monitoring the effectiveness of therapies in patients with Parkinson's disease in real time. The innovation uses advanced sensors and intelligent algorithms to track motor symptoms and variations in response to medications throughout the day. The approach promises to personalize medical treatments in an unprecedented way, improving the quality of life of those affected.","link":"https://www.koreatimes.co.kr/amp/southkorea/education/20260927/researchers-develop-technology-for-real-time-monitoring-of-parkinsons-treatments","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Sud Ouest","pais":"France","titulo":"Science Festival in Charente-Maritime: in Saint-Laurent-de-la-Prée, an experimental farm prepares the future of agriculture","resumo":"During the Festival of Science celebrations in France, an experimental farm opened its doors to demonstrate innovative agricultural practices. The project seeks to develop more sustainable production methods to face the challenges posed by climate change in the agricultural sector. The initiative unites researchers and local producers in the search for efficient technologies for the future of the field.","link":"https://www.sudouest.fr/sciences-et-technologie/fete-de-la-science-en-charente-maritime-a-saint-laurent-de-la-pree-une-ferme-experimentale-pour-preparer-l-avenir-de-l-agriculture-30732426.php","categoria":"INNOVATION","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"'I can deliver': Burnham promises radical change on eve of Labor conference","resumo":"Manchester Mayor Andy Burnham has made tough statements promising deep and immediate reforms on the eve of the Labor Party's annual meeting. Burnham highlighted his results in regional management to pressure the party leadership to adopt bolder decentralization agendas. The movement accentuates internal discussions about the political direction of the party and its national leadership.","link":"https://www.theguardian.com/politics/2026/sep/26/burnham-pledges-radical-change-labour-conference-exclusive","categoria":"POLICY","lang":"en"},{"fonte":"El Adelantado","pais":"Spain","titulo":"From data to farm: technology predicts and prevents diseases in farm animals","resumo":"A technological solution developed in Spain uses data analysis to monitor the health of cattle. Sensors and algorithms identify changes in behavior even before visible symptoms appear. The approach optimizes agricultural production, reduces the use of medicines and prevents epidemiological outbreaks.","link":"https://eladelantado.com/segovia/2026/09/27/del-dato-a-la-granja-la-tecnologia-segoviana-que-se-anticipa-a-las-enfermedades-animales/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Sky.de","pais":"Germany","titulo":"Carlos Alcaraz wins electrifying match against Taylor Fritz","resumo":"Spanish tennis player Carlos Alcaraz played an exciting match and overcame North American Taylor Fritz in a closely contested match. The decisive victory secured valuable points and highlighted the young prodigy's resilience and tactical ability on the court. The electrifying duel was one of the highlights of the tournament and excited sports fans around the world.","link":"https://sport.sky.de/tennis/artikel/alcaraz-gewinnt-thriller-gegen-fritz/13592283/34345","categoria":"SPORTS","lang":"en"},{"fonte":"21财经","pais":"China","titulo":"From Scratch to Peak: The Secrets of Guangdong's Scientific and Technological Innovation Ecosystem","resumo":"Guangdong province has established itself as China's leading innovation hub, accelerating the technology transfer cycle from basic research to commercialization.\nIntegrated funding structures, state support, and strong synergy between universities and industries drive this rapid growth.\nGuangdong's experience serves as a model for economic transition focused on cutting-edge technology and advanced manufacturing.","link":"https://www.21jingji.com/article/20260927/herald/c48f44b3c5b48595dda127186de0d13a.html","categoria":"INNOVATION","lang":"en"},{"fonte":"The Times of India","pais":"India","titulo":"India's Wedding Economy Expands and Gains Global Scale Driven by Specialized Expos","resumo":"India's multi-billion-dollar wedding market is becoming increasingly globalized and luxurious, driving various economic sectors. Curated exhibitions and trade fairs are redefining how couples plan their ceremonies, attracting international suppliers and destinations. This transformation reflects the country's rising purchasing power and the pursuit of exclusive, personalized experiences.","link":"https://timesofindia.indiatimes.com/life-style/fashion/luxury/indias-wedding-economy-is-getting-bigger-and-more-global-how-curated-expos-are-changing-the-way-couples-discover-plan-and-celebrate/articleshow/134466986.cms","categoria":"TRENDS","lang":"en"},{"fonte":"Público","pais":"Portugal","titulo":"Government Promised to Consult Unions on the Science Law, but No One Called Them","resumo":"The Portuguese executive faces criticism from union structures following a lack of dialogue in drafting guidelines for the new Science Law. Representatives of scientific workers point out that promises of active listening were not fulfilled during the legislative process. The situation generates tension in the research sector and raises debates about transparency in the management of public innovation policies.","link":"https://www.publico.pt/2026/09/26/ciencia/noticia/governo-garantiu-ia-ouvir-sindicatos-lei-ciencia-ninguem-chamou-2189289","categoria":"SCIENCE","lang":"en"},{"fonte":"Terra","pais":"Brazil","titulo":"Scientists Create Painless Tattoo Technology That Eliminates Need for Needles","resumo":"Researchers have developed a revolutionary technique that allows tattoos to be applied without traditional needles and completely painlessly for the patient. The method uses soluble microneedles that deposit pigment under the skin smoothly and quickly. Although the variety of designs and colors is still limited in this initial phase, the innovation promises to transform the aesthetic sector and open doors for medical drug-delivery applications.","link":"https://www.terra.com.br/byte/ciencia/cientistas-criam-uma-tecnologia-de-tatuagem-que-nao-doi-e-dispensa-agulhas-mas-a-escolha-dos-desenhos-ainda-e-bastante-limitada,9c71f954cd8a104c8ab39b3b7953fc6booqjyog0.html","categoria":"SCIENTIFIC INNOVATION","lang":"en"},{"fonte":"Jornal de Negócios","pais":"United States","titulo":"GTA VI Launch Expected to Negatively Impact U.S. Productivity","resumo":"Analysts predict that the release of the highly anticipated video game Grand Theft Auto VI will cause a temporary yet notable drop in productivity among U.S. workers. The cultural phenomenon, fueled by millions of players seeking free time, is expected to generate an increase in absenteeism and missed work during its debut week. The projection highlights the massive influence of the gaming industry on the contemporary economy.","link":"https://www.jornaldenegocios.pt/economia/detalhe/lancamento-de-gta-vi-vai-ter-efeitos-negativos-na-produtividade-norte-americana","categoria":"ENTERTAINMENT","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
