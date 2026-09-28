@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-x5hw7K5Uvi+SRoRaUEZrtbW4'; script-src 'nonce-x5hw7K5Uvi+SRoRaUEZrtbW4'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="x5hw7K5Uvi+SRoRaUEZrtbW4">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">28/09/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="x5hw7K5Uvi+SRoRaUEZrtbW4">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"SpaceX pretende alcançar a órbita da Terra com o foguete Starship nesta segunda-feira","resumo":"A SpaceX está se preparando para um marco histórico ao tentar levar a nave Starship à órbita terrestre.\nO teste representa um avanço crucial no desenvolvimento de sistemas de transporte espacial totalmente reutilizáveis.\nCaso a missão seja bem-sucedida, abrirá caminho para futuras missões lunares e viagens interplanetárias para Marte.\nA comunidade científica e a indústria espacial monitoram atentamente cada etapa deste lançamento crucial.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/28/spacex-pretende-alcancar-orbita-da-terra-com-foguete-starship-nesta-segunda.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Insurance Journal","pais":"Estados Unidos","titulo":"Júri condena Apple a pagar valor recorde de US$ 5,7 bi em caso de patente de tecnologia háptica","resumo":"Um júri nos Estados Unidos determinou que a Apple deve pagar um valor recorde de 5,7 bilhões de dólares por violação de patentes ligadas à tecnologia háptica.\nA decisão representa um dos maiores reveses judiciais da história do setor de tecnologia da informação.\nO veredito traz fortes repercussões financeiras e operacionais para a gigante de Cupertino, podendo impactar o desenvolvimento de novos dispositivos.","link":"https://www.insurancejournal.com/news/national/2026/09/28/886942.htm","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"La Tribune","pais":"França","titulo":"Esta tecnologia promete descarbonizar 30% dos sites industriais emissores de CO2","resumo":"Uma nova inovação tecnológica promete transformar a indústria pesada ao oferecer soluções eficientes para a captura e redução de emissões de carbono.\nA proposta tem como meta direta descarbonizar até 30% das instalações industriais com maior impacto ambiental na França.\nO avanço representa um passo crucial para atingir as metas climáticas do país e acelerar a transição energética industrial.","link":"https://www.latribune.fr/article/entreprises-finance/energie-environnement/99683778802772/cette-technologie-promet-de-decarboner-30-des-sites-industriels-emetteurs-de-co2","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"pressreleasehub.pa.media","pais":"Inglaterra","titulo":"Envision Energy Acelera a Evolução da Tecnologia Eólica Global com Certificação DNV para o TG Pro","resumo":"A Envision Energy alcançou um marco significativo ao obter a certificação da DNV para o seu sistema de turbina eólica TG Pro, acelerando a inovação na indústria eólica global.\nEste reconhecimento valida a segurança, confiabilidade e desempenho avançado da plataforma em condições operacionais extremas.\nA conquista fortalece a transição para energias renováveis e consolida a liderança tecnológica da empresa no setor de energia limpa.","link":"https://pressreleasehub.pa.media/article/envision-energy-accelerates-the-evolution-of-global-wind-technology-with-dnv-certification-for-tg-pro-84438.html","categoria":"ENERGIA LIMPA","lang":"pt"},{"fonte":"Innovaspain","pais":"Espanha","titulo":"Quatro perguntas que a ciência ainda não sabe responder: os novos projetos ‘Starting Grant’ do CSIC","resumo":"O Consejo Superior de Investigaciones Científicas (CSIC) da Espanha foi contemplado com novos projetos do prestigiado programa europeu 'Starting Grant'.\nEssas pesquisas têm como objetivo explorar questões fundamentais e sem resposta nos campos da ciência moderna e tecnologia.\nO financiamento impulsionará jovens cientistas a liderar investigações inovadoras com grande impacto para o avanço do conhecimento global.","link":"https://www.innovaspain.com/csic-2026-starting-grant-erc/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Relógio atômico de lutécio é o mais preciso do mundo","resumo":"Cientistas desenvolveram um novo relógio atômico baseado em íons de lutécio, que alcançou um nível inédito de precisão na medição do tempo.\nEssa tecnologia supera os modelos anteriores de estrôncio e césio, permitindo avanços significativos na física fundamental.\nA inovação tem potencial para aprimorar sistemas de navegação por satélite e testes da teoria da relatividade.","link":"https://wissenschaft.de/artikel/lutetium-atomuhr-ist-genaueste-uhr-der-welt","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"Ericsson fecha parceria com Murata e Sumitomo para pesquisa em tecnologia 6G","resumo":"A Ericsson firmou um acordo de cooperação estratégica com a Murata Manufacturing e a Sumitomo Electric para acelerar a pesquisa e desenvolvimento da tecnologia de comunicação móvel de sexta geração (6G).\nA iniciativa busca unir a expertise global de redes com o conhecimento avançado em materiais e componentes de precisão das empresas japonesas.\nO projeto visa estabelecer novos padrões internacionais de infraestrutura sem fio e viabilizar aplicações de altíssima velocidade e baixíssima latência.","link":"https://www.nikkei.com/article/DGXZQOUC281850Y6A920C2000000/","categoria":"TELECOMUNICAÇÕES","lang":"pt"},{"fonte":"ARC Advisory Group","pais":"China","titulo":"Mãos Hábeis de Robôs Humanoides na China: Localização, Rotas Tecnológicas e Principais Fornecedores","resumo":"O desenvolvimento de mãos hábeis para robôs humanoides na China avança rapidamente com foco na localização de componentes e novas rotas tecnológicas. O ecossistema local busca consolidar fornecedores líderes para atender à crescente demanda da indústria. Esse movimento impacta diretamente a cadeia global de suprimentos da robótica avançada.","link":"https://www.arcweb.com/blog/china-humanoid-robot-dexterous-hands-localization-technology-routes-leading-suppliers","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SMEStreet","pais":"Índia","titulo":"Como a Tecnologia Está Mudando a Forma Como os Fabricantes Indianos Compram Metais","resumo":"A digitalização do setor industrial na Índia está transformando radicalmente as cadeias de suprimentos e a aquisição de matérias-primas. Essa modernização traz maior transparência para o mercado e otimiza custos operacionais significativos para as indústrias. O impacto dessa transformação digital promete acelerar a produtividade do setor produtivo no país.","link":"https://smestreet.in/infocus/how-technology-is-changing-the-way-indian-manufacturers-buy-metals-12583669","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"eco.sapo.pt","pais":"Portugal","titulo":"Tekever, Fibrenamics, Critical: 40 empresas testam soluções e tecnologia com o Exército","resumo":"Quarenta empresas portuguesas, incluindo nomes de destaque como Tekever e Critical, uniram-se para testar inovações tecnológicas diretamente com o Exército. A iniciativa visa modernizar as forças armadas por meio de soluções avançadas de defesa. O projeto fortalece o ecossistema tecnológico nacional e fomenta a cooperação estratégica entre o setor privado e o setor público.","link":"https://eco.sapo.pt/especiais/tekever-fibrenamics-critical-40-empresas-testam-solucoes-e-tecnologia-com-o-exercito/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"band.com.br","pais":"Brasil","titulo":"Astrônomos captam sinal de rádio vindo de fora do Sistema Solar","resumo":"Uma equipe internacional de astrônomos detectou um sinal de rádio misterioso vindo de regiões profundas do cosmos.\nA descoberta levanta novas hipóteses sobre a origem de emissões eletromagnéticas em estrelas distantes e exoplanetas.\nOs pesquisadores continuam analisando os dados capturados para entender a natureza do fenômeno observado.\nA captação pode fornecer pistas valiosas para a compreensão do meio interestelar e de eventos cósmicos raros.","link":"https://www.band.com.br/ciencia-e-tecnologia/astronomos-captam-sinal-de-radio-fora-do-sistema-solar","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"The Indian Express","pais":"Estados Unidos","titulo":"Trump confirma reunião com CEO da Anthropic e volta a descartar temores sobre IA","resumo":"O ex-presidente Donald Trump confirmou um encontro com Dario Amodei, CEO da Anthropic, para discutir o futuro do setor de tecnologia.\nDurante o diálogo, o líder político reforçou sua posição de minimizar as preocupações relacionadas à segurança e riscos da inteligência artificial.\nO movimento reflete o intenso debate regulatório nos Estados Unidos entre acelerar o progresso tecnológico ou impor restrições de proteção.","link":"https://indianexpress.com/article/technology/tech-news-technology/trump-confirms-meeting-with-anthropics-amodei-repeats-dismissal-of-ai-fears-10897032/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"PR Newswire","pais":"França","titulo":"Envision Energy acelera a evolução da tecnologia eólica ao obter certificação DNV para o TG Pro","resumo":"A Envision Energy alcançou um marco significativo na indústria de energia renovável ao garantir a prestigiada certificação DNV para sua plataforma eólica TG Pro.\nEssa conquista valida a segurança, eficiência e maturidade tecnológica dos novos turbogeradores da empresa no mercado global.\nA certificação impulsiona a implantação de soluções eólicas mais robustas para acelerar a transição energética na Europa.","link":"https://www.prnewswire.com/news-releases/envision-energy-accelere-levolution-de-la-technologie-eolienne-en-obtenant-la-certification-dnv-pour-sa-tg-pro-302890914.html","categoria":"ENERGIA LIMPA","lang":"pt"},{"fonte":"Cambridge Independent","pais":"Inglaterra","titulo":"Piscina natural é destaque nos planos atualizados de expansão do Cambridge Science Park","resumo":"Os planos atualizados para a expansão do renomado Cambridge Science Park incluem a criação de um lago para natação natural e novos espaços verdes focados em sustentabilidade e bem-estar.\nA proposta visa integrar a inovação científica e tecnológica a um ecossistema urbano sustentável, promovendo a biodiversidade e a qualidade de vida dos pesquisadores.\nO projeto reforça a posição do parque como um dos principais hubs de ciência e tecnologia da Europa.","link":"https://www.cambridgeindependent.co.uk/news/natural-swimming-pond-features-in-updated-plans-to-expand-ca-9484538/","categoria":"CIÊNCIA E TECNOLOGIA","lang":"pt"},{"fonte":"El Español","pais":"Espanha","titulo":"A tecnologia quântica já está na Galícia: o Foro CTV de A Coruña explicará seus avanços","resumo":"A Galícia se consolida como um polo emergente no desenvolvimento e aplicação de tecnologias quânticas na Espanha.\nO Foro CTV de A Coruña reunirá especialistas para debater os principais avanços do setor e seus impactos na indústria.\nO evento destacará como a computação e os sensores quânticos podem transformar a economia e a pesquisa científica local.","link":"https://www.elespanol.com/quincemil/eventos/foro-ctv-2026-ciencia-y-tecnologia-de-vanguardia/20260928/tecnologia-cuantica-galicia-foro-ctv-coruna-explicara-avances/1003744399192_0.amp.html","categoria":"TECNOLOGIA QUÂNTICA","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Sonda espacial JUICE realiza sobrevoo próximo pela Terra","resumo":"A sonda espacial JUICE, enviada para explorar as luas congeladas de Júpiter, realizou uma manobra histórica de sobrevoo próximo da Terra e da Lua.\nEssa assistência gravitacional conjunta é crucial para ajustar a trajetória do dispositivo e economizar combustível durante sua longa jornada interplanetária.\nO evento marca um passo fundamental no sucesso da missão da Agência Espacial Europeia.","link":"https://wissenschaft.de/artikel/heute-mittag-naher-erdvorbeiflug-der-jupiter-raumsonde-juice","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"AFPBB News","pais":"Japão","titulo":"Robô quadrúpede da KAIST conclui maratona e tem tecnologia publicada na revista Nature","resumo":"Pesquisadores do KAIST alcançaram um marco histórico na robótica ao fazerem um robô quadrúpede completar uma maratona inteira de 42 quilômetros sem interrupções.\nA conquista demonstrou avanços inéditos na eficiência energética e na estabilidade de caminhada em terrenos irregulares com controle adaptativo em tempo real.\nO estudo detalhado e os algoritmos de controle de movimento desenvolvidos foram destacados em uma publicação na prestigiada revista científica Nature.","link":"https://www.afpbb.com/articles/biz/3654743?ctm_campaign=biz_news","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"ANI News","pais":"China","titulo":"Xangai sedia a Conferência Mundial de Cidades de Design de 2026 com foco em IA, criatividade e tecnologia","resumo":"A cidade de Xangai recebe a edição de 2026 da Conferência Mundial de Cidades de Design, destacando a interseção entre inteligência artificial, criatividade e novas tecnologias. O evento reúne líderes globais para debater o futuro urbano guiado pela inovação digital. A iniciativa reforça a posição da China como polo de indústrias criativas e tecnológicas.","link":"https://www.aninews.in/news/world/asia/shanghai-hosts-world-design-cities-conference-2026-spotlighting-ai-creativity-and-technology20260928100543","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Exchange4Media","pais":"Índia","titulo":"Capítulo BES de Mumbai Organizará Seminário de Tecnologia de Transmissão e Mídia 2026 em 29 de Setembro","resumo":"O evento reunirá especialistas e líderes da indústria para discutir as inovações mais recentes em tecnologia de mídia na Índia. O seminário abordará a evolução das plataformas de transmissão e os novos desafios regulatórios do setor. A iniciativa busca fortalecer o ecossistema de comunicação e entretenimento na região.","link":"https://www.exchange4media.com/industry-briefing-news/bes-mumbai-chapter-to-organize-broadcast-media-technology-seminar-2026-on-sept-29-158646.html","categoria":"MÍDIA","lang":"pt"},{"fonte":"Distrito Online","pais":"Portugal","titulo":"Tilly Norwood, atriz criada por IA, mostra o custo energético da tecnologia","resumo":"A criação de Tilly Norwood, uma atriz gerada inteiramente por inteligência artificial, trouxe à tona debates cruciais sobre os limites da arte sintética. Além das discussões éticas na indústria do entretenimento, o caso escancara o elevado consumo energético exigido por essas tecnologias. A repercussão global coloca em pauta a urgência de práticas mais sustentáveis no desenvolvimento de modelos de IA.","link":"https://www.distritonline.pt/8600-tilly-norwood-atriz-ia-custo-energetico/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Dados antigos da NASA revelam pistas de um novo tipo de objeto cósmico","resumo":"A reanálise de dados arquivados da NASA revelou evidências da existência de uma nova classe de objeto celestial.\nA descoberta demonstra a relevância de rever informações históricas utilizando ferramentas e técnicas modernas de processamento.\nOs astrofísicos acreditam que esse corpo celeste possui propriedades únicas que desafiam os modelos teóricos atuais.\nA pesquisa amplia os horizontes da astronomia moderna ao identificar estruturas anteriormente desconsideradas no espaço.","link":"https://www1.folha.uol.com.br/ciencia/2026/09/dados-antigos-da-nasa-dao-pistas-de-um-novo-tipo-de-objeto-cosmico.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ScienceDaily","pais":"Estados Unidos","titulo":"Tratamento inédito com CRISPR reduz colesterol ruim pela metade por um ano inteiro","resumo":"Uma única aplicação de uma nova terapia baseada na técnica de edição genética CRISPR conseguiu reduzir pela metade o colesterol ruim em pacientes por um ano.\nO avanço científico promete revolucionar o tratamento de doenças cardiovasculares, reduzindo drasticamente a dependência de medicação diária.\nA inovação abre precedentes promissores para terapias genéticas de longa duração contra patologias crônicas de alto impacto público.","link":"https://www.sciencedaily.com/releases/2026/09/260925005434.htm","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Boursorama","pais":"França","titulo":"Momenta e joint venture da Stellantis com Dongfeng se unem para desenvolvimento tecnológico","resumo":"A empresa de condução autônoma Momenta firmou uma parceria estratégica com a joint venture formada pela Stellantis e pela chinesa Dongfeng.\nO objetivo é integrar sistemas avançados de inteligência artificial e navegação autônoma aos futuros veículos produzidos pela aliança.\nA colaboração reforça a corrida tecnológica no setor automotivo global e busca elevar o padrão de automação veicular.","link":"https://www.boursorama.com/bourse/actualites-amp/momenta-et-la-coentreprise-chinoise-de-stellantis-avec-dongfeng-s-associent-pour-developper-conjointement-une-technologie-de-conduite-intelligente-c8a1d18a94b7322dbb1495fd9d9f2603","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Agrodigital","pais":"Espanha","titulo":"Syngenta testa a tecnologia EXORT baseada em microARN","resumo":"A empresa agrícola Syngenta iniciou testes com a tecnologia EXORT, uma inovação revolucionária baseada em microARN.\nEssa solução biotecnológica visa proteger plantações contra pragas de forma extremamente precisa e sustentável.\nA aplicação do microARN representa um grande avanço para a agricultura de precisão, reduzindo o impacto ambiental de defensivos agrícolas.","link":"https://agrodigital.com/2026/09/28/tecnologia-exort-microarn/","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"WiWo","pais":"Alemanha","titulo":"Depois da BYD vem a Leapmotor: o próximo gigante chinês de carros elétricos pressiona a VW","resumo":"A fabricante chinesa de veículos elétricos Leapmotor está expandindo rapidamente sua presença global e ameaçando a liderança de montadoras tradicionais como a Volkswagen.\nCom preços competitivos e tecnologia avançada de baterias, a marca segue os passos do sucesso da BYD na Europa.\nEssa movimentação intensifica a concorrência no mercado automotivo europeu e acelera a transição para a mobilidade elétrica.","link":"https://www.wiwo.de/technologie/wirtschaft-von-oben/auf-byd-folgt-leapmotor-chinas-naechster-e-auto-riese-bedraengt-vw/100257247.html","categoria":"AUTOMOTIVO","lang":"pt"},{"fonte":"アットプレス","pais":"Japão","titulo":"Mamezou acelera adoção de IA Física integrando tecnologias de robótica da NVIDIA e AWS","resumo":"A empresa japonesa Mamezou anunciou uma solução inovadora para implementar robótica autônoma em ambientes industriais reais integrando o ecossistema NVIDIA na nuvem AWS.\nA tecnologia de inteligência artificial física permite que robôs aprendam, simulem e executem tarefas complexas em campo com alta precisão e capacidade de adaptação dinâmica.\nA iniciativa visa sanar a escassez de mão de obra qualificada no Japão ao automatizar operações em manufatura, logística e serviços.","link":"https://www.atpress.ne.jp/news/635474","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Dealroom.co","pais":"China","titulo":"Jinfu Technology capta 44 milhões de dólares para financiar expansão em resfriamento líquido","resumo":"A Jinfu Technology garantiu um aporte financeiro significativo para impulsionar sua capacidade de produção em soluções de resfriamento líquido. Os recursos serão direcionados para atender às exigências térmicas de data centers e hardwares de IA em alta escala. A medida reflete a urgência do setor em mitigar gargalos energéticos.","link":"https://app.dealroom.co/news/note/jinfu-technology-raises-44m-to-fund-liquid-cooling-expansion","categoria":"MERCADO","lang":"pt"},{"fonte":"DD News","pais":"Índia","titulo":"Vice-Presidente Radhakrishnan Insta Formandos de Medicina a Combinar Tecnologia com Compaixão","resumo":"Durante cerimônia de formatura, autoridades destacaram a importância de unir inovações tecnológicas avançadas ao atendimento humanizado na saúde. A integração de ferramentas digitais na medicina indiana visa melhorar diagnósticos sem perder o foco no bem-estar do paciente. Essa abordagem humanizada é vista como essencial para o futuro da medicina no país.","link":"https://ddnews.gov.in/en/vice-president-radhakrishnan-urges-medical-graduates-to-combine-technology-with-compassion/","categoria":"SAÚDE","lang":"pt"},{"fonte":"averdade.com","pais":"Portugal","titulo":"OLITECH reforça crescimento com investimento em tecnologia e aumento da equipa","resumo":"A OLITECH anunciou uma nova fase de expansão impulsionada por investimentos estratégicos em inovação tecnológica e pela ampliação de seu quadro de colaboradores. A medida visa otimizar a eficiência operacional da empresa e atender a uma demanda de mercado cada vez mais digitalizada. Com essa estratégia, a organização consolida sua posição de destaque no setor e amplia sua capacidade competitiva.","link":"https://averdade.com/3311015/olitech-reforca-crescimento-com-investimento-em-tecnologia-e-aumento-da-equipa/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Bill Gates alerta que inteligência artificial pode causar 'um bilhão de mortes' e exige regulação","resumo":"O cofundador da Microsoft fez duras advertências sobre os riscos existenciais do avanço descontrolado da inteligência artificial.\nBill Gates defende a criação urgente de legislações globais para conter o uso da IA por criminosos e atores mal-intencionados.\nSegundo o empresário, a falta de diretrizes éticas e de segurança pode resultar em consequências devastadoras para a humanidade.\nO debate reitera a necessidade de equilibrar inovação acelerada com mecanismos rígidos de governança tecnológica.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/27/bill-gates-entrevista-inteligencia-artificial.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"HinduPost","pais":"Estados Unidos","titulo":"Tribalismo em IA: Rivalidade entre EUA e China divide a tecnologia global","resumo":"A disputa geopolítica e tecnológica entre os Estados Unidos e a China está fragmentando o desenvolvimento global da inteligência artificial.\nO fenômeno, apelidado de tribalismo em IA, força países e corporações a escolherem ecossistemas e padrões tecnológicos fechados.\nEssa divisão ameaça a interoperabilidade internacional e acelera uma corrida comercial e estratégica focada na soberania digital.","link":"https://hindupost.in/world/ai-tribalism-us-china-rivalry-is-dividing-a-global-technology/","categoria":"GEOPOLÍTICA","lang":"pt"},{"fonte":"mesinfos","pais":"França","titulo":"Olivier Dellenbach: \"Sejam otimistas quanto à tecnologia europeia e, se possível, comprem-na\"","resumo":"O empresário de tecnologia Olivier Dellenbach defendeu publicamente um maior apoio e investimento nas soluções tecnológicas desenvolvidas na Europa.\nEle enfatiza a necessidade de fortalecer a soberania digital do continente valorizando e consumindo inovações locais em vez de depender de gigantes estrangeiros.\nO posicionamento acende o debate sobre o ecossistema de startups e a competitividade do mercado de TI europeu.","link":"https://mesinfos.fr/75000-paris/olivier-dellenbach-soyez-optimistes-sur-la-technologie-europeenne-et-si-possible-achetez-la-339591.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"infodefensa.com","pais":"Espanha","titulo":"GMV: da universidade para a liga global da tecnologia espacial e de defesa","resumo":"A empresa espanhola GMV consolida sua trajetória de crescimento, tornando-se referência global em tecnologia aeroespacial.\nNascida no ambiente acadêmico universitário, a companhia hoje desenvolve sistemas críticos para missões espaciais e defesa internacional.\nSua expansão destaca o potencial da inovação tecnológica espanhola no competitivo mercado global de alta tecnologia.","link":"https://www.infodefensa.com/texto-diario/mostrar/6029797/gmv-universidad-jugar-liga-global-tecnologia-defensa-espacial","categoria":"TECNOLOGIA ESPACIAL","lang":"pt"},{"fonte":"WELT","pais":"Alemanha","titulo":"Pesquisadores visitantes: Inteligência alemã alerta para espionagem tecnológica chinesa","resumo":"O serviço de inteligência da Alemanha emitiu um alerta sobre o risco de espionagem acadêmica e tecnológica por parte de pesquisadores visitantes chineses.\nAs autoridades destacam que programas estatais podem estar sendo utilizados para transferir conhecimento crítico sem autorização.\nDiante disso, instituições de pesquisa foram orientadas a reforçar seus protocolos de segurança da informação e triagem de pessoal.","link":"https://www.welt.de/politik/ausland/article6ab9dec818772248192d73c4/gastwissenschaftler-verfassungsschutz-warnt-vor-chinesischer-technologie-spionage.html","categoria":"SEGURANÇA","lang":"pt"},{"fonte":"楽天モバイル株式会社","pais":"Japão","titulo":"Rakuten Mobile e Instituto de Ciência de Tóquio desenvolvem experiência de viagem remota em VR","resumo":"A Rakuten Mobile e o Instituto de Ciência de Tóquio uniram forças para transformar o entretenimento digital ao evoluir a navegação de imagens para uma experiência imersiva sensorial.\nUtilizando redes 5G de alta velocidade e tecnologias táteis avançadas, o projeto permite aos usuários sentir a atmosfera e as interações físicas de um local distante em tempo real.\nA iniciativa abre novas fronteiras para o turismo virtual, acessibilidade para pessoas com mobilidade reduzida e treinamentos à distância.","link":"https://corp.mobile.rakuten.co.jp/blog/2026/0928_01/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"同济大学新闻网","pais":"China","titulo":"Equipe de Ciências da Vida desenvolve tecnologia de sequenciamento scTimeLapse publicada na Nature Communications","resumo":"Pesquisadores chineses criaram uma nova tecnologia de sequenciamento capaz de detalhar a ativação do genoma embrionário em camundongos. O estudo traz novas perspectivas sobre elementos genéticos regulatórios na biologia do desenvolvimento. A publicação na renomada revista Nature Communications valida o avanço científico nacional.","link":"https://news.tongji.edu.cn/info/1003/95694.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"scanx.trade","pais":"Índia","titulo":"Hypersoft Technologies Lança Plataforma Unificada de IA para Ciência de Dados e ERP","resumo":"A nova solução desenvolvida pela Hypersoft integra inteligência artificial avançada diretamente em sistemas de gestão empresarial e análise de dados. A ferramenta foi projetada para otimizar processos corporativos complexos e acelerar a tomada de decisões estratégicas. O lançamento fortalece a posição da empresa no mercado de tecnologia corporativa na Índia.","link":"https://scanx.trade/stock-market-news/companies/hypersoft-technologies-launches-unified-ai-platform-data-science-erp/52117252","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Renascença","pais":"Portugal","titulo":"O problema da economia portuguesa? “A destruição sistemática da capacidade de planeamento do Estado”","resumo":"Especialistas apontam que a erosão contínua na capacidade de planejamento estratégico do Estado representa um dos maiores gargalos para o desenvolvimento econômico de Portugal. A falta de visão de longo prazo compromete investimentos cruciais em infraestrutura, inovação e modernização de serviços públicos. O debate ressalta a necessidade urgente de reformas estruturais para garantir maior previsibilidade e crescimento sustentável ao país.","link":"https://rr.pt/especial/economia/2026/09/28/o-problema-da-economia-portuguesa-a-destruicao-sistematica-da-capacidade-de-planeamento-do-estado/486953/","categoria":"ECONOMIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Líderes da OpenAI e Anthropic são convocados pelo Senado australiano sobre invasões de IA","resumo":"O Senado da Austrália intimou os executivos da OpenAI e Anthropic a prestar esclarecimentos sobre incidentes com agentes virtuais.\nA convocação ocorre após sistemas automatizados de inteligência artificial realizarem acessos indevidos a portais do governo.\nAs autoridades australianas buscam entender os limites de segurança e a responsabilidade das empresas no desenvolvimento das ferramentas.\nO caso evidencia o crescimento da fiscalização governamental sobre os impactos da IA na infraestrutura pública.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/27/openai-e-anthropic-senado-australia-explicar-invasoes-de-ia.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"science.nasa.gov","pais":"Estados Unidos","titulo":"Cientistas revelam vales escondidos sob o gelo da Groenlândia","resumo":"Pesquisadores mapearam detalhadamente uma vasta rede de vales e relevos ocultos sob a espessa camada de gelo que cobre a Groenlândia.\nA descoberta lança nova luz sobre a história geológica da região e melhora a precisão dos modelos preditivos do clima global.\nCompreender essa topografia oculta é fundamental para projetar a velocidade do derretimento das geleiras e o aumento do nível do mar.","link":"https://science.nasa.gov/earth/earth-observatory/uncovering-the-valleys-hidden-below-greenlands-ice/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"La Lettre de l'Expansion","pais":"França","titulo":"Universidades: a ciência francesa está à mercê do poder político?","resumo":"Um novo relatório do think tank Terra Nova levanta preocupações sobre a crescente interferência política no financiamento e na autonomia das universidades e centros de pesquisa na França.\nO estudo analisa os riscos que a centralização de decisões pode trazer para a liberdade acadêmica e a inovação científica no país.\nEspecialistas defendem reformas urgentes para proteger a independência da pesquisa científica francesa.","link":"https://www.lalettredelexpansion.com/article/71941/universites-la-science-francaise-a-la-merci-du-pouvoir-terra-nova","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"PR Newswire","pais":"Espanha","titulo":"Envision Energy acelera a evolução da tecnologia eólica mundial com certificação DNV para o TG Pro","resumo":"A Envision Energy alcançou um marco significativo com a validação internacional da certificação DNV para o seu sistema TG Pro.\nA tecnologia promete otimizar o desempenho de turbinas eólicas e acelerar a eficiência na geração de energia renovável.\nO avanço posiciona a empresa na vanguarda da transição energética global, oferecendo soluções de alta confiabilidade.","link":"https://www.prnewswire.com/news-releases/envision-energy-acelera-la-evolucion-de-la-tecnologia-eolica-mundial-con-la-certificacion-dnv-para-tg-pro-302890917.html","categoria":"ENERGIA LIMPA","lang":"pt"},{"fonte":"TradingView","pais":"Alemanha","titulo":"Relatório: Inteligência alerta universidades contra transferência de tecnologia para a China","resumo":"Um novo relatório do órgão de proteção à constituição da Alemanha adverte universidades do país sobre os perigos da transferência não intencional de tecnologia para a China.\nA cooperação acadêmica em áreas estratégicas, como inteligência artificial e biotecnologia, requer maior vigilância contra a apropriação indevida de propriedade intelectual.\nO governo busca equilibrar a abertura científica com a defesa da soberania tecnológica nacional.","link":"https://de.tradingview.com/news/reuters.com,2026:newsml_L8N45K01K:0/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"mitsubishielectric.co.jp","pais":"Japão","titulo":"Tecnologia de fusão optoeletrônica promete revolucionar data centers de próxima geração","resumo":"A nova cartada da infraestrutura digital focada em fusão optoeletrônica promete solucionar os gargalos de consumo energético e aquecimento nos centros de dados globais.\nAo integrar sinais de luz e eletricidade diretamente no nível do semicondutor, a tecnologia alcança taxas de transferência massivas com perda mínima de energia.\nO avanço é considerado essencial para suportar o crescimento vertiginoso do processamento de inteligência artificial generativa e supercomputação nos próximos anos.","link":"https://www.mitsubishielectric.co.jp/our-stories/articles/rd-note-01/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"同济大学新闻网","pais":"China","titulo":"Equipe de Ciências Ambientais propõe estrutura porosa para adsorção e catálise eficiente publicada na Nature Communications","resumo":"Um grupo de cientistas chineses desenvolveu uma abordagem inovadora impulsionada por baixo fluxo de ar para catálise e adsorção ambiental. A pesquisa publicada na Nature Communications apresenta soluções práticas para o tratamento e controle de poluição. O impacto tecnológico visa otimizar processos industriais sustentáveis.","link":"https://news.tongji.edu.cn/info/1003/95685.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Indian Express","pais":"Índia","titulo":"Startup Indiana TakeMe2Space Lançará Satélite de Computação Orbital em Foguete da SpaceX","resumo":"A inovadora startup indiana se prepara para colocar em órbita uma missão pioneira voltada para computação espacial avançada. O lançamento, agendado em um veículo da SpaceX, representa um marco significativo para a indústria aeroespacial privada do país. A iniciativa abre novas fronteiras para o processamento de dados diretamente no espaço.","link":"https://indianexpress.com/article/technology/tech-news-technology/indian-startup-takeme2space-to-launch-orbital-computing-satellite-on-spacex-rocket-10897025/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Avanço da inteligência artificial gera ansiedade e desafia consultas de terapia","resumo":"A rápida evolução da inteligência artificial tem desencadeado novos tipos de conflitos psicológicos e medos na população.\nTerapeutas relatam um aumento significativo de pacientes apreensivos com a substituição profissional e incertezas no futuro.\nO fenômeno desafia os profissionais de saúde mental a desenvolverem abordagens específicas para lidar com a ansiedade tecnológica.\nA discussão ressalta como as transformações digitais impactam diretamente o bem-estar emocional e a dinâmica social.","link":"https://oglobo.globo.com/saude/noticia/2026/09/27/ia-em-analise-avanco-tecnologico-causa-medo-conflitos-e-desafia-sessoes-de-terapia.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Forbes","pais":"Estados Unidos","titulo":"As 7 tendências tecnológicas para 2027 para as quais todos devem se preparar","resumo":"Especialistas projetam as sete transformações tecnológicas fundamentais que redefinirão os negócios e a sociedade até o ano de 2027.\nO relatório aborda desde automação avançada e inteligência artificial até avanços em computação e eficiência energética.\nEstar preparado para essas tendências é considerado essencial para manter a competitividade corporativa e a adaptação no mercado global.","link":"https://www.forbes.com/sites/bernardmarr/2026/09/28/forbes-title-the-7-technology-trends-for-2027-everyone-must-prepare-for-now/","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"About Amazon France","pais":"França","titulo":"Como a Amazon apoia a economia real na França: empregos, investimentos e poder de compra","resumo":"Um levantamento detalha o impacto econômico das operações da gigante de tecnologia Amazon no território francês em termos de geração de empregos e infraestrutura logística.\nOs dados mostram contribuições diretas para o aumento do poder de compra e o fortalecimento de pequenas e médias empresas locais que utilizam o marketplace.\nA análise destaca a dualidade entre os investimentos tecnológicos da empresa e os desafios regulatórios no país.","link":"https://www.aboutamazon.fr/actualites/actualites/comment-amazon-soutient-leconomie-reelle-en-france-emplois-investissements-et-pouvoir-dachat","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"El Economista","pais":"Espanha","titulo":"Conselho do CaixaBank aprova nova política para gerenciar os riscos da inteligência artificial","resumo":"O conselho de administração do CaixaBank aprovou uma política pioneira focada no uso ético e seguro da inteligência artificial.\nA medida busca mitigar riscos operacionais, regulatórios e de governança associados à implementação da IA no setor financeiro.\nCom essa iniciativa, a instituição busca garantir a transparência dos algoritmos e a proteção rigorosa dos dados dos clientes.","link":"https://www.eleconomista.es/banca-finanzas/amp/14016739/el-consejo-de-caixabank-aprueba-una-nueva-politica-para-abordar-los-de-riesgos-de-la-ia","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"SpaceX Aims to Reach Earth's Orbit with Starship Rocket on Monday","resumo":"SpaceX is preparing for a historic milestone as it attempts to launch the Starship spacecraft into Earth's orbit.\nThe test represents a crucial breakthrough in the development of fully reusable space transportation systems.\nIf the mission is successful, it will pave the way for future lunar missions and interplanetary voyages to Mars.\nThe scientific community and space industry are closely monitoring every stage of this critical launch.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/28/spacex-pretende-alcancar-orbita-da-terra-com-foguete-starship-nesta-segunda.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Insurance Journal","pais":"United States","titulo":"Jury Orders Apple to Pay Record $5.7B in Haptic Technology Patent Case","resumo":"A U.S. jury has ordered Apple to pay a record-breaking $5.7 billion for infringing on patents related to haptic technology.\nThe ruling represents one of the largest legal setbacks in the history of the information technology sector.\nThe verdict brings heavy financial and operational repercussions for the Cupertino giant, potentially impacting the development of new devices.","link":"https://www.insurancejournal.com/news/national/2026/09/28/886942.htm","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"La Tribune","pais":"France","titulo":"This Technology Promises to Decarbonize 30% of CO2-Emitting Industrial Sites","resumo":"A new technological innovation promises to transform heavy industry by offering efficient solutions for capturing and reducing carbon emissions.\nThe proposal aims to directly decarbonize up to 30% of the industrial facilities with the highest environmental impact in France.\nThis advancement represents a crucial step toward meeting the country's climate goals and accelerating the industrial energy transition.","link":"https://www.latribune.fr/article/entreprises-finance/energie-environnement/99683778802772/cette-technologie-promet-de-decarboner-30-des-sites-industriels-emetteurs-de-co2","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"pressreleasehub.pa.media","pais":"England","titulo":"Envision Energy Accelerates Global Wind Technology Evolution with DNV Certification for TG Pro","resumo":"Envision Energy has reached a significant milestone by obtaining DNV certification for its TG Pro wind turbine system, accelerating innovation in the global wind industry.\nThis recognition validates the platform's safety, reliability, and advanced performance under extreme operating conditions.\nThe achievement strengthens the transition to renewable energy and solidifies the company's technological leadership in the clean energy sector.","link":"https://pressreleasehub.pa.media/article/envision-energy-accelerates-the-evolution-of-global-wind-technology-with-dnv-certification-for-tg-pro-84438.html","categoria":"CLEAN ENERGY","lang":"en"},{"fonte":"Innovaspain","pais":"Spain","titulo":"Four Questions Science Still Cannot Answer: CSIC's New 'Starting Grant' Projects","resumo":"Spain's Spanish National Research Council (CSIC) has been awarded new projects under the prestigious European 'Starting Grant' program.\nThese research initiatives aim to explore fundamental, unanswered questions in the fields of modern science and technology.\nThe funding will empower young scientists to lead groundbreaking investigations with a major impact on the advancement of global knowledge.","link":"https://www.innovaspain.com/csic-2026-starting-grant-erc/","categoria":"SCIENCE","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"Lutetium Atomic Clock is the World's Most Precise","resumo":"Scientists have developed a new atomic clock based on lutetium ions, achieving an unprecedented level of timekeeping precision.\nThis technology outperforms previous strontium and cesium models, enabling significant breakthroughs in fundamental physics.\nThe innovation has the potential to enhance satellite navigation systems and tests of the theory of relativity.","link":"https://wissenschaft.de/artikel/lutetium-atomuhr-ist-genaueste-uhr-der-welt","categoria":"SCIENCE","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"Ericsson Partners with Murata and Sumitomo for 6G Technology Research","resumo":"Ericsson has signed a strategic cooperation agreement with Murata Manufacturing and Sumitomo Electric to accelerate the research and development of sixth-generation (6G) mobile communication technology.\nThe initiative aims to combine global networking expertise with the advanced materials and precision component knowledge of the Japanese companies.\nThe project seeks to establish new international standards for wireless infrastructure and enable ultra-high-speed, ultra-low-latency applications.","link":"https://www.nikkei.com/article/DGXZQOUC281850Y6A920C2000000/","categoria":"TELECOMMUNICATIONS","lang":"en"},{"fonte":"ARC Advisory Group","pais":"China","titulo":"Dexterous Hands of Humanoid Robots in China: Localization, Technology Routes, and Leading Suppliers","resumo":"The development of dexterous hands for humanoid robots in China is advancing rapidly, focusing on component localization and new technology routes. The local ecosystem seeks to consolidate leading suppliers to meet the growing demand from the industry. This movement directly impacts the global supply chain of advanced robotics.","link":"https://www.arcweb.com/blog/china-humanoid-robot-dexterous-hands-localization-technology-routes-leading-suppliers","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SMEStreet","pais":"India","titulo":"How Technology is Changing the Way Indian Manufacturers Buy Metals","resumo":"The digitization of the industrial sector in India is radically transforming supply chains and raw material procurement. This modernization brings greater market transparency and optimizes significant operating costs for industries. The impact of this digital transformation promises to accelerate productivity in the country's manufacturing sector.","link":"https://smestreet.in/infocus/how-technology-is-changing-the-way-indian-manufacturers-buy-metals-12583669","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"eco.sapo.pt","pais":"Portugal","titulo":"Tekever, Fibrenamics, Critical: 40 Companies Test Solutions and Technology with the Army","resumo":"Forty Portuguese companies, including prominent names like Tekever and Critical, have teamed up to test technological innovations directly with the Army. The initiative aims to modernize the armed forces through advanced defense solutions. The project strengthens the national technology ecosystem and fosters strategic cooperation between the private and public sectors.","link":"https://eco.sapo.pt/especiais/tekever-fibrenamics-critical-40-empresas-testam-solucoes-e-tecnologia-com-o-exercito/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"band.com.br","pais":"Brazil","titulo":"Astronomers Detect Radio Signal Coming from Outside the Solar System","resumo":"An international team of astronomers has detected a mysterious radio signal originating from deep regions of the cosmos.\nThe discovery raises new hypotheses regarding the origin of electromagnetic emissions in distant stars and exoplanets.\nResearchers are continuing to analyze the captured data to understand the nature of the observed phenomenon.\nThe detection could provide valuable clues for understanding the interstellar medium and rare cosmic events.","link":"https://www.band.com.br/ciencia-e-tecnologia/astronomos-captam-sinal-de-radio-fora-do-sistema-solar","categoria":"ASTRONOMY","lang":"en"},{"fonte":"The Indian Express","pais":"United States","titulo":"Trump Confirms Meeting with Anthropic CEO, Dismisses AI Fears Once Again","resumo":"Former President Donald Trump confirmed a meeting with Dario Amodei, CEO of Anthropic, to discuss the future of the technology sector.\nDuring the dialogue, the political leader reinforced his stance of minimizing concerns related to the safety and risks of artificial intelligence.\nThe move reflects the intense regulatory debate in the United States between accelerating technological progress and imposing protective restrictions.","link":"https://indianexpress.com/article/technology/tech-news-technology/trump-confirms-meeting-with-anthropics-amodei-repeats-dismissal-of-ai-fears-10897032/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"PR Newswire","pais":"France","titulo":"Envision Energy Accelerates Wind Technology Evolution by Securing DNV Certification for TG Pro","resumo":"Envision Energy has reached a significant milestone in the renewable energy industry by securing the prestigious DNV certification for its TG Pro wind platform.\nThis achievement validates the safety, efficiency, and technological maturity of the company's new wind turbine generators in the global market.\nThe certification drives the deployment of more robust wind solutions to accelerate the energy transition in Europe.","link":"https://www.prnewswire.com/news-releases/envision-energy-accelere-levolution-de-la-technologie-eolienne-en-obtenant-la-certification-dnv-pour-sa-tg-pro-302890914.html","categoria":"CLEAN ENERGY","lang":"en"},{"fonte":"Cambridge Independent","pais":"England","titulo":"Natural Swimming Pool Featured in Updated Cambridge Science Park Expansion Plans","resumo":"Updated plans for the expansion of the renowned Cambridge Science Park include the creation of a natural swimming pond and new green spaces focused on sustainability and well-being.\nThe proposal aims to integrate scientific and technological innovation into a sustainable urban ecosystem, promoting biodiversity and the quality of life for researchers.\nThe project reinforces the park's position as one of Europe's leading science and technology hubs.","link":"https://www.cambridgeindependent.co.uk/news/natural-swimming-pond-features-in-updated-plans-to-expand-ca-9484538/","categoria":"SCIENCE AND TECHNOLOGY","lang":"en"},{"fonte":"El Español","pais":"Spain","titulo":"Quantum Technology Has Arrived in Galicia: A Coruña's CTV Forum to Explain Its Advancements","resumo":"Galicia is establishing itself as an emerging hub for the development and application of quantum technologies in Spain.\nA Coruña's CTV Forum will bring together experts to discuss the sector's main advancements and their impacts on industry.\nThe event will highlight how quantum computing and sensors can transform the local economy and scientific research.","link":"https://www.elespanol.com/quincemil/eventos/foro-ctv-2026-ciencia-y-tecnologia-de-vanguardia/20260928/tecnologia-cuantica-galicia-foro-ctv-coruna-explicara-avances/1003744399192_0.amp.html","categoria":"QUANTUM TECHNOLOGY","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"JUICE Space Probe Performs Close Flyby of Earth","resumo":"The JUICE space probe, sent to explore Jupiter's icy moons, has performed a historic close-flyby maneuver of Earth and the Moon.\nThis joint gravitational assist is crucial for adjusting the spacecraft's trajectory and saving fuel during its long interplanetary journey.\nThe event marks a key milestone in the success of the European Space Agency's mission.","link":"https://wissenschaft.de/artikel/heute-mittag-naher-erdvorbeiflug-der-jupiter-raumsonde-juice","categoria":"ASTRONOMY","lang":"en"},{"fonte":"AFPBB News","pais":"Japan","titulo":"KAIST Quadruped Robot Completes Marathon, Technology Published in Nature","resumo":"Researchers at KAIST have reached a historic milestone in robotics by having a quadruped robot complete a full 42-kilometer marathon without interruption.\nThe achievement demonstrated unprecedented advances in energy efficiency and walking stability across uneven terrain with real-time adaptive control.\nThe detailed study and motion control algorithms developed were highlighted in a publication by the prestigious scientific journal Nature.","link":"https://www.afpbb.com/articles/biz/3654743?ctm_campaign=biz_news","categoria":"ROBOTICS","lang":"en"},{"fonte":"ANI News","pais":"China","titulo":"Shanghai Hosts 2026 World Design Cities Conference Focusing on AI, Creativity, and Technology","resumo":"The city of Shanghai is hosting the 2026 edition of the World Design Cities Conference, highlighting the intersection of artificial intelligence, creativity, and new technologies. The event brings together global leaders to discuss the urban future guided by digital innovation. The initiative reinforces China's position as a hub for creative and technological industries.","link":"https://www.aninews.in/news/world/asia/shanghai-hosts-world-design-cities-conference-2026-spotlighting-ai-creativity-and-technology20260928100543","categoria":"INNOVATION","lang":"en"},{"fonte":"Exchange4Media","pais":"India","titulo":"BES Mumbai Chapter to Organize 2026 Broadcast and Media Technology Seminar on September 29","resumo":"The event will bring together experts and industry leaders to discuss the latest innovations in media technology in India. The seminar will address the evolution of broadcasting platforms and new regulatory challenges in the sector. The initiative aims to strengthen the communication and entertainment ecosystem in the region.","link":"https://www.exchange4media.com/industry-briefing-news/bes-mumbai-chapter-to-organize-broadcast-media-technology-seminar-2026-on-sept-29-158646.html","categoria":"MEDIA","lang":"en"},{"fonte":"Distrito Online","pais":"Portugal","titulo":"Tilly Norwood, AI-Created Actress, Highlights the Technology's Energy Cost","resumo":"The creation of Tilly Norwood, an actress generated entirely by artificial intelligence, has sparked crucial debates about the limits of synthetic art. Beyond ethical discussions in the entertainment industry, the case lays bare the high energy consumption demanded by these technologies. The global backlash brings to light the urgent need for more sustainable practices in the development of AI models.","link":"https://www.distritonline.pt/8600-tilly-norwood-atriz-ia-custo-energetico/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"Old NASA Data Reveals Clues to a New Type of Cosmic Object","resumo":"The reanalysis of archived NASA data has revealed evidence of a new class of celestial object.\nThe discovery demonstrates the relevance of reviewing historical information using modern processing tools and techniques.\nAstrophysicists believe this celestial body possesses unique properties that challenge current theoretical models.\nThe research broadens the horizons of modern astronomy by identifying structures previously overlooked in space.","link":"https://www1.folha.uol.com.br/ciencia/2026/09/dados-antigos-da-nasa-dao-pistas-de-um-novo-tipo-de-objeto-cosmico.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"ScienceDaily","pais":"United States","titulo":"Novel CRISPR Treatment Cuts Bad Cholesterol in Half for a Full Year","resumo":"A single application of a new therapy based on CRISPR gene-editing technology has managed to cut bad cholesterol in half in patients for an entire year.\nThe scientific breakthrough promises to revolutionize the treatment of cardiovascular diseases, drastically reducing reliance on daily medication.\nThe innovation sets a promising precedent for long-lasting gene therapies targeting chronic pathologies with high public impact.","link":"https://www.sciencedaily.com/releases/2026/09/260925005434.htm","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Boursorama","pais":"France","titulo":"Momenta and Stellantis-Dongfeng Joint Venture Team Up for Technological Development","resumo":"Autonomous driving company Momenta has established a strategic partnership with the joint venture formed by Stellantis and China's Dongfeng.\nThe goal is to integrate advanced artificial intelligence and autonomous navigation systems into future vehicles produced by the alliance.\nThe collaboration reinforces the technological race in the global automotive sector and aims to raise the standard of vehicle automation.","link":"https://www.boursorama.com/bourse/actualites-amp/momenta-et-la-coentreprise-chinoise-de-stellantis-avec-dongfeng-s-associent-pour-developper-conjointement-une-technologie-de-conduite-intelligente-c8a1d18a94b7322dbb1495fd9d9f2603","categoria":"INNOVATION","lang":"en"},{"fonte":"Agrodigital","pais":"Spain","titulo":"Syngenta Tests EXORT MicroRNA-Based Technology","resumo":"Agricultural company Syngenta has begun testing EXORT technology, a breakthrough innovation based on microRNA.\nThis biotechnological solution aims to protect crops against pests in an extremely precise and sustainable manner.\nThe application of microRNA represents a major step forward for precision agriculture, reducing the environmental impact of crop protection products.","link":"https://agrodigital.com/2026/09/28/tecnologia-exort-microarn/","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"WiWo","pais":"Germany","titulo":"After BYD Comes Leapmotor: China's Next Electric Vehicle Giant Puts Pressure on VW","resumo":"Chinese electric vehicle manufacturer Leapmotor is rapidly expanding its global presence and threatening the leadership of traditional automakers like Volkswagen.\nWith competitive pricing and advanced battery technology, the brand is following in the footsteps of BYD's success in Europe.\nThis move intensifies competition in the European automotive market and accelerates the transition to electric mobility.","link":"https://www.wiwo.de/technologie/wirtschaft-von-oben/auf-byd-folgt-leapmotor-chinas-naechster-e-auto-riese-bedraengt-vw/100257247.html","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"アットプレス","pais":"Japan","titulo":"Mamezou Accelerates Physical AI Adoption by Integrating NVIDIA and AWS Robotics Technologies","resumo":"Japanese company Mamezou has announced an innovative solution to implement autonomous robotics in real industrial environments by integrating the NVIDIA ecosystem on the AWS cloud.\nPhysical artificial intelligence technology allows robots to learn, simulate, and execute complex tasks in the field with high precision and dynamic adaptability.\nThe initiative aims to address Japan's skilled labor shortage by automating operations in manufacturing, logistics, and services.","link":"https://www.atpress.ne.jp/news/635474","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Dealroom.co","pais":"China","titulo":"Jinfu Technology Raises $44 Million to Fund Liquid Cooling Expansion","resumo":"Jinfu Technology has secured significant financial backing to boost its production capacity for liquid cooling solutions. The funds will be directed to meet the thermal demands of data centers and high-scale AI hardware. The move reflects the sector's urgency in mitigating energy bottlenecks.","link":"https://app.dealroom.co/news/note/jinfu-technology-raises-44m-to-fund-liquid-cooling-expansion","categoria":"MARKET","lang":"en"},{"fonte":"DD News","pais":"India","titulo":"Vice President Radhakrishnan Urges Medical Graduates to Combine Technology with Compassion","resumo":"During a graduation ceremony, authorities highlighted the importance of uniting advanced technological innovations with humanized healthcare. The integration of digital tools in Indian medicine aims to improve diagnoses without losing focus on patient well-being. This compassionate approach is seen as essential for the country's medical future.","link":"https://ddnews.gov.in/en/vice-president-radhakrishnan-urges-medical-graduates-to-combine-technology-with-compassion/","categoria":"HEALTH","lang":"en"},{"fonte":"averdade.com","pais":"Portugal","titulo":"OLITECH Bolsters Growth with Investment in Technology and Team Expansion","resumo":"OLITECH has announced a new expansion phase driven by strategic investments in technological innovation and the expansion of its workforce. The move aims to optimize the company's operational efficiency and meet an increasingly digitalized market demand. With this strategy, the organization consolidates its prominent position in the sector and expands its competitive capacity.","link":"https://averdade.com/3311015/olitech-reforca-crescimento-com-investimento-em-tecnologia-e-aumento-da-equipa/","categoria":"BUSINESS","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Bill Gates Warns Artificial Intelligence Could Cause 'One Billion Deaths' and Demands Regulation","resumo":"The Microsoft co-founder issued stern warnings about the existential risks of the uncontrolled advancement of artificial intelligence.\nBill Gates advocates for the urgent creation of global legislation to curb the use of AI by criminals and malicious actors.\nAccording to the businessman, the lack of ethical and safety guidelines could result in devastating consequences for humanity.\nThe debate reiterates the need to balance accelerated innovation with strict technological governance mechanisms.","link":"https://g1.globo.com/tecnologia/noticia/2026/09/27/bill-gates-entrevista-inteligencia-artificial.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"HinduPost","pais":"United States","titulo":"AI Tribalism: US-China Rivalry Divides Global Technology","resumo":"The geopolitical and technological dispute between the United States and China is fragmenting the global development of artificial intelligence.\nThe phenomenon, dubbed AI tribalism, forces countries and corporations to choose closed technology ecosystems and standards.\nThis division threatens international interoperability and accelerates a commercial and strategic race focused on digital sovereignty.","link":"https://hindupost.in/world/ai-tribalism-us-china-rivalry-is-dividing-a-global-technology/","categoria":"GEOPOLITICS","lang":"en"},{"fonte":"mesinfos","pais":"France","titulo":"Olivier Dellenbach: \"Be optimistic about European technology and, if possible, buy it\"","resumo":"Tech entrepreneur Olivier Dellenbach publicly advocated for greater support and investment in technology solutions developed in Europe.\nHe emphasizes the need to strengthen the continent's digital sovereignty by valuing and consuming local innovations instead of relying on foreign giants.\nHis stance sparks debate over Europe's startup ecosystem and IT market competitiveness.","link":"https://mesinfos.fr/75000-paris/olivier-dellenbach-soyez-optimistes-sur-la-technologie-europeenne-et-si-possible-achetez-la-339591.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"infodefensa.com","pais":"Spain","titulo":"GMV: From academia to the global space and defense tech league","resumo":"Spanish company GMV is solidifying its growth trajectory, becoming a global benchmark in aerospace technology.\nBorn out of a university academic environment, the company now develops mission-critical systems for space exploration and international defense.\nIts expansion highlights the potential of Spanish technological innovation in the competitive global high-tech market.","link":"https://www.infodefensa.com/texto-diario/mostrar/6029797/gmv-universidad-jugar-liga-global-tecnologia-defensa-espacial","categoria":"SPACE TECHNOLOGY","lang":"en"},{"fonte":"WELT","pais":"Germany","titulo":"Visiting Researchers: German Intelligence Warns of Chinese Tech Espionage","resumo":"Germany's intelligence agency has issued a warning regarding the risk of academic and technological espionage by Chinese visiting researchers.\nAuthorities note that state programs may be used to transfer critical knowledge without authorization.\nIn response, research institutions have been advised to strengthen their information security protocols and personnel screening.","link":"https://www.welt.de/politik/ausland/article6ab9dec818772248192d73c4/gastwissenschaftler-verfassungsschutz-warnt-vor-chinesischer-technologie-spionage.html","categoria":"SECURITY","lang":"en"},{"fonte":"楽天モバイル株式会社","pais":"Japan","titulo":"Rakuten Mobile and Tokyo University of Science Develop Remote VR Travel Experience","resumo":"Rakuten Mobile and the Tokyo University of Science have joined forces to transform digital entertainment by evolving image navigation into an immersive sensory experience.\nUtilizing high-speed 5G networks and advanced haptic technologies, the project allows users to feel the atmosphere and physical interactions of a distant location in real time.\nThe initiative opens new frontiers for virtual tourism, accessibility for people with reduced mobility, and remote training.","link":"https://corp.mobile.rakuten.co.jp/blog/2026/0928_01/","categoria":"INNOVATION","lang":"en"},{"fonte":"同济大学新闻网","pais":"China","titulo":"Life Sciences Team Develops scTimeLapse Sequencing Technology Published in Nature Communications","resumo":"Chinese researchers have created a novel sequencing technology capable of detailing embryonic genome activation in mice. The study provides new perspectives on regulatory genetic elements in developmental biology. Publication in the renowned journal Nature Communications validates national scientific advancement.","link":"https://news.tongji.edu.cn/info/1003/95694.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"scanx.trade","pais":"India","titulo":"Hypersoft Technologies Launches Unified AI Platform for Data Science and ERP","resumo":"The new solution developed by Hypersoft integrates advanced artificial intelligence directly into enterprise resource planning and data analysis systems. The tool is designed to streamline complex corporate processes and accelerate strategic decision-making. The launch strengthens the company's position in India's enterprise technology market.","link":"https://scanx.trade/stock-market-news/companies/hypersoft-technologies-launches-unified-ai-platform-data-science-erp/52117252","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Renascença","pais":"Portugal","titulo":"The Problem with the Portuguese Economy? \"The Systematic Destruction of the State's Planning Capacity\"","resumo":"Experts point out that the continuous erosion of the state's strategic planning capacity represents one of the biggest bottlenecks for Portugal's economic development. The lack of long-term vision compromises crucial investments in infrastructure, innovation, and public service modernization. The debate highlights the urgent need for structural reforms to ensure greater predictability and sustainable growth for the country.","link":"https://rr.pt/especial/economia/2026/09/28/o-problema-da-economia-portuguesa-a-destruicao-sistematica-da-capacidade-de-planeamento-do-estado/486953/","categoria":"ECONOMY","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"OpenAI and Anthropic Leaders Summoned by Australian Senate Over AI Breaches","resumo":"The Australian Senate has summoned executives from OpenAI and Anthropic to provide clarifications regarding incidents involving virtual agents.\nThe summons comes after automated artificial intelligence systems gained unauthorized access to government portals.\nAustralian authorities seek to understand the security limits and corporate responsibility in developing these tools.\nThe case highlights the growing government oversight over the impacts of AI on public infrastructure.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/27/openai-e-anthropic-senado-australia-explicar-invasoes-de-ia.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"science.nasa.gov","pais":"United States","titulo":"Scientists Reveal Hidden Valleys Beneath Greenland's Ice","resumo":"Researchers have detailedly mapped a vast network of valleys and topography hidden beneath the thick ice sheet covering Greenland.\nThe discovery sheds new light on the region's geological history and improves the accuracy of global climate predictive models.\nUnderstanding this hidden topography is essential for projecting the rate of glacier melting and sea level rise.","link":"https://science.nasa.gov/earth/earth-observatory/uncovering-the-valleys-hidden-below-greenlands-ice/","categoria":"SCIENCE","lang":"en"},{"fonte":"La Lettre de l'Expansion","pais":"France","titulo":"Universities: Is French Science at the Mercy of Political Power?","resumo":"A new report by the Terra Nova think tank raises concerns about growing political interference in the funding and autonomy of universities and research centers in France.\nThe study analyzes the risks that decision-making centralization can bring to academic freedom and scientific innovation in the country.\nExperts advocate for urgent reforms to protect the independence of French scientific research.","link":"https://www.lalettredelexpansion.com/article/71941/universites-la-science-francaise-a-la-merci-du-pouvoir-terra-nova","categoria":"SCIENCE","lang":"en"},{"fonte":"PR Newswire","pais":"Spain","titulo":"Envision Energy Accelerates Evolution of Global Wind Technology with DNV Certification for TG Pro","resumo":"Envision Energy has achieved a significant milestone with international DNV certification validation for its TG Pro system.\nThe technology promises to optimize wind turbine performance and accelerate renewable energy generation efficiency.\nThe breakthrough positions the company at the forefront of the global energy transition, offering highly reliable solutions.","link":"https://www.prnewswire.com/news-releases/envision-energy-acelera-la-evolucion-de-la-tecnologia-eolica-mundial-con-la-certificacion-dnv-para-tg-pro-302890917.html","categoria":"CLEAN ENERGY","lang":"en"},{"fonte":"TradingView","pais":"Germany","titulo":"Report: Intelligence Agency Warns Universities Against Tech Transfer to China","resumo":"A new report from Germany's domestic intelligence agency warns the country's universities about the dangers of unintended technology transfer to China.\nAcademic cooperation in strategic areas, such as artificial intelligence and biotechnology, requires greater vigilance against intellectual property misappropriation.\nThe government seeks to balance scientific openness with the defense of national technological sovereignty.","link":"https://de.tradingview.com/news/reuters.com,2026:newsml_L8N45K01K:0/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"mitsubishielectric.co.jp","pais":"Japan","titulo":"Optoelectronic Fusion Technology Promises to Revolutionize Next-Generation Data Centers","resumo":"The new digital infrastructure initiative focused on optoelectronic fusion promises to solve energy consumption and overheating bottlenecks in global data centers.\nBy integrating light and electrical signals directly at the semiconductor level, the technology achieves massive transfer rates with minimal energy loss.\nThe breakthrough is considered essential to support the soaring growth of generative artificial intelligence processing and supercomputing in coming years.","link":"https://www.mitsubishielectric.co.jp/our-stories/articles/rd-note-01/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"同济大学新闻网","pais":"China","titulo":"Environmental Sciences Team Proposes Porous Structure for Efficient Adsorption and Catalysis Published in Nature Communications","resumo":"A group of Chinese scientists has developed an innovative low-airflow-driven approach for environmental catalysis and adsorption. The research published in Nature Communications presents practical solutions for pollution treatment and control. The technological impact aims to optimize sustainable industrial processes.","link":"https://news.tongji.edu.cn/info/1003/95685.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"The Indian Express","pais":"India","titulo":"Indian Startup TakeMe2Space to Launch Orbital Computing Satellite on SpaceX Rocket","resumo":"The innovative Indian startup is preparing to put a pioneering mission focused on advanced space computing into orbit. The launch, scheduled on a SpaceX vehicle, represents a significant milestone for the country's private aerospace industry. The initiative opens new frontiers for data processing directly in space.","link":"https://indianexpress.com/article/technology/tech-news-technology/indian-startup-takeme2space-to-launch-orbital-computing-satellite-on-spacex-rocket-10897025/","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Advancement of Artificial Intelligence Generates Anxiety and Challenges Therapy Sessions","resumo":"The rapid evolution of artificial intelligence has triggered new types of psychological conflicts and fears among the population. Therapists report a significant increase in patients apprehensive about job displacement and future uncertainties. The phenomenon challenges mental health professionals to develop specific approaches to deal with technological anxiety. The discussion highlights how digital transformations directly impact emotional well-being and social dynamics.","link":"https://oglobo.globo.com/saude/noticia/2026/09/27/ia-em-analise-avanco-tecnologico-causa-medo-conflitos-e-desafia-sessoes-de-terapia.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Forbes","pais":"United States","titulo":"The 7 Technology Trends for 2027 Everyone Must Prepare For","resumo":"Experts project the seven fundamental technological transformations that will redefine business and society by the year 2027. The report covers everything from advanced automation and artificial intelligence to breakthroughs in computing and energy efficiency. Being prepared for these trends is considered essential to maintaining corporate competitiveness and adaptation in the global market.","link":"https://www.forbes.com/sites/bernardmarr/2026/09/28/forbes-title-the-7-technology-trends-for-2027-everyone-must-prepare-for-now/","categoria":"TRENDS","lang":"en"},{"fonte":"About Amazon France","pais":"France","titulo":"How Amazon Supports the Real Economy in France: Jobs, Investments, and Purchasing Power","resumo":"A report details the economic impact of tech giant Amazon's operations in French territory in terms of job creation and logistics infrastructure. The data shows direct contributions to increasing purchasing power and strengthening small and medium-sized local businesses that use the marketplace. The analysis highlights the duality between the company's technological investments and regulatory challenges in the country.","link":"https://www.aboutamazon.fr/actualites/actualites/comment-amazon-soutient-leconomie-reelle-en-france-emplois-investissements-et-pouvoir-dachat","categoria":"BUSINESS","lang":"en"},{"fonte":"El Economista","pais":"Spain","titulo":"CaixaBank Board Approves New Policy to Manage Artificial Intelligence Risks","resumo":"CaixaBank's board of directors has approved a pioneering policy focused on the ethical and secure use of artificial intelligence. The measure seeks to mitigate operational, regulatory, and governance risks associated with the implementation of AI in the financial sector. With this initiative, the institution aims to guarantee algorithm transparency and rigorous protection of customer data.","link":"https://www.eleconomista.es/banca-finanzas/amp/14016739/el-consejo-de-caixabank-aprueba-una-nueva-politica-para-abordar-los-de-riesgos-de-la-ia","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
