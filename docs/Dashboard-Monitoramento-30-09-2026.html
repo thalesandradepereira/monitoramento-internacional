@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-Wo3sgJg0ps6VTEjM7s4YtSOO'; script-src 'nonce-Wo3sgJg0ps6VTEjM7s4YtSOO'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="Wo3sgJg0ps6VTEjM7s4YtSOO">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">30/09/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="Wo3sgJg0ps6VTEjM7s4YtSOO">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"autodata.com.br","pais":"Brasil","titulo":"Leapmotor B10 com Tecnologia REEV Chega ao Mercado Brasileiro","resumo":"A fabricante Leapmotor traz ao Brasil o SUV elétrico B10 equipado com a tecnologia REEV de extensor de alcance. Essa inovação combina a propulsão elétrica a um motor a combustão que atua exclusivamente como gerador de energia para a bateria. A chegada do modelo amplia as opções de veículos de nova energia no país e promete reduzir a ansiedade por autonomia entre os motoristas.","link":"https://www.autodata.com.br/mobility/2026/09/29/leapmotor-b10-com-tecnologia-reev-chega-ao-mercado-brasileiro/136485/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Al Jazeera","pais":"Estados Unidos","titulo":"Trump e líderes de tecnologia assinam pacto voluntário para garantias de IA","resumo":"Líderes das principais empresas de tecnologia se reuniram para firmar um compromisso voluntário focado na segurança do desenvolvimento de inteligência artificial.\nO acordo busca estabelecer diretrizes éticas e de proteção sem a necessidade de regulamentações governamentais rígidas imediatas.\nA iniciativa reflete a tentativa do governo americano de incentivar a inovação enquanto monitora os riscos crescentes da tecnologia.","link":"https://www.aljazeera.com/news/2026/9/29/trump-top-tech-firms-sign-accord-to-self-police-ai-development","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"El Economista","pais":"França","titulo":"França inicia corrida pelo Orçamento de 2027 em meio à estagnação econômica e dívida recorde","resumo":"A França deu início às discussões do Orçamento de 2027 diante de um cenário de estagnação econômica e níveis recordes de dívida pública.\nO governo planeja cortes drásticos nas despesas para conter a trajetória de crescimento do déficit fiscal no país.\nA situação impõe desafios severos para os formuladores de políticas públicas e sinaliza reformas profundas nos serviços estatais.","link":"https://www.eleconomista.es/economia/noticias/14017468/09/26/francia-inicia-la-carrera-de-los-presupuestos-de-2027-una-economia-estancada-y-la-deuda-en-maximos-obligan-a-lecornu-a-un-recorte-drastico-del-gasto.html","categoria":"ECONOMIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Como a IA está criando um supermuseu no Reino Unido e revelando a história do nosso planeta","resumo":"A inteligência artificial está sendo utilizada para digitalizar e integrar acervos de diversos museus britânicos, criando uma vasta base de dados interconectada.\nA iniciativa permite que pesquisadores e o público explorem milhões de espécimes e artefatos de maneira totalmente digital e acessível.\nAlém de otimizar a preservação histórica, a ferramenta acelera descobertas científicas sobre a biodiversidade e a evolução do planeta.\nO projeto posiciona o Reino Unido na vanguarda da aplicação de tecnologias avançadas voltadas para a conservação do patrimônio natural.","link":"https://www.bbc.com/news/articles/cv5yjgrj4ello","categoria":"TECNOLOGIA E CIÊNCIA","lang":"pt"},{"fonte":"El Confidencial","pais":"Espanha","titulo":"Bill Gates: \"Pensar que um botão de desligar é suficiente para parar a IA só demonstra o quão pouco algumas pessoas sabem de tecnologia\"","resumo":"Bill Gates criticou abertamente as propostas simplistas de segurança em inteligência artificial que sugerem a existência de um simples botão de desligar para conter modelos avançados. Segundo o cofundador da Microsoft, essa visão ingênua reflete uma falta de compreensão profunda sobre o funcionamento da tecnologia moderna e sua infraestrutura distribuída. Ele enfatiza a necessidade de regulamentações mais inteligentes e complexas para gerenciar os riscos reais da IA no futuro.","link":"https://www.elconfidencial.com/tecnologia/2026-09-30/bill-gates-boton-apagado-poco-expertas-algunas-personas-1qrt_4434292/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Vacinas de mRNA em breve poderão ser conservadas sem refrigeração","resumo":"Pesquisadores avançam em novas técnicas de formulação para tornar vacinas de mRNA estáveis em temperatura ambiente.\nA inovação elimina a necessidade de infraestrutura complexa de cadeia de frio, facilitando a distribuição global.\nEssa evolução promete democratizar o acesso a imunizantes avançados em regiões remotas e de baixa renda.\nAlém disso, reduz significativamente os custos logísticos associados ao armazenamento e transporte de biológicos.","link":"https://wissenschaft.de/artikel/mrna-impfstoffe-bald-ohne-kuehlung-haltbar","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"kyushu-u.ac.jp","pais":"Japão","titulo":"Nova técnica de esterilização para sondas espaciais utiliza plasma de água","resumo":"Pesquisadores desenvolveram um método inovador de esterilização para sondas espaciais utilizando plasma à base de água.\nA tecnologia promete eliminar micro-organismos de forma altamente eficiente sem danificar equipamentos sensíveis a bordo.\nEssa inovação é crucial para garantir a proteção planetária e evitar contaminações em futuras missões de exploração espacial.\nO avanço representa um salto significativo para os padrões internacionais de biossegurança astronômica.","link":"https://www.kyushu-u.ac.jp/ja/researches/view/1582","categoria":"TECNOLOGIA ESPACIAL","lang":"pt"},{"fonte":"South China Morning Post","pais":"China","titulo":"Gastos da China em P\u0026D superam a média da OCDE pela primeira vez. O que vem a seguir?","resumo":"O investimento chinês em pesquisa e desenvolvimento ultrapassou a média da OCDE, marcando um momento histórico para a inovação do país. Essa alocação crescente de recursos fortalece a competitividade tecnológica global da nação asiática. O impacto dessa marca redefine as prioridades estratégicas e impulsiona o avanço em setores de ponta.","link":"https://www.scmp.com/economy/china-economy/article/3369296/chinas-rd-spending-hits-record-28-gdp-beating-oecd-average-first-time","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"tele.net.in","pais":"Índia","titulo":"Karnataka aprova o estabelecimento de centros globais de tecnologia em Belagavi e Hubballi","resumo":"O governo de Karnataka aprovou a criação de novos centros globais de tecnologia em cidades estratégicas do estado. A iniciativa visa descentralizar o desenvolvimento tecnológico, atrair investimentos estrangeiros e impulsionar a criação de empregos qualificados na região. Esse movimento fortalece o ecossistema de inovação e consolida o papel do estado como polo tecnológico de destaque na Índia.","link":"https://tele.net.in/national-news/karnataka-approves-establishment-of-global-technology-centres-in-belagavi-and-hubballi-12592552","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"OpenAI apresenta o modelo Astra","resumo":"A OpenAI revelou recentemente o seu novo modelo de inteligência artificial denominado Astra. A inovação promete revolucionar a interação entre humanos e máquinas através de capacidades avançadas de processamento em tempo real. O impacto desta tecnologia deve acelerar o desenvolvimento de assistentes virtuais ainda mais intuitivos e eficientes para o mercado global.","link":"https://sapo.pt/artigo/openai-apresenta-modelo-astra-6abc45c8fb6126a636b48799","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Capacitação em Inteligência Artificial Reúne Jovens em Pernambuco","resumo":"O Ministério da Ciência, Tecnologia e Inovação promoveu um programa de capacitação em inteligência artificial voltado para jovens pernambucanos. A iniciativa busca democratizar o acesso às novas tecnologias e qualificar a nova geração para as exigências do mercado digital. Com foco prático e inclusivo, o projeto fortalece o ecossistema tecnológico do Nordeste e estimula a inovação regional.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/capacitacao-em-inteligencia-artificial-reune-jovens-de-pernambuco","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"EurekAlert! Science News Releases","pais":"Estados Unidos","titulo":"Prever, classificar e tratar: A ciência terapêutica impulsionada por IA em ação","resumo":"A aplicação da inteligência artificial na medicina está transformando a forma como doenças complexas são identificadas e tratadas.\nModelos avançados conseguem analisar vastos volumes de dados genéticos e clínicos para prever respostas a tratamentos.\nEssa abordagem acelera o desenvolvimento de novas terapias personalizadas, melhorando significativamente a precisão diagnóstica.","link":"https://www.eurekalert.org/news-releases/1145832","categoria":"CIÊNCIA E SAÚDE","lang":"pt"},{"fonte":"France 24","pais":"França","titulo":"OpenAI suspende lançamento do GPT-6.1 Astra por problemas de segurança","resumo":"A OpenAI suspendeu o lançamento do modelo GPT-6.1 Astra devido a preocupações com segurança identificadas durante testes.\nA decisão foi tomada para garantir a implementação de salvaguardas adicionais antes da distribuição ampla da ferramenta.\nEspecialistas destacam que o adiamento reflete o rigor crescente na verificação de sistemas avançados de inteligência artificial.","link":"https://www.france24.com/es/openai-suspende-lanzamiento-de-gt-6-1-astra-por-problemas-de-seguridad","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"OpenAI revela assistente de IA 'dots' enquanto preocupações com segurança adiam novo modelo","resumo":"A OpenAI apresentou o 'dots', um novo assistente de inteligência artificial projetado para aprimorar a interatividade na rotina dos usuários.\nApesar do anúncio, o lançamento do próximo modelo de linguagem avançado da empresa foi temporariamente adiado.\nA paralisação ocorre devido a crescentes preocupações com a segurança, alinhamento ético e potenciais riscos dos sistemas mais potentes.\nO cenário reflete a forte pressão regulatória e os debates sobre o avanço acelerado da IA.","link":"https://www.bbc.com/news/articles/cw7v42rp083eo","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"La Vanguardia","pais":"Espanha","titulo":"Valkrin, a tecnologia que antecipa vazamentos de água: “O melhor sinistro é aquele que nunca chega a acontecer”","resumo":"A startup tecnológica Valkrin desenvolveu um sistema avançado capaz de prever e detectar vazamentos de água em redes prediais e urbanas antes que causem grandes estragos. A solução utiliza dados preditivos e sensores para transformar a gestão de recursos hídricos, focando na prevenção do desperdício. O impacto é direto tanto na redução de custos operacionais e de seguros quanto na preservação ambiental.","link":"https://www.lavanguardia.com/empresas-de-vanguardia/historias-de-exito/20260930/11643851/valkrin-tecnologia-anticipa-fugas-agua-mejor-siniestro-nunca-llega-producirse.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Table.Briefings","pais":"Alemanha","titulo":"“Incrivelmente sólida”: como empresas estrangeiras de tecnologia veem a economia alemã","resumo":"Uma nova pesquisa revela que multinacionais de tecnologia consideram o ambiente econômico da Alemanha altamente confiável.\nA infraestrutura de pesquisa e a mão de obra qualificada continuam sendo atrativos estratégicos cruciais.\nApesar dos desafios burocráticos e dos custos de energia, a estabilidade do mercado mantém o país relevante.\nO panorama reforça o papel da Alemanha como um hub de investimentos tecnológicos e inovação no continente europeu.","link":"https://table.media/ceo/news/unglaublich-solide-wie-auslaendische-tech-firmen-die-deutsche-wirtschaft-sehen","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"客观日本","pais":"Japão","titulo":"Hitachi apresenta nova tecnologia para viabilizar computadores quânticos de silício em grande escala","resumo":"A Hitachi anunciou uma infraestrutura tecnológica fundamental projetada para acelerar a escalabilidade dos computadores quânticos baseados em silício.\nA nova abordagem resolve desafios críticos no controle de múltiplos qubits, permitindo uma integração mais densa e estável.\nCom esse avanço, a empresa visa acelerar o cronograma para a aplicação prática e comercial da computação quântica.\nA solução fortalece a posição do Japão no cenário global de semicondutores e tecnologias disruptivas.","link":"https://www.keguanjp.com/kgjp_keji/kgjp_kj_new/pt20260930000013.html","categoria":"COMPUTAÇÃO QUÂNTICA","lang":"pt"},{"fonte":"BBC","pais":"China","titulo":"Como os olhos de gato inspiram o desenvolvimento da tecnologia de câmeras para robôs","resumo":"Pesquisadores na China estão utilizando a estrutura óptica dos olhos de gato para aprimorar a visão computacional em robôs. Essa inovação biológica melhora significativamente a captação de imagens em ambientes com baixa luminosidade. O impacto dessa tecnologia promete revolucionar a autonomia e a precisão visual de sistemas robóticos avançados.","link":"https://www.bbc.com/zhongwen/articles/crz9zd51289jo/simp","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Times of India","pais":"Índia","titulo":"CEO do Google, Sundar Pichai, concorda com a necessidade de empresas de tecnologia inovarem com responsabilidade","resumo":"Sundar Pichai enfatizou publicamente a urgência de que grandes empresas do setor adotem práticas éticas e sustentáveis de inovação. A declaração reflete a crescente pressão regulatória e social sobre gigantes da tecnologia para mitigar riscos associados à inteligência artificial e privacidade. O compromisso reforça o debate global sobre o equilíbrio entre o avanço tecnológico rápido e a segurança dos usuários.","link":"https://timesofindia.indiatimes.com/technology/tech-news/google-ceo-sundar-pichai-agrees-to-the-call-that-technology-companies-need-to-innovate-responsibly-says-as-i-shared-today-/articleshow/134581734.cms","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Observador","pais":"Portugal","titulo":"Trump e líderes de IA mudam nome para 'Super Inteligência'","resumo":"Donald Trump e importantes líderes do setor de inteligência artificial decidiram adotar a nomenclatura 'Super Inteligência' para definir a próxima geração de sistemas tecnológicos. Esta mudança reflete a ambição de alcançar novos patamares de capacidade cognitiva artificial e redefine o discurso público sobre o futuro digital. A decisão gerou debates intensos entre especialistas sobre a regulamentação e os rumos éticos desta evolução.","link":"https://observador.pt/2026/09/29/trump-e-lideres-da-ia-assinam-declaracao-que-muda-nome-da-tecnologia-para-super-inteligencia-e-aposta-na-autorregulacao/","categoria":"TRENDING","lang":"pt"},{"fonte":"Exame","pais":"Brasil","titulo":"Governo Regulamenta Política Nacional de Hidrogênio de Baixa Emissão de Carbono","resumo":"O governo brasileiro oficializou a regulamentação da Política Nacional de Hidrogênio de Baixa Emissão de Carbono. A medida estabelece diretrizes e incentivos para a transição energética e atração de investimentos internacionais no setor de tecnologia limpa. Com o novo marco legal, o Brasil se consolida estrategicamente como potencial líder global na produção de combustíveis renováveis.","link":"https://exame.com/esferabrasil/governo-regulamenta-politica-nacional-de-hidrogenio-de-baixa-emissao-de-carbono/","categoria":"ENERGIA SUSTENTÁVEL","lang":"pt"},{"fonte":"O GLOBO","pais":"Estados Unidos","titulo":"OpenAI é processada nos EUA por suposta violação de lei sobre ciberataques","resumo":"A OpenAI enfrenta uma nova ação judicial nos Estados Unidos sob alegações de descumprir normas legais relacionadas à cibersegurança.\nO processo sustenta que ferramentas de IA da empresa teriam sido utilizadas indevidamente em atividades que comprometem sistemas digitais.\nO caso reacende o debate sobre a responsabilidade das desenvolvedoras de IA quanto ao uso malicioso de suas tecnologias.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/29/openai-e-processada-nos-eua-por-suposta-violacao-de-lei-sobre-ciberataques.ghtml","categoria":"CIBERSEGURANÇA","lang":"pt"},{"fonte":"Zonebourse Suisse","pais":"França","titulo":"Ucrânia quer impulsionar exportações de alta tecnologia e destaca sua resiliência digital","resumo":"A Ucrânia busca expandir suas exportações no setor de alta tecnologia, apresentando sua resiliência digital ao mercado global.\nApesar dos desafios geopolíticos, a infraestrutura tecnológica do país manteve estabilidade e forte capacidade de inovação.\nA estratégia visa atrair novos parceiros comerciais e consolidar a nação como um polo de serviços tecnológicos e digitais.","link":"https://ch.zonebourse.com/actualite-bourse/la-ukraine-veut-doper-ses-exportations-de-haute-technologie-et-met-en-avant-sa-resilience-numerique-ce785ad2db8ef626","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Financial Times","pais":"Inglaterra","titulo":"A espionagem e apropriação de dados representam uma ameaça real para a ciência na era da IA","resumo":"O avanço das ferramentas de inteligência artificial tem intensificado os riscos de espionagem e apropriação indevida de pesquisas científicas não publicadas.\nAlgoritmos automatizados conseguem varrer repositórios digitais e extrair descobertas preliminares sem a devida autorização ou crédito aos autores.\nEssa prática gera insegurança na comunidade acadêmica, desestimulando a publicação aberta e prejudicando a colaboração global.\nDiante disso, especialistas cobram novas diretrizes éticas e de segurança para proteger a integridade do conhecimento.","link":"https://www.ft.com/content/dd502d68-9959-4c62-bbb2-ec590f253f28?syn-25a6b1a6=1","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"diariodeleon.es","pais":"Espanha","titulo":"Blanco defende a política educacional em IA do governo de Castela e Leão","resumo":"O governo regional de Castela e Leão destacou suas iniciativas pioneiras no uso e ensino de inteligência artificial nas salas de aula locais. A estratégia busca capacitar tanto professores quanto alunos para lidarem com as exigências do mercado digital contemporâneo de forma ética e eficiente. A medida posiciona a região como uma referência na modernização do sistema educacional público através da tecnologia.","link":"https://www.diariodeleon.es/castilla-y-leon/260930/2098767/blanco-reivindica-politica-educativa-ia-junta-cyl.html","categoria":"EDUCAÇÃO E TECNOLOGIA","lang":"pt"},{"fonte":"idw-online.de","pais":"Alemanha","titulo":"Como a ciência e a tecnologia moldam a sociedade: novo livro didático é lançado","resumo":"Uma nova publicação analisa o impacto direto das inovações científicas e tecnológicas na vida cotidiana das pessoas.\nO livro didático aborda a relação entre transformação digital, dilemas éticos e o avanço científico contínuo.\nA obra serve como recurso essencial para estudantes e educadores compreenderem a evolução tecnológica atual.\nA proposta estimula o pensamento crítico sobre como a sociedade deve gerenciar e se adaptar às novas descobertas.","link":"https://idw-online.de/en/news878216","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"産経ニュース","pais":"Japão","titulo":"Uso de drones autônomos impulsiona a 'economia de baixa altitude' no Japão","resumo":"A utilização de drones autônomos está transicionando de testes experimentais para a implementação social definitiva em cidades japonesas.\nFocada na entrega rápida de suprimentos médicos e alimentos, a iniciativa fortalece o conceito da chamada 'economia de baixa altitude'.\nA tecnologia visa resolver gargalos de logística em regiões urbanas densas e áreas remotas com escassez de mão de obra.\nO avanço estabelece novos marcos regulatórios e operacionais para a aviação não tripulada no país.","link":"https://www.sankei.com/article/20260930-344AXNBCDFNTTHV7ZTK35HXKNQ/","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"O GLOBO","pais":"China","titulo":"Na China, robôs ganham espaço como treinadores esportivos","resumo":"Robôs inteligentes estão sendo integrados ao cotidiano de centros de treinamento esportivo na China para auxiliar atletas de alto rendimento. Com algoritmos avançados, essas máquinas analisam movimentos e oferecem métricas precisas em tempo real. A adoção dessa tecnologia redefine os métodos tradicionais de preparação física e otimiza o desempenho.","link":"https://oglobo.globo.com/economia/epoca/noticia/2026/09/30/na-china-robos-ganham-espaco-como-treinadores-esportivos.ghtml","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"The New Indian Express","pais":"Índia","titulo":"CM-EAC é formado para conduzir Odisha a uma economia de 1,5 trilhão de dólares até 2047","resumo":"O governo de Odisha estabeleceu um novo conselho econômico consultivo focado em planejamento estratégico de longo prazo. O objetivo principal é transformar radicalmente a economia local através de investimentos em infraestrutura, industrialização e inovação digital. A meta ambiciosa projeta um crescimento exponencial alinhado com o centenário da independência indiana.","link":"https://www.newindianexpress.com/states/odisha/2026/Sep/30/cm-eac-formed-to-steer-odisha-to-15-trillion-economy-by-2047","categoria":"ECONOMIA","lang":"pt"},{"fonte":"gazetarural.com","pais":"Portugal","titulo":"Proença-a-Nova quer afirmar-se pela inovação e tecnologia na área dos drones","resumo":"O município português de Proença-a-Nova está a apostar fortemente na inovação e na tecnologia ligada ao setor dos drones. A estratégia visa atrair investimentos, promover o desenvolvimento local e posicionar a região como um polo de referência tecnológica. Esta iniciativa destaca o papel crucial dos municípios na adoção de soluções aéreas não tripuladas em Portugal.","link":"https://gazetarural.com/proenca-a-nova-quer-afirmar-se-pela-inovacao-e-tecnologia-na-area-dos-drones/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"inpo.org.br","pais":"Brasil","titulo":"Ciência na Prática para Descobrir as Profundezas do Oceano","resumo":"Pesquisadores utilizam tecnologias de ponta e metodologias científicas para explorar a biodiversidade do oceano profundo. O estudo busca mapear ecossistemas marinhos raros e compreender os impactos das mudanças climáticas nas zonas de águas profundas. Essas descobertas trazem dados cruciais para a conservação marinha e expandem as fronteiras do conhecimento oceanográfico nacional.","link":"https://inpo.org.br/ciencia-na-pratica-para-descobrir-o-oceano-profundo/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BBC","pais":"Estados Unidos","titulo":"As startups que buscam trazer a fabricação de baterias de volta aos EUA","resumo":"Uma nova onda de startups norte-americanas está investindo na produção nacional de baterias para veículos elétricos e armazenamento de energia.\nA iniciativa visa reduzir a dependência da cadeia de suprimentos internacional e fortalecer a indústria tecnológica local.\nCom apoio de incentivos federais, essas empresas enfrentam o desafio de escalar a produção com custos competitivos.","link":"https://www.bbc.com/news/articles/cvgyexx4g8ro","categoria":"ENERGIA E TECNOLOGIA","lang":"pt"},{"fonte":"note","pais":"França","titulo":"Por que o governo francês está usando intensamente o DeepSeek? A abordagem da IA no país","resumo":"O governo francês tem intensificado o uso da ferramenta de inteligência artificial DeepSeek em suas operações e análises formais.\nA iniciativa demonstra uma abordagem pragmática para adotar tecnologias emergentes e buscar uma posição soberana no setor.\nA movimentação reflete a evolução do debate sobre inovação e regulação em um país tradicionalmente cauteloso com a tecnologia.","link":"https://note.com/takahiroanno/n/n9ed37aee1f18","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Motor16","pais":"Espanha","titulo":"Kawasaki Ninja H2 2027: mais torque e tecnologia para manter vivo o mito da superalimentação","resumo":"A Kawasaki revelou novidades para a futura linha Ninja H2 2027, prometendo ainda mais torque e aprimoramentos eletrônicos em sua lendária motorização superalimentada. O novo modelo integra sistemas de assistência à pilotagem atualizados e ajustes de engenharia focados no desempenho em pista e na eficiência. A iniciativa reafirma o compromisso da marca japonesa em liderar a inovação tecnológica no segmento de superesportivas.","link":"https://www.motor16.com/motos/kawasaki-ninja-h2-h2r-2027/","categoria":"AUTOMOTIVO","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Parque de Hidrogênio de Kashiwazaki inicia operações de demonstração para geração de energia","resumo":"O Parque de Hidrogênio de Kashiwazaki, localizado na província de Niigata, iniciou sua fase de operação experimental.\nO projeto visa acumular dados e tecnologias operacionais ao longo de 5 a 10 anos para viabilizar a geração comercial de energia limpa.\nA iniciativa busca posicionar a região como um polo estratégico na transição para fontes energéticas neutras em carbono.\nA validação prática ajudará a consolidar a infraestrutura de hidrogênio em escala industrial no Japão.","link":"https://news.yahoo.co.jp/articles/6c14a2519c90db18ec88540f4c7853ae27da5b73","categoria":"ENERGIA LIMPA","lang":"pt"},{"fonte":"科学网—新闻","pais":"China","titulo":"Identificação de IA sobre o estado de envelhecimento de células-tronco hematopoiéticas atinge 77% de precisão","resumo":"Um novo modelo de inteligência artificial desenvolvido na China alcançou 77% de precisão na detecção do envelhecimento de células-tronco. Essa ferramenta inovadora oferece um avanço significativo para pesquisas na área de medicina regenerativa e longevidade. O impacto dessa descoberta reside na capacidade de diagnosticar alterações celulares precocemente.","link":"https://news.sciencenet.cn/htmlnews/2026/9/572351.shtm","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"thenewsmill.com","pais":"Índia","titulo":"Kolkata moderniza infraestrutura esportiva antes do amistoso entre Índia e Brasil","resumo":"A cidade de Kolkata passou por reformas significativas em suas instalações esportivas para receber o aguardado confronto internacional. As melhorias visam garantir padrões globais de segurança, conforto e tecnologia para atletas e torcedores. O evento coloca a cidade novamente no centro das atenções do esporte mundial.","link":"https://thenewsmill.com/2026/09/kolkata-upgrades-sports-infrastructure-before-india-brazil-friendly/","categoria":"ESPORTES","lang":"pt"},{"fonte":"MaisTecnologia","pais":"Portugal","titulo":"Dyson cria escova que vê entre os dentes com inteligência artificial","resumo":"A famosa marca Dyson desenvolveu uma escova de dentes inovadora equipada com inteligência artificial capaz de detetar áreas invisíveis na escovagem. O dispositivo utiliza sensores avançados para mapear a boca e garantir uma higiene oral muito mais rigorosa e personalizada. Esta novidade demonstra a expansão da IA para o setor de cuidados pessoais e saúde quotidiana.","link":"https://www.maistecnologia.com/dyson-cria-escova-que-ve-entre-os-dentes-com-ia/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Portal Terra da Luz","pais":"Brasil","titulo":"Transações com Pix Registram Queda Após Proibição de Casas de Apostas","resumo":"O volume de transações financeiras via Pix apresentou retração após a entrada em vigor de restrições contra bets não regulamentadas. Especialistas apontam que as apostas online movimentavam uma fatia expressiva das operações diárias no sistema de pagamentos instantâneos. O cenário evidencia o impacto direto das regulações do setor de apostas no comportamento financeiro e digital da população.","link":"https://portalterradaluz.com.br/principal/economia-transacoes-com-pix-caem-apos-proibicao-das-bets/","categoria":"TRENDING","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"Imagem Astronômica do Dia: A peculiar galáxia Arp 78 na constelação de Áries","resumo":"A NASA destacou a impressionante imagem da galáxia espiral Arp 78, localizada na constelação de Áries.\nO registro revela braços espirais distorcidos por interações gravitacionais com galáxias vizinhas.\nO estudo dessas formações peculiares ajuda os astrônomos a compreender a evolução e a dinâmica das colisões galácticas no universo.","link":"https://science.nasa.gov/image-article/apod-2026-september-30-arp-78-peculiar-galaxy-in-aries/","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"coze.fr","pais":"França","titulo":"Festa da Ciência na Alsácia: nossa seleção de eventos!","resumo":"A região da Alsácia promove uma seleção especial de eventos para celebrar a tradicional Festa da Ciência com a comunidade.\nA programação inclui workshops, visitas guiadas a laboratórios e atividades interativas para todas as idades.\nA iniciativa busca aproximar o público geral da pesquisa científica e estimular a curiosidade de novos talentos.","link":"https://www.coze.fr/2026/09/fete-de-la-science-alsace-2026/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"20Minutos","pais":"Espanha","titulo":"Almería se transforma em Marte: ESA testa tecnologia para seu próximo rover no local","resumo":"A Agência Espacial Europeia escolheu o terreno árido de Almería, na Espanha, para simular as condições da superfície de Marte e testar novas tecnologias de exploração. Os ensaios incluem a validação de sistemas de navegação autônoma e instrumentos científicos do próximo rover planetário da agência. O projeto fortalece o papel do ecossistema científico espanhol no avanço das missões de exploração espacial internacional.","link":"https://www.20minutos.es/tecnologia/actualidad/almeria-marte-esa-prueba-rover-exomars-rosalind-franklin_7042762_0.html","categoria":"CIÊNCIA E ESPAÇO","lang":"pt"},{"fonte":"eetimes.itmedia.co.jp","pais":"Japão","titulo":"Fujifilm adapta tecnologia VCSEL de impressoras para criar novos sensores espaciais","resumo":"A Fujifilm reaproveitou a tecnologia de lasers de emissão de superfície (VCSEL), usada em impressoras, para criar sensores de detecção espacial.\nA novidade permite o mapeamento tridimensional de alta precisão com custo reduzido e estrutura bastante compacta.\nO avanço foi apresentado na feira CEATEC 2026, destacando suas aplicações em automação industrial e veículos autônomos.\nA abordagem demonstra o potencial de reorientação de tecnologias maduras para novos mercados de ponta.","link":"https://eetimes.itmedia.co.jp/ee/articles/2609/30/news063.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"tsinghua.edu.cn","pais":"China","titulo":"Equipe de Na Jhaofrom da Faculdade de Medicina Básica utiliza tecnologia de bioimpressão 3D para construir lâminas de organoides vasculares humanos","resumo":"Cientistas chineses conseguiram construir lâminas de organoides vasculares humanos utilizando técnicas avançadas de bioimpressão tridimensional. Esse avanço fornece modelos laboratoriais mais realistas para o estudo de doenças cardiovasculares e testes farmacológicos. A tecnologia aproxima a medicina moderna da criação de tecidos humanos funcionais.","link":"https://www.tsinghua.edu.cn/info/1175/128518.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ANI News","pais":"Índia","titulo":"Bilhetagem por QR code, assentos numerados e telas digitais: modernização esportiva em Kolkata para o jogo Índia-Brasil","resumo":"O estádio em Kolkata foi equipado com soluções tecnológicas avançadas para otimizar a experiência do público no amistoso. A introdução de ingressos digitais via QR code e sistemas informatizados visa eliminar filas e melhorar a organização geral. Essa modernização serve como modelo para futuros grandes eventos esportivos no país.","link":"https://www.aninews.in/news/sports/football/qr-code-ticketing-numbered-seats-digital-screens-long-term-sports-infra-upgrade-in-kolkata-ahead-of-india-brazil-friendly20260930081030","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"SciTech: maratona de ciência e tecnologia está de volta à Universidade do Porto","resumo":"A iniciativa SciTech regressa à Universidade do Porto para mais uma edição focada em promover a ciência e a tecnologia entre os jovens. O evento funciona como uma verdadeira maratona de conhecimento, estimulando a criatividade e a resolução de problemas complexos. Esta dinâmica reforça o papel das instituições de ensino superior portuguesas na formação de futuros talentos tecnológicos.","link":"https://sapo.pt/artigo/scitech-maratona-de-ciencia-e-tecnologia-esta-de-volta-a-u-porto-6abbf15737a361fd31d2c338","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"MAST Realiza Palestra Sobre Ciência e Produção de Conhecimento na Amazônia","resumo":"O Museu de Astronomia e Ciências Afins sediou um debate focado na produção científica, território e preservação ambiental da Amazônia. Especialistas discutiram a relevância da integração do conhecimento tradicional e científico para o desenvolvimento sustentável da região. A iniciativa reforça a urgência de pesquisas multidisciplinares para proteger a biodiversidade e orientar políticas públicas ambientais.","link":"https://www.gov.br/mast/pt-br/assuntos/noticias/2026/setembro/ciencia-territorio-e-producao-de-conhecimentos-sobre-a-amazonia-e-tema-de-palestra-no-mast","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"reuters.com","pais":"Estados Unidos","titulo":"CEO da Apple considera grande reestruturação para liderar o desenvolvimento tecnológico","resumo":"Relatórios indicam que a liderança da Apple estuda mudanças estruturais profundas na organização de suas equipes de desenvolvimento.\nO objetivo é acelerar a inovação interna em áreas estratégicas como inteligência artificial e novos dispositivos de hardware.\nA movimentação busca manter a competitividade da gigante de tecnologia diante da rápida evolução do setor global.","link":"https://www.reuters.com/jp/economy/MKSU3VBWENIZHAQJCIM7MAI33E-2026-09-29/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"univ-gustave-eiffel.fr","pais":"França","titulo":"Festa da Ciência 2026: Sabores Sabidos","resumo":"A edição de 2026 da Festa da Ciência traz como tema principal \"Sabores Sabidos\", unindo culinária e pesquisa.\nO evento explora a química e a física por trás dos alimentos com experimentos práticos e palestras educativas.\nA proposta incentiva a compreensão dos processos científicos cotidianos por meio da gastronomia e do conhecimento aplicado.","link":"https://www.univ-gustave-eiffel.fr/luniversite/pages-speciales/vue-detaillee/fete-de-la-science-2026-saveurs-savantes","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"elpais.com","pais":"Espanha","titulo":"Trump defende que empresas de IA se autorregulem para evitar o descontrole da tecnologia","resumo":"O ex-presidente Donald Trump manifestou apoio à autorregulamentação das grandes companhias de tecnologia como a melhor abordagem para o avanço da inteligência artificial. Segundo sua visão, impor rédeas estatais excessivas pode sufocar a inovação e colocar o país em desvantagem competitiva global. A postura reacende o debate sobre o equilíbrio necessário entre a segurança pública e a liberdade de desenvolvimento do setor privado.","link":"https://elpais.com/us/2026-09-29/trump-apuesta-por-que-las-empresas-de-ia-se-autorregulen-para-evitar-el-descontrol-de-la-tecnologia.html","categoria":"POLÍTICA E TECNOLOGIA","lang":"pt"},{"fonte":"autodata.com.br","pais":"Brazil","titulo":"Leapmotor B10 with REEV Technology Arrives on the Brazilian Market","resumo":"Manufacturer Leapmotor is bringing the B10 electric SUV to Brazil, equipped with REEV range-extender technology. This innovation combines electric propulsion with a combustion engine that acts exclusively as a power generator for the battery. The arrival of the model expands the options for new-energy vehicles in the country and promises to reduce range anxiety among drivers.","link":"https://www.autodata.com.br/mobility/2026/09/29/leapmotor-b10-com-tecnologia-reev-chega-ao-mercado-brasileiro/136485/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Al Jazeera","pais":"United States","titulo":"Trump and Tech Leaders Sign Voluntary Pact for AI Safeguards","resumo":"Leaders from major technology companies have gathered to sign a voluntary commitment focused on the safety of artificial intelligence development.\nThe agreement seeks to establish ethical and protective guidelines without the need for immediate, strict government regulations.\nThe initiative reflects the US administration's attempt to encourage innovation while monitoring the growing risks of the technology.","link":"https://www.aljazeera.com/news/2026/9/29/trump-top-tech-firms-sign-accord-to-self-police-ai-development","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"El Economista","pais":"France","titulo":"France Begins Race for 2027 Budget Amid Economic Stagnation and Record Debt","resumo":"France has kicked off discussions for the 2027 budget against a backdrop of economic stagnation and record public debt levels.\nThe government plans drastic spending cuts to curb the upward trajectory of the country's fiscal deficit.\nThe situation poses severe challenges for policymakers and signals profound reforms in state services.","link":"https://www.eleconomista.es/economia/noticias/14017468/09/26/francia-inicia-la-carrera-de-los-presupuestos-de-2027-una-economia-estancada-y-la-deuda-en-maximos-obligan-a-lecornu-a-un-recorte-drastico-del-gasto.html","categoria":"ECONOMY","lang":"en"},{"fonte":"BBC","pais":"United Kingdom","titulo":"How AI is Creating a Super Museum in the UK and Revealing Our Planet's History","resumo":"Artificial intelligence is being used to digitize and integrate collections from various British museums, creating a vast interconnected database.\nThe initiative allows researchers and the public to explore millions of specimens and artifacts in a fully digital and accessible way.\nBeyond optimizing historical preservation, the tool accelerates scientific discoveries about biodiversity and planetary evolution.\nThe project positions the UK at the forefront of applying advanced technologies aimed at natural heritage conservation.","link":"https://www.bbc.com/news/articles/cv5yjgrj4ello","categoria":"TECHNOLOGY AND SCIENCE","lang":"en"},{"fonte":"El Confidencial","pais":"Spain","titulo":"Bill Gates: 'Thinking a kill switch is enough to stop AI just shows how little some people know about tech'","resumo":"Bill Gates openly criticized simplistic artificial intelligence safety proposals that suggest a simple kill switch can contain advanced models. According to the Microsoft co-founder, this naive view reflects a lack of deep understanding regarding how modern technology and its distributed infrastructure function. He emphasizes the need for smarter, more complex regulations to manage the real risks of AI in the future.","link":"https://www.elconfidencial.com/tecnologia/2026-09-30/bill-gates-boton-apagado-poco-expertas-algunas-personas-1qrt_4434292/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"mRNA Vaccines Could Soon Be Stored Without Refrigeration","resumo":"Researchers are making progress on new formulation techniques to make mRNA vaccines stable at room temperature.\nThe innovation eliminates the need for complex cold chain infrastructure, facilitating global distribution.\nThis evolution promises to democratize access to advanced immunizations in remote and low-income regions.\nFurthermore, it significantly reduces the logistical costs associated with the storage and transport of biologicals.","link":"https://wissenschaft.de/artikel/mrna-impfstoffe-bald-ohne-kuehlung-haltbar","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"kyushu-u.ac.jp","pais":"Japan","titulo":"New Sterilization Technique for Space Probes Uses Water Plasma","resumo":"Researchers have developed an innovative sterilization method for space probes using water-based plasma.\nThe technology promises to eliminate microorganisms with high efficiency without damaging sensitive equipment onboard.\nThis innovation is crucial to ensure planetary protection and prevent contamination in future space exploration missions.\nThe breakthrough represents a significant leap forward for international astrobiological biosafety standards.","link":"https://www.kyushu-u.ac.jp/ja/researches/view/1582","categoria":"SPACE TECHNOLOGY","lang":"en"},{"fonte":"South China Morning Post","pais":"China","titulo":"China's R\u0026D Spending Surpasses OECD Average for the First Time. What's Next?","resumo":"Chinese research and development investment has surpassed the OECD average, marking a historic moment for the country's innovation. This growing allocation of resources strengthens the Asian nation's global technological competitiveness. The impact of this milestone redefines strategic priorities and drives progress in cutting-edge sectors.","link":"https://www.scmp.com/economy/china-economy/article/3369296/chinas-rd-spending-hits-record-28-gdp-beating-oecd-average-first-time","categoria":"SCIENCE","lang":"en"},{"fonte":"tele.net.in","pais":"India","titulo":"Karnataka Approves Establishment of Global Technology Centers in Belagavi and Hubballi","resumo":"The government of Karnataka has approved the creation of new global technology centers in strategic cities across the state. The initiative aims to decentralize technological development, attract foreign investment, and boost the creation of skilled jobs in the region. This move strengthens the innovation ecosystem and consolidates the state's role as a prominent technological hub in India.","link":"https://tele.net.in/national-news/karnataka-approves-establishment-of-global-technology-centres-in-belagavi-and-hubballi-12592552","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"OpenAI Unveils Astra Model","resumo":"OpenAI recently revealed its new artificial intelligence model called Astra. The innovation promises to revolutionize the interaction between humans and machines through advanced real-time processing capabilities. The impact of this technology is expected to accelerate the development of even more intuitive and efficient virtual assistants for the global market.","link":"https://sapo.pt/artigo/openai-apresenta-modelo-astra-6abc45c8fb6126a636b48799","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"Artificial Intelligence Training Program Gathers Youth in Pernambuco","resumo":"The Ministry of Science, Technology, and Innovation promoted an artificial intelligence training program aimed at young people in Pernambuco. The initiative seeks to democratize access to new technologies and qualify the new generation for the demands of the digital market. With a practical and inclusive focus, the project strengthens the technology ecosystem of Brazil's Northeast and encourages regional innovation.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/capacitacao-em-inteligencia-artificial-reune-jovens-de-pernambuco","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"EurekAlert! Science News Releases","pais":"United States","titulo":"Predict, Classify, and Treat: AI-Driven Therapeutic Science in Action","resumo":"The application of artificial intelligence in medicine is transforming how complex diseases are identified and treated.\nAdvanced models can analyze vast volumes of genetic and clinical data to predict responses to treatments.\nThis approach accelerates the development of new personalized therapies, significantly improving diagnostic precision.","link":"https://www.eurekalert.org/news-releases/1145832","categoria":"SCIENCE AND HEALTH","lang":"en"},{"fonte":"France 24","pais":"France","titulo":"OpenAI Suspends Launch of GPT-6.1 Astra Due to Safety Issues","resumo":"OpenAI has suspended the launch of the GPT-6.1 Astra model due to safety concerns identified during testing.\nThe decision was made to ensure the implementation of additional safeguards before the wide distribution of the tool.\nExperts highlight that the postponement reflects growing rigor in verifying advanced artificial intelligence systems.","link":"https://www.france24.com/es/openai-suspende-lanzamiento-de-gt-6-1-astra-por-problemas-de-seguridad","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"BBC","pais":"United Kingdom","titulo":"OpenAI Reveals 'dots' AI Assistant as Safety Concerns Delay New Model","resumo":"OpenAI has introduced 'dots', a new artificial intelligence assistant designed to enhance interactivity in users' daily routines.\nDespite the announcement, the launch of the company's next advanced language model has been temporarily delayed.\nThe pause is due to growing concerns over safety, ethical alignment, and the potential risks of more powerful systems.\nThe scenario reflects intense regulatory pressure and debates surrounding the accelerated advancement of AI.","link":"https://www.bbc.com/news/articles/cw7v42rp083eo","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"La Vanguardia","pais":"Spain","titulo":"Valkrin, the Technology That Anticipates Water Leaks: 'The Best Claim Is the One That Never Happens'","resumo":"Technology startup Valkrin has developed an advanced system capable of predicting and detecting water leaks in building and urban networks before they cause major damage. The solution uses predictive data and sensors to transform water resource management, focusing on waste prevention. The impact is direct both in reducing operational and insurance costs and in environmental preservation.","link":"https://www.lavanguardia.com/empresas-de-vanguardia/historias-de-exito/20260930/11643851/valkrin-tecnologia-anticipa-fugas-agua-mejor-siniestro-nunca-llega-producirse.html","categoria":"INNOVATION","lang":"en"},{"fonte":"Table.Briefings","pais":"Germany","titulo":"“Incredibly Solid”: How Foreign Tech Companies View the German Economy","resumo":"A new survey reveals that tech multinationals consider Germany's economic environment highly reliable.\nResearch infrastructure and a skilled workforce remain crucial strategic assets.\nDespite bureaucratic challenges and high energy costs, market stability keeps the country relevant.\nThe outlook reinforces Germany's role as a tech investment and innovation hub on the European continent.","link":"https://table.media/ceo/news/unglaublich-solide-wie-auslaendische-tech-firmen-die-deutsche-wirtschaft-sehen","categoria":"BUSINESS","lang":"en"},{"fonte":"客观日本","pais":"Japan","titulo":"Hitachi Unveils New Technology to Enable Large-Scale Silicon Quantum Computers","resumo":"Hitachi has announced a foundational technological infrastructure designed to accelerate the scalability of silicon-based quantum computers.\nThe new approach resolves critical challenges in controlling multiple qubits, allowing for denser and more stable integration.\nWith this breakthrough, the company aims to speed up the timeline for the practical and commercial application of quantum computing.\nThe solution strengthens Japan's position in the global landscape of semiconductors and disruptive technologies.","link":"https://www.keguanjp.com/kgjp_keji/kgjp_kj_new/pt20260930000013.html","categoria":"QUANTUM COMPUTING","lang":"en"},{"fonte":"BBC","pais":"China","titulo":"How Cat Eyes Are Inspiring the Development of Robot Camera Technology","resumo":"Researchers in China are using the optical structure of cat eyes to enhance computer vision in robots. This biological innovation significantly improves image capture in low-light environments. The impact of this technology promises to revolutionize the autonomy and visual precision of advanced robotic systems.","link":"https://www.bbc.com/zhongwen/articles/crz9zd51289jo/simp","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Times of India","pais":"India","titulo":"Google CEO Sundar Pichai Agrees Tech Companies Must Innovate Responsibly","resumo":"Sundar Pichai publicly emphasized the urgency for major industry players to adopt ethical and sustainable innovation practices. The statement reflects growing regulatory and social pressure on tech giants to mitigate risks associated with artificial intelligence and privacy. The commitment reinforces the global debate on balancing rapid technological advancement with user safety.","link":"https://timesofindia.indiatimes.com/technology/tech-news/google-ceo-sundar-pichai-agrees-to-the-call-that-technology-companies-need-to-innovate-responsibly-says-as-i-shared-today-/articleshow/134581734.cms","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Observador","pais":"Portugal","titulo":"Trump and AI Leaders Change Name to 'Super Intelligence'","resumo":"Donald Trump and key leaders in the artificial intelligence sector have decided to adopt the terminology 'Super Intelligence' to define the next generation of technological systems. This shift reflects the ambition to reach new levels of artificial cognitive capability and redefines the public discourse on the digital future. The decision has sparked intense debates among experts regarding regulation and the ethical directions of this evolution.","link":"https://observador.pt/2026/09/29/trump-e-lideres-da-ia-assinam-declaracao-que-muda-nome-da-tecnologia-para-super-inteligencia-e-aposta-na-autorregulacao/","categoria":"TRENDING","lang":"en"},{"fonte":"Exame","pais":"Brazil","titulo":"Government Regulates National Low-Carbon Hydrogen Policy","resumo":"The Brazilian government has officialized regulations for the National Low-Carbon Hydrogen Policy. The measure establishes guidelines and incentives for the energy transition and the attraction of international investment in the clean technology sector. With the new legal framework, Brazil strategically consolidates its position as a potential global leader in renewable fuel production.","link":"https://exame.com/esferabrasil/governo-regulamenta-politica-nacional-de-hidrogenio-de-baixa-emissao-de-carbono/","categoria":"SUSTAINABLE ENERGY","lang":"en"},{"fonte":"O GLOBO","pais":"United States","titulo":"OpenAI Sued in the US for Alleged Cyberattack Law Violation","resumo":"OpenAI is facing a new lawsuit in the United States over allegations of failing to comply with legal regulations related to cybersecurity.\nThe lawsuit maintains that the company's AI tools were improperly used in activities that compromise digital systems.\nThe case reignites the debate regarding the responsibility of AI developers concerning the malicious use of their technologies.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/09/29/openai-e-processada-nos-eua-por-suposta-violacao-de-lei-sobre-ciberataques.ghtml","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"Zonebourse Suisse","pais":"France","titulo":"Ukraine Wants to Boost High-Tech Exports and Highlights Digital Resilience","resumo":"Ukraine is seeking to expand its exports in the high-tech sector, showcasing its digital resilience to the global market.\nDespite geopolitical challenges, the country's technological infrastructure has maintained stability and strong innovation capacity.\nThe strategy aims to attract new commercial partners and consolidate the nation as a hub for technology and digital services.","link":"https://ch.zonebourse.com/actualite-bourse/la-ukraine-veut-doper-ses-exportations-de-haute-technologie-et-met-en-avant-sa-resilience-numerique-ce785ad2db8ef626","categoria":"INNOVATION","lang":"en"},{"fonte":"Financial Times","pais":"England","titulo":"Espionage and Data Misappropriation Pose Real Threat to Science in the AI Era","resumo":"The advancement of artificial intelligence tools has intensified the risks of espionage and the unauthorized appropriation of unpublished scientific research.\nAutomated algorithms are able to scan digital repositories and extract preliminary discoveries without proper authorization or credit to the authors.\nThis practice creates insecurity within the academic community, discouraging open publication and harming global collaboration.\nIn response, experts are calling for new ethical and security guidelines to protect the integrity of knowledge.","link":"https://www.ft.com/content/dd502d68-9959-4c62-bbb2-ec590f253f28?syn-25a6b1a6=1","categoria":"SCIENCE","lang":"en"},{"fonte":"diariodeleon.es","pais":"Spain","titulo":"Blanco Defends the Castile and Leon Government's AI Educational Policy","resumo":"The regional government of Castile and Leon has highlighted its pioneering initiatives in the use and teaching of artificial intelligence in local classrooms. The strategy seeks to train both teachers and students to handle the demands of the contemporary digital market ethically and efficiently. The measure positions the region as a benchmark in modernizing the public education system through technology.","link":"https://www.diariodeleon.es/castilla-y-leon/260930/2098767/blanco-reivindica-politica-educativa-ia-junta-cyl.html","categoria":"EDUCATION AND TECHNOLOGY","lang":"en"},{"fonte":"idw-online.de","pais":"Germany","titulo":"How Science and Technology Shape Society: New Textbook Launched","resumo":"A new publication analyzes the direct impact of scientific and technological innovations on people's daily lives.\nThe textbook addresses the relationship between digital transformation, ethical dilemmas, and continuous scientific advancement.\nThe work serves as an essential resource for students and educators to understand current technological evolution.\nThe proposal encourages critical thinking on how society should manage and adapt to new discoveries.","link":"https://idw-online.de/en/news878216","categoria":"SCIENCE","lang":"en"},{"fonte":"産経ニュース","pais":"Japan","titulo":"Use of Autonomous Drones Boosts the 'Low-Altitude Economy' in Japan","resumo":"The use of autonomous drones is transitioning from experimental testing to definitive social implementation in Japanese cities.\nFocused on the rapid delivery of medical supplies and food, the initiative strengthens the concept of the so-called 'low-altitude economy.'\nThe technology aims to resolve logistics bottlenecks in dense urban regions and remote areas with labor shortages.\nThe advancement establishes new regulatory and operational frameworks for unmanned aviation in the country.","link":"https://www.sankei.com/article/20260930-344AXNBCDFNTTHV7ZTK35HXKNQ/","categoria":"ROBOTICS","lang":"en"},{"fonte":"O GLOBO","pais":"China","titulo":"In China, Robots Gain Ground as Sports Trainers","resumo":"Intelligent robots are being integrated into the daily routines of sports training centers in China to assist elite athletes. Powered by advanced algorithms, these machines analyze movements and offer precise metrics in real time. The adoption of this technology redefines traditional methods of physical preparation and optimizes performance.","link":"https://oglobo.globo.com/economia/epoca/noticia/2026/09/30/na-china-robos-ganham-espaco-como-treinadores-esportivos.ghtml","categoria":"INNOVATION","lang":"en"},{"fonte":"The New Indian Express","pais":"India","titulo":"CM-EAC Formed to Steer Odisha to a $1.5 Trillion Economy by 2047","resumo":"The government of Odisha has established a new economic advisory council focused on long-term strategic planning. The main objective is to radically transform the local economy through investments in infrastructure, industrialization, and digital innovation. The ambitious goal projects exponential growth aligned with the centenary of Indian independence.","link":"https://www.newindianexpress.com/states/odisha/2026/Sep/30/cm-eac-formed-to-steer-odisha-to-15-trillion-economy-by-2047","categoria":"ECONOMY","lang":"en"},{"fonte":"gazetarural.com","pais":"Portugal","titulo":"Proença-a-Nova Aims to Establish Itself Through Drone Innovation and Technology","resumo":"The Portuguese municipality of Proença-a-Nova is heavily investing in innovation and technology related to the drone sector. The strategy aims to attract investment, promote local development, and position the region as a technological benchmark hub. This initiative highlights the crucial role of municipalities in adopting unmanned aerial solutions in Portugal.","link":"https://gazetarural.com/proenca-a-nova-quer-afirmar-se-pela-inovacao-e-tecnologia-na-area-dos-drones/","categoria":"INNOVATION","lang":"en"},{"fonte":"inpo.org.br","pais":"Brazil","titulo":"Hands-On Science to Uncover the Depths of the Ocean","resumo":"Researchers are utilizing cutting-edge technologies and scientific methodologies to explore deep-ocean biodiversity. The study aims to map rare marine ecosystems and understand the impacts of climate change on deep-water zones. These discoveries provide crucial data for marine conservation and expand the frontiers of national oceanographic knowledge.","link":"https://inpo.org.br/ciencia-na-pratica-para-descobrir-o-oceano-profundo/","categoria":"SCIENCE","lang":"en"},{"fonte":"BBC","pais":"United States","titulo":"The Startups Seeking to Bring Battery Manufacturing Back to the US","resumo":"A new wave of North American startups is investing in domestic production for electric vehicle batteries and energy storage. The initiative aims to reduce reliance on the international supply chain and strengthen the local technology industry. Backed by federal incentives, these companies face the challenge of scaling production at competitive costs.","link":"https://www.bbc.com/news/articles/cvgyexx4g8ro","categoria":"ENERGY \u0026 TECHNOLOGY","lang":"en"},{"fonte":"note","pais":"France","titulo":"Why is the French Government Intensely Using DeepSeek? The Country's AI Approach","resumo":"The French government has stepped up its use of the DeepSeek artificial intelligence tool in its operations and formal analysis. The initiative demonstrates a pragmatic approach to adopting emerging technologies and pursuing a sovereign position in the sector. This move reflects the evolving debate over innovation and regulation in a country traditionally cautious about technology.","link":"https://note.com/takahiroanno/n/n9ed37aee1f18","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Motor16","pais":"Spain","titulo":"2027 Kawasaki Ninja H2: More Torque and Tech to Keep the Supercharged Myth Alive","resumo":"Kawasaki has unveiled updates for the upcoming 2027 Ninja H2 lineup, promising even more torque and electronic enhancements for its legendary supercharged engine. The new model integrates updated rider assistance systems and engineering tweaks focused on track performance and efficiency. This initiative reaffirms the Japanese brand's commitment to leading technological innovation in the hypersport segment.","link":"https://www.motor16.com/motos/kawasaki-ninja-h2-h2r-2027/","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Kashiwazaki Hydrogen Park Begins Demonstration Operations for Power Generation","resumo":"The Kashiwazaki Hydrogen Park, located in Niigata Prefecture, has officially entered its trial operation phase. The project aims to gather operational data and technology over the next 5 to 10 years to make commercial clean energy generation viable. The initiative seeks to position the region as a strategic hub in the transition to carbon-neutral energy sources. Practical validation will help establish industrial-scale hydrogen infrastructure in Japan.","link":"https://news.yahoo.co.jp/articles/6c14a2519c90db18ec88540f4c7853ae27da5b73","categoria":"CLEAN ENERGY","lang":"en"},{"fonte":"科学网—新闻","pais":"China","titulo":"AI Identification of Hematopoietic Stem Cell Aging State Reaches 77% Accuracy","resumo":"A new artificial intelligence model developed in China has achieved 77% accuracy in detecting stem cell aging. This innovative tool represents a significant breakthrough for research in regenerative medicine and longevity. The impact of this discovery lies in its ability to diagnose cellular alterations at an early stage.","link":"https://news.sciencenet.cn/htmlnews/2026/9/572351.shtm","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"thenewsmill.com","pais":"India","titulo":"Kolkata Modernizes Sports Infrastructure Ahead of India-Brazil Friendly","resumo":"The city of Kolkata has undergone major renovations to its sports facilities to host the highly anticipated international matchup. The improvements aim to ensure global standards for safety, comfort, and technology for athletes and fans alike. The event puts the city back at the center of the global sporting spotlight.","link":"https://thenewsmill.com/2026/09/kolkata-upgrades-sports-infrastructure-before-india-brazil-friendly/","categoria":"SPORTS","lang":"en"},{"fonte":"MaisTecnologia","pais":"Portugal","titulo":"Dyson Creates Toothbrush That Sees Between Teeth Using Artificial Intelligence","resumo":"The famous brand Dyson has developed an innovative AI-powered toothbrush capable of detecting missed areas during brushing. The device uses advanced sensors to map the mouth and ensure a much more thorough and personalized oral hygiene routine. This new release demonstrates the expansion of AI into personal care and everyday health.","link":"https://www.maistecnologia.com/dyson-cria-escova-que-ve-entre-os-dentes-com-ia/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Portal Terra da Luz","pais":"Brazil","titulo":"Pix Transactions Drop Following Betting Site Ban","resumo":"The volume of financial transactions via Pix saw a contraction following the enforcement of restrictions against unregulated betting sites. Experts point out that online gambling accounted for a substantial share of daily operations within the instant payment system. This scenario highlights the direct impact of gambling regulations on the public's financial and digital behavior.","link":"https://portalterradaluz.com.br/principal/economia-transacoes-com-pix-caem-apos-proibicao-das-bets/","categoria":"TRENDING","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"Astronomy Picture of the Day: The Peculiar Galaxy Arp 78 in Aries","resumo":"NASA has featured a stunning image of the spiral galaxy Arp 78, located in the constellation Aries. The capture reveals spiral arms distorted by gravitational interactions with neighboring galaxies. Studying these peculiar formations helps astronomers understand the evolution and dynamics of galactic collisions in the universe.","link":"https://science.nasa.gov/image-article/apod-2026-september-30-arp-78-peculiar-galaxy-in-aries/","categoria":"ASTRONOMY","lang":"en"},{"fonte":"coze.fr","pais":"France","titulo":"Science Festival in Alsace: Our Selection of Events!","resumo":"The Alsace region is promoting a special lineup of events to celebrate the traditional Science Festival with the community. The program includes workshops, guided laboratory tours, and interactive activities for all ages. The initiative aims to bring the general public closer to scientific research and spark curiosity in new talent.","link":"https://www.coze.fr/2026/09/fete-de-la-science-alsace-2026/","categoria":"SCIENCE","lang":"en"},{"fonte":"20Minutos","pais":"Spain","titulo":"Almería Transforms into Mars: ESA Tests Technology for Its Next Rover On-Site","resumo":"The European Space Agency has chosen the arid terrain of Almería, Spain, to simulate Martian surface conditions and test new exploration technologies. The trials include validating autonomous navigation systems and scientific instruments for the agency's upcoming planetary rover. The project strengthens the role of the Spanish scientific ecosystem in advancing international space exploration missions.","link":"https://www.20minutos.es/tecnologia/actualidad/almeria-marte-esa-prueba-rover-exomars-rosalind-franklin_7042762_0.html","categoria":"SCIENCE \u0026 SPACE","lang":"en"},{"fonte":"eetimes.itmedia.co.jp","pais":"Japan","titulo":"Fujifilm Adapts Printer VCSEL Technology to Create New Spatial Sensors","resumo":"Fujifilm has repurposed surface-emitting laser (VCSEL) technology, originally used in printers, to create spatial detection sensors. This new development enables high-precision 3D mapping at a reduced cost and in a highly compact structure. The breakthrough was showcased at the CEATEC 2026 exhibition, highlighting applications in industrial automation and autonomous vehicles. The approach demonstrates the potential of redirecting mature technologies toward new cutting-edge markets.","link":"https://eetimes.itmedia.co.jp/ee/articles/2609/30/news063.html","categoria":"INNOVATION","lang":"en"},{"fonte":"tsinghua.edu.cn","pais":"China","titulo":"Na Zhaofang's Team at School of Basic Medical Sciences Uses 3D Bioprinting Tech to Build Human Vascular Organoid Sheets","resumo":"Chinese scientists have successfully constructed human vascular organoid sheets using advanced 3D bioprinting techniques. This breakthrough provides more realistic laboratory models for studying cardiovascular diseases and drug testing. The technology brings modern medicine closer to creating functional human tissues.","link":"https://www.tsinghua.edu.cn/info/1175/128518.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"ANI News","pais":"India","titulo":"QR Code Ticketing, Numbered Seats, and Digital Screens: Sports Modernization in Kolkata for India-Brazil Match","resumo":"The stadium in Kolkata has been outfitted with advanced technological solutions to streamline the audience experience for the friendly match. The introduction of digital QR code ticketing and computerized systems aims to eliminate lines and improve overall organization. This modernization serves as a model for future major sporting events in the country.","link":"https://www.aninews.in/news/sports/football/qr-code-ticketing-numbered-seats-digital-screens-long-term-sports-infra-upgrade-in-kolkata-ahead-of-india-brazil-friendly20260930081030","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"SciTech: Science and Technology Marathon Returns to the University of Porto","resumo":"The SciTech initiative returns to the University of Porto for another edition focused on promoting science and technology among young people. The event acts as a true knowledge marathon, stimulating creativity and complex problem-solving. This dynamic reinforces the role of Portuguese higher education institutions in shaping future tech talent.","link":"https://sapo.pt/artigo/scitech-maratona-de-ciencia-e-tecnologia-esta-de-volta-a-u-porto-6abbf15737a361fd31d2c338","categoria":"SCIENCE","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"MAST Hosts Lecture on Science and Knowledge Production in the Amazon","resumo":"The Museum of Astronomy and Related Sciences hosted a debate focused on scientific production, territory, and environmental preservation in the Amazon. Experts discussed the relevance of integrating traditional and scientific knowledge for the sustainable development of the region. The initiative underscores the urgency of multidisciplinary research to protect biodiversity and guide public environmental policies.","link":"https://www.gov.br/mast/pt-br/assuntos/noticias/2026/setembro/ciencia-territorio-e-producao-de-conhecimentos-sobre-a-amazonia-e-tema-de-palestra-no-mast","categoria":"SCIENCE","lang":"en"},{"fonte":"reuters.com","pais":"United States","titulo":"Apple CEO Considers Major Restructuring to Lead Technological Development","resumo":"Reports indicate that Apple's leadership is studying deep structural changes in the organization of its development teams.\nThe goal is to accelerate internal innovation in strategic areas such as artificial intelligence and new hardware devices.\nThe move seeks to maintain the tech giant's competitiveness in the face of rapid global sector evolution.","link":"https://www.reuters.com/jp/economy/MKSU3VBWENIZHAQJCIM7MAI33E-2026-09-29/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"univ-gustave-eiffel.fr","pais":"France","titulo":"Fête de la Science 2026: Learned Flavors","resumo":"The 2026 edition of the Fête de la Science features \"Learned Flavors\" as its main theme, bridging culinary arts and research.\nThe event explores the chemistry and physics behind food through hands-on experiments and educational lectures.\nThe proposal encourages the understanding of everyday scientific processes through gastronomy and applied knowledge.","link":"https://www.univ-gustave-eiffel.fr/luniversite/pages-speciales/vue-detaillee/fete-de-la-science-2026-saveurs-savantes","categoria":"SCIENCE","lang":"en"},{"fonte":"elpais.com","pais":"Spain","titulo":"Trump Argues That AI Companies Should Self-Regulate to Prevent Technological Runaway","resumo":"Former President Donald Trump expressed support for self-regulation by major tech companies as the best approach for the advancement of artificial intelligence. In his view, imposing excessive government constraints could stifle innovation and put the country at a global competitive disadvantage. This stance reignites the debate over the necessary balance between public safety and freedom of development for the private sector.","link":"https://elpais.com/us/2026-09-29/trump-apuesta-por-que-las-empresas-de-ia-se-autorregulen-para-evitar-el-descontrol-de-la-tecnologia.html","categoria":"POLITICS AND TECHNOLOGY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
