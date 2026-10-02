@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-yS5ZzaAWfirEIyLX5bmOJlV1'; script-src 'nonce-yS5ZzaAWfirEIyLX5bmOJlV1'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="yS5ZzaAWfirEIyLX5bmOJlV1">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">02/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="yS5ZzaAWfirEIyLX5bmOJlV1">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"WhatsApp: saiba em quais celulares o aplicativo deixará de funcionar em outubro","resumo":"A partir de outubro, o WhatsApp deixará de dar suporte a diversos modelos antigos de smartphones Android e iOS.\nA medida faz parte de atualizações de segurança e desempenho recorrentes que exigem sistemas operacionais mais modernos.\nOs usuários afetados precisarão atualizar o sistema operacional de seus aparelhos ou trocar de celular para continuar utilizando o aplicativo.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/02/whatsapp-saiba-em-quais-celulares-o-aplicativo-para-de-funcionar-em-outubro.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"BBC","pais":"Estados Unidos","titulo":"OpenAI demite funcionários por má gestão de informações confidenciais","resumo":"A OpenAI demitiu colaboradores envolvidos no manuseio inadequado de informações sigilosas da empresa.\nA decisão reforça o rigor das políticas internas de segurança e governança de dados da startup de inteligência artificial.\nO incidente ocorre em um momento em que a integridade e a privacidade de modelos avançados são prioridades globais.\nA medida busca mitigar riscos reputacionais e proteger segredos industriais estratégicos da organização.","link":"https://www.bbc.com/news/articles/c6y9z9r4ejzwo","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Gamekult","pais":"França","titulo":"No PS5 padrão, conheça o QSSR, a nova tecnologia de upscaling por IA da Sony","resumo":"A Sony está trazendo novidades tecnológicas para a versão padrão do PlayStation 5 com a introdução do QSSR.\nEssa solução de upscaling baseada em inteligência artificial visa otimizar a qualidade gráfica sem exigir o hardware do modelo Pro.\nA iniciativa promete estender a vida útil do console de base, oferecendo aos jogadores uma experiência visual aprimorada.","link":"https://www.gamekult.com/actualite/sur-la-ps5-qui-n-est-pas-pro-accueillez-desormais-le-qssr-une-autre-technologie-d-upscaling-par-ia-3050872294.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Yahoo Finance UK","pais":"Inglaterra","titulo":"Vaultz Capital Plc realiza investimento de £3 milhões em tecnologia de infraestrutura de IA","resumo":"A Vaultz Capital Plc anunciou um aporte financeiro de 3 milhões de libras voltado para o fortalecimento e expansão da tecnologia de infraestrutura de inteligência artificial.\nO investimento visa otimizar a capacidade computacional e apoiar o desenvolvimento de soluções tecnológicas de ponta na região.\nA iniciativa reforça a importância estratégica da infraestrutura de IA para sustentar o crescimento de empresas e impulsionar a inovação digital no Reino Unido.","link":"https://uk.finance.yahoo.com/news/vaultz-capital-plc-3m-investment-060000724.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"consalud.es","pais":"Espanha","titulo":"SEPES Málaga 2026 foca na odontologia disruptiva: \"A tecnologia deve nos ajudar a tomar melhores decisões\"","resumo":"O congresso SEPES Málaga 2026 destaca o papel transformador da tecnologia na odontologia moderna. Especialistas discutem como ferramentas digitais avançadas otimizam o diagnóstico e o planejamento clínico. O evento reforça a importância da inovação para garantir tratamentos mais assertivos e seguros aos pacientes.","link":"https://www.consalud.es/dentalia/profesionales-dental/sepes-malaga-2026-pone-el-foco-en-la-odontologia-disruptiva-la-tecnologia-debe-ayudarnos-a-tomar-mejores-decisiones.html","categoria":"SAÚDE","lang":"pt"},{"fonte":"Spiegel","pais":"Alemanha","titulo":"OpenAI demite vários funcionários após revelações de IA","resumo":"A OpenAI tomou a decisão drástica de demitir vários funcionários após graves revelações envolvendo seus sistemas de inteligência artificial. O caso gerou intensa repercussão no setor tecnológico e levantou sérios questionamentos sobre as políticas internas de segurança e ética da empresa. A medida evidencia os crescentes desafios de governança enfrentados pelas principais corporações do mercado de IA.","link":"https://www.spiegel.de/wirtschaft/unternehmen/openai-feuert-nach-ki-enthuellungen-mehrere-mitarbeiter-a-854c5496-6556-4f07-983f-31d69bbafcba","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"A ideia de que 'consultores são desnecessários graças à IA' sofre reviravolta","resumo":"A discussão sobre a substituição de consultores humanos por inteligência artificial passou por uma reviravolta recente no mercado corporativo. Especialistas apontam que, em vez de eliminar a profissão, a IA está redefinindo o papel estratégico dos consultores. O impacto dessa mudança exige que profissionais adotem novas ferramentas tecnológicas para manter relevância. A tendência indica uma era de co-trabalho entre humanos e algoritmos avançados.","link":"https://www.nikkei.com/article/DGKKZO99070790S6A001C2ENI000/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Moomoo","pais":"China","titulo":"Versão atualizada da comunicação óptica — Tecnologia de Circuito Óptico OCS","resumo":"A tecnologia de circuitos ópticos OCS surge como uma evolução significativa para a infraestrutura de comunicação óptica moderna. Essa inovação promete otimizar o fluxo de dados em redes de grande escala, reduzindo gargalos e latência. O impacto principal recae sobre a eficiência dos data centers e o suporte à crescente demanda por conectividade avançada.","link":"https://www.moomoo.com/hans/community/feed/an-upgraded-version-of-optical-communication-ocs-optical-circuit-technology-117369536512006","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"INTOSAI Journal","pais":"Índia","titulo":"Transformação nas Auditorias de Desempenho: A Inovação em Auditoria Impulsionada por Tecnologia do Controlador e Auditor-Geral da Índia","resumo":"O órgão fiscalizador da Índia adotou inovações tecnológicas avançadas para modernizar suas auditorias de desempenho. Essa transformação visa aumentar a precisão na análise de dados governamentais e garantir maior transparência na gestão pública. O impacto direto é a otimização dos processos de controle e o fortalecimento da responsabilidade fiscal no país.","link":"https://intosaijournal.org/journal-entry/transformation-in-performance-audits-the-comptroller-and-auditor-general-of-indias-technology-driven-audit-innovation/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Gemini Spark chega ao Google Fotos","resumo":"A integração do recurso de inteligência artificial Gemini Spark no Google Fotos promete revolucionar a forma como os usuários organizam e editam suas imagens. Com essa nova ferramenta, a busca por memórias específicas e a aplicação de edições complexas tornam-se consideravelmente mais intuitivas e rápidas. A inovação reflete o esforço contínuo da gigante da tecnologia em inserir recursos generativos em todo o seu ecossistema. O impacto direto será uma experiência de usuário mais automatizada, personalizada e eficiente no dia a dia.","link":"https://sapo.pt/artigo/gemini-spark-entra-no-google-photos-6abee79c9015085aedfe02fe","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Link To Leaders","pais":"Brasil","titulo":"Empresa de Maryland cria fundo de US$ 200 milhões para startups de IA e data centers","resumo":"Um novo fundo de investimento de US$ 200 milhões foi lançado nos Estados Unidos para impulsionar o mercado de inteligência artificial.\nO foco da iniciativa é financiar startups inovadoras e apoiar o desenvolvimento da infraestrutura necessária para centros de dados.\nA iniciativa visa atender ao aumento vertiginoso da demanda por capacidade computacional exigida pelas tecnologias emergentes.","link":"https://linktoleaders.com/empresa-de-maryland-cria-fundo-de-200-milhoes-para-start-ups-de-ia-e-tecnologia-para-centros-de-dados/","categoria":"INVESTIMENTO","lang":"pt"},{"fonte":"Agencia de noticias","pais":"Estados Unidos","titulo":"Missão Crew-13 chega à EEI após completar a viagem mais rápida de uma nave dos EUA","resumo":"A missão Crew-13 acoplou com sucesso à Estação Espacial Internacional após uma trajetória de tempo recorde.\nO voo estabeleceu o tempo de acoplamento mais rápido já registrado para uma espaçonave tripulada norte-americana.\nA bordo, a tripulação conduzirá diversos experimentos científicos voltados à saúde e à biologia em microgravidade.\nO avanço demonstra a contínua evolução operacional dos sistemas de transporte espacial comercial dos EUA.","link":"https://efe.com/ciencia-y-tecnologia/2026-10-02/nasa-viaje-rapido-estacion-espacial-internacional-astronautas/","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"Journal du Geek","pais":"França","titulo":"Wolverine e Ghost of Yōtei terão gráficos aprimorados no PS5 padrão com nova tecnologia","resumo":"Os aguardados jogos Wolverine e Ghost of Yōtei se beneficiarão de um novo recurso técnico desenvolvido pela Sony para o PS5 padrão.\nA inovação permite entregar visuais mais refinados e melhor desempenho sem a necessidade do console PS5 Pro.\nA novidade reforça o compromisso da empresa em otimizar o processamento gráfico de grandes lançamentos na versão base.","link":"https://www.journaldugeek.com/2026/10/02/wolverine-et-ghost-of-yotei-plus-jolis-sur-la-ps5-standard-grace-a-une-nouvelle-technologie-sony/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Lancashire Telegraph","pais":"Inglaterra","titulo":"BAE Systems testa nova tecnologia contra drones para combater ameaças aéreas","resumo":"A BAE Systems iniciou testes com uma nova tecnologia antidrone projetada para neutralizar ameaças aéreas de forma rápida e precisa.\nO sistema utiliza sensores e inteligência avançada para detectar e conter veículos aéreos não tripulados que ofereçam riscos à segurança.\nA inovação representa um passo importante na modernização dos sistemas de defesa e na proteção de infraestruturas críticas contra novos tipos de ataques.","link":"https://www.lancashiretelegraph.co.uk/news/26599337.bae-systems-tests-new-anti-drone-technology-trials-scotland/","categoria":"TECNOLOGIA MILITAR","lang":"pt"},{"fonte":"Interempresas Media","pais":"Espanha","titulo":"MP: tecnologia integrada para uma nova geração de elevadores","resumo":"A empresa MP apresenta soluções inovadoras de tecnologia integrada voltadas para o mercado de elevadores. A iniciativa busca transformar a experiência de mobilidade urbana com sistemas mais inteligentes, eficientes e conectados. Com isso, o setor dá um passo importante rumo à modernização e à sustentabilidade dos edifícios.","link":"https://www.interempresas.net/ascensores-montacargas/663362-MP-tecnologia-integrada-para-una-nueva-generacion-de-ascensores.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"«Inacreditavelmente bom»: O grande passo da Siemens rumo ao futuro","resumo":"A Siemens anunciou recentemente um avanço tecnológico considerado impressionante por especialistas e analistas de mercado. Esta nova etapa consolida a posição de liderança da empresa no setor de engenharia e inovação industrial. O impacto dessa evolução promete transformar processos produtivos e acelerar a transformação digital na Europa.","link":"https://www.sueddeutsche.de/sport/vfb-keeper-wieder-fit-unfassbar-gut-seimens-grosser-schritt-nach-vorn-dpa.urn-newsml-dpa-com-20090101-261002-930-777998","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"アスラテック株式会社","pais":"Japão","titulo":"Participação no 'Seminário de Tecnologia Avançada em Florestas e Silvicultura da Província de Shizuoka'","resumo":"O evento anual destaca inovações tecnológicas aplicadas ao setor florestal e de silvicultura na região de Shizuoka. O seminário busca apresentar ferramentas de ponta para otimizar a gestão de recursos naturais e manejo sustentável. O impacto esperado é a modernização das práticas tradicionais por meio da automação e análise de dados. A iniciativa fomenta o desenvolvimento regional sustentável através da tecnologia.","link":"https://www.asratec.co.jp/2026/10/02/39565/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"chinanews.com.cn","pais":"China","titulo":"Da tela vertical em Hollywood à inserção de IA: a expansão global do cinema e TV chineses","resumo":"A indústria audiovisual da China está acelerando sua internacionalização combinando formatos inovadores e inteligência artificial. O uso de novas tecnologias na produção artística tem atraído atenção global e redefinido a competitividade do setor. Essa transformação cultural e tecnológica fortalece a presença da produção criativa chinesa nos mercados ocidentais.","link":"https://www.chinanews.com.cn/cul/2026/10-02/10707039.shtml","categoria":"ENTRETENIMENTO","lang":"pt"},{"fonte":"Simply Wall Street","pais":"Índia","titulo":"O que a Kaynes Technology India ainda pode te ensinar após uma queda de 53%","resumo":"A Kaynes Technology India enfrentou uma volatilidade significativa com uma queda acentuada em suas ações no mercado financeiro. O episódio serve como estudo de caso essencial para investidores analisarem os riscos e a resiliência no setor de manufatura eletrônica. A situação destaca a importância de avaliar fundamentos de longo prazo em empresas de alta tecnologia.","link":"https://simplywall.st/stocks/in/tech/nse-kaynes/kaynes-technology-india-shares/news/what-kaynes-technology-india-can-still-teach-you-after-a-53","categoria":"MERCADO","lang":"pt"},{"fonte":"tintafresca.net","pais":"Portugal","titulo":"Assembleia Municipal de Constância aprova nome Centro Ciência Viva Prof. Máximo Ferreira","resumo":"A Assembleia Municipal de Constância aprovou formalmente a atribuição do nome de Prof. Máximo Ferreira ao Centro Ciência Viva local. Esta homenagem reconhece o legado e a contribuição significativa do professor para a divulgação científica na região e no país. O espaço continuará a desempenhar um papel fundamental na educação de jovens e na promoção da cultura científica. A iniciativa reforça a importância de valorizar figuras históricas ligadas ao desenvolvimento da ciência em Portugal.","link":"https://tintafresca.net/index.php/2026/10/01/assembleia-municipal-de-constancia-aprova-nome-centro-ciencia-viva-professor-maximo-ferreira/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"OpenAI demite três funcionários por manuseio incorreto de informações sensíveis","resumo":"A OpenAI demitiu três colaboradores após uma investigação interna apontar a manipulação inadequada de dados confidenciais.\nA empresa reforçou que mantém protocolos rigorosos de segurança da informação para proteger segredos industriais e dados de usuários.\nO episódio evidencia o crescimento dos desafios éticos e de governança interna enfrentados pelas principais gigantes do setor de tecnologia.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/02/openai-demite-tres-funcionarios-por-manuseio-incorreto-de-informacoes-sensiveis.ghtml","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"证券之星","pais":"Estados Unidos","titulo":"Ação de indenização por monopólio em tecnologia de anúncios do Google avança nos EUA","resumo":"A Justiça autorizou o prosseguimento de um grande processo de indenização focado na tecnologia de anúncios do Google.\nEditores de conteúdo e veículos de comunicação buscam reparações financeiras que superam 3,2 bilhões de dólares.\nA acusação alega que a gigante de tecnologia abusou de sua posição dominante no mercado para prejudicar concorrentes.\nA decisão representa um marco significativo na pressão regulatória global sobre empresas de tecnologia.","link":"https://wap.stockstar.com/detail/IG2026100200000531","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"tv5monde","pais":"França","titulo":"Chegada à ISS da equipe de substituição da astronavega Sophie Adenot","resumo":"Uma nova tripulação de astronautas chegou com sucesso à Estação Espacial Internacional para dar continuidade às missões orbitais.\nA rotação de astronautas faz parte do cronograma oficial de substituição da equipe da astronavega francesa Sophie Adenot.\nO grupo conduzirá experimentos científicos avançados e garantirá a manutenção operacional do laboratório espacial.","link":"https://information.tv5monde.com/science/arrivee-dans-liss-de-la-releve-de-sophie-adenot-2839851","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Universiteit Twente","pais":"Inglaterra","titulo":"Da escovação de dentes a painéis solares mais eficientes","resumo":"Pesquisadores descobriram que princípios químicos usados em produtos de higiene bucal podem ser aplicados para otimizar a eficiência de células solares.\nA nova abordagem melhora o desempenho do material absorvedor de luz, reduzindo significativamente as perdas energéticas durante o processo de conversão.\nO avanço promete impactar positivamente a produção de energia renovável, viabilizando soluções mais sustentáveis e acessíveis para a transição energética.","link":"https://www.utwente.nl/en/tnw/news/2026/10/1190538/from-brushing-your-teeth-to-more-efficient-solar-cells","categoria":"ENERGIA SOLAR","lang":"pt"},{"fonte":"La Voz de Galicia","pais":"Espanha","titulo":"Anne L'Huillier: \"Explicar a ciência aos cidadãos não é uma opção, é um dever\"","resumo":"A renomada cientista Anne L'Huillier destaca a importância fundamental da divulgação científica para a sociedade contemporânea. Em suas declarações, ela enfatiza que pesquisadores e instituições têm a obrigação moral de aproximar o conhecimento da população. Essa ponte é essencial para combater a desinformação e valorizar o pensamento crítico.","link":"https://www.lavozdegalicia.es/noticia/ciencia/2026/10/02/explicar-ciencia-ciudadania-opcion-deberme-preocupa-impacto-ia-educacion-desarrollo-cognitivo-futuras-generaciones/0003_202610G2P28991.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Inteligência Artificial - OpenAI demite três funcionários após revelações e debates econômicos","resumo":"Após novas revelações sobre o desenvolvimento de inteligência artificial, a OpenAI confirmou a demissão de três funcionários de seu quadro. A decisão reflete o clima de alta tensão e os rigorosos escrutínios enfrentados pelos pesquisadores e líderes da área. O episódio impacta diretamente o debate sobre transparência e responsabilidade no ecossistema global de tecnologia.","link":"https://www.sueddeutsche.de/wirtschaft/kuenstliche-intelligenz-openai-feuert-drei-mitarbeiter-nach-ki-enthuellungen-dpa.urn-newsml-dpa-com-20090101-261002-930-777955","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Carteira Web3 'Phantom' inicia suporte à BNB Chain","resumo":"A popular carteira de criptoativos Web3 Phantom anunciou oficialmente a expansão de sua compatibilidade para a rede BNB Chain. Essa integração facilita a gestão de múltiplos ativos digitais por parte dos usuários em diferentes ecossistemas blockchain. O impacto principal é a melhora na interoperabilidade e na experiência de navegação no universo descentralizado. A novidade atrai novos investidores e consolida a expansão multichain da plataforma.","link":"https://news.yahoo.co.jp/articles/2910a59176e9b5094e3920a1261b1d1dbd428b10","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"央广网","pais":"China","titulo":"Nova arena de consumo: A onda de consumo impulsionada por inteligência artificial","resumo":"O mercado consumidor chinês vive uma fase de transformação profunda com a popularização de produtos baseados em inteligência artificial. Dispositivos inteligentes e serviços automatizados tornaram-se os novos motores das vendas no varejo e do engajamento digital. A tendência sinaliza uma mudança estrutural nos hábitos da população em direção a uma economia hiperconectada.","link":"https://news.cnr.cn/native/gd/20261002/t20261002_527832060.shtml","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"The Times of India","pais":"Índia","titulo":"Ministério liderado por Nitin Gadkari apoia tecnologia do IIT de usar plástico reciclado em betume para rodovias nacionais","resumo":"O governo indiano aprovou o uso de uma tecnologia desenvolvida pelo IIT que emprega resíduos plásticos na pavimentação de rodovias com betume. A iniciativa promove a sustentabilidade ambiental ao reaproveitar materiais descartados em larga escala. Além disso, promete aumentar a durabilidade das estradas federais, gerando economia a longo prazo.","link":"https://timesofindia.indiatimes.com/business/india-business/nitin-gadkari-led-ministry-backs-iit-technology-of-using-waste-plastic-in-bitumen-for-national-highways-indias-first-nh-44-pilot-stretch-laid-new-method-could-cut-bitumen-use-4-and-costs-20/articleshow/134612492.cms","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"RTP","pais":"Portugal","titulo":"A Nova Ciência do Álcool","resumo":"Pesquisas recentes estão mudando drasticamente a forma como a ciência compreende os efeitos do consumo de álcool no organismo humano. Novos estudos apontam para descobertas surpreendentes sobre os limites seguros e o impacto molecular a longo prazo. Essa nova abordagem científica desafia paradigmas antigos e fomenta debates importantes sobre saúde pública e hábitos de vida. O contexto atual exige uma reavaliação das diretrizes de consumo com base em evidências mais rigorosas.","link":"https://www.rtp.pt/programa/tv/p49576","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Panrotas","pais":"Brasil","titulo":"PassHub lança inteligência artificial para agências operarem totalmente pelo WhatsApp","resumo":"A PassHub apresentou uma nova ferramenta de inteligência artificial voltada para otimizar o fluxo de trabalho de agências de viagens.\nA solução permite automatizar o atendimento, vendas e gestão operacional integrando 100% das funcionalidades na plataforma do WhatsApp.\nO lançamento visa transformar a eficiência do setor ao simplificar a comunicação direta com os clientes.","link":"https://www.panrotas.com.br/mercado/tecnologia/2026/10/passhub-realiza-evento-e-lanca-ia-para-agencias-trabalharem-100-pelo-whatsapp-veja-fotos_232539.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"NASA (.gov)","pais":"Estados Unidos","titulo":"NASA lança satélites SmallSats para avançar na ciência e operações orbitais","resumo":"A NASA colocou em órbita uma nova frota de pequenos satélites SmallSats para testes operacionais avançados.\nA missão visa validar tecnologias inéditas de comunicação, navegação autônoma e coleta de dados orbitais.\nO uso de plataformas miniaturizadas reduz custos operacionais e acelera o ritmo de inovação em pesquisas espaciais.\nEssas soluções pavimentam o caminho para futuras missões de exploração profunda e monitoramento terrestre.","link":"https://www.nasa.gov/blogs/smallsatellites/2026/10/01/nasa-smallsats-launch-to-advance-science-technology-orbital-operations/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Pour la Science","pais":"França","titulo":"Hipertensão intracraniana idiopática: falha na drenagem do líquido cefalorraquidiano pode ser a causa","resumo":"Pesquisadores identificaram uma possível origem para a hipertensão intracraniana idiopática, condição neurológica de causas incertas.\nO estudo aponta que uma deficiência no sistema de drenagem do líquido cefalorraquidiano é o principal fator responsável pelo aumento de pressão.\nA descoberta traz novas perspectivas para o diagnóstico precoce e o desenvolvimento de tratamentos mais eficazes para os pacientes.","link":"https://www.pourlascience.fr/sd/medecine/hypertension-intracranienne-idiopathique-le-drainage-du-liquide-cephalorachidien-mis-en-cause-29605.php","categoria":"SAÚDE","lang":"pt"},{"fonte":"The Conversation","pais":"Inglaterra","titulo":"Pessoas que usam o lado direito do cérebro são realmente mais criativas? O que diz a ciência","resumo":"Um estudo científico analisa o popular mito sobre a relação direta entre a dominância do hemisfério direito do cérebro e a criatividade humana.\nOs pesquisadores demonstraram que os processos criativos dependem, na verdade, da integração e cooperação contínua entre diversas redes neurais de ambos os lados do cérebro.\nA descoberta desmistifica velhas teorias e traz novas perspectivas sobre como o cérebro humano processa e gera ideias inovadoras.","link":"https://theconversation.com/are-right-brained-people-really-more-creative-heres-what-the-science-really-tells-us-291032","categoria":"NEUROCIÊNCIA","lang":"pt"},{"fonte":"ciberisciii.es","pais":"Espanha","titulo":"RESPIRA Hackathon: 50 horas de colaboração entre pesquisa, saúde e tecnologia para acelerar soluções em doenças respiratórias","resumo":"O RESPIRA Hackathon mobiliza especialistas durante 50 horas intensivas de inovação voltada para a área da saúde. O evento une pesquisa científica e tecnologia avançada para criar soluções rápidas contra enfermidades respiratórias. A iniciativa demonstra o poder da colaboração multidisciplinar no desenvolvimento de ferramentas médicas eficazes.","link":"https://www.ciberisciii.es/noticias/respira-hackathon-50-horas-de-colaboracion-entre-investigacion-salud-y-tecnologia-para-acelerar-soluciones-en-enfermedades-respiratorias","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"International Council on Clean Transportation","pais":"Alemanha","titulo":"Modelo HDV-DIFFUSE: Modelagem de difusão tecnológica de caminhões elétricos na UE27+3","resumo":"Um novo estudo científico apresentou o modelo HDV-DIFFUSE para analisar a difusão tecnológica de caminhões elétricos na União Europeia e países parceiros. A ferramenta matemática e preditiva é fundamental para compreender a transição energética e a descarbonização do transporte de carga pesado. Os resultados oferecem subsídios vitais para formuladores de políticas públicas e indústrias automotivas.","link":"https://theicct.org/publication/hdv-diffuse-model-eu-etrucks-oct26/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Infobae","pais":"Japão","titulo":"PlayStation anuncia QSSR, a nova tecnologia de escalamento por IA para melhorar os gráficos no PS5","resumo":"A Sony revelou a tecnologia Quick Spectral Super Resolution (QSSR), um sistema avançado de escalamento baseado em inteligência artificial. O recurso foi desenvolvido para otimizar o desempenho gráfico e a taxa de quadros no console PlayStation 5. Seu impacto promete revolucionar a qualidade visual de jogos complexos sem sobrecarregar o hardware base. A inovação eleva o patamar técnico dos videogames da atual geração.","link":"https://www.infobae.com/tecno/2026/10/02/playstation-anuncia-qssr-la-nueva-tecnologia-de-escalado-por-ia-que-mejorara-los-graficos-en-ps5/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"财新","pais":"China","titulo":"Índice de Nova Economia Caixin da China em setembro cai para 34,1, afetado por investimentos em tecnologia","resumo":"O Índice de Nova Economia Caixin registrou uma retração no mês de setembro, influenciado principalmente pela queda nos aportes voltados ao setor tecnológico. O indicador reflete os desafios conjunturais enfrentados por indústrias intensivas em inovação e P\u0026D. Analistas acompanham de perto os reflexos dessa desaceleração na trajetória de crescimento de longo prazo do país.","link":"https://economy.caixin.com/2026-10-02/102490301.html","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Expresso","pais":"Portugal","titulo":"Drones furtivos, satélites 3D e telescópios de ondas gravitacionais no cardápio do PIEP","resumo":"O PIEP revelou uma impressionante carteira de projetos tecnológicos de ponta que incluem drones furtivos, satélites em três dimensões e avançados telescópios de ondas gravitacionais. Estas inovações destacam a capacidade de engenharia e desenvolvimento estratégico aplicada a setores altamente complexos. O impacto destas tecnologias abrange desde a observação astronómica avançada até aplicações de segurança e defesa. A iniciativa consolida o papel de destaque da instituição no panorama da inovação tecnológica.","link":"https://expresso.pt/economia/2026-10-01-drones-furtivos-satelites-3d-e-telescopios-de-ondas-gravitacionais-no-cardapio-do-piep-afd59f57?utm_source=expresso\u0026utm_medium=content\u0026utm_campaign=WEB\u0026utm_content=/economia/2026-10-01-drones-furtivos-satelites-3d-e-telescopios-de-ondas-gravitacionais-no-cardapio-do-piep-afd59f57","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Superinteressante","pais":"Brasil","titulo":"Análise avalia propostas para ciência, tecnologia e saúde nos planos de governo de 2026","resumo":"Um estudo detalhado analisou os planos de governo dos pré-candidatos à presidência com foco nas diretrizes para ciência e inovação.\nA avaliação destaca prioridades como investimento em pesquisa acadêmica, incentivo à modernização da saúde e inclusão digital.\nA discussão traz à tona o debate sobre o papel central do desenvolvimento tecnológico no crescimento econômico do país.","link":"https://super.abril.com.br/sociedade/analisamos-as-propostas-de-ciencia-tecnologia-e-saude-nos-planos-de-governo-dos-presidenciaveis-de-2026/","categoria":"POLÍTICA E CIÊNCIA","lang":"pt"},{"fonte":"Science | AAAS","pais":"Estados Unidos","titulo":"Resfriamento da crosta terrestre na era 'Terra Bola de Neve' imita erosão glacial","resumo":"Um estudo científico revelou detalhes sobre os processos de resfriamento da crosta terrestre no passado geológico.\nOs pesquisadores demonstraram como o congelamento global antigo reproduziu padrões intensos de erosão por geleiras.\nA descoberta ajuda a reconstruir com maior precisão a história geológica do planeta e suas dinâmicas climáticas.\nA pesquisa oferece insights valiosos para entender a evolução do ambiente terrestre ao longo de eras.","link":"https://www.science.org/doi/10.1126/science.aed3341","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Zonebourse Suisse","pais":"França","titulo":"NBCUniversal, subsidiária da Comcast, corta empregos no setor de tecnologia de streaming","resumo":"A NBCUniversal anunciou uma reestruturação interna que resultará no corte de postos de trabalho voltados à tecnologia de streaming.\nA medida reflete a pressão financeira enfrentada pelas grandes empresas do setor para otimizar custos operacionais.\nO movimento acompanha a tendência de desaceleração do mercado global de plataformas de entretenimento digital.","link":"https://ch.zonebourse.com/actualite-bourse/nbcuniversal-filiale-de-comcast-supprime-des-emplois-dans-la-technologie-du-streaming-ce785ddada81fe22","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Retail Technology Innovation Hub","pais":"Inglaterra","titulo":"JD Sports avança com RFID e Amazon lidera pesquisas em GenAI: os números da tecnologia no varejo","resumo":"O setor de varejo apresenta novos avanços com a implementação de rastreamento por RFID pela JD Sports para otimizar a gestão de estoques.\nParalelamente, a Amazon desponta na liderança de pesquisas voltadas para a aplicação de inteligência artificial generativa no comércio global.\nO panorama destaca a crescente dependência do varejo em relação a tecnologias emergentes para aprimorar a experiência do consumidor e a eficiência operacional.","link":"https://retailtechinnovationhub.com/home/2026/10/1/jd-sports-makes-rfid-progress-and-amazon-tops-genai-research-the-retail-technology-week-in-numbers","categoria":"VAREJO TECH","lang":"pt"},{"fonte":"Diario AS","pais":"Espanha","titulo":"PlayStation 5 anuncia sua própria tecnologia de escalado com IA e primeiros jogos compatíveis","resumo":"A Sony revelou uma nova tecnologia proprietária de escalado baseada em inteligência artificial para o PlayStation 5. A inovação promete elevar a qualidade gráfica e o desempenho dos títulos na plataforma. Os primeiros jogos compatíveis já foram anunciados, marcando uma evolução significativa na experiência dos jogadores.","link":"https://as.com/meristation/noticias/playstation-5-anuncia-su-propia-tecnologia-de-escalado-con-ia-y-sus-primeros-juegos-compatibles-f202610-n/","categoria":"GAMES","lang":"pt"},{"fonte":"东方财富","pais":"Alemanha","titulo":"Governo alemão eleva previsão de crescimento econômico para 2026 para 1,3%","resumo":"Fontes bem-informadas indicam que o governo da Alemanha revisou para cima a sua projeção de crescimento econômico para o ano de 2026, atingindo 1,3%. O índice supera com folga a estimativa anterior divulgada em abril, que apontava para modestos 0,5%. Essa melhora nas perspectivas traz um alívio temporário para o cenário macroeconômico do país.","link":"https://wap.eastmoney.com/a/202610013888294147.html","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Car Watch","pais":"Japão","titulo":"Land Rover lança o novo Range Rover Sport Electric com 550 cv e 850 Nm de torque","resumo":"A montadora apresentou oficialmente o seu mais novo veículo totalmente elétrico, focado em alto desempenho e sustentabilidade. O modelo traz especificações impressionantes, alcançando uma potência máxima de 550 cavalos e torque de 850 Nm. O lançamento reflete a transição agressiva do setor automotivo global para motorizações limpas e eletrificadas. O impacto fortalece a presença da marca no mercado de luxo sustentável.","link":"https://car.watch.impress.co.jp/docs/news/2145008.html","categoria":"LANÇAMENTO","lang":"pt"},{"fonte":"中国农业大学新闻网","pais":"China","titulo":"Base experimental de Quzhou atinge marco histórico na produção verde de grãos","resumo":"Uma base de testes agrícolas em Quzhou alcançou um rendimento recorde de 1.524,6 quilos por acre ao ano em sua primeira fase. O projeto demonstrou sucesso na combinação de alta produtividade com práticas agrícolas sustentáveis e eficientes. O avanço científico é vital para garantir a segurança alimentar e promover a modernização do campo.","link":"https://news.cau.edu.cn/zhxwnew/f780f1d02508416ab6e862393d0bc95a.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Novo Tesla Roadster pode contar com tecnologia inovadora","resumo":"O aguardado Novo Tesla Roadster promete chocar o mercado automobilístico ao incorporar tecnologias até então consideradas futuristas ou de outro mundo. Especulações indicam soluções de propulsão e aerodinâmica sem precedentes inspiradas na exploração espacial. Esta evolução técnica visa redefinir os limites de desempenho, velocidade e autonomia em veículos elétricos de alta performance. O impacto no setor será marcante, forçando concorrentes a acelerarem suas próprias pesquisas de disrupção.","link":"https://sapo.pt/artigo/novo-tesla-roadster-pode-ter-uma-tecnologia-do-outro-mundo-6abeca1f251665e3d68cd973","categoria":"AUTOMOTIVO","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Estados Unidos atraem 59% das startups brasileiras em expansão internacional","resumo":"Um levantamento recente revelou que mais da metade das startups brasileiras que buscam internacionalização escolhem os Estados Unidos.\nO ecossistema norte-americano atrai essas empresas devido ao fácil acesso a capital de risco, grandes mercados consumidores e ambiente de inovação.\nO dado reforça a forte integração do ecossistema de tecnologia do Brasil com o mercado global de negócios.","link":"https://oglobo.globo.com/google/amp/economia/especial/agenda-global-estados-unidos-atraem-59percent-das-startups-brasileiras-no-exterior.ghtml","categoria":"STARTUPS","lang":"pt"},{"fonte":"Stanford HAI","pais":"Estados Unidos","titulo":"Instituto HAI de Stanford recebe 15 novos acadêmicos de ciência de dados","resumo":"O Instituto de Inteligência Artificial Centrada no Humano (HAI) de Stanford anunciou 15 novos pesquisadores.\nOs acadêmicos focarão no desenvolvimento de métodos inovadores em ciência de dados e aprendizado de máquina.\nO programa busca integrar disciplinas para garantir o avanço ético e benéfico das tecnologias de IA.\nA iniciativa fortalece a formação de lideranças científicas capacitadas para solucionar problemas complexos.","link":"https://hai.stanford.edu/news/stanford-hai-welcomes-15-new-data-science-scholars","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"WhatsApp: Find Out Which Smartphones Will Lose Support in October","resumo":"Starting in October, WhatsApp will drop support for several older Android and iOS smartphone models.\nThe measure is part of recurring security and performance updates that require more modern operating systems.\nAffected users will need to update their devices' operating systems or switch phones to continue using the app.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/02/whatsapp-saiba-em-quais-celulares-o-aplicativo-para-de-funcionar-em-outubro.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"BBC","pais":"United States","titulo":"OpenAI Fires Employees Over Mismanagement of Confidential Information","resumo":"OpenAI has fired employees involved in the mishandling of sensitive company information.\nThe decision reinforces the strictness of the artificial intelligence startup's internal data security and governance policies.\nThe incident comes at a time when the integrity and privacy of advanced models are global priorities.\nThe measure aims to mitigate reputational risks and protect the organization's strategic trade secrets.","link":"https://www.bbc.com/news/articles/c6y9z9r4ejzwo","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Gamekult","pais":"France","titulo":"On the Standard PS5, Meet QSSR, Sony's New AI Upscaling Technology","resumo":"Sony is bringing technological updates to the standard version of the PlayStation 5 with the introduction of QSSR.\nThis artificial intelligence-based upscaling solution aims to optimize graphic quality without requiring the hardware of the Pro model.\nThe initiative promises to extend the lifespan of the base console, offering players an enhanced visual experience.","link":"https://www.gamekult.com/actualite/sur-la-ps5-qui-n-est-pas-pro-accueillez-desormais-le-qssr-une-autre-technologie-d-upscaling-par-ia-3050872294.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Yahoo Finance UK","pais":"England","titulo":"Vaultz Capital Plc Makes £3 Million Investment in AI Infrastructure Technology","resumo":"Vaultz Capital Plc has announced a £3 million financial contribution aimed at strengthening and expanding artificial intelligence infrastructure technology.\nThe investment aims to optimize computing capacity and support the development of cutting-edge technological solutions in the region.\nThe initiative reinforces the strategic importance of AI infrastructure to sustain company growth and drive digital innovation in the UK.","link":"https://uk.finance.yahoo.com/news/vaultz-capital-plc-3m-investment-060000724.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"consalud.es","pais":"Spain","titulo":"SEPES Malaga 2026 Focuses on Disruptive Dentistry: \"Technology Must Help Us Make Better Decisions\"","resumo":"The SEPES Malaga 2026 congress highlights the transformative role of technology in modern dentistry. Experts discuss how advanced digital tools optimize diagnosis and clinical planning. The event reinforces the importance of innovation to ensure more assertive and safer treatments for patients.","link":"https://www.consalud.es/dentalia/profesionales-dental/sepes-malaga-2026-pone-el-foco-en-la-odontologia-disruptiva-la-tecnologia-debe-ayudarnos-a-tomar-mejores-decisiones.html","categoria":"HEALTH","lang":"en"},{"fonte":"Spiegel","pais":"Germany","titulo":"OpenAI Fires Several Employees Following AI Revelations","resumo":"OpenAI has made the drastic decision to fire several employees following serious revelations involving its artificial intelligence systems. The case has sparked intense repercussions in the tech sector and raised serious questions about the company's internal safety and ethical policies. The measure highlights the growing governance challenges faced by major corporations in the AI market.","link":"https://www.spiegel.de/wirtschaft/unternehmen/openai-feuert-nach-ki-enthuellungen-mehrere-mitarbeiter-a-854c5496-6556-4f07-983f-31d69bbafcba","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"The Notion That 'Consultants Are Unnecessary Thanks to AI' Takes a Turn","resumo":"The discussion about replacing human consultants with artificial intelligence has undergone a recent twist in the corporate market. Experts point out that rather than eliminating the profession, AI is redefining the strategic role of consultants. The impact of this change requires professionals to adopt new technological tools to remain relevant. The trend indicates an era of co-working between humans and advanced algorithms.","link":"https://www.nikkei.com/article/DGKKZO99070790S6A001C2ENI000/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Moomoo","pais":"China","titulo":"Updated Version of Optical Communication — OCS Optical Circuit Technology","resumo":"OCS optical circuit technology emerges as a significant evolution for modern optical communication infrastructure. This innovation promises to optimize data flow in large-scale networks, reducing bottlenecks and latency. The primary impact falls on data center efficiency and support for the growing demand for advanced connectivity.","link":"https://www.moomoo.com/hans/community/feed/an-upgraded-version-of-optical-communication-ocs-optical-circuit-technology-117369536512006","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"INTOSAI Journal","pais":"India","titulo":"Transformation in Performance Audits: The Technology-Driven Audit Innovation of the Comptroller and Auditor General of India","resumo":"India's fiscal watchdog has adopted advanced technological innovations to modernize its performance audits. This transformation aims to increase accuracy in government data analysis and ensure greater transparency in public management. The direct impact is the optimization of control processes and the strengthening of fiscal accountability in the country.","link":"https://intosaijournal.org/journal-entry/transformation-in-performance-audits-the-comptroller-and-auditor-general-of-indias-technology-driven-audit-innovation/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Gemini Spark Arrives in Google Photos","resumo":"The integration of the Gemini Spark artificial intelligence feature in Google Photos promises to revolutionize how users organize and edit their images. With this new tool, searching for specific memories and applying complex edits become considerably more intuitive and faster. The innovation reflects the tech giant's ongoing effort to embed generative features across its entire ecosystem. The direct impact will be a more automated, personalized, and efficient user experience on a daily basis.","link":"https://sapo.pt/artigo/gemini-spark-entra-no-google-photos-6abee79c9015085aedfe02fe","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Link To Leaders","pais":"Brazil","titulo":"Maryland Company Creates $200 Million Fund for AI Startups and Data Centers","resumo":"A new $200 million investment fund has been launched in the United States to boost the artificial intelligence market.\nThe focus of the initiative is to finance innovative startups and support the development of the infrastructure needed for data centers.\nThe initiative aims to meet the soaring increase in demand for computing capacity required by emerging technologies.","link":"https://linktoleaders.com/empresa-de-maryland-cria-fundo-de-200-milhoes-para-start-ups-de-ia-e-tecnologia-para-centros-de-dados/","categoria":"INVESTMENT","lang":"en"},{"fonte":"Agencia de noticias","pais":"United States","titulo":"Crew-13 Mission Arrives at the ISS After Completing the Fastest Journey by a US Spacecraft","resumo":"The Crew-13 mission successfully docked with the International Space Station after a record-breaking trajectory.\nThe flight established the fastest docking time ever recorded for a crewed North American spacecraft.\nOn board, the crew will conduct various scientific experiments focused on health and biology in microgravity.\nThe advancement demonstrates the continuous operational evolution of US commercial space transportation systems.","link":"https://efe.com/ciencia-y-tecnologia/2026-10-02/nasa-viaje-rapido-estacion-espacial-internacional-astronautas/","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"Journal du Geek","pais":"France","titulo":"Wolverine and Ghost of Yōtei Will Have Enhanced Graphics on the Standard PS5 With New Technology","resumo":"The highly anticipated games Wolverine and Ghost of Yōtei will benefit from a new technical feature developed by Sony for the standard PS5.\nThe innovation makes it possible to deliver more refined visuals and better performance without the need for the PS5 Pro console.\nThe novelty reinforces the company's commitment to optimizing the graphic processing of major releases on the base version.","link":"https://www.journaldugeek.com/2026/10/02/wolverine-et-ghost-of-yotei-plus-jolis-sur-la-ps5-standard-grace-a-une-nouvelle-technologie-sony/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Lancashire Telegraph","pais":"England","titulo":"BAE Systems Tests New Anti-Drone Technology to Combat Aerial Threats","resumo":"BAE Systems has begun testing a new anti-drone technology designed to neutralize aerial threats quickly and accurately.\nThe system uses advanced sensors and intelligence to detect and intercept unmanned aerial vehicles that pose security risks.\nThe innovation represents an important step in modernizing defense systems and protecting critical infrastructure against new types of attacks.","link":"https://www.lancashiretelegraph.co.uk/news/26599337.bae-systems-tests-new-anti-drone-technology-trials-scotland/","categoria":"MILITARY TECHNOLOGY","lang":"en"},{"fonte":"Interempresas Media","pais":"Spain","titulo":"MP: Integrated Technology for a New Generation of Elevators","resumo":"The company MP presents innovative integrated technology solutions aimed at the elevator market. The initiative seeks to transform the urban mobility experience with smarter, more efficient, and connected systems. With this, the sector takes an important step toward the modernization and sustainability of buildings.","link":"https://www.interempresas.net/ascensores-montacargas/663362-MP-tecnologia-integrada-para-una-nueva-generacion-de-ascensores.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"\"Inbelievably Good\": Siemens' Major Step Toward the Future","resumo":"Siemens recently announced a technological breakthrough considered impressive by experts and market analysts. This new phase solidifies the company's leading position in the industrial engineering and innovation sector. The impact of this evolution promises to transform production processes and accelerate digital transformation in Europe.","link":"https://www.sueddeutsche.de/sport/vfb-keeper-wieder-fit-unfassbar-gut-seimens-grosser-schritt-nach-vorn-dpa.urn-newsml-dpa-com-20090101-261002-930-777998","categoria":"INNOVATION","lang":"en"},{"fonte":"アスラテック株式会社","pais":"Japan","titulo":"Participation in the 'Shizuoka Prefecture Advanced Forest and Forestry Technology Seminar'","resumo":"The annual event highlights technological innovations applied to the forestry sector in the Shizuoka region. The seminar aims to present cutting-edge tools to optimize natural resource management and sustainable handling. The expected impact is the modernization of traditional practices through automation and data analysis. The initiative fosters sustainable regional development through technology.","link":"https://www.asratec.co.jp/2026/10/02/39565/","categoria":"SCIENCE","lang":"en"},{"fonte":"chinanews.com.cn","pais":"China","titulo":"From Vertical Screens in Hollywood to AI Integration: The Global Expansion of Chinese Cinema and TV","resumo":"China's audiovisual industry is accelerating its internationalization by combining innovative formats with artificial intelligence. The use of new technologies in artistic production has attracted global attention and redefined the sector's competitiveness. This cultural and technological transformation strengthens the presence of Chinese creative production in Western markets.","link":"https://www.chinanews.com.cn/cul/2026/10-02/10707039.shtml","categoria":"ENTERTAINMENT","lang":"en"},{"fonte":"Simply Wall Street","pais":"India","titulo":"What Kaynes Technology India Can Still Teach You After a 53% Drop","resumo":"Kaynes Technology India has faced significant volatility with a sharp decline in its shares in the financial market. The episode serves as an essential case study for investors to analyze risks and resilience in the electronic manufacturing sector. The situation highlights the importance of evaluating long-term fundamentals in high-tech companies.","link":"https://simplywall.st/stocks/in/tech/nse-kaynes/kaynes-technology-india-shares/news/what-kaynes-technology-india-can-still-teach-you-after-a-53","categoria":"MARKET","lang":"en"},{"fonte":"tintafresca.net","pais":"Portugal","titulo":"Municipal Assembly of Constância Approves Naming the Prof. Máximo Ferreira Living Science Center","resumo":"The Municipal Assembly of Constância has formally approved naming the local Living Science Center after Prof. Máximo Ferreira. This tribute recognizes the professor's legacy and significant contribution to scientific outreach in the region and the country. The space will continue to play a fundamental role in educating youth and promoting scientific culture. The initiative reinforces the importance of valuing historical figures linked to the development of science in Portugal.","link":"https://tintafresca.net/index.php/2026/10/01/assembleia-municipal-de-constancia-aprova-nome-centro-ciencia-viva-professor-maximo-ferreira/","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"OpenAI Fires Three Employees for Improper Handling of Sensitive Information","resumo":"OpenAI has fired three employees after an internal investigation pointed to the mishandling of confidential data. The company stressed that it maintains rigorous information security protocols to protect trade secrets and user data. The episode highlights the growing ethical and internal governance challenges faced by major tech giants.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/02/openai-demite-tres-funcionarios-por-manuseio-incorreto-de-informacoes-sensiveis.ghtml","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"证券之星","pais":"United States","titulo":"Antitrust Damages Lawsuit Over Google's Ad Technology Advances in the US","resumo":"The court has authorized the continuation of a major damages lawsuit focused on Google's ad technology. Content publishers and media outlets are seeking financial restitution exceeding 3.2 billion dollars. The accusation alleges that the tech giant abused its dominant market position to harm competitors. The decision represents a significant milestone in global regulatory pressure on tech companies.","link":"https://wap.stockstar.com/detail/IG2026100200000531","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"tv5monde","pais":"France","titulo":"Arrival at the ISS of the Replacement Team for Astronaut Sophie Adenot","resumo":"A new crew of astronauts has successfully arrived at the International Space Station to continue orbital missions. The astronaut rotation is part of the official replacement schedule for the team of French astronaut Sophie Adenot. The group will conduct advanced scientific experiments and ensure the operational maintenance of the space laboratory.","link":"https://information.tv5monde.com/science/arrivee-dans-liss-de-la-releve-de-sophie-adenot-2839851","categoria":"SCIENCE","lang":"en"},{"fonte":"Universiteit Twente","pais":"England","titulo":"From Toothbrushing to More Efficient Solar Panels","resumo":"Researchers have discovered that chemical principles used in oral hygiene products can be applied to optimize the efficiency of solar cells. The new approach improves the performance of the light-absorbing material, significantly reducing energy losses during the conversion process. The breakthrough promises to positively impact renewable energy production, making more sustainable and accessible solutions viable for the energy transition.","link":"https://www.utwente.nl/en/tnw/news/2026/10/1190538/from-brushing-your-teeth-to-more-efficient-solar-cells","categoria":"SOLAR ENERGY","lang":"en"},{"fonte":"La Voz de Galicia","pais":"Spain","titulo":"Anne L'Huillier: \"Explaining Science to Citizens Is Not an Option, It's a Duty\"","resumo":"Renowned scientist Anne L'Huillier highlights the fundamental importance of scientific outreach for contemporary society. In her statements, she emphasizes that researchers and institutions have a moral obligation to bring knowledge closer to the general public. This bridge is essential to combat misinformation and promote critical thinking.","link":"https://www.lavozdegalicia.es/noticia/ciencia/2026/10/02/explicar-ciencia-ciudadania-opcion-deberme-preocupa-impacto-ia-educacion-desarrollo-cognitivo-futuras-generaciones/0003_202610G2P28991.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Artificial Intelligence - OpenAI Fires Three Employees Following Revelations and Economic Debates","resumo":"Following new revelations regarding the development of artificial intelligence, OpenAI confirmed the firing of three staff members. The decision reflects the high-tension climate and rigorous scrutiny faced by researchers and leaders in the field. The episode directly impacts the debate on transparency and accountability in the global technology ecosystem.","link":"https://www.sueddeutsche.de/wirtschaft/kuenstliche-intelligenz-openai-feuert-drei-mitarbeiter-nach-ki-enthuellungen-dpa.urn-newsml-dpa-com-20090101-261002-930-777955","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Web3 Wallet 'Phantom' Initiates Support for BNB Chain","resumo":"The popular Web3 crypto wallet Phantom officially announced the expansion of its compatibility to the BNB Chain network. This integration facilitates the management of multiple digital assets by users across different blockchain ecosystems. The primary impact is the improvement of interoperability and browsing experience in the decentralized universe. The news attracts new investors and consolidates the platform's multi-chain expansion.","link":"https://news.yahoo.co.jp/articles/2910a59176e9b5094e3920a1261b1d1dbd428b10","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"央广网","pais":"China","titulo":"New Consumption Arena: The Consumption Wave Driven by Artificial Intelligence","resumo":"The Chinese consumer market is experiencing a phase of profound transformation with the popularization of products based on artificial intelligence. Smart devices and automated services have become the new drivers of retail sales and digital engagement. The trend signals a structural shift in the population's habits toward a hyper-connected economy.","link":"https://news.cnr.cn/native/gd/20261002/t20261002_527832060.shtml","categoria":"TRENDS","lang":"en"},{"fonte":"The Times of India","pais":"India","titulo":"Nitin Gadkari-Led Ministry Backs IIT Technology of Using Waste Plastic in Bitumen for National Highways","resumo":"The Indian government has approved the use of a technology developed by IIT that employs plastic waste in paving highways with bitumen. The initiative promotes environmental sustainability by repurposing large-scale discarded materials. Furthermore, it promises to increase the durability of federal roads, generating long-term savings.","link":"https://timesofindia.indiatimes.com/business/india-business/nitin-gadkari-led-ministry-backs-iit-technology-of-using-waste-plastic-in-bitumen-for-national-highways-indias-first-nh-44-pilot-stretch-laid-new-method-could-cut-bitumen-use-4-and-costs-20/articleshow/134612492.cms","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"RTP","pais":"Portugal","titulo":"The New Science of Alcohol","resumo":"Recent research is drastically changing how science understands the effects of alcohol consumption on the human body. New studies point to surprising discoveries regarding safe limits and long-term molecular impact. This new scientific approach challenges old paradigms and fosters important debates on public health and lifestyle habits. The current context demands a reassessment of consumption guidelines based on more rigorous evidence.","link":"https://www.rtp.pt/programa/tv/p49576","categoria":"SCIENCE","lang":"en"},{"fonte":"Panrotas","pais":"Brazil","titulo":"PassHub Launches Artificial Intelligence for Agencies to Operate Entirely via WhatsApp","resumo":"PassHub has introduced a new artificial intelligence tool aimed at optimizing travel agency workflows.\nThe solution automates customer service, sales, and operational management by integrating 100% of its features into the WhatsApp platform.\nThe launch aims to transform industry efficiency by streamlining direct communication with clients.","link":"https://www.panrotas.com.br/mercado/tecnologia/2026/10/passhub-realiza-evento-e-lanca-ia-para-agencias-trabalharem-100-pelo-whatsapp-veja-fotos_232539.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"NASA (.gov)","pais":"United States","titulo":"NASA Launches SmallSats to Advance Science and Orbital Operations","resumo":"NASA has placed a new fleet of SmallSats into orbit for advanced operational testing.\nThe mission aims to validate breakthrough communication, autonomous navigation, and orbital data collection technologies.\nThe use of miniaturized platforms reduces operating costs and accelerates the pace of innovation in space research.\nThese solutions pave the way for future deep-space exploration and Earth-monitoring missions.","link":"https://www.nasa.gov/blogs/smallsatellites/2026/10/01/nasa-smallsats-launch-to-advance-science-technology-orbital-operations/","categoria":"SCIENCE","lang":"en"},{"fonte":"Pour la Science","pais":"France","titulo":"Idiopathic Intracranial Hypertension: Cerebrospinal Fluid Drainage Failure May Be the Cause","resumo":"Researchers have identified a potential origin for idiopathic intracranial hypertension, a neurological condition of uncertain causes.\nThe study indicates that a deficiency in the cerebrospinal fluid drainage system is the primary factor responsible for the pressure increase.\nThe discovery opens new perspectives for early diagnosis and the development of more effective treatments for patients.","link":"https://www.pourlascience.fr/sd/medecine/hypertension-intracranienne-idiopathique-le-drainage-du-liquide-cephalorachidien-mis-en-cause-29605.php","categoria":"HEALTH","lang":"en"},{"fonte":"The Conversation","pais":"United Kingdom","titulo":"Are Right-Brained People Really More Creative? Here Is What Science Says","resumo":"A scientific study analyzes the popular myth regarding the direct relationship between right-brain dominance and human creativity.\nResearchers have demonstrated that creative processes actually depend on the continuous integration and cooperation of diverse neural networks across both sides of the brain.\nThe finding debunks old theories and offers fresh perspectives on how the human brain processes and generates innovative ideas.","link":"https://theconversation.com/are-right-brained-people-really-more-creative-heres-what-the-science-really-tells-us-291032","categoria":"NEUROSCIENCE","lang":"en"},{"fonte":"ciberisciii.es","pais":"Spain","titulo":"RESPIRA Hackathon: 50 Hours of Collaboration Between Research, Health, and Technology to Accelerate Solutions for Respiratory Diseases","resumo":"The RESPIRA Hackathon engages experts in 50 intensive hours of health-focused innovation. The event brings together scientific research and advanced technology to create rapid solutions against respiratory diseases. The initiative demonstrates the power of multidisciplinary collaboration in developing effective medical tools.","link":"https://www.ciberisciii.es/noticias/respira-hackathon-50-horas-de-colaboracion-entre-investigacion-salud-y-tecnologia-para-acelerar-soluciones-en-enfermedades-respiratorias","categoria":"INNOVATION","lang":"en"},{"fonte":"International Council on Clean Transportation","pais":"Germany","titulo":"HDV-DIFFUSE Model: Technological Diffusion Modeling of Electric Trucks in the EU27+3","resumo":"A new scientific study has introduced the HDV-DIFFUSE model to analyze the technological diffusion of electric trucks in the European Union and partner countries. This mathematical and predictive tool is essential for understanding the energy transition and the decarbonization of heavy-duty freight transport. The results provide vital insights for policymakers and automotive industries.","link":"https://theicct.org/publication/hdv-diffuse-model-eu-etrucks-oct26/","categoria":"SCIENCE","lang":"en"},{"fonte":"Infobae","pais":"Japan","titulo":"PlayStation Announces QSSR, the New AI Upscaling Technology to Enhance Graphics on the PS5","resumo":"Sony has unveiled Quick Spectral Super Resolution (QSSR) technology, an advanced upscaling system powered by artificial intelligence. The feature was designed to optimize graphic performance and frame rates on the PlayStation 5 console. Its impact promises to revolutionize the visual quality of complex games without overburdening the base hardware. This innovation raises the technical standard for current-generation video games.","link":"https://www.infobae.com/tecno/2026/10/02/playstation-anuncia-qssr-la-nueva-tecnologia-de-escalado-por-ia-que-mejorara-los-graficos-en-ps5/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"财新","pais":"China","titulo":"China's Caixin New Economy Index Falls to 34.1 in September, Hit by Tech Investments","resumo":"The Caixin New Economy Index recorded a contraction in September, primarily influenced by a drop in investments directed toward the technology sector. The indicator reflects the cyclical challenges faced by innovation- and R\u0026D-intensive industries. Analysts are closely monitoring the impact of this slowdown on the country's long-term growth trajectory.","link":"https://economy.caixin.com/2026-10-02/102490301.html","categoria":"ECONOMY","lang":"en"},{"fonte":"Expresso","pais":"Portugal","titulo":"Stealth Drones, 3D Satellites, and Gravitational Wave Telescopes on PIEP's Agenda","resumo":"PIEP has revealed an impressive portfolio of cutting-edge technology projects that include stealth drones, three-dimensional satellites, and advanced gravitational wave telescopes. These innovations highlight engineering capabilities and strategic development applied to highly complex sectors. The impact of these technologies ranges from advanced astronomical observation to security and defense applications. The initiative solidifies the institution's prominent role in the technological innovation landscape.","link":"https://expresso.pt/economia/2026-10-01-drones-furtivos-satelites-3d-e-telescopios-de-ondas-gravitacionais-no-cardapio-do-piep-afd59f57?utm_source=expresso\u0026utm_medium=content\u0026utm_campaign=WEB\u0026utm_content=/economia/2026-10-01-drones-furtivos-satelites-3d-e-telescopios-de-ondas-gravitacionais-no-cardapio-do-piep-afd59f57","categoria":"INNOVATION","lang":"en"},{"fonte":"Superinteressante","pais":"Brazil","titulo":"Analysis Evaluates Proposals for Science, Technology, and Health in 2026 Government Plans","resumo":"A detailed study analyzed the government platforms of presidential pre-candidates with a focus on guidelines for science and innovation.\nThe evaluation highlights priorities such as investment in academic research, incentives for healthcare modernization, and digital inclusion.\nThe discussion brings to the forefront the debate on the central role of technological development in the country's economic growth.","link":"https://super.abril.com.br/sociedade/analisamos-as-propostas-de-ciencia-tecnologia-e-saude-nos-planos-de-governo-dos-presidenciaveis-de-2026/","categoria":"POLITICS AND SCIENCE","lang":"en"},{"fonte":"Science | AAAS","pais":"United States","titulo":"Cooling of Earth's Crust During 'Snowball Earth' Era Mimics Glacial Erosion","resumo":"A scientific study has shed light on the cooling processes of Earth's crust during its geological past.\nResearchers demonstrated how ancient global freezing replicated intense glacial erosion patterns.\nThe discovery helps reconstruct the planet's geological history and climate dynamics with greater precision.\nThe research offers valuable insights into understanding the evolution of Earth's environment across eras.","link":"https://www.science.org/doi/10.1126/science.aed3341","categoria":"SCIENCE","lang":"en"},{"fonte":"Zonebourse Suisse","pais":"France","titulo":"Comcast Subsidiary NBCUniversal Cuts Jobs in Streaming Technology Sector","resumo":"NBCUniversal has announced an internal restructuring that will result in layoffs within its streaming technology division.\nThe move reflects financial pressures faced by major companies in the sector to optimize operational costs.\nIt aligns with the broader trend of a slowdown in the global digital entertainment platform market.","link":"https://ch.zonebourse.com/actualite-bourse/nbcuniversal-filiale-de-comcast-supprime-des-emplois-dans-la-technologie-du-streaming-ce785ddada81fe22","categoria":"BUSINESS","lang":"en"},{"fonte":"Retail Technology Innovation Hub","pais":"United Kingdom","titulo":"JD Sports Makes RFID Progress and Amazon Tops GenAI Research: The Retail Technology Numbers","resumo":"The retail sector is seeing new advancements with JD Sports' implementation of RFID tracking to optimize inventory management.\nSimultaneously, Amazon has emerged as a leader in research dedicated to applying generative artificial intelligence in global commerce.\nThe landscape highlights retail's growing reliance on emerging technologies to improve customer experience and operational efficiency.","link":"https://retailtechinnovationhub.com/home/2026/10/1/jd-sports-makes-rfid-progress-and-amazon-tops-genai-research-the-retail-technology-week-in-numbers","categoria":"RETAIL TECH","lang":"en"},{"fonte":"Diario AS","pais":"Spain","titulo":"PlayStation 5 Announces Its Own AI Upscaling Technology and First Compatible Games","resumo":"Sony has revealed a new proprietary upscaling technology based on artificial intelligence for the PlayStation 5. The innovation promises to elevate the graphic quality and performance of titles on the platform. The first compatible games have already been announced, marking a significant evolution in the gamer experience.","link":"https://as.com/meristation/noticias/playstation-5-anuncia-su-propia-tecnologia-de-escalado-con-ia-y-sus-primeros-juegos-compatibles-f202610-n/","categoria":"GAMES","lang":"en"},{"fonte":"东方财富","pais":"Germany","titulo":"German Government Raises 2026 Economic Growth Forecast to 1.3%","resumo":"Well-informed sources indicate that the German government has revised its economic growth projection for 2026 upward to 1.3%. This figure comfortably outpaces the previous estimate released in April, which pointed to a modest 0.5%. This improvement in outlook brings temporary relief to the country's macroeconomic scenario.","link":"https://wap.eastmoney.com/a/202610013888294147.html","categoria":"ECONOMY","lang":"en"},{"fonte":"Car Watch","pais":"Japan","titulo":"Land Rover Launches New Range Rover Sport Electric with 550 hp and 850 Nm of Torque","resumo":"The automaker has officially unveiled its newest fully electric vehicle, focused on high performance and sustainability. The model features impressive specifications, reaching a maximum power output of 550 horsepower and 850 Nm of torque. The launch reflects the global automotive sector's aggressive transition toward clean, electrified powertrains. The impact strengthens the brand's presence in the sustainable luxury market.","link":"https://car.watch.impress.co.jp/docs/news/2145008.html","categoria":"LAUNCH","lang":"en"},{"fonte":"中国农业大学新闻网","pais":"China","titulo":"Quzhou Experimental Base Reaches Historic Milestone in Green Grain Production","resumo":"An agricultural testing base in Quzhou has achieved a record yield of 1,524.6 pounds per acre annually in its first phase. The project demonstrated success in combining high productivity with sustainable and efficient farming practices. The scientific breakthrough is vital to ensuring food security and promoting rural modernization.","link":"https://news.cau.edu.cn/zhxwnew/f780f1d02508416ab6e862393d0bc95a.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"New Tesla Roadster May Feature Innovative Technology","resumo":"The highly anticipated New Tesla Roadster promises to shake up the automotive market by incorporating technologies previously considered futuristic or otherworldly. Speculation points to unprecedented propulsion and aerodynamic solutions inspired by space exploration. This technical evolution aims to redefine the limits of performance, speed, and range in high-performance electric vehicles. The impact on the sector will be striking, forcing competitors to accelerate their own disruptive research.","link":"https://sapo.pt/artigo/novo-tesla-roadster-pode-ter-uma-tecnologia-do-outro-mundo-6abeca1f251665e3d68cd973","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"United States Attracts 59% of Brazilian Startups Expanding Internationally","resumo":"A recent survey revealed that more than half of Brazilian startups seeking international expansion choose the United States. The North American ecosystem attracts these companies due to easy access to venture capital, large consumer markets, and an innovation-driven environment. This data reinforces the strong integration of Brazil's tech ecosystem with the global business market.","link":"https://oglobo.globo.com/google/amp/economia/especial/agenda-global-estados-unidos-atraem-59percent-das-startups-brasileiras-no-exterior.ghtml","categoria":"STARTUPS","lang":"en"},{"fonte":"Stanford HAI","pais":"United States","titulo":"Stanford HAI Welcomes 15 New Data Science Scholars","resumo":"Stanford's Institute for Human-Centered Artificial Intelligence (HAI) has announced 15 new researchers. The scholars will focus on developing innovative methods in data science and machine learning. The program seeks to integrate disciplines to ensure the ethical and beneficial advancement of AI technologies. This initiative strengthens the development of scientific leadership capable of solving complex problems.","link":"https://hai.stanford.edu/news/stanford-hai-welcomes-15-new-data-science-scholars","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
