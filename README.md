@@ -36,6 +36,8 @@ A run [37102216929](https://github.com/thalesandradepereira/monitoramento-intern
 
 A recuperação automática [37103861595](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/37103861595) concluiu a edição às 03h48 BRT: **8/8 e-mails enviados, 0 falhas**. Não executar novamente um disparo real para esta data.
 
+**QA e segurança adicional:** o CI detectou advisory HIGH recém-publicado para Nodemailer 9.1.1. Dependência direta migrada para Nodemailer 10.0.13 (compatível com Node.js 22), com validação de npm audit, contratos SMTP e TypeScript antes do merge.
+
 **Correção:** reconhecer também `Your project has exceeded a quota` como indisponibilidade de quota do modelo, acionar imediatamente `GEMINI_MODEL_SUMMARY_FALLBACK` para **o mesmo país** e preservar o bloqueio de toda a edição se ambos os modelos falharem. Respostas 429 temporárias sem sinal de quota continuam elegíveis a retry. Os testes `tests/geminiHelper.test.ts` e `tests/summarizeFallback.test.ts` simulam as mensagens reais e as duas trajetórias, sem rede, tokens ou envios externos. Nenhuma alteração em cron, D1, SMTP, estado operacional ou publicador social.
 
 ### Release v1.1.10 — resiliência editorial e quota Gemini em 24/09/2026
@@ -225,6 +227,8 @@ The system is built around **fail-closed behavior**, **daily idempotency**, and 
 Run [37102216929](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/37102216929) returned **HTTP 429: `Your project has exceeded a quota`** while processing Brazil. The existing quota classifier covered explicit daily-limit responses, but not this generic Interactions API wording. As a result, it retried the exhausted primary model, skipped Brazil on failure and only switched models for subsequent countries. The existing editorial coverage guard correctly prevented a partial release.
 
 Automatic recovery run [37103861595](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/37103861595) completed the day's edition (8/8 e-mails sent, zero failures). Do not replay production for this date.
+
+Security QA also identified a new HIGH advisory for Nodemailer 9.1.1. This release upgrades the direct dependency to Nodemailer 10.0.13, subject to CI audit, mocked SMTP regression and TypeScript checks.
 
 The fix recognizes generic project quota exhaustion and immediately tries the configured fallback **for the same country**, while preserving retries for genuine transient 429 responses and fail-closed publication if both models are unavailable. Regression coverage: `tests/geminiHelper.test.ts` and `tests/summarizeFallback.test.ts` (fully mocked; no external side effects). Schedules, recipients, SMTP, operational state and social publishing remain unchanged.
 
