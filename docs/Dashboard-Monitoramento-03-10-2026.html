@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-XgQqHHmmNKMMH6iv9gZrR4in'; script-src 'nonce-XgQqHHmmNKMMH6iv9gZrR4in'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="XgQqHHmmNKMMH6iv9gZrR4in">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">03/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="XgQqHHmmNKMMH6iv9gZrR4in">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Agora RN","pais":"Brasil","titulo":"Startup do RN cria uma tecnologia para reduzir ruído de aerogeradores","resumo":"Uma startup do Rio Grande do Norte desenvolveu uma solução tecnológica inovadora para mitigar os ruídos gerados por aerogeradores de energia eólica. A iniciativa promete melhorar a convivência entre parques eólicos e comunidades locais, minimizando impactos sonoros na vizinhança. O avanço destaca o potencial da região nordestina na criação de engenharias sustentáveis e eficientes para o setor energético.","link":"https://agorarn.com.br/economia/startup-do-rn-cria-uma-tecnologia-para-reduzir-ruido-de-aerogeradores/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The New York Times","pais":"Estados Unidos","titulo":"A ciência por trás das chuteiras personalizadas Adidas de Cavan Sullivan: escaneamento de pés, algoritmos e impressão 3D","resumo":"A tecnologia avançada de calçados esportivos chegou a um novo patamar com o uso de escaneamentos digitais e algoritmos complexos. A Adidas aplicou esses métodos para desenvolver chuteiras totalmente personalizadas para o jovem atleta Cavan Sullivan. A fabricação via impressão 3D garante ajuste anatômico perfeito, maximizando o conforto e o desempenho em campo através de inovação científica.","link":"https://www.nytimes.com/athletic/7649111/2026/10/03/cavan-sullivan-custom-cleats-science/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Auto Moto","pais":"França","titulo":"A corrida pela bateria de estado sólido está intensa: quando chegará essa tecnologia revolucionária?","resumo":"A busca pelo desenvolvimento de baterias de estado sólido avança rapidamente no setor tecnológico atual. Essa inovação promete transformar o mercado de veículos elétricos e eletrônicos portáteis. A tecnologia busca oferecer maior autonomia, segurança e tempos de recarga consideravelmente reduzidos. Especialistas debatem os principais desafios industriais e o cronograma estimado para sua comercialização em massa.","link":"https://www.auto-moto.com/en-bref/batterie-solide-lutte-byd-82123","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Periódico","pais":"Inglaterra","titulo":"Nissan testa seus carros autônomos nas ruas do Reino Unido","resumo":"A montadora Nissan iniciou novos testes de veículos autônomos em vias públicas britânicas para avaliar a segurança e a viabilidade da tecnologia. Essa iniciativa representa um avanço significativo para a mobilidade urbana inteligente no país. O projeto busca integrar a direção autônoma ao tráfego real, coletando dados cruciais para futuras regulamentações e adoção comercial.","link":"https://www.elperiodico.com/es/motor/20261003/nissan-pone-prueba-coches-autonomos-134787174","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Elplural.com","pais":"Espanha","titulo":"KGM atualiza os Torres Actyon HEV e EVX com mais tecnologia e até 664 km de autonomia","resumo":"A KGM renovou sua linha de veículos eletrificados com melhorias significativas em sistemas tecnológicos e eficiência. Os novos modelos prometem redefinir o mercado de SUVs sustentáveis com autonomias estendidas. Essa evolução reflete a corrida da indústria automotiva rumo à eletrificação inteligente e conectada.","link":"https://www.elplural.com/motor/coches/kgm-actualiza-torres-actyon-hev-evx-mas-tecnologia-hasta-664-km-autonomia_400886102_amp","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Inteligência Artificial - Aleph Alpha: \"IA soberana feita na Alemanha\"","resumo":"A empresa alemã Aleph Alpha destaca-se no desenvolvimento de inteligência artificial voltada para a soberania tecnológica europeia. A iniciativa busca oferecer alternativas seguras e confiáveis para o mercado corporativo e governamental. O foco é garantir a conformidade com as rigorosas leis de proteção de dados da região.","link":"https://www.sueddeutsche.de/wirtschaft/kuenstliche-intelligenz-aleph-alpha-souveraene-ki-made-in-germany-dpa.urn-newsml-dpa-com-20090101-261003-930-782832","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"東洋経済オンライン","pais":"Japão","titulo":"A revolução na produtividade do presidente da JST através da Inteligência Artificial e entrada de voz","resumo":"O presidente da Agência de Ciência e Tecnologia do Japão, aos 71 anos, transformou drasticamente sua rotina de trabalho ao adotar ferramentas modernas.\nAtravés do uso intensivo de reconhecimento de voz e inteligência artificial gerativa, ele alcançou uma impressionante revolução na produção intelectual.\nEssa mudança demonstra como líderes sêniores podem otimizar o tempo e aumentar a eficiência operacional com tecnologias acessíveis.","link":"https://toyokeizai.net/articles/-/959783","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Vietnam.vn","pais":"China","titulo":"A tecnologia digital proporciona um novo impulso à modernização da agricultura chinesa","resumo":"A integração de ferramentas digitais e inovação tecnológica tem transformado profundamente o setor agrícola na China. Essa modernização otimiza a produção no campo, eleva a eficiência dos processos e promove o desenvolvimento sustentável das áreas rurais. O avanço tecnológico fortalece a segurança alimentar do país e serve de modelo para economias emergentes.","link":"https://www.vietnam.vn/pt/cong-nghe-so-tao-dong-luc-moi-cho-hien-dai-hoa-nong-nghiep-trung-quoc","categoria":"AGRICULTURA","lang":"pt"},{"fonte":"Telegraph India","pais":"Índia","titulo":"Jio planeja expandir ofertas de tecnologia além das telecomunicações com IA e software de rede","resumo":"A gigante de telecomunicações indiana Jio está se preparando para ampliar seu portfólio tecnológico, apostando fortemente em inteligência artificial e soluções avançadas de software de rede. Essa movimentação estratégica visa consolidar a empresa não apenas como operadora, mas como uma fornecedora completa de ecossistemas digitais. O impacto dessa expansão promete acelerar a transformação digital em diversos setores industriais na Índia e fortalecer a competitividade do país no mercado global de tecnologia.","link":"https://www.telegraphindia.com/business/jio-to-widen-tech-offerings-beyond-telecom-with-ai-network-software-prnt/cid/2182866","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"eldebate.com","pais":"Portugal","titulo":"Um buraco do tamanho de Portugal se abriu na Antártida: isto é o que a ciência explica","resumo":"Um fenômeno impressionante ocorreu na Antártida com o surgimento de uma enorme abertura na camada de gelo. Cientistas estudam a dinâmica por trás desse evento extremo para compreender os impactos climáticos globais. A descoberta reforça a urgência no monitoramento contínuo das regiões polares diante das alterações ambientais.","link":"https://www.eldebate.com/ciencia/20261003/agujero-tamano-portugal-abrio-antartida-esto-explica-ciencia_464922.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"CNT","pais":"Brasil","titulo":"Projeto que usa tecnologia para aumentar a segurança nas rodovias vence o InovAprendiz 2026","resumo":"Um projeto focado no uso de tecnologia avançada para elevar a segurança nas rodovias brasileiras conquistou o primeiro lugar no prêmio InovAprendiz 2026. A iniciativa da Confederação Nacional do Transporte destaca ferramentas inteligentes capazes de prevenir acidentes e monitorar o tráfego em tempo real. A premiação reforça a importância da inovação digital na modernização da infraestrutura e dos transportes no país.","link":"https://www.cnt.org.br/agencia-cnt/projeto-que-usa-tecnologia-para-aumentar-a-segurana-nas-rodovias-vence-o-inovaprendiz-2026","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"ABC7 WWSB","pais":"Estados Unidos","titulo":"Longboat Key testa tecnologia de inteligência artificial para monitorar tráfego de pedestres","resumo":"A cidade de Longboat Key implementou um projeto piloto utilizando inteligência artificial para analisar o fluxo de pessoas na região. A ferramenta capta dados em tempo real para otimizar o planejamento urbano e a segurança pública local. Essa iniciativa reflete a crescente tendência de municípios americanos adotarem soluções inteligentes para a gestão de espaços públicos.","link":"https://www.mysuncoast.com/2026/10/02/longboat-key-tests-ai-technology-track-foot-traffic/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Martin Cid Magazine","pais":"França","titulo":"Mark Zuckerberg e seu Muse Charm: 'Colocamos muita tecnologia neste pequeno boneco'","resumo":"Mark Zuckerberg apresentou recentemente o Muse Charm, destacando o forte apelo tecnológico do projeto. A iniciativa busca integrar inovação avançada em um formato compacto e interativo para o público. Analistas discutem o impacto potencial dessa novidade no ecossistema de eletrônicos de consumo. O lançamento reforça a estratégia da empresa em diversificar seu portfólio voltado à inteligência artificial.","link":"https://fr.martincid.com/technologie/mark-zuckerberg-et-son-muse-charm-nous-avons-mis-beaucoup-de-technologie-dans-ce-petit-bonhomme/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"ITVX","pais":"Inglaterra","titulo":"Sir Brian May premia o Professor Brian Cox por comunicação científica","resumo":"O renomado músico e astrofísico Sir Brian May concedeu um prêmio especial ao Professor Brian Cox em reconhecimento à sua excelência na divulgação da ciência. A homenagem destaca a importância de tornar conceitos complexos acessíveis ao grande público britânico. Essa iniciativa fortalece o papel da comunicação científica na educação e na cultura moderna do país.","link":"https://www.itv.com/watch/news/sir-brian-may-awards-professor-brian-cox-special-award-for-science-communication/rwxjhry","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Salamanca24horas","pais":"Espanha","titulo":"Da segurança viária e cidadã à proteção do patrimônio: a alta tecnologia presente nas câmeras de Salamanca","resumo":"A cidade espanhola de Salamanca implementou um sistema avançado de monitoramento baseado em inteligência artificial e alta resolução. Essa tecnologia visa otimizar a gestão urbana, garantindo maior proteção ao patrimônio histórico e segurança pública. A iniciativa serve de modelo para cidades inteligentes que buscam equilibrar inovação e privacidade.","link":"https://www.salamanca24horas.com/local/seguridad-vial-ciudadana-proteccion-patrimonio-alta-tecnologia-cuenta-salamanca-camaras","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Tecnologia - Óculos inteligentes geram mais trabalho e potenciais conflitos","resumo":"A adoção de óculos inteligentes no ambiente de trabalho tem aumentado a produtividade e a eficiência operacional em diversos setores. No entanto, o uso dessas tecnologias também traz preocupações sobre a privacidade dos funcionários e o aumento da pressão por resultados. Especialistas alertam para a necessidade de regulamentações claras para evitar conflitos laborais.","link":"https://www.sueddeutsche.de/politik/technologie-smart-glasses-fuehren-zu-mehr-arbeit-und-potenziellem-aerger-dpa.urn-newsml-dpa-com-20090101-261003-930-782740","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"福井テレビ","pais":"Japão","titulo":"Feira Tecnológica de Hokuriku traz exibição especial de robôs com IA Física em Fukui","resumo":"A Feira de Intercâmbio Técnico de Hokuriku programou para os dias 22 e 23 uma exposição especial voltada para a robótica avançada baseada em 'IA Física'.\nO evento acontece no Centro Industrial da Prefeitura de Fukui, reunindo inovações que integram inteligência artificial ao mundo físico.\nA iniciativa busca fomentar parcerias e apresentar ao público o futuro da automação inteligente no Japão.","link":"https://www.fukui-tv.co.jp/?post_type=fukui_news\u0026p=202610","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"新浪财经","pais":"China","titulo":"Li Wenlong: A fase de aceleração da IA exige a construção de um novo sistema de equilíbrio social","resumo":"Especialistas apontam que o rápido crescimento da inteligência artificial traz desafios estruturais urgentes para o mercado de trabalho e a sociedade. É fundamental desenvolver novas estruturas regulatórias e de bem-estar para mitigar desigualdades potenciais. Essa adaptação garante que os benefícios da inovação sejam distribuídos de forma equitativa entre a população.","link":"https://finance.sina.cn/2026-10-03/detail-initxnhc3974259.d.html?vt=4","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Notícias de Aveiro","pais":"Portugal","titulo":"Universidade de Aveiro desenvolve tecnologia de rádio 5G+/6G e soluções para microeletrônica mais sustentável","resumo":"A academia portuguesa avança na pesquisa de ponta criando inovações voltadas para as futuras redes de comunicação móvel. O projeto une alta performance em conectividade com práticas ecológicas na fabricação de microeletrônicos. Essa iniciativa posiciona o país na vanguarda do desenvolvimento tecnológico sustentável.","link":"https://www.noticiasdeaveiro.pt/ua-desenvolve-tecnologia-de-radio-5g-6g-e-solucoes-para-microeletronica-mais-sustentavel/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"itforum.com.br","pais":"Brasil","titulo":"IA, data centers e governo digital: as propostas de tecnologia de Caiado e Zema","resumo":"As discussões sobre o futuro digital do país ganham força com a análise das propostas tecnológicas de lideranças políticas como Caiado e Zema. O debate abrange investimentos estratégicos em inteligência artificial, expansão de data centers e a digitalização de serviços governamentais. Essas diretrizes refletem a urgência de modernizar a infraestrutura tecnológica para impulsionar a competitividade nacional e a eficiência pública.","link":"https://itforum.com.br/noticias/propostas-tecnologia-caiado-zema-eleicoes-2026/","categoria":"POLÍTICA","lang":"pt"},{"fonte":"Yahoo Finance","pais":"Estados Unidos","titulo":"Marvell Technology apresenta links ópticos de 2nm e garante capacidade em inteligência artificial","resumo":"A Marvell Technology revelou avanços expressivos em sua infraestrutura de semicondutores voltados para a próxima geração de redes. Com novos links ópticos de 2nm, a empresa fortalece sua posição estratégica no ecossistema de inteligência artificial. O movimento assegura maior eficiência energética e capacidade de processamento para atender à alta demanda tecnológica atual.","link":"https://finance.yahoo.com/technology/ai/articles/marvell-technology-mrvl-showcases-2nm-220627807.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Echo des Tribunes","pais":"França","titulo":"Hérault: com sua tecnologia in vitro, esta empresa é responsável por um terço das bananas consumidas na França","resumo":"Uma empresa inovadora baseada em Hérault utiliza técnicas avançadas de cultivo in vitro para transformar a agricultura. O método garante a produção em larga escala de mudas altamente saudáveis e resistentes a pragas. Com essa tecnologia, a companhia abastece sozinha cerca de um terço de todas as bananas consumidas no país. O feito destaca a importância da biotecnologia moderna na segurança alimentar e eficiência agrícola.","link":"https://echo-des-tribunes.com/herault-tribune/articles/herault-avec-sa-technologie-in-vitro-cette-entreprise-est-responsable-dun-tiers-des-bananes-consommees-en-france","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Garoto com paralisia cerebral é aprovado em exames usando tecnologia de rastreamento ocular","resumo":"Um jovem estudante diagnosticado com paralisia cerebral conseguiu concluir seus exames escolares com sucesso utilizando uma inovadora tecnologia de rastreamento ocular. A ferramenta permitiu que ele se comunicasse e respondesse às provas de maneira autônoma, demonstrando o poder inclusivo da inovação digital. O caso repercutiu positivamente no Reino Unido, inspirando o uso de tecnologias assistivas na educação.","link":"https://www.theguardian.com/education/2026/oct/02/patrick-mccabe-success-cheshire-reveals-limits-send-tech","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"lavanguardia.com","pais":"Espanha","titulo":"Ainhoa Marcos, historiadora da arte: “Usar bem a IA consiste em fazer as perguntas certas e duvidar das respostas oferecidas”","resumo":"Em entrevista recente, a historiadora da arte Ainhoa Marcos refletiu sobre o papel da inteligência artificial na pesquisa acadêmica e cultural. Ela destacou que a ferramenta exige pensamento crítico rigoroso por parte dos usuários. A especialista enfatiza que o valor da tecnologia depende diretamente da capacidade humana de questionar.","link":"https://www.lavanguardia.com/neo/sociedad-neo/20261003/11643090/ainhoa-marcos-historiadora-arte-ia-consiste-preguntas-correctas-dudar-respuestas-ofrecidas.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Bloomberg.com","pais":"Alemanha","titulo":"Economia da Alemanha pode crescer 1% este ano, diz presidente do Bundesbank","resumo":"O presidente do banco central alemão, o Bundesbank, projetou que a economia do país poderá registrar um crescimento de cerca de 1% no ano atual. A estimativa reflete uma recuperação gradual após um período de estagnação e desafios inflacionários. Analistas acompanham de perto os impactos nas cadeias de suprimentos e no consumo interno.","link":"https://www.bloomberg.com/news/articles/2026-10-02/german-economy-might-grow-1-this-year-bundesbank-chief-says","categoria":"ECONOMIA","lang":"pt"},{"fonte":"nikkei.com","pais":"Japão","titulo":"Drones de defesa nacionais ganham destaque com cooperação entre tecnologia japonesa e experiência externa","resumo":"O setor de drones de defesa fabricados no Japão está aquecido, impulsionado pela necessidade de inovação e por mercados internacionais com alta experiência em combate.\nA combinação entre a excelência tecnológica japonesa e a demanda prática de cenários estrangeiros cria oportunidades estratégicas para parcerias bilaterais.\nAmbos os lados possuem expectativas alinhadas para o desenvolvimento conjunto de equipamentos mais robustos.","link":"https://www.nikkei.com/article/DGXZQOUC037410T00C26A8000000/","categoria":"DEFESA","lang":"pt"},{"fonte":"12371.gov.cn","pais":"China","titulo":"Chongqing Bishan: Plataforma piloto constrói 'ponte' para a industrialização de conquistas científicas","resumo":"A cidade de Chongqing Bishan inaugurou uma nova plataforma de testes piloto focada em acelerar a transição de pesquisas científicas para o mercado. A iniciativa reduz a distância entre laboratórios e a produção industrial em larga escala na região. Com isso, o ecossistema local de inovação atrai mais investimentos e dinamiza a economia de alta tecnologia.","link":"https://m.12371.gov.cn/content/2026-10/03/content_516442.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Tek Notícias","pais":"Portugal","titulo":"Reparar em vez de substituir, rumo a uma tecnologia mais sustentável","resumo":"O debate sobre a durabilidade dos dispositivos eletrônicos ganha força com foco na redução de resíduos. Especialistas apontam que incentivar o conserto de equipamentos é essencial para diminuir a pegada ecológica industrial. A mudança de mentalidade promove um modelo de consumo mais consciente no setor tecnológico.","link":"https://tek.sapo.pt/opiniao/artigos/reparar-em-vez-de-substituir-rumo-a-uma-tecnologia-mais-sustentavel/","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"Estadão","pais":"Brasil","titulo":"O ‘efeito BYD’ sobre duas rodas: como a CFMoto e a tecnologia chinesa vão mudar o mercado","resumo":"A chegada massiva de inovações e marcas asiáticas está provocando uma verdadeira revolução no mercado brasileiro de motocicletas. Inspirado pelo impacto da eletrificação automotivo, o avanço da CFMoto introduz novas tecnologias e padrões de desempenho altamente competitivos. Esse fenômeno obriga fabricantes tradicionais a acelerarem suas transições tecnológicas para atenderem a um consumidor cada vez mais exigente.","link":"https://www.estadao.com.br/em-alta/jornal-do-carro/rafael-togni/o-efeito-byd-sobre-duas-rodas-como-a-cfmoto-e-a-tecnologia-chinesa-vao-mudar-o-mercado/","categoria":"MERCADO","lang":"pt"},{"fonte":"Georgia Tech News Center","pais":"Estados Unidos","titulo":"Georgia Tech e Amazon lançam centro de ciência conjunto","resumo":"O Instituto de Tecnologia da Geórgia uniu forças com a Amazon para inaugurar um hub de pesquisa científica colaborativa. A parceria focará no desenvolvimento de novas tecnologias, impulsionando avanços na área acadêmica e industrial. A iniciativa promete acelerar descobertas inovadoras que impactarão diretamente o futuro da computação e da automação.","link":"https://news.gatech.edu/news/2026/10/02/georgia-tech-and-amazon-launch-joint-science-hub","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Le Figaro","pais":"França","titulo":"Titânio, vidro safira e tecnologia de ponta: este Huawei Watch 5 é um dos smartwatches mais bonitos","resumo":"A Huawei anunciou o seu novo relógio inteligente, combinando materiais premium como titânio e vidro safira. O dispositivo destaca-se pelo design sofisticado aliado a recursos avançados de monitoramento de saúde e desempenho. A peça busca atrair consumidores que valorizam tanto a estética de luxo quanto a tecnologia vestível de ponta. O lançamento reforça a concorrência acirrada no segmento de smartwatches de alto padrão.","link":"https://www.lefigaro.fr/bons-plans/high-tech/titane-verre-saphir-et-technologie-de-pointe-cette-huawei-watch-5-est-l-une-des-plus-belles-montres-connectees-20261003","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Existe uma maneira de cuidar das pessoas, do planeta e do crescimento da Grã-Bretanha: a economia do bem-estar","resumo":"Especialistas discutem a transição para a chamada 'economia do bem-estar', um modelo que prioriza a sustentabilidade ambiental e a qualidade de vida da população. A proposta visa redefinir as métricas tradicionais de crescimento econômico no Reino Unido para garantir um futuro mais equilibrado. O debate ganha força entre formuladores de políticas públicas interessados em inovação social.","link":"https://www.theguardian.com/commentisfree/2026/oct/02/people-planet-britain-growth-wellbeing-economy","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"Atlántico","pais":"Espanha","titulo":"Tecnologia de Vigo rumo ao espaço no foguete de Elon Musk","resumo":"Componentes tecnológicos desenvolvidos na cidade galega de Vigo foram selecionados para integrar uma missão espacial da SpaceX. Essa conquista destaca a capacidade de engenharia e inovação de empresas locais no cenário internacional. O marco fortalece a posição da Espanha na cadeia global de suprimentos aeroespaciais.","link":"https://www.atlantico.net/economia/tecnologia-viguesa-rumbo-espacio-cohete_1_20261003-4436910.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"东方财富","pais":"Alemanha","titulo":"Membro do Conselho do BCE, Nagel, diz que a economia da Alemanha pode crescer cerca de 1% este ano","resumo":"Joachim Nagel, membro do Conselho do Banco Central Europeu, afirmou que a economia alemã mostra sinais de estabilização com perspectiva de crescimento moderado. A declaração reforça a confiança na resiliência do setor industrial e na recuperação da zona do euro. As políticas monetárias continuarão ajustadas para conter riscos inflacionários remanescentes.","link":"https://wap.eastmoney.com/a/202610033888437040.html","categoria":"ECONOMIA","lang":"pt"},{"fonte":"凤凰网","pais":"Japão","titulo":"Sanae Takaichi pretende usar a Inteligência Artificial como aceleradora da economia japonesa","resumo":"A líder política Sanae Takaichi demonstra forte interesse em posicionar a inteligência artificial como o principal motor para impulsionar a economia do Japão.\nA estratégia visa superar desafios estruturais de produtividade e acelerar o crescimento através da adoção massiva de tecnologias emergentes.\nEssa visão coloca a inovação digital no centro das políticas de desenvolvimento econômico do país.","link":"https://news.ifeng.com/c/8wuqb1yWw2P","categoria":"ECONOMIA","lang":"pt"},{"fonte":"电子工程专辑","pais":"China","titulo":"Alcançando a integração profunda entre tecnologia espectral MEMS e IA, Xunjie Guangyuan conclui financiamento da Série B de mais de 100 milhões de iuanes","resumo":"A empresa Xunjie Guangyuan garantiu um aporte financeiro superior a 100 milhões de iuanes em sua rodada de investimentos da Série B. Os recursos serão direcionados para avançar na fusão inovadora de tecnologia espectral MEMS com inteligência artificial. Essa combinação promete revolucionar aplicações em detecção de precisão e análise de materiais no mercado industrial.","link":"https://www.eet-china.com/mp/a528729.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Igreja Açores","pais":"Portugal","titulo":"D. José Tolentino Mendonça defende que a tecnologia nunca substitui o acompanhamento humano","resumo":"Em meio aos rápidos avanços da inteligência artificial e da automação, ressalta-se a importância da empatia. Líderes intelectuais lembram que a sensibilidade humana é insubstituível em processos educacionais e de cuidado. A reflexão orienta o uso ético e equilibrado das ferramentas digitais na sociedade moderna.","link":"https://www.igrejaacores.pt/d-jose-tolentino-mendonca-defende-que-tecnologia-nunca-substitui-acompanhamento-humano/","categoria":"SOCIEDADE","lang":"pt"},{"fonte":"ifal.edu.br","pais":"Brasil","titulo":"Maris: uma tecnologia social do Ifal une pesca artesanal, ciência e políticas públicas","resumo":"Desenvolvida pelo Instituto Federal de Alagoas, a tecnologia social Maris conecta a pesca artesanal à pesquisa científica de ponta e à formulação de políticas públicas. A ferramenta visa otimizar a atividade dos pescadores tradicionais, garantindo sustentabilidade econômica e preservação ambiental na região costeira. O projeto exemplifica como a ciência aplicada pode gerar inclusão produtiva e transformar realidades locais.","link":"https://www2.ifal.edu.br/campus/benedito/noticias/maris-uma-tecnologia-social-do-ifal-que-une-a-pesca-artesanal-pesquisa-cientifica-e-proposta-de-politicas-publicas","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"CNBC","pais":"Estados Unidos","titulo":"Ben Lamm, da Colossal Biosciences, fala sobre inteligência artificial e a ciência da desextinção","resumo":"A Colossal Biosciences está na vanguarda da biotecnologia ao utilizar IA para viabilizar projetos de desextinção de espécies. O cofundador Ben Lamm discutiu como algoritmos avançados auxiliam na análise genética de animais extintos. A aplicação dessas ferramentas computacionais acelera pesquisas complexas e redefine os limites da conservação ambiental moderna.","link":"https://www.cnbc.com/video/2026/10/02/colossal-biosciences-ben-lamm-on-ai-and-the-science-of-de-extinction.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"inrap.fr","pais":"França","titulo":"Evento: Festa da Ciência 2026 em Île-de-France","resumo":"A região de Île-de-France se prepara para sediar mais uma edição da tradicional Festa da Ciência. O evento visa aproximar o público geral das principais inovações acadêmicas e descobertas científicas recentes. Várias instituições de pesquisa abrirão suas portas para oficinas interativas e palestras educativas. A iniciativa busca despertar o interesse de jovens e adultos pelo universo científico e tecnológico.","link":"https://www.inrap.fr/fete-de-la-science-2026-en-ile-de-france-20967","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"A política do Reino Unido é centrada na geração baby boomer?","resumo":"Analistas políticos debatem se o sistema político e legislativo britânico tem priorizado excessivamente os interesses da geração baby boomer em detrimento dos jovens. A discussão aborda o impacto de políticas públicas em áreas como habitação, economia e previdência social. O tema tem gerado debates intensos sobre representatividade e equidade geracional no país.","link":"https://www.bbc.co.uk/news/videos/c9n73ly655ero","categoria":"TRENDING TOPICS","lang":"pt"},{"fonte":"Interempresas Media","pais":"Espanha","titulo":"Hiperbaric impulsiona o processamento a frio com sua tecnologia de altas pressões HPP","resumo":"A empresa Hiperbaric está liderando a inovação na indústria alimentícia através de sistemas avançados de processamento por alta pressão. Essa tecnologia permite conservar alimentos mantendo suas propriedades nutricionais sem o uso de aditivos químicos. A solução industrial ganha destaque global pela eficiência e sustentabilidade.","link":"https://www.interempresas.net/Alimentaria/662765-Hiperbaric-impulsa-el-procesado-en-frio-con-su-tecnologia-de-altas-presiones-HPP.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Deutschlandfunk","pais":"Alemanha","titulo":"Economia - Relatório: Governo federal inicia reprivatização da gigante de gás Sefe","resumo":"O governo alemão iniciou oficialmente o processo de reprivatização da empresa de energia Sefe, anteriormente nacionalizada durante a crise do gás. A medida marca um passo importante na normalização do setor energético do país após choques de fornecimento anteriores. O objetivo é devolver a companhia ao controle privado de forma estruturada e transparente.","link":"https://www.deutschlandfunk.de/bericht-bund-leitet-reprivatisierung-des-gaskonzerns-sefe-ein-102.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"株式会社エクサウィザーズ","pais":"Japão","titulo":"Anthropic inicia programa para treinar 10 mil engenheiros de empresas clientes em seus próprios padrões","resumo":"A empresa Anthropic lançou uma ambiciosa iniciativa para capacitar 10 mil engenheiros de companhias parceiras de acordo com suas rigorosas diretrizes técnicas.\nO projeto visa elevar o nível de especialização no uso de inteligência artificial corporativa com foco em segurança e eficiência.\nEssa ação fortalece o ecossistema tecnológico e assegura que os desenvolvedores dominem as melhores práticas da indústria.","link":"https://exawizards.com/column/ai-trend/news-10-03-2026-2/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"电子工程专辑","pais":"China","titulo":"Tecnologia de realidade estendida aproxima humanos e máquinas no chão de fábrica","resumo":"A implementação de soluções de realidade estendida (XR) nos ambientes industriais está redefinindo a interação entre operadores e equipamentos complexos. A tecnologia permite visualizações em tempo real, melhorando a precisão e a segurança nas linhas de montagem. Essa evolução consolida a transição para fábricas mais inteligentes e conectadas.","link":"https://www.eet-china.com/news/202609167725.html","categoria":"AUTOMAÇÃO","lang":"pt"},{"fonte":"Agência ECCLESIA","pais":"Portugal","titulo":"Educação e IA: mais do que a tecnologia, importa a pedagogia, aponta João Couvaneiro sobre professores","resumo":"A introdução de ferramentas de inteligência artificial nas escolas exige cautela e planejamento pedagógico estruturado. Especialistas destacam que o papel do professor continua sendo o pilar fundamental para a mediação do conhecimento. A tecnologia deve atuar como suporte, sem anular a essência da relação de ensino.","link":"https://agencia.ecclesia.pt/portal/educacao-ia-mais-do-que-a-tecnologia-importa-a-pedagogia-afirmou-joao-couvaneiro-apontando-o-papel-insubstituivel-dos-professores/","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"gurupi.to.gov.br","pais":"Brasil","titulo":"Nova tecnologia: fêmea do Aedes aegypti vira aliada no combate à dengue com uso de estações disseminadoras","resumo":"O município de Gurupi implementou uma nova tecnologia baseada no uso estratégico de fêmeas do mosquito Aedes aegypti em estações disseminadoras para combater a dengue. O método biológico e tecnológico visa reduzir a população vetor de doenças de forma controlada e sustentável na região. A iniciativa surge como uma alternativa promissora aos métodos tradicionais de controle de endemias urbanas.","link":"https://gurupi.to.gov.br/2026/10/nova-tecnologia-femea-do-aedes-aegypti-vira-aliada-no-combate-a-dengue-em-gurupi-com-uso-de-estacoes-disseminadoras/","categoria":"SAÚDE","lang":"pt"},{"fonte":"WiWo","pais":"Estados Unidos","titulo":"Economia dos EUA: famílias americanas podem ter que pagar milhares de dólares a mais por energia devido às políticas de Trump","resumo":"Análises econômicas recentes apontam que potenciais mudanças nas diretrizes energéticas dos EUA podem elevar consideravelmente os custos para os consumidores. O impacto financeiro estimado em milhares de dólares por domicílio reflete a sensibilidade do setor energético às decisões políticas. A questão gera debates acalorados sobre o futuro da matriz energética e o bolso da população.","link":"https://www.wiwo.de/politik/ausland/us-wirtschaft-us-haushalte-muessen-wohl-tausende-dollar-mehr-fuer-energie-zahlen-wegen-trumps-politik/100259371.html","categoria":"ECONOMIA","lang":"pt"},{"fonte":"inrap.fr","pais":"França","titulo":"Evento: Festa da Ciência 2026 em Bourgogne-Franche-Comté","resumo":"A região de Bourgogne-Franche-Comté anuncia a programação oficial para a Festa da Ciência deste ano. Diversas atividades interativas foram planejadas para promover o conhecimento científico em escolas e espaços públicos. O evento conta com a participação de pesquisadores locais dispostos a compartilhar suas descobertas com a comunidade. A celebração reforça o compromisso regional com a educação e a divulgação tecnológica.","link":"https://www.inrap.fr/fete-de-la-science-2026-en-bourgogne-franche-comte-20966","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Primeiro-ministro galês convoca Burnham para entregar 'novo acordo' sobre devolução de poderes","resumo":"O líder do governo galês fez um apelo público para estabelecer um novo marco nas discussões sobre a descentralização de poderes administrativos. A proposta visa reestruturar a relação entre as nações constituintes do Reino Unido e o governo central. O debate reflete as tensões e os esforços contínuos pela autonomia regional no cenário político britânico.","link":"https://www.theguardian.com/politics/2026/oct/02/welsh-first-minister-rhun-ap-iorwerth-andy-burnham-devolution-wales-plaid-cymru","categoria":"POLÍTICA","lang":"pt"},{"fonte":"Agora RN","pais":"Brazil","titulo":"RN Startup Creates Technology to Reduce Wind Turbine Noise","resumo":"A startup from Rio Grande do Norte has developed an innovative technological solution to mitigate the noise generated by wind energy turbines. The initiative promises to improve coexistence between wind farms and local communities by minimizing neighborhood noise impacts. This breakthrough highlights the northeastern region's potential in creating sustainable and efficient engineering solutions for the energy sector.","link":"https://agorarn.com.br/economia/startup-do-rn-cria-uma-tecnologia-para-reduzir-ruido-de-aerogeradores/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The New York Times","pais":"United States","titulo":"The Science Behind Cavan Sullivan's Custom Adidas Cleats: Foot Scanning, Algorithms and 3D Printing","resumo":"Advanced athletic footwear technology has reached a new level with the use of digital scans and complex algorithms. Adidas applied these methods to develop fully customized cleats for young athlete Cavan Sullivan. 3D-printed manufacturing ensures a perfect anatomical fit, maximizing comfort and on-field performance through scientific innovation.","link":"https://www.nytimes.com/athletic/7649111/2026/10/03/cavan-sullivan-custom-cleats-science/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Auto Moto","pais":"France","titulo":"The Solid-State Battery Race Is Intense: When Will This Revolutionary Technology Arrive?","resumo":"The quest to develop solid-state batteries is advancing rapidly in today's tech sector. This innovation promises to transform the market for electric vehicles and portable electronics. The technology aims to offer greater range, enhanced safety, and considerably reduced charging times. Experts are debating the main industrial challenges and the estimated timeline for mass commercialization.","link":"https://www.auto-moto.com/en-bref/batterie-solide-lutte-byd-82123","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Periódico","pais":"England","titulo":"Nissan Tests Its Autonomous Cars on UK Streets","resumo":"Automaker Nissan has begun new autonomous vehicle tests on British public roads to evaluate the safety and viability of the technology. This initiative represents a significant step forward for smart urban mobility in the country. The project aims to integrate self-driving cars into real-world traffic, gathering crucial data for future regulations and commercial adoption.","link":"https://www.elperiodico.com/es/motor/20261003/nissan-pone-prueba-coches-autonomos-134787174","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Elplural.com","pais":"Spain","titulo":"KGM Updates Torres Actyon HEV and EVX with More Technology and Up to 412 Miles of Range","resumo":"KGM has renewed its lineup of electrified vehicles with significant improvements in technological systems and efficiency. The new models promise to redefine the sustainable SUV market with extended ranges. This evolution reflects the automotive industry's race toward smart and connected electrification.","link":"https://www.elplural.com/motor/coches/kgm-actualiza-torres-actyon-hev-evx-mas-tecnologia-hasta-664-km-autonomia_400886102_amp","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Artificial Intelligence - Aleph Alpha: 'Sovereign AI Made in Germany'","resumo":"German company Aleph Alpha stands out in the development of artificial intelligence focused on European technological sovereignty. The initiative aims to offer secure and reliable alternatives for the corporate and government markets. The focus is on ensuring compliance with the region's strict data protection laws.","link":"https://www.sueddeutsche.de/wirtschaft/kuenstliche-intelligenz-aleph-alpha-souveraene-ki-made-in-germany-dpa.urn-newsml-dpa-com-20090101-261003-930-782832","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"東洋経済オンライン","pais":"Japan","titulo":"JST President's Productivity Revolution Through Artificial Intelligence and Voice Input","resumo":"At 71 years old, the president of the Japan Science and Technology Agency has drastically transformed his work routine by adopting modern tools. Through the intensive use of voice recognition and generative artificial intelligence, he has achieved an impressive revolution in intellectual output. This shift demonstrates how senior leaders can optimize time and increase operational efficiency with accessible technologies.","link":"https://toyokeizai.net/articles/-/959783","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Vietnam.vn","pais":"China","titulo":"Digital Technology Gives New Impetus to the Modernization of Chinese Agriculture","resumo":"The integration of digital tools and technological innovation has profoundly transformed the agricultural sector in China. This modernization optimizes field production, increases process efficiency, and promotes the sustainable development of rural areas. Technological advancement strengthens the country's food security and serves as a model for emerging economies.","link":"https://www.vietnam.vn/pt/cong-nghe-so-tao-dong-luc-moi-cho-hien-dai-hoa-nong-nghiep-trung-quoc","categoria":"AGRICULTURE","lang":"en"},{"fonte":"Telegraph India","pais":"India","titulo":"Jio Plans to Expand Tech Offerings Beyond Telecom with AI and Network Software","resumo":"Indian telecom giant Jio is preparing to expand its technology portfolio, heavily betting on artificial intelligence and advanced network software solutions. This strategic move aims to consolidate the company not just as an operator, but as a complete provider of digital ecosystems. The impact of this expansion promises to accelerate digital transformation across various industrial sectors in India and strengthen the country's competitiveness in the global tech market.","link":"https://www.telegraphindia.com/business/jio-to-widen-tech-offerings-beyond-telecom-with-ai-network-software-prnt/cid/2182866","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"eldebate.com","pais":"Portugal","titulo":"A Hole the Size of Portugal Has Opened Up in Antarctica: Here Is What Science Explains","resumo":"An impressive phenomenon occurred in Antarctica with the emergence of a massive opening in the ice sheet. Scientists are studying the dynamics behind this extreme event to understand global climate impacts. The discovery reinforces the urgency of continuous monitoring of polar regions in the face of environmental changes.","link":"https://www.eldebate.com/ciencia/20261003/agujero-tamano-portugal-abrio-antartida-esto-explica-ciencia_464922.html","categoria":"SCIENCE","lang":"en"},{"fonte":"CNT","pais":"Brazil","titulo":"Project Using Technology to Increase Highway Safety Wins InovAprendiz 2026","resumo":"A project focused on using advanced technology to enhance safety on Brazilian highways has won first place in the InovAprendiz 2026 awards. The initiative by the National Confederation of Transport highlights smart tools capable of preventing accidents and monitoring traffic in real time. The award reinforces the importance of digital innovation in modernizing the country's infrastructure and transportation.","link":"https://www.cnt.org.br/agencia-cnt/projeto-que-usa-tecnologia-para-aumentar-a-segurana-nas-rodovias-vence-o-inovaprendiz-2026","categoria":"INNOVATION","lang":"en"},{"fonte":"ABC7 WWSB","pais":"United States","titulo":"Longboat Key Tests Artificial Intelligence Technology to Monitor Pedestrian Traffic","resumo":"The city of Longboat Key has implemented a pilot project using artificial intelligence to analyze the flow of people in the area. The tool captures real-time data to optimize urban planning and local public safety. This initiative reflects the growing trend of American municipalities adopting smart solutions for public space management.","link":"https://www.mysuncoast.com/2026/10/02/longboat-key-tests-ai-technology-track-foot-traffic/","categoria":"INNOVATION","lang":"en"},{"fonte":"Martin Cid Magazine","pais":"France","titulo":"Mark Zuckerberg and His Muse Charm: 'We Put a Lot of Technology Into This Little Figure'","resumo":"Mark Zuckerberg recently presented the Muse Charm, highlighting the project's strong technological appeal. The initiative aims to integrate advanced innovation into a compact, interactive format for the public. Analysts are discussing the potential impact of this novelty on the consumer electronics ecosystem. The launch reinforces the company's strategy to diversify its portfolio geared toward artificial intelligence.","link":"https://fr.martincid.com/technologie/mark-zuckerberg-et-son-muse-charm-nous-avons-mis-beaucoup-de-technologie-dans-ce-petit-bonhomme/","categoria":"INNOVATION","lang":"en"},{"fonte":"ITVX","pais":"England","titulo":"Sir Brian May Honors Professor Brian Cox for Science Communication","resumo":"Renowned musician and astrophysicist Sir Brian May presented a special award to Professor Brian Cox in recognition of his excellence in science communication. The tribute highlights the importance of making complex concepts accessible to the broader British public. This initiative strengthens the role of science communication in the country's modern education and culture.","link":"https://www.itv.com/watch/news/sir-brian-may-awards-professor-brian-cox-special-award-for-science-communication/rwxjhry","categoria":"SCIENCE","lang":"en"},{"fonte":"Salamanca24horas","pais":"Spain","titulo":"From Traffic and Citizen Safety to Heritage Protection: The High Technology Behind Salamanca's Cameras","resumo":"The Spanish city of Salamanca has implemented an advanced monitoring system based on artificial intelligence and high resolution. This technology aims to optimize urban management, ensuring greater protection for historical heritage and public safety. The initiative serves as a model for smart cities seeking to balance innovation and privacy.","link":"https://www.salamanca24horas.com/local/seguridad-vial-ciudadana-proteccion-patrimonio-alta-tecnologia-cuenta-salamanca-camaras","categoria":"INNOVATION","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Technology - Smart Glasses Generate More Work and Potential Conflicts","resumo":"The adoption of smart glasses in the workplace has increased productivity and operational efficiency across various sectors. However, the use of these technologies also raises concerns regarding employee privacy and increased pressure for results. Experts warn of the need for clear regulations to prevent labor conflicts.","link":"https://www.sueddeutsche.de/politik/technologie-smart-glasses-fuehren-zu-mehr-arbeit-und-potenziellem-aerger-dpa.urn-newsml-dpa-com-20090101-261003-930-782740","categoria":"INNOVATION","lang":"en"},{"fonte":"福井テレビ","pais":"Japan","titulo":"Hokuriku Technology Fair Features Special Exhibition on Physical AI Robots in Fukui","resumo":"The Hokuriku Technical Exchange Fair scheduled a special exhibition for October 22nd and 23rd focused on advanced robotics based on 'Physical AI.' The event takes place at the Fukui Prefecture Industrial Center, bringing together innovations that integrate artificial intelligence into the physical world. The initiative aims to foster partnerships and showcase the future of intelligent automation in Japan to the public.","link":"https://www.fukui-tv.co.jp/?post_type=fukui_news\u0026p=202610","categoria":"ROBOTICS","lang":"en"},{"fonte":"新浪财经","pais":"China","titulo":"Li Wenlong: The Acceleration Phase of AI Demands the Construction of a New Social Equilibrium System","resumo":"Experts point out that the rapid growth of artificial intelligence poses urgent structural challenges to the labor market and society. It is fundamental to develop new regulatory and welfare structures to mitigate potential inequalities. This adaptation ensures that the benefits of innovation are equitably distributed among the population.","link":"https://finance.sina.cn/2026-10-03/detail-initxnhc3974259.d.html?vt=4","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Notícias de Aveiro","pais":"Portugal","titulo":"University of Aveiro Develops 5G+/6G Radio Technology and Solutions for More Sustainable Microelectronics","resumo":"Portuguese academia is advancing in cutting-edge research by creating innovations aimed at future mobile communication networks. The project combines high-performance connectivity with eco-friendly practices in the manufacturing of microelectronics. This initiative positions the country at the forefront of sustainable technological development.","link":"https://www.noticiasdeaveiro.pt/ua-desenvolve-tecnologia-de-radio-5g-6g-e-solucoes-para-microeletronica-mais-sustentavel/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"itforum.com.br","pais":"Brazil","titulo":"AI, Data Centers, and Digital Government: The Technology Proposals of Caiado and Zema","resumo":"Discussions regarding the country's digital future are gaining momentum with the analysis of technological proposals from political leaders such as Caiado and Zema. The debate covers strategic investments in artificial intelligence, the expansion of data centers, and the digitization of government services. These guidelines reflect the urgency of modernizing technological infrastructure to boost national competitiveness and public efficiency.","link":"https://itforum.com.br/noticias/propostas-tecnologia-caiado-zema-eleicoes-2026/","categoria":"POLITICS","lang":"en"},{"fonte":"Yahoo Finance","pais":"United States","titulo":"Marvell Technology Unveils 2nm Optical Links and Secures AI Capacity","resumo":"Marvell Technology has revealed significant advancements in its semiconductor infrastructure aimed at next-generation networks. With new 2nm optical links, the company strengthens its strategic position within the artificial intelligence ecosystem. The move ensures greater energy efficiency and processing capacity to meet current high technological demand.","link":"https://finance.yahoo.com/technology/ai/articles/marvell-technology-mrvl-showcases-2nm-220627807.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Echo des Tribunes","pais":"France","titulo":"Hérault: With Its In Vitro Technology, This Company Is Responsible for One-Third of Bananas Consumed in France","resumo":"An innovative company based in Hérault uses advanced in vitro cultivation techniques to transform agriculture. The method guarantees the large-scale production of highly healthy seedlings that are resistant to pests. With this technology, the company single-handedly supplies about one-third of all bananas consumed in the country. This achievement highlights the importance of modern biotechnology in food security and agricultural efficiency.","link":"https://echo-des-tribunes.com/herault-tribune/articles/herault-avec-sa-technologie-in-vitro-cette-entreprise-est-responsable-dun-tiers-des-bananes-consommees-en-france","categoria":"SCIENCE","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Boy with Cerebral Palsy Passes Exams Using Eye-Tracking Technology","resumo":"A young student diagnosed with cerebral palsy successfully completed his school exams using innovative eye-tracking technology. The tool allowed him to communicate and answer tests autonomously, demonstrating the inclusive power of digital innovation. The case resonated positively in the United Kingdom, inspiring the use of assistive technologies in education.","link":"https://www.theguardian.com/education/2026/oct/02/patrick-mccabe-success-cheshire-reveals-limits-send-tech","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"lavanguardia.com","pais":"Spain","titulo":"Ainhoa Marcos, Art Historian: “Using AI Well Consists of Asking the Right Questions and Doubting the Answers Offered”","resumo":"In a recent interview, art historian Ainhoa Marcos reflected on the role of artificial intelligence in academic and cultural research. She emphasized that the tool requires rigorous critical thinking on the part of users. The specialist highlights that the value of the technology directly depends on human questioning capability.","link":"https://www.lavanguardia.com/neo/sociedad-neo/20261003/11643090/ainhoa-marcos-historiadora-arte-ia-consiste-preguntas-correctas-dudar-respuestas-ofrecidas.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Bloomberg.com","pais":"Germany","titulo":"Germany's Economy Could Grow 1% This Year, Bundesbank President Says","resumo":"The president of Germany's central bank, the Bundesbank, projected that the country's economy could register growth of around 1% in the current year. The estimate reflects a gradual recovery following a period of stagnation and inflationary challenges. Analysts are closely monitoring the impacts on supply chains and domestic consumption.","link":"https://www.bloomberg.com/news/articles/2026-10-02/german-economy-might-grow-1-this-year-bundesbank-chief-says","categoria":"ECONOMY","lang":"en"},{"fonte":"nikkei.com","pais":"Japan","titulo":"Domestic Defense Drones Gain Prominence Through Cooperation Between Japanese Technology and External Experience","resumo":"The sector of defense drones manufactured in Japan is heating up, driven by the need for innovation and international markets with high combat experience. The combination of Japanese technological excellence and the practical demand of foreign scenarios creates strategic opportunities for bilateral partnerships. Both sides hold aligned expectations for the joint development of more robust equipment.","link":"https://www.nikkei.com/article/DGXZQOUC037410T00C26A8000000/","categoria":"DEFENSE","lang":"en"},{"fonte":"12371.gov.cn","pais":"China","titulo":"Chongqing Bishan: Pilot Platform Builds a 'Bridge' for the Industrialization of Scientific Achievements","resumo":"The city of Chongqing Bishan has inaugurated a new pilot testing platform focused on accelerating the transition of scientific research to the market. The initiative shortens the distance between laboratories and large-scale industrial production in the region. Consequently, the local innovation ecosystem attracts more investment and invigorates the high-tech economy.","link":"https://m.12371.gov.cn/content/2026-10/03/content_516442.html","categoria":"INNOVATION","lang":"en"},{"fonte":"Tek Notícias","pais":"Portugal","titulo":"Repair Instead of Replace, Toward a More Sustainable Technology","resumo":"The debate over the durability of electronic devices is gaining traction with a focus on waste reduction. Experts point out that encouraging equipment repair is essential to reducing the industrial ecological footprint. This mindset shift promotes a more conscious consumption model in the technology sector.","link":"https://tek.sapo.pt/opiniao/artigos/reparar-em-vez-de-substituir-rumo-a-uma-tecnologia-mais-sustentavel/","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"Estadão","pais":"Brazil","titulo":"The ‘BYD Effect’ on Two Wheels: How CFMoto and Chinese Technology Will Change the Market","resumo":"The massive arrival of Asian innovations and brands is triggering a true revolution in the Brazilian motorcycle market. Inspired by the impact of automotive electrification, CFMoto's advance introduces new technologies and highly competitive performance standards. This phenomenon forces traditional manufacturers to accelerate their technological transitions to meet an increasingly demanding consumer base.","link":"https://www.estadao.com.br/em-alta/jornal-do-carro/rafael-togni/o-efeito-byd-sobre-duas-rodas-como-a-cfmoto-e-a-tecnologia-chinesa-vao-mudar-o-mercado/","categoria":"MARKET","lang":"en"},{"fonte":"Georgia Tech News Center","pais":"United States","titulo":"Georgia Tech and Amazon Launch Joint Science Hub","resumo":"The Georgia Institute of Technology has joined forces with Amazon to inaugurate a collaborative scientific research hub. The partnership will focus on developing new technologies, driving advancements in both the academic and industrial fields. The initiative promises to accelerate groundbreaking discoveries that will directly impact the future of computing and automation.","link":"https://news.gatech.edu/news/2026/10/02/georgia-tech-and-amazon-launch-joint-science-hub","categoria":"SCIENCE","lang":"en"},{"fonte":"Le Figaro","pais":"France","titulo":"Titanium, Sapphire Glass, and Cutting-Edge Tech: This Huawei Watch 5 Is One of the Most Stunning Smartwatches","resumo":"Huawei has announced its new smartwatch, combining premium materials such as titanium and sapphire glass. The device stands out for its sophisticated design paired with advanced health and performance monitoring features. The piece seeks to attract consumers who value both luxury aesthetics and top-tier wearable technology. The launch reinforces fierce competition in the high-end smartwatch segment.","link":"https://www.lefigaro.fr/bons-plans/high-tech/titane-verre-saphir-et-technologie-de-pointe-cette-huawei-watch-5-est-l-une-des-plus-belles-montres-connectees-20261003","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"United Kingdom","titulo":"There Is a Way to Care for People, the Planet, and Britain's Growth: The Wellbeing Economy","resumo":"Experts are discussing the transition to the so-called 'wellbeing economy,' a model that prioritizes environmental sustainability and the population's quality of life. The proposal aims to redefine traditional metrics of economic growth in the UK to ensure a more balanced future. The debate is gaining momentum among policymakers interested in social innovation.","link":"https://www.theguardian.com/commentisfree/2026/oct/02/people-planet-britain-growth-wellbeing-economy","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"Atlántico","pais":"Spain","titulo":"Vigo Technology Headed to Space Aboard Elon Musk's Rocket","resumo":"Technological components developed in the Galician city of Vigo have been selected to be part of a SpaceX space mission. This achievement highlights the engineering and innovation capacity of local companies on the international stage. The milestone strengthens Spain's position in the global aerospace supply chain.","link":"https://www.atlantico.net/economia/tecnologia-viguesa-rumbo-espacio-cohete_1_20261003-4436910.html","categoria":"SCIENCE","lang":"en"},{"fonte":"东方财富","pais":"Germany","titulo":"ECB Governing Council Member Nagel Says Germany's Economy Could Grow Around 1% This Year","resumo":"Joachim Nagel, a member of the European Central Bank's Governing Council, stated that the German economy is showing signs of stabilization with prospects for moderate growth. The statement reinforces confidence in the resilience of the industrial sector and the recovery of the eurozone. Monetary policies will continue to be adjusted to curb remaining inflationary risks.","link":"https://wap.eastmoney.com/a/202610033888437040.html","categoria":"ECONOMY","lang":"en"},{"fonte":"凤凰网","pais":"Japan","titulo":"Sanae Takaichi Aims to Use Artificial Intelligence to Accelerate Japan's Economy","resumo":"Political leader Sanae Takaichi has demonstrated a strong interest in positioning artificial intelligence as the main engine to boost Japan's economy. The strategy aims to overcome structural productivity challenges and accelerate growth through the massive adoption of emerging technologies. This vision places digital innovation at the center of the country's economic development policies.","link":"https://news.ifeng.com/c/8wuqb1yWw2P","categoria":"ECONOMY","lang":"en"},{"fonte":"电子工程专辑","pais":"China","titulo":"Achieving Deep Integration of MEMS Spectral Technology and AI, Xunjie Guangyuan Closes Series B Financing of Over 100 Million Yuan","resumo":"Xunjie Guangyuan has secured a financial injection of over 100 million yuan in its Series B investment round. The funds will be directed toward advancing the innovative fusion of MEMS spectral technology with artificial intelligence. This combination promises to revolutionize applications in precision sensing and material analysis within the industrial market.","link":"https://www.eet-china.com/mp/a528729.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Igreja Açores","pais":"Portugal","titulo":"Bishop José Tolentino Mendonça Argues That Technology Can Never Replace Human Guidance","resumo":"Amid rapid advances in artificial intelligence and automation, the importance of empathy is emphasized. Intellectual leaders remind us that human sensitivity is irreplaceable in educational processes and caregiving. This reflection guides the ethical and balanced use of digital tools in modern society.","link":"https://www.igrejaacores.pt/d-jose-tolentino-mendonca-defende-que-tecnologia-nunca-substitui-acompanhamento-humano/","categoria":"SOCIETY","lang":"en"},{"fonte":"ifal.edu.br","pais":"Brazil","titulo":"Maris: A Social Technology from Ifal Unites Artisanal Fishing, Science, and Public Policy","resumo":"Developed by the Federal Institute of Alagoas, the Maris social technology connects artisanal fishing with cutting-edge scientific research and public policy formulation. The tool aims to optimize the activity of traditional fishers, ensuring economic sustainability and environmental preservation in the coastal region. The project exemplifies how applied science can generate productive inclusion and transform local realities.","link":"https://www2.ifal.edu.br/campus/benedito/noticias/maris-uma-tecnologia-social-do-ifal-que-une-a-pesca-artesanal-pesquisa-cientifica-e-proposta-de-politicas-publicas","categoria":"SCIENCE","lang":"en"},{"fonte":"CNBC","pais":"United States","titulo":"Ben Lamm of Colossal Biosciences Talks AI and the Science of De-Extinction","resumo":"Colossal Biosciences is at the forefront of biotechnology by utilizing AI to make species de-extinction projects viable. Co-founder Ben Lamm discussed how advanced algorithms assist in the genetic analysis of extinct animals. The application of these computational tools accelerates complex research and redefines the limits of modern environmental conservation.","link":"https://www.cnbc.com/video/2026/10/02/colossal-biosciences-ben-lamm-on-ai-and-the-science-of-de-extinction.html","categoria":"SCIENCE","lang":"en"},{"fonte":"inrap.fr","pais":"France","titulo":"Event: 2026 Fête de la Science in Île-de-France","resumo":"The Île-de-France region is preparing to host another edition of the traditional Fête de la Science. The event aims to bring the general public closer to major academic innovations and recent scientific discoveries. Various research institutions will open their doors for interactive workshops and educational lectures. The initiative seeks to spark the interest of youth and adults alike in the scientific and technological universe.","link":"https://www.inrap.fr/fete-de-la-science-2026-en-ile-de-france-20967","categoria":"SCIENCE","lang":"en"},{"fonte":"BBC","pais":"United Kingdom","titulo":"Is UK Politics Centered Around the Baby Boomer Generation?","resumo":"Political analysts are debating whether the British political and legislative system has excessively prioritized the interests of the baby boomer generation to the detriment of youth. The discussion addresses the impact of public policies in areas such as housing, the economy, and social security. The topic has sparked intense debates on representation and generational equity in the country.","link":"https://www.bbc.co.uk/news/videos/c9n73ly655ero","categoria":"TRENDING TOPICS","lang":"en"},{"fonte":"Interempresas Media","pais":"Spain","titulo":"Hiperbaric Boosts Cold Processing with Its HPP High-Pressure Technology","resumo":"Hiperbaric is leading innovation in the food industry through advanced high-pressure processing systems. This technology allows food to be preserved while maintaining its nutritional properties without the use of chemical additives. This industrial solution is gaining global recognition for its efficiency and sustainability.","link":"https://www.interempresas.net/Alimentaria/662765-Hiperbaric-impulsa-el-procesado-en-frio-con-su-tecnologia-de-altas-presiones-HPP.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Deutschlandfunk","pais":"Germany","titulo":"Economy - Report: Federal Government Initiates Reprivatization of Gas Giant Sefe","resumo":"The German government has officially initiated the reprivatization process for energy company Sefe, previously nationalized during the gas crisis. The move marks an important step in the normalization of the country's energy sector following past supply shocks. The goal is to return the company to private control in a structured and transparent manner.","link":"https://www.deutschlandfunk.de/bericht-bund-leitet-reprivatisierung-des-gaskonzerns-sefe-ein-102.html","categoria":"BUSINESS","lang":"en"},{"fonte":"株式会社エクサウィザーズ","pais":"Japan","titulo":"Anthropic Launches Program to Train 10,000 Engineers from Client Companies in Its Own Standards","resumo":"Anthropic has launched an ambitious initiative to train 10,000 engineers from partner companies in accordance with its rigorous technical guidelines. The project aims to raise the level of expertise in corporate artificial intelligence use with a focus on security and efficiency. This action strengthens the technological ecosystem and ensures that developers master industry best practices.","link":"https://exawizards.com/column/ai-trend/news-10-03-2026-2/","categoria":"INNOVATION","lang":"en"},{"fonte":"电子工程专辑","pais":"China","titulo":"Extended Reality Technology Brings Humans and Machines Closer on the Factory Floor","resumo":"The implementation of extended reality (XR) solutions in industrial environments is redefining the interaction between operators and complex equipment. The technology enables real-time visualizations, improving precision and safety on assembly lines. This evolution consolidates the transition toward smarter, more connected factories.","link":"https://www.eet-china.com/news/202609167725.html","categoria":"AUTOMATION","lang":"en"},{"fonte":"Agência ECCLESIA","pais":"Portugal","titulo":"Education and AI: Pedagogy matters more than technology, notes João Couvaneiro regarding teachers","resumo":"The introduction of artificial intelligence tools in schools requires caution and structured pedagogical planning. Experts emphasize that the teacher's role remains the fundamental pillar for knowledge mediation. Technology should act as support without overriding the essence of the teaching relationship.","link":"https://agencia.ecclesia.pt/portal/educacao-ia-mais-do-que-a-tecnologia-importa-a-pedagogia-afirmou-joao-couvaneiro-apontando-o-papel-insubstituivel-dos-professores/","categoria":"EDUCATION","lang":"en"},{"fonte":"gurupi.to.gov.br","pais":"Brazil","titulo":"New technology: Female Aedes aegypti mosquitoes become allies in the fight against dengue using dissemination stations","resumo":"The municipality of Gurupi has implemented a new technology based on the strategic use of female Aedes aegypti mosquitoes in dissemination stations to combat dengue fever. This biological and technological method aims to reduce the disease-vector population in a controlled and sustainable manner in the region. The initiative emerges as a promising alternative to traditional methods of urban endemic disease control.","link":"https://gurupi.to.gov.br/2026/10/nova-tecnologia-femea-do-aedes-aegypti-vira-aliada-no-combate-a-dengue-em-gurupi-com-uso-de-estacoes-disseminadoras/","categoria":"HEALTH","lang":"en"},{"fonte":"WiWo","pais":"United States","titulo":"US Economy: American families may have to pay thousands of dollars more for energy due to Trump's policies","resumo":"Recent economic analyses indicate that potential changes in US energy guidelines could considerably raise costs for consumers. The financial impact, estimated at thousands of dollars per household, reflects the energy sector's sensitivity to political decisions. The issue sparks heated debates about the future of the energy matrix and the public's wallet.","link":"https://www.wiwo.de/politik/ausland/us-wirtschaft-us-haushalte-muessen-wohl-tausende-dollar-mehr-fuer-energie-zahlen-wegen-trumps-politik/100259371.html","categoria":"ECONOMY","lang":"en"},{"fonte":"inrap.fr","pais":"France","titulo":"Event: 2026 Science Festival in Bourgogne-Franche-Comté","resumo":"The Bourgogne-Franche-Comté region has announced the official schedule for this year's Science Festival. Various interactive activities have been planned to promote scientific knowledge in schools and public spaces. The event features participation from local researchers eager to share their discoveries with the community. The celebration reinforces the region's commitment to education and technological outreach.","link":"https://www.inrap.fr/fete-de-la-science-2026-en-bourgogne-franche-comte-20966","categoria":"SCIENCE","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Welsh First Minister calls on Burnham to deliver 'new deal' on devolution of powers","resumo":"The leader of the Welsh government has made a public appeal to establish a new framework for discussions on the decentralization of administrative powers. The proposal aims to restructure the relationship between the constituent nations of the United Kingdom and the central government. The debate reflects ongoing tensions and efforts for regional autonomy within the British political landscape.","link":"https://www.theguardian.com/politics/2026/oct/02/welsh-first-minister-rhun-ap-iorwerth-andy-burnham-devolution-wales-plaid-cymru","categoria":"POLITICS","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
