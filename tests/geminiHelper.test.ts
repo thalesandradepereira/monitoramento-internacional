@@ -24,10 +24,19 @@ test('quota diária/RPD esgotada é distinguida de rate limit transitório', () 
     '429 Rate limit exceeded for model gemini-3.6-flash (limit: 20 requests per day on Free Tier). Please retry in 11s or upgrade your tier at https://ai.dev/rate-limit.',
   )
 
+  // Texto exato recebido na run 37102216929 em 03/10/2026; antes era confundido com RPM.
+  const genericProjectQuotaError = Object.assign(
+    new Error('429 Your project has exceeded a quota. See https://ai.dev/rate-limit to manage your rate limits.'),
+    { status: 429 },
+  )
+  assert.equal(isGeminiQuotaExhausted(genericProjectQuotaError), true)
+  assert.equal(isRetryableGeminiError(genericProjectQuotaError), false)
   assert.equal(isGeminiQuotaExhausted(quotaError), true)
   assert.equal(isGeminiQuotaExhausted(productionQuotaError), true)
   assert.equal(isRetryableGeminiError(productionQuotaError), false)
   assert.equal(isGeminiQuotaExhausted(new Error('429 Too Many Requests. Please retry in 15s.')), false)
+  assert.equal(isRetryableGeminiError(new Error('429 Too Many Requests. Please retry in 15s.')), true)
+  assert.equal(isGeminiQuotaExhausted(new Error('429 quota temporarily exceeded for RPM; retry in 30s')), false)
   assert.equal(isGeminiQuotaExhausted(new Error('503 service unavailable')), false)
 })
 

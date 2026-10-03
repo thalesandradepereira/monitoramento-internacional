@@ -50,7 +50,11 @@ function errorStatus(error: unknown): number | undefined {
 
 export function isGeminiQuotaExhausted(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error)
-  return /exceeded your current quota/i.test(message)
+  // A Interactions API também devolve esta mensagem genérica para quota do projeto.
+  // Tratar como quota indisponível neste run aciona o modelo alternativo sem retries
+  // de 40s. Se ambos falharem, o guard editorial continua bloqueando publicação parcial.
+  return /(?:your\s+)?project\s+has\s+exceeded\s+(?:a|its)\s+quota\b/i.test(message)
+    || /exceeded your current quota/i.test(message)
     || /quota exceeded for metric:/i.test(message)
     || /rate limit exceeded[^\n]*requests per day[^\n]*free tier/i.test(message)
     || /limit:\s*\d+\s+requests per day on free tier/i.test(message)

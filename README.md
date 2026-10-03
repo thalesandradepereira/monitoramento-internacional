@@ -8,7 +8,7 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.10
+> **Versão / Version:** 1.1.11
 >
 > **Fuso operacional / Operational timezone:** `America/Sao_Paulo`
 >
@@ -29,6 +29,16 @@ A arquitetura opera com três princípios centrais:
 - **fail-closed:** estado incerto ou entrega parcial nunca autoriza retry cego;
 - **idempotência diária:** uma data já concluída não gera novo e-mail ou nova Story;
 - **múltiplos relógios:** GitHub principal, watchdog e Google Cloud Scheduler podem acordar o pipeline de forma redundante.
+
+### Release v1.1.11 — detecção da quota genérica Gemini em 03/10/2026
+
+A run [37102216929](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/37102216929) recebeu **HTTP 429: `Your project has exceeded a quota`** ao resumir o Brasil. A classificação anterior reconhecia quota diária explícita, porém não esta resposta genérica da Interactions API. Assim, repetiu o pedido ao mesmo modelo (esperas de 40s), registrou Brasil como falha e só acionou o fallback após receber outra variante da mensagem para Estados Unidos. O guard `assertEditorialCoverage` bloqueou corretamente a publicação parcial.
+
+A recuperação automática [37103861595](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/37103861595) concluiu a edição às 03h48 BRT: **8/8 e-mails enviados, 0 falhas**. Não executar novamente um disparo real para esta data.
+
+**QA e segurança adicional:** o CI detectou advisory HIGH recém-publicado para Nodemailer 9.1.1. Dependência direta migrada para Nodemailer 10.0.13 (compatível com Node.js 22), com validação de npm audit, contratos SMTP e TypeScript antes do merge.
+
+**Correção:** reconhecer também `Your project has exceeded a quota` como indisponibilidade de quota do modelo, acionar imediatamente `GEMINI_MODEL_SUMMARY_FALLBACK` para **o mesmo país** e preservar o bloqueio de toda a edição se ambos os modelos falharem. Respostas 429 temporárias sem sinal de quota continuam elegíveis a retry. Os testes `tests/geminiHelper.test.ts` e `tests/summarizeFallback.test.ts` simulam as mensagens reais e as duas trajetórias, sem rede, tokens ou envios externos. Nenhuma alteração em cron, D1, SMTP, estado operacional ou publicador social.
 
 ### Release v1.1.10 — resiliência editorial e quota Gemini em 24/09/2026
 
@@ -192,6 +202,7 @@ O gate de release também valida YAML, whitespace, artefatos do dia, GitHub Page
 
 | Versão | Data | Destaque |
 |---|---|---|
+| **v1.1.11** | **03/10/2026** | reconhecimento da mensagem genérica 429, fallback do mesmo país e regressão fail-closed |
 | v1.1.7 | 03/09/2026 | circuit breaker/fallback Gemini e recuperação conservadora de stale `in_progress` |
 | v1.1.8 | 04/09/2026 | validação operacional diária e prova do failsafe externo anterior |
 | **v1.1.10** | **24/09/2026** | quota Gemini corrigida, fallback efetivo, fail-closed editorial, MAX_TOPICOS global e Nodemailer saneado |
@@ -210,6 +221,16 @@ O Google Cloud Scheduler remove o **scheduler do GitHub** como relógio único, 
 **Global Media Monitoring** is an automated pipeline that collects and deduplicates international news, uses Google Gemini for editorial triage and summarization, generates **PT-BR** and **EN-US** output, publishes a daily HTML dashboard, sends individualized e-mails, and wakes the private social publisher.
 
 The system is built around **fail-closed behavior**, **daily idempotency**, and **multiple clocks**.
+
+### v1.1.11 — generic Gemini project quota recovery (2026-10-03)
+
+Run [37102216929](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/37102216929) returned **HTTP 429: `Your project has exceeded a quota`** while processing Brazil. The existing quota classifier covered explicit daily-limit responses, but not this generic Interactions API wording. As a result, it retried the exhausted primary model, skipped Brazil on failure and only switched models for subsequent countries. The existing editorial coverage guard correctly prevented a partial release.
+
+Automatic recovery run [37103861595](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/37103861595) completed the day's edition (8/8 e-mails sent, zero failures). Do not replay production for this date.
+
+Security QA also identified a new HIGH advisory for Nodemailer 9.1.1. This release upgrades the direct dependency to Nodemailer 10.0.13, subject to CI audit, mocked SMTP regression and TypeScript checks.
+
+The fix recognizes generic project quota exhaustion and immediately tries the configured fallback **for the same country**, while preserving retries for genuine transient 429 responses and fail-closed publication if both models are unavailable. Regression coverage: `tests/geminiHelper.test.ts` and `tests/summarizeFallback.test.ts` (fully mocked; no external side effects). Schedules, recipients, SMTP, operational state and social publishing remain unchanged.
 
 ### v1.1.10 — editorial resilience and Gemini quota hardening on 2026-09-24
 

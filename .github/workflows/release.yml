@@ -1,4 +1,4 @@
-name: Publicar v1.1.10
+name: Publicar v1.1.11
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
     paths:
       - '.github/workflows/release.yml'
-      - 'scripts/prepare-release-v1.1.10.mjs'
+      - 'scripts/prepare-release-v1.1.11.mjs'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-v1.1.10
+  group: release-v1.1.11
   cancel-in-progress: false
 
 jobs:
@@ -37,22 +37,21 @@ jobs:
           node-version: '22'
           cache: npm
 
-      - name: Preparar metadados v1.1.10 em memória
-        run: node scripts/prepare-release-v1.1.10.mjs
+      - name: Preparar metadados v1.1.11 em memória
+        run: node scripts/prepare-release-v1.1.11.mjs
 
       - name: Validar metadados e artefatos de produção
         shell: bash
         run: |
           set -euo pipefail
-          node -e "const p=require('./package.json'); if (p.version !== '1.1.10') process.exit(1)"
-          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.10' || p.packages[''].version !== '1.1.10') process.exit(1)"
-          grep -Fq '**Versão / Version:** 1.1.10' README.md
-          grep -Fq '### Release v1.1.10 — resiliência editorial e quota Gemini em 24/09/2026' README.md
-          grep -Fq '### v1.1.10 — editorial resilience and Gemini quota hardening on 2026-09-24' README.md
-          grep -Fq '36000119423' README.md
-          grep -Fq '36000295410' README.md
-          grep -Fq '36000497178' README.md
-          grep -Fq 'nodemailer' README.md
+          node -e "const p=require('./package.json'); if (p.version !== '1.1.11') process.exit(1)"
+          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.11' || p.packages[''].version !== '1.1.11') process.exit(1)"
+          grep -Fq '**Versão / Version:** 1.1.11' README.md
+          grep -Fq '### Release v1.1.11 — detecção da quota genérica Gemini em 03/10/2026' README.md
+          grep -Fq '### v1.1.11 — generic Gemini project quota recovery (2026-10-03)' README.md
+          grep -Fq '37102216929' README.md
+          grep -Fq '37103861595' README.md
+          grep -Fq 'tests/summarizeFallback.test.ts' README.md
           test ! -f recipients.txt
           RELEASE_DATE="$(TZ=America/Sao_Paulo date +%d-%m-%Y)"
           ISO_DATE="$(TZ=America/Sao_Paulo date +%Y-%m-%d)"
@@ -85,7 +84,7 @@ jobs:
         run: npm --prefix infra/gcp-scheduler-relay test
 
       - name: Build do relay
-        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.10 infra/gcp-scheduler-relay
+        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.11 infra/gcp-scheduler-relay
 
       - name: Validar YAML e whitespace
         shell: bash
@@ -98,7 +97,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4 v1.1.5 v1.1.6 v1.1.7 v1.1.8 v1.1.9; do
+          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4 v1.1.5 v1.1.6 v1.1.7 v1.1.8 v1.1.9 v1.1.10; do
             gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
             git cat-file -e "$tag^{commit}"
             if git ls-tree -r --name-only "$tag" | grep -Eq '(^|/)recipients\.txt$'; then
@@ -141,7 +140,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           if ! git diff --quiet -- package.json package-lock.json README.md; then
             git add package.json package-lock.json README.md
-            git commit -m 'chore: preparar release v1.1.10'
+            git commit -m 'chore: preparar release v1.1.11'
             pushed=false
             for attempt in 1 2 3; do
               if git push origin HEAD:main; then
@@ -154,35 +153,40 @@ jobs:
           fi
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Criar release v1.1.10
+      - name: Criar release v1.1.11
         shell: bash
         env:
           RELEASE_SHA: ${{ steps.persist.outputs.sha }}
         run: |
           set -euo pipefail
-          if gh release view v1.1.10 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'Release v1.1.10 já existe; nenhuma duplicação será criada.'
+          if gh release view v1.1.11 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Release v1.1.11 já existe; nenhuma duplicação será criada.'
             exit 0
           fi
           cat > /tmp/release-notes.md <<'EOF'
-          ## Monitoramento Internacional v1.1.10
+          ## Monitoramento Internacional v1.1.11
 
-          Correção de resiliência editorial após a degradação parcial observada em 24/09/2026.
+          Correção de regressão de quota da Gemini Interactions API — 03/10/2026.
 
-          ### Correções
-          - detecção da mensagem real de quota diária do Gemini Free Tier (20 requests/day);
-          - fallback imediato para `gemini-3.5-flash-lite` quando a quota diária do modelo editorial primário se esgota;
-          - fail-closed editorial: falha em qualquer país com candidatos bloqueia dashboard/e-mail parcial;
-          - `MAX_TOPICOS` aplicado como teto global com distribuição round-robin entre países;
-          - Nodemailer atualizado para 9.1.1 para remover advisories de alta severidade.
+          ### Causa
+          - run 37102216929: mensagem 429 genérica "Your project has exceeded a quota" não era reconhecida como quota indisponível;
+          - Brasil falhou após retries de 40s; o fallback foi aplicado apenas para os países seguintes;
+          - guard editorial bloqueou corretamente dashboard/e-mail incompleto.
 
-          ### Evidência
-          - produção de 24/09: 939 notícias únicas, 117 candidatas, apenas 8 publicadas antes da correção;
-          - TDD RED: run `36000119423`, 4 falhas esperadas;
-          - TDD GREEN: run `36000295410`, regressões aprovadas;
-          - CI completo pré-merge: run `36000497178`, todos os gates aprovados.
+          ### Mudanças
+          - reconhecer a resposta genérica de quota e usar o modelo alternativo no próprio país afetado;
+          - manter retry de 429 transitório sem sinal de quota;
+          - preservar fail-closed se os dois modelos editoriais estiverem indisponíveis;
+          - adicionar regressões unitárias e integradas simuladas, sem efeitos externos;
+          - atualizar Nodemailer de 9.1.1 para 10.0.13 devido aos advisories de severidade alta;
+          - atualizar documentação PT-BR/EN-US e metadados de versão.
 
-          ### Garantia operacional
-          A edição deixa de ser considerada válida quando a consolidação editorial falha parcialmente. O pipeline passa a preferir falhar de forma explícita a publicar uma edição incompleta silenciosamente.
+          ### Recuperação observada
+          - run 37103861595, 03/10/2026: conclusão success, 8/8 e-mails enviados, zero falhas;
+          - replay em produção deliberadamente evitado por idempotência.
+
+          ### Gate
+          Audit, testes completos, TypeScript, Worker/relay, Docker, YAML, whitespace,
+          estado diário, GitHub Pages e status social devem estar aprovados antes da publicação.
           EOF
-          gh release create v1.1.10 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.10' --notes-file /tmp/release-notes.md
+          gh release create v1.1.11 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.11' --notes-file /tmp/release-notes.md
