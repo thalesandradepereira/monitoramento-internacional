@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-6/7WrCRqmv1eoi+Gj+2M44nM'; script-src 'nonce-6/7WrCRqmv1eoi+Gj+2M44nM'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="6/7WrCRqmv1eoi+Gj+2M44nM">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">04/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="6/7WrCRqmv1eoi+Gj+2M44nM">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Jornal Grande Bahia","pais":"Brasil","titulo":"Brasil fica em 53º no Índice Global de Inovação 2026, ocupa 2º lugar na América Latina e mantém avanço em ciência e tecnologia","resumo":"O Brasil conquistou a 53ª posição no Índice Global de Inovação de 2026, mantendo a vice-liderança na América Latina.\nO resultado reflete o avanço contínuo do país em pesquisas científicas, produção acadêmica e investimentos tecnológicos.\nEspecialistas destacam a importância de manter incentivos para fortalecer a competitividade industrial e o ecossistema de startups.","link":"https://jornalgrandebahia.com.br/2026/10/brasil-fica-em-53o-no-indice-global-de-inovacao-2026-ocupa-2o-lugar-na-america-latina-e-mantem-avanco-em-ciencia-e-tecnologia/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Investing.com India","pais":"Estados Unidos","titulo":"Casa Branca cria força-tarefa de IA para avaliar riscos tecnológicos","resumo":"A Casa Branca anunciou a criação de uma força-tarefa dedicada a avaliar e mitigar os riscos associados ao avanço acelerado da inteligência artificial.\nA iniciativa busca estabelecer diretrizes de segurança, privacidade e governança para garantir o desenvolvimento responsável das novas tecnologias.\nO movimento reflete a crescente preocupação das autoridades americanas com o impacto da IA na segurança nacional e no mercado de trabalho.","link":"https://in.investing.com/news/economy-news/white-house-forms-ai-task-force-to-assess-technology-risks--wsj-5617525","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Vietnam.vn","pais":"França","titulo":"A tecnologia de qubits de hélio superfluido pode revolucionar a computação quântica","resumo":"A utilização de hélio superfluido no desenvolvimento de qubits surge como uma promessa para superar os limites da computação quântica.\nA tecnologia oferece maior estabilidade ao sistema, reduzindo significativamente a perda de dados e o ruído térmico.\nEsse avanço pode acelerar a criação de supercomputadores mais eficientes para pesquisas científicas e industriais complexas.","link":"https://www.vietnam.vn/fr/cong-nghe-qubit-helium-sieu-long-co-the-cach-mang-hoa-luong-tu","categoria":"COMPUTAÇÃO QUÂNTICA","lang":"pt"},{"fonte":"The Telegraph","pais":"Inglaterra","titulo":"Casa Branca cria força-tarefa de IA para relatar riscos da tecnologia","resumo":"A Casa Branca anunciou a criação de uma força-tarefa especializada para avaliar e monitorar os riscos associados à inteligência artificial. A iniciativa busca mapear ameaças à segurança nacional, privacidade de dados e impactos no mercado de trabalho. O grupo de trabalho emitirá relatórios periódicos recomendando regulamentações e diretrizes para o desenvolvimento ético do setor. A medida reflete a crescente preocupação governamental em equilibrar a inovação tecnológica com a proteção da sociedade.","link":"https://www.telegraph.co.uk/us/news/2026/10/04/white-house-forms-new-ai-task-force/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"A Lua pode ter nascido em apenas cinco horas: a descoberta que reescreve o que sabíamos sobre sua origem","resumo":"Simulações de alta resolução revelam que a Lua pode ter se formado em poucas horas após o impacto de um protoplaneta com a Terra primitiva, contrariando teorias antigas.\nA nova hipótese resolve enigmas históricos sobre a similaridade de composição entre a Terra e seu satélite natural.\nEssa descoberta revoluciona o entendimento da astrofísica sobre a evolução do Sistema Solar e os processos de formação planetária.","link":"https://www.eldebate.com/ciencia/20261004/luna-pudo-nacer-solo-cinco-horas-descubrimiento-reescribe-todo-creiamos-sobre-origen_464930.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Indústria de semicondutores: Erfurt se consolida como polo de chips com grande projeto","resumo":"A cidade de Erfurt consolida sua posição estratégica como um polo essencial para a indústria de semicondutores na Alemanha.\nO novo megaprojeto atrai investimentos massivos e fortalece a infraestrutura local de produção de microchips.\nA iniciativa visa diminuir a dependência de fornecedores externos e garantir maior autonomia tecnológica para a Europa.\nO movimento reflete o papel decisivo do país na reestruturação das cadeias globais de suprimentos.","link":"https://www.sueddeutsche.de/wirtschaft/halbleiterindustrie-grossprojekt-erfurt-behauptet-sich-als-halbleiter-standort-dpa.urn-newsml-dpa-com-20090101-261004-930-785711","categoria":"SEMICONDUTORES","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Japão em 2023 e OCDE em 2025: Especialista questiona comparação do uso de IA no Relatório do Trabalho","resumo":"O Livro Branco da Economia do Trabalho do Japão comparou a taxa de uso de inteligência artificial no país com dados de projeção da OCDE para 2025, gerando questionamentos de especialistas sobre a metodologia adotada.\nA análise aponta divergências nas bases temporais e conceituais do levantamento, o que pode distorcer a real percepção da adoção da tecnologia pelas empresas japonesas.\nO debate reforça a importância de métricas precisas para orientar políticas públicas e estratégias de inovação no país.","link":"https://news.yahoo.co.jp/expert/articles/7e723ec064c78b26a731efeb6af033c34f71a21d","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"21财经","pais":"China","titulo":"Apenas 1 tubo de sangue! Nova tecnologia desenvolvida por professores e alunos pode superar o desafio da triagem precoce do câncer gástrico","resumo":"Pesquisadores na China desenvolveram uma técnica inovadora baseada em apenas uma amostra de sangue para a detecção precoce do câncer gástrico. Essa solução médica promete revolucionar os exames preventivos, aumentando drasticamente as taxas de cura e sobrevida dos pacientes. O avanço representa um marco importante na aplicação de biotecnologia para diagnósticos rápidos e menos invasivos na área da saúde.","link":"https://www.21jingji.com/article/20261004/herald/3e08f455c202c9751e0509f2d2b985a1.html","categoria":"SAÚDE","lang":"pt"},{"fonte":"The Economic Times","pais":"Índia","titulo":"Canon negocia com empresas de projetos de chips na Índia e planeja centros de serviço locais","resumo":"A gigante de imagens Canon está em negociações estratégicas com os principais atores envolvidos no ecossistema de semicondutores na Índia. A iniciativa visa estabelecer centros de suporte técnico e serviço localmente, fortalecendo a cadeia de suprimentos tecnológica do país. Essa movimentação reflete o crescimento da Índia como um polo emergente de fabricação de chips e atrai investimentos globais cruciais para o setor.","link":"https://m.economictimes.com/industry/cons-products/electronics/canon-in-talks-with-those-engaged-in-key-chip-projects-in-india-plans-local-service-centres/articleshow/134670273.cms","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Países colocam freio na Inteligência Artificial","resumo":"Governos de diversas nações começam a impor restrições e regulamentações mais rígidas sobre o desenvolvimento da Inteligência Artificial. A medida busca conter riscos associados à privacidade, segurança de dados e ao uso ético dessas ferramentas. Esse movimento marca uma transição importante na governança global da tecnologia em direção a um controle mais efetivo.","link":"https://www.cmjornal.pt/tecnologia/amp/paises-metem-travao-a-inteligencia-artificial","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Canal Rural","pais":"Brasil","titulo":"Tecnologia inédita da Embrapa transforma açúcar em matéria-prima para a indústria","resumo":"Pesquisadores da Embrapa desenvolveram uma tecnologia pioneira capaz de converter açúcar em insumo industrial de alto valor.\nA inovação promete reduzir a dependência de fontes fósseis e criar alternativas sustentáveis para diversos setores químicos.\nO avanço posiciona o Brasil na vanguarda da bioeconomia global, unindo biotecnologia e sustentabilidade agrícola.","link":"https://www.canalrural.com.br/diversos/tecnologia-inedita-da-embrapa-transforma-acucar-em-materia-prima-para-industria/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"WSJ","pais":"Estados Unidos","titulo":"Exclusivo: Novo czar da IA revela metas e membros da força-tarefa da Casa Branca","resumo":"O recém-nomeado responsável pela estratégia de inteligência artificial nos Estados Unidos apresentou publicamente as metas prioritárias do novo grupo governamental.\nA equipe contará com proeminentes especialistas, líderes do setor tecnológico e autoridades regulatórias para liderar os esforços de supervisão.\nO plano de ação foca na criação de frameworks para mitigar riscos catastróficos sem sufocar a inovação e o protagonismo do país na área.","link":"https://www.wsj.com/tech/ai/new-ai-task-force-to-report-on-risks-of-technology-after-public-and-industry-concerns-b6308bef","categoria":"GOVERNANÇA DIGITAL","lang":"pt"},{"fonte":"Futura, le média qui explore le monde","pais":"França","titulo":"Esta tecnologia de bateria dispensa o lítio e busca uma recarga quase instantânea","resumo":"Pesquisadores desenvolveram uma alternativa promissora às baterias tradicionais de íons de lítio, eliminando a dependência desse mineral.\nO novo sistema utiliza materiais abundantes e sustentáveis para permitir um tempo de carregamento extremamente reduzido.\nA inovação tem o potencial de transformar a indústria do armazenamento de energia e acelerar a adoção de veículos elétricos.","link":"https://www.futura-sciences.com/tech/actualites/batterie-cette-technologie-batterie-passe-lithium-vise-recharge-quasi-instantanee-k2m6-138178/","categoria":"ENERGIA","lang":"pt"},{"fonte":"Sky Sports","pais":"Inglaterra","titulo":"Croácia 0-7 Inglaterra: Vitória incrível na Liga das Nações com dois gols de Harry Kane e Bukayo Saka","resumo":"A seleção da Inglaterra conquistou uma vitória histórica ao golear a Croácia por 7 a 0 em partida válida pela Liga das Nações. O confronto destacou-se pelas atuações brilhantes de Harry Kane e Bukayo Saka, que marcaram dois gols cada durante o jogo. O resultado expressivo consolida o domínio inglês no torneio e gera grande repercussão nos veículos esportivos mundiais. A goleada marca um dos desempenhos mais dominantes da equipe nos últimos anos.","link":"https://www.skysports.com/football/news/13594637/croatia-0-7-england-amazing-nations-league-win-as-harry-kane-and-bukayo-saka-each-score-twice-in-huge-victory","categoria":"ESPORTES","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"O apocalipse profissional da IA é adiado (por enquanto)","resumo":"Embora existam receios sobre a substituição de empregos pela inteligência artificial, analistas apontam que a transição tem ocorrido de forma mais gradual do que o previsto.\nO impacto imediato foca mais na reorganização de tarefas e no ganho de produtividade do que em demissões em massa imediatas.\nNo entanto, o mercado de trabalho continuará exigindo adaptação constante e requalificação técnica para encarar as transformações futuras.","link":"https://elpais.com/economia/2026-10-04/el-apocalipsis-laboral-de-la-ia-se-pospone-por-ahora.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Inteligência Artificial: Apple planeja alertas de privacidade para agentes de IA no Mac","resumo":"A Apple planeja implementar novos alertas de privacidade para computadores Mac operados por agentes de inteligência artificial.\nO recurso avisará os usuários sempre que a IA tentar acessar ou manipular dados pessoais e informações confidenciais.\nA iniciativa busca aumentar a transparência e dar maior controle aos consumidores sobre o processamento de suas informações.\nCom isso, a empresa busca definir novos padrões de segurança para softwares autônomos.","link":"https://www.sueddeutsche.de/wirtschaft/kuenstliche-intelligenz-apple-plant-datenwarnung-bei-ki-agenten-auf-mac-computern-dpa.urn-newsml-dpa-com-20090101-261004-930-785672","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Domínio total de aceleração e frenagem: Testamos a tecnologia de eletrificação da Aisin, fornecedora de 40 montadoras","resumo":"A gigante fornecedora automotiva Aisin realizou testes práticos de suas mais recentes tecnologias de eletrificação e controle de tração.\nA empresa, que atende mais de 40 montadoras globais, demonstrou avanços significativos na integração de motores elétricos, transmissões e sistemas de resposta de frenagem.\nO teste em pista evidencia a forte competitividade da indústria japonesa na corrida global pela transição para veículos elétricos de alto desempenho.","link":"https://news.yahoo.co.jp/articles/af128e3f83a26b93af382d7e2361200446ebbf60","categoria":"MOBILIDADE","lang":"pt"},{"fonte":"Motor16","pais":"China","titulo":"EZ-60: Nosso Mazda CX-6e é atualizado na China com tecnologia extra para condução sem as mãos","resumo":"O SUV elétrico Mazda CX-6e recebeu atualizações significativas no mercado chinês, destacando-se pela inclusão de tecnologias avançadas de assistência à condução autônoma. O modelo agora permite recursos sofisticados de direção sem as mãos, reforçando a competitividade da marca no setor de veículos inteligentes. Essa evolução tecnológica atende diretamente à demanda crescente por automação e conectividade automotiva na Ásia.","link":"https://www.motor16.com/las-ultimas-noticias/ez-60-mazda-cx-6e-china-extra/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"News On AIR","pais":"Índia","titulo":"Ministro-chefe de Andhra Pradesh busca apoio de ex-alunos do IIT para tecnologia e educação","resumo":"O governo de Andhra Pradesh iniciou uma colaboração estratégica com ex-alunos dos Institutos Indígenas de Tecnologia (IIT). O objetivo é impulsionar inovações no setor educacional e modernizar a infraestrutura tecnológica do estado. A parceria pretende atrair investimentos em pesquisa e desenvolvimento, consolidando a região como um hub de excelência para a nova geração de profissionais de tecnologia na Índia.","link":"https://newsonair.gov.in/andhra-pradesh-cm-seeks-iit-alumni-support-for-technology-and-education/","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"NASA permite que você adote um pixel das primeiras imagens do telescópio Roman","resumo":"A agência espacial americana lançou uma iniciativa interativa que convida o público a participar simbolicamente da exploração espacial. Os entusiastas podem adotar pixels específicos das imagens capturadas pelo telescópio Nancy Grace Roman. A ação visa aproximar a ciência da sociedade e engajar novas gerações na astronomia.","link":"https://pplware.sapo.pt/ciencia/nasa-deixa-o-adotar-um-pixel-das-primeiras-imagens-do-telescopio-roman/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"mistobrasil.com","pais":"Brasil","titulo":"BYD estreia tecnologia que recarrega carro elétrico em apenas 5 minutos","resumo":"A BYD apresentou um novo sistema de recarga ultrarrápida que permite abastecer veículos elétricos em apenas 5 minutos.\nA novidade promete revolucionar o mercado automotivo, reduzindo drasticamente o tempo de espera nos postos de carregamento.\nA tecnologia visa acelerar a transição global para a mobilidade elétrica e eliminar uma das principais barreiras de adoção dos EVs.","link":"https://mistobrasil.com/2026/10/03/byd-estreia-tecnologia-que-recarrega-carro-em-5-minutos/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Estados Unidos","titulo":"Líder de segurança da OpenAI pede demissão e alerta que cultura da empresa está 'quebrada'","resumo":"Um importante executivo focado na segurança de sistemas avançados de IA anunciou sua saída da OpenAI, fazendo duras críticas à liderança da startup.\nSegundo o relato, os processos internos priorizam o lançamento rápido de produtos comerciais em detrimento do alinhamento e do controle de riscos.\nA demissão acendeu um alerta global na comunidade científica e regulatória sobre a urgência de estabelecer supervisão externa nessas empresas.","link":"https://www.theguardian.com/technology/2026/oct/03/openai-safety-leader-quits-warning-ai-companys-culture-is-broken","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"BBC","pais":"França","titulo":"Como a ciência por trás dos olhos dos gatos inspira a tecnologia de câmeras para robôs","resumo":"Inspirados na visão felina, cientistas desenvolveram sistemas ópticos biomiméticos avançados para equipar dispositivos robóticos.\nA nova tecnologia permite que as câmeras processem imagens com alta precisão e menor consumo energético em variações de luz.\nO avanço promete aprimorar a navegação autônoma de drones, veículos inteligentes e sistemas industriais.","link":"https://www.bbc.com/afrique/articles/cq39mgxjg0gjo","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Sky Sports","pais":"Inglaterra","titulo":"Croácia 0-7 Inglaterra: Goleada reaviva projeto de Thomas Tuchel após baque na Copa do Mundo","resumo":"O triunfo avassalador da Inglaterra sobre a Croácia trouxe novo fôlego ao trabalho do técnico Thomas Tuchel à frente da seleção. Após o desempenho frustrante na última Copa do Mundo, a equipe mostrou evolução tática e forte poder ofensivo em campo. Contudo, analistas apontam que o verdadeiro teste para medir o sucesso dessa reconstrução será o próximo confronto contra a Espanha. A partida seguinte servirá como um termômetro definitivo para as ambições do projeto inglês.","link":"https://www.skysports.com/football/news/13594631/croatia-0-7-england-thumping-win-reinvigorates-thomas-tuchels-project-after-world-cup-blow-but-next-spain-test-will-define-progress-towards-success","categoria":"FUTEBOL","lang":"pt"},{"fonte":"3DJuegos","pais":"Espanha","titulo":"Boas notícias para jogadores de PC! Microsoft prepara tecnologia que beneficiará donos de GPUs NVIDIA","resumo":"A Microsoft está desenvolvendo um novo recurso para otimizar o desempenho de jogos no Windows, visando aproveitar melhor o hardware das placas de vídeo da NVIDIA.\nA novidade busca reduzir o consumo de memória e melhorar a taxa de quadros em títulos exigentes.\nCom isso, os jogadores de PC poderão obter ganhos significativos de performance sem a necessidade de atualizações imediatas de hardware.","link":"https://www.3djuegos.com/pc/noticias/buenas-noticias-para-jugadores-pc-microsoft-tiene-lista-tecnologia-que-beneficiara-a-duenos-gpu-nvidia","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"WiWo","pais":"Alemanha","titulo":"TSMC Dresden: Uma visão exclusiva da fábrica de chips mais importante da Europa","resumo":"A TSMC apresentou os primeiros detalhes exclusivos de sua nova megafábrica em Dresden, considerada a mais importante da Europa.\nA unidade fabril é estratégica para suprir a alta demanda de semicondutores dos setores automotivo e industrial europeus.\nO projeto fortalece a posição da Alemanha como centro tecnológico e reduz a vulnerabilidade da região a crises globais de abastecimento.\nA iniciativa marca uma nova era para a soberania digital e fabril do continente.","link":"https://www.wiwo.de/technologie/wirtschaft-von-oben/tsmc-dresden-ein-erster-exklusiver-einblick-in-europas-wichtigste-chipfabrik/100257891.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"自動運転ラボ","pais":"Japão","titulo":"Wayve, investida de Masayoshi Son do SoftBank, firma parceria formal com Mercedes-Benz em condução autônoma","resumo":"A startup britânica de veículos autônomos Wayve, apoiada pelo fundo do SoftBank Group de Masayoshi Son, formalizou uma parceria estratégica com a Mercedes-Benz.\nA colaboração visa integrar a tecnologia de inteligência artificial de aprendizado de ponta a ponta da Wayve aos veículos de passeio da montadora alemã.\nO movimento consolida a relevância dos investimentos japoneses na aceleração e difusão de soluções avançadas de mobilidade autônoma no mercado global.","link":"https://jidounten-lab.com/u_68476","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"生物通","pais":"China","titulo":"Sistema de suporte à decisão para reutilização de minas abandonadas baseado em critérios: estrutura de classificação integrando restrições tecnológicas e socioeconômicas","resumo":"Um novo estudo acadêmico propõe um sistema estratégico para otimizar a reutilização de minas abandonadas através de critérios multifacetados. A metodologia integra rigorosamente restrições tecnológicas, ambientais e socioeconômicas para criar uma hierarquia de tomada de decisão sustentável. O projeto visa transformar passivos industriais em oportunidades viáveis para o desenvolvimento ecológico e urbano.","link":"https://www.ebiotrade.com/newsf/2026-10/20261004000118737.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Times of India","pais":"Índia","titulo":"Até onde o esporte indiano avançou no tratamento dos ciclos menstruais?","resumo":"O esporte na Índia tem passado por mudanças significativas na abordagem da saúde menstrual entre atletas de alto rendimento. Com a quebra de tabus culturais, treinadores e equipes médicas começam a adaptar treinos com base no ciclo hormonal feminino. Essa evolução científica e cultural melhora o desempenho das atletas e promove o bem-estar de forma inédita no cenário esportivo nacional.","link":"https://timesofindia.indiatimes.com/sports/asian-games-2026/how-far-has-indian-sports-come-in-dealing-with-menstrual-cycles/articleshow/134669526.cms","categoria":"SAÚDE","lang":"pt"},{"fonte":"TecheNet","pais":"Portugal","titulo":"Smartphones Vertu: luxo ou tecnologia de verdade?","resumo":"Os aparelhos da marca Vertu continuam a dividir opiniões no mercado de dispositivos móveis de altíssimo padrão. Conhecidos por seus materiais exóticos e preços exorbitantes, eles combinam exclusividade com especificações técnicas avançadas. A discussão central gira em torno de saber se o valor cobrado justifica as inovações tecnológicas oferecidas.","link":"https://www.techenet.com/2026/10/smartphones-vertu-luxo-ou-tecnologia/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Exame","pais":"Brasil","titulo":"Novartis paga até US$ 7,8 bilhões por tecnologia chinesa para 'resetar' sistema imunológico","resumo":"A gigante farmacêutica Novartis fechou um acordo bilionário de até US$ 7,8 bilhões para adquirir uma tecnologia médica chinesa.\nO tratamento busca 'resetar' o sistema imunológico para combater doenças autoimunes e imunológicas graves de forma inovadora.\nA transação destaca o protagonismo crescente da China no setor global de biotecnologia e terapias de última geração.","link":"https://exame.com/invest/mercados/novartis-paga-ate-us-78-bi-por-tecnologia-chinesa-para-resetar-sistema-imunologico/","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"The New York Times","pais":"Estados Unidos","titulo":"Com retorno de Elon Musk a Washington, ressurgem possíveis conflitos de interesse","resumo":"A reaproximação do bilionário Elon Musk com o cenário político em Washington levanta preocupações éticas sobre a influência de seus negócios corporativos.\nComo líder da Tesla, SpaceX e xAI, a proximidade com órgãos governamentais pode gerar decisões regulatórias favoráveis aos seus empreendimentos particulares.\nAnalistas apontam que a sobreposição entre interesses comerciais privados e políticas públicas federais exige maior transparência por parte dos fiscalizadores.","link":"https://www.nytimes.com/2026/10/03/us/politics/elon-musk-pentagon-returns-to-washington.html","categoria":"POLÍTICA TECNOLÓGICA","lang":"pt"},{"fonte":"Sud Ouest","pais":"França","titulo":"Renault investirá mais de 10 bilhões de euros em veículos elétricos nos próximos cinco anos","resumo":"O Grupo Renault anunciou um grande plano de investimentos focado na expansão e eletrificação da sua frota automotiva.\nA estratégia visa consolidar a liderança da empresa no mercado europeu diante da transição energética do setor.\nContudo, a execução do aporte estará condicionada à estabilidade do contexto político e social na França.","link":"https://www.sudouest.fr/economie/auto-moto/automobile-le-groupe-renault-investira-plus-de-10-milliards-d-euros-sur-cinq-ans-dans-les-vehicules-electriques-si-le-contexte-social-et-politique-en-france-le-permet-30906243.php","categoria":"AUTOMOBILÍSTICO","lang":"pt"},{"fonte":"Sky Sports","pais":"Inglaterra","titulo":"Jude Bellingham: Estrela da Inglaterra e do Real Madrid é cotado para a grandeza por Roy Keane","resumo":"O ex-jogador e comentarista Roy Keane rasgou elogios ao jovem astro Jude Bellingham após sua atuação impecável contra a Croácia. O meia do Real Madrid e da seleção inglesa tem se consolidado como uma das peças mais influentes do futebol mundial atual. Keane afirmou que a maturidade e o talento extraordinário de Bellingham o colocam no caminho direto para atingir a grandeza no esporte. As declarações reforçam o entusiasmo em torno do atleta, apontado como pilar do futuro da seleção.","link":"https://www.skysports.com/football/news/13594630/jude-bellingham-england-and-real-madrid-star-tipped-for-greatness-after-croatia-thrashing-by-roy-keane","categoria":"ESPORTES","lang":"pt"},{"fonte":"Expansión","pais":"Espanha","titulo":"Como o Airbnb está implementando inteligência artificial em todo o processo de reservas","resumo":"O Airbnb está integrando modelos avançados de inteligência artificial para personalizar a experiência de busca e atendimento dos usuários na plataforma.\nA tecnologia otimiza desde a recomendação de acomodações até o suporte automatizado para hóspedes e anfitriões em tempo real.\nA estratégia visa aumentar a eficiência das reservas e transformar a plataforma em uma assistente de viagens hiperpersonalizada.","link":"https://www.expansion.com/tecnologia/2026/10/03/asi-implantando-airbnb-ia-proceso-reservas.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"taz.de","pais":"Alemanha","titulo":"Drones, IA e Forças Armadas: O futuro da tecnologia de defesa","resumo":"A integração de drones autônomos e inteligência artificial no setor militar está redefinindo o futuro das tecnologias de defesa.\nA automação no campo de batalha permite respostas mais rápidas, mas também levanta profundos debates éticos e regulatórios.\nA corrida por tecnologias militares de ponta impulsiona inovações que transformam tanto a indústria bélica quanto a civil.\nEspecialistas alertam para a necessidade urgente de novos frameworks de segurança global.","link":"https://taz.de/Drohnen-KI-und-Militaer/!6210140/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"南海日日新聞","pais":"Japão","titulo":"Experiência com tecnologia de ponta e competição de digitação marcam o 'Dia Digital' na cidade de Amagi","resumo":"A cidade de Amagi promoveu o evento 'Dia Digital', reunindo moradores locais para vivenciar as mais recentes inovações tecnológicas e promover a inclusão digital na região.\nA programação contou com oficinas interativas, demonstrações de novos dispositivos e uma empolgante competição de velocidade em digitação.\nA iniciativa do governo local reforça os esforços nacionais para reduzir a disparidade tecnológica e aproximar a população regional da transformação digital.","link":"https://www.nankainn.com/news/gvmnt-admin/%E6%9C%80%E6%96%B0%E6%8A%80%E8%A1%93%E3%82%92%E4%BD%93%E9%A8%93%E3%80%80%E3%82%BF%E3%82%A4%E3%83%94%E3%83%B3%E3%82%B0%E3%83%90%E3%83%88%E3%83%AB%E3%81%A7%E7%86%B1%E6%88%A6%E3%82%82%E3%80%80%E3%83%87","categoria":"EVENTO","lang":"pt"},{"fonte":"生物通","pais":"China","titulo":"Compromisso entre perda magnética e eficiência de motores de tração de neodímio-ferro-boro na economia de veículos elétricos da China","resumo":"Pesquisadores analisaram o equilíbrio crítico entre perdas magnéticas e eficiência energética em motores de veículos elétricos na China. O estudo foca no uso de ímãs de neodímio-ferro-boro, essenciais para o desempenho de alta potência na indústria automobilística sustentável. As descobertas fornecem diretrizes técnicas valiosas para otimizar a fabricação de motores e reduzir o consumo energético do setor.","link":"https://www.ebiotrade.com/newsf/2026-10/20261004000234603.htm","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Times of India","pais":"Índia","titulo":"Como a ciência do esporte e a exposição global impulsionaram a campanha recorde da Índia no boxe dos Jogos Asiáticos","resumo":"A campanha histórica da Índia no boxe durante os Jogos Asiáticos foi impulsionada pela adoção rigorosa de métodos modernos de ciência do esporte. O acesso a competições internacionais e intercâmbios globais permitiu que os atletas aprimorassem técnicas de recuperação física e análise de desempenho. Esse avanço consolida a nação como uma potência emergente nos esportes de combate através da inovação tecnológica.","link":"https://timesofindia.indiatimes.com/sports/asian-games-2026/how-sports-science-and-global-exposure-fuelled-indias-record-asian-games-boxing-campaign/articleshow/134669218.cms","categoria":"ESPORTES","lang":"pt"},{"fonte":"distritonline.pt","pais":"Portugal","titulo":"Como a tecnologia para 'ressuscitar' animais pode ajudar a evitar novas extinções","resumo":"Avanços científicos na edição genética e biotecnologia estão abrindo portas para a possível recuperação de espécies extintas. Além do fascínio inicial, pesquisadores destacam que essas mesmas ferramentas podem ser aplicadas para fortalecer a diversidade genética de animais ameaçados atuais. O objetivo principal é criar barreiras eficazes contra futuras ondas de extinção.","link":"https://www.distritonline.pt/8860-como-tecnologia-ressuscitar-animais/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Líder de segurança da OpenAI pede demissão e afirma que cultura da empresa está ‘quebrada’","resumo":"O chefe da equipe de segurança e governança da OpenAI pediu demissão, criticando abertamente os rumos da empresa.\nSegundo o executivo, a cultura interna priorizou o lançamento rápido de produtos comerciais em detrimento da segurança da IA.\nO desligamento reacende o debate global sobre a responsabilidade e os riscos do desenvolvimento acelerado de inteligência artificial.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/03/lider-de-seguranca-da-openai-pede-demissao-e-diz-que-cultura-da-empresa-esta-quebrada.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"NBC News","pais":"Estados Unidos","titulo":"Formuladores globais de políticas tecnológicas concordam em adotar IA na ciência","resumo":"Líderes e formuladores de políticas internacionais alcançaram um consenso para acelerar a integração da inteligência artificial na pesquisa científica.\nA cooperação visa otimizar descobertas médicas, pesquisas climáticas e a criação de materiais avançados por meio do processamento massivo de dados.\nO acordo também estabelece princípios para o compartilhamento ético de infraestrutura tecnológica e bases de dados entre as nações participantes.","link":"https://www.nbcnews.com/tech/tech-news/global-tech-policymakers-embrace-ai-science-rcna600974","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Cerveja sem álcool apresenta uma desvantagem importante para a saúde","resumo":"Apesar do aumento do consumo de cervejas sem álcool como alternativa saudável, especialistas alertam para riscos ocultos à saúde.\nAnálises revelam que o produto pode ter alto teor de carboidratos, provocando picos indesejados de glicemia no sangue.\nO achado reforça a necessidade de conscientização dos consumidores ao substituírem bebidas alcoólicas em suas dietas.","link":"https://www.science-et-vie.com/corps-et-sante/la-biere-sans-alcool-presente-un-inconvenient-majeur-pour-la-sante-261636.html","categoria":"SAÚDE","lang":"pt"},{"fonte":"Sky Sports","pais":"Inglaterra","titulo":"Croácia x Inglaterra: As notas dos jogadores ingleses na grande vitória pela Liga das Nações","resumo":"Após o placar avassalador de 7 a 0 contra a Croácia, as avaliações individuais dos jogadores da Inglaterra receberam grande destaque da imprensa. Atletas do setor ofensivo e do meio-campo obtiveram as maiores notas devido à eficiência e volume de jogo apresentados. A atuação coletiva perfeita foi refletida nas cotações elevadas, exaltando a disciplina tática da equipe. O desempenho individual de cada atleta reforça a disputa acirrada por vagas na equipe titular.","link":"https://www.skysports.com/football/video/13594845/international-ratings-edit-with-fix","categoria":"ESPORTES","lang":"pt"},{"fonte":"La Opinión A Coruña","pais":"Espanha","titulo":"Sensores em asilos e inteligência artificial em fábricas: a tecnologia espanhola que busca antecipar riscos","resumo":"Projetos tecnológicos desenvolvidos na Galícia utilizam sensores inteligentes e algoritmos preditivos para identificar situações de perigo antes que ocorram.\nEnquanto em lares de idosos a tecnologia monitora sinais vitais e quedas, nas indústrias a IA prevê falhas em maquinários e acidentes de trabalho.\nA iniciativa destaca o potencial do ecossistema local na criação de soluções focadas em prevenção e segurança humana.","link":"https://www.laopinioncoruna.es/economia/2026/10/04/sensores-residencias-inteligencia-artificial-fabricas-ticket-innova-innovacion-tecnologia-raiola-enxenia-economia-xunta-igape-ayudas-ia-134953040.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"東洋経済オンライン","pais":"Japão","titulo":"Responsável pela segurança da OpenAI se demite e alerta que grandes empresas de IA ignoram riscos tecnológicos","resumo":"Um alto executivo da equipe de segurança da OpenAI pediu demissão, alertando publicamente que as principais empresas de inteligência artificial não estão fazendo o suficiente para mitigar os riscos da tecnologia.\nO aviso ressalta crescentes preocupações globais sobre a corrida pelo desenvolvimento de modelos de linguagem avançados sem salvaguardas éticas adequadas.\nO episódio reaviva intensos debates sobre a necessidade urgente de regulamentação e governança rigorosa no setor de inteligência artificial.","link":"https://toyokeizai.net/articles/-/960082","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"黑龙江日报","pais":"China","titulo":"Tecnologia de recuperação de liga de óxido de ferro da Jianlong Beiman Special Steel atinge liderança internacional","resumo":"A empresa Jianlong Beiman Special Steel alcançou um patamar de destaque global com sua nova tecnologia de reciclagem e recuperação de ligas de óxido de ferro. O processo inovador eleva os padrões de eficiência industrial e sustentabilidade na metalurgia pesada. Essa conquista reforça a capacidade da indústria chinesa em liderar avanços tecnológicos voltados para a economia circular.","link":"https://www.hljnews.cn/jjny/content/2026-10/04/content_911220.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Firstpost","pais":"Índia","titulo":"Líder de segurança da OpenAI renuncia e alerta que a cultura de desenvolvimento da tecnologia está 'quebrada'","resumo":"A renúncia de um importante líder de segurança da OpenAI gerou debates intensos sobre a ética no desenvolvimento de inteligência artificial. O profissional apontou falhas estruturais e pressões comerciais que colocam em risco a segurança da humanidade frente ao avanço acelerado dos modelos. O caso repercute globalmente, levantando discussões cruciais sobre regulamentação e responsabilidade corporativa no setor tecnológico.","link":"https://www.firstpost.com/tech/openai-safety-leader-resigns-warns-culture-of-developing-the-technology-is-broken-14050222.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"br.investing.com","pais":"Brasil","titulo":"Casa Branca cria força-tarefa de IA para avaliar e mitigar riscos da tecnologia","resumo":"O governo dos Estados Unidos anunciou a criação de uma força-tarefa especial focada em mapear os riscos da inteligência artificial.\nA iniciativa reunirá especialistas do setor público e privado para estabelecer diretrizes de segurança e privacidade.\nO movimento visa equilibrar a inovação tecnológica com a proteção dos cidadãos contra possíveis impactos negativos da IA.","link":"https://br.investing.com/news/economy-news/casa-branca-cria-forcatarefa-de-ia-para-avaliar-riscos-da-tecnologia-2082484","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The Atlantic","pais":"Estados Unidos","titulo":"'Não escreva com IA', dizem as pessoas que usam IA para escrever","resumo":"Um fenômeno curioso emerge entre profissionais que utilizam ferramentas de IA gerativa no cotidiano e recomendam cautela ao público geral.\nEmbora aproveitem a produtividade dos modelos de linguagem, esses usuários alertam sobre a perda de originalidade, voz própria e pensamento crítico.\nO debate destaca o paradoxo moderno de depender de tecnologias automatizadas enquanto se tenta preservar a autenticidade da escrita humana.","link":"https://www.theatlantic.com/technology/2026/10/meet-the-ai-writing-hypocrites/688872/","categoria":"TENDÊNCIAS DIGITAIS","lang":"pt"},{"fonte":"Jornal Grande Bahia","pais":"Brazil","titulo":"Brazil ranks 53rd in the 2026 Global Innovation Index, secures 2nd place in Latin America, and maintains progress in science and technology","resumo":"Brazil secured the 53rd position in the 2026 Global Innovation Index, maintaining its runner-up status in Latin America.\nThe result reflects the country's continuous progress in scientific research, academic output, and technological investment.\nExperts highlight the importance of maintaining incentives to strengthen industrial competitiveness and the startup ecosystem.","link":"https://jornalgrandebahia.com.br/2026/10/brasil-fica-em-53o-no-indice-global-de-inovacao-2026-ocupa-2o-lugar-na-america-latina-e-mantem-avanco-em-ciencia-e-tecnologia/","categoria":"INNOVATION","lang":"en"},{"fonte":"Investing.com India","pais":"United States","titulo":"White House forms AI task force to assess technology risks","resumo":"The White House has announced the creation of a task force dedicated to evaluating and mitigating the risks associated with the rapid advancement of artificial intelligence.\nThe initiative seeks to establish safety, privacy, and governance guidelines to ensure the responsible development of new technologies.\nThis move reflects growing concerns among U.S. authorities regarding the impact of AI on national security and the labor market.","link":"https://in.investing.com/news/economy-news/white-house-forms-ai-task-force-to-assess-technology-risks--wsj-5617525","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Vietnam.vn","pais":"France","titulo":"Superfluid helium qubit technology could revolutionize quantum computing","resumo":"The use of superfluid helium in developing qubits emerges as a promising approach to overcome the limits of quantum computing.\nThe technology offers greater system stability, significantly reducing data loss and thermal noise.\nThis breakthrough could accelerate the creation of more efficient supercomputers for complex scientific and industrial research.","link":"https://www.vietnam.vn/fr/cong-nghe-qubit-helium-sieu-long-co-the-cach-mang-hoa-luong-tu","categoria":"QUANTUM COMPUTING","lang":"en"},{"fonte":"The Telegraph","pais":"United Kingdom","titulo":"White House forms AI task force to report on technology risks","resumo":"The White House has announced the creation of a specialized task force to evaluate and monitor the risks associated with artificial intelligence. The initiative aims to map threats to national security, data privacy, and labor market impacts. The working group will issue periodic reports recommending regulations and guidelines for the ethical development of the sector. The measure reflects growing government concern with balancing technological innovation and societal protection.","link":"https://www.telegraph.co.uk/us/news/2026/10/04/white-house-forms-new-ai-task-force/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"The Moon may have formed in just five hours: The discovery that rewrites what we knew about its origin","resumo":"High-resolution simulations reveal that the Moon may have formed within hours after a protoplanet impact with the early Earth, challenging long-held theories.\nThe new hypothesis resolves historical puzzles regarding the compositional similarities between Earth and its natural satellite.\nThis discovery revolutionizes astrophysics' understanding of Solar System evolution and planetary formation processes.","link":"https://www.eldebate.com/ciencia/20261004/luna-pudo-nacer-solo-cinco-horas-descubrimiento-reescribe-todo-creiamos-sobre-origen_464930.html","categoria":"SCIENCE","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Semiconductor industry: Erfurt consolidates its position as a chip hub with a major project","resumo":"The city of Erfurt is solidifying its strategic position as an essential hub for the semiconductor industry in Germany.\nThe new mega-project attracts massive investments and strengthens local microchip manufacturing infrastructure.\nThe initiative aims to reduce dependence on external suppliers and ensure greater technological autonomy for Europe.\nThis move reflects the country's decisive role in the restructuring of global supply chains.","link":"https://www.sueddeutsche.de/wirtschaft/halbleiterindustrie-grossprojekt-erfurt-behauptet-sich-als-halbleiter-standort-dpa.urn-newsml-dpa-com-20090101-261004-930-785711","categoria":"SEMICONDUCTORS","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Japan in 2023 and OECD in 2025: Expert questions comparison of AI usage in Labor Report","resumo":"Japan's White Paper on Labor Economy compared the country's artificial intelligence usage rate with OECD projection data for 2025, prompting questions from experts regarding the methodology adopted.\nThe analysis points to discrepancies in the temporal and conceptual bases of the survey, which could distort the true perception of technology adoption by Japanese companies.\nThe debate reinforces the importance of precise metrics to guide public policies and innovation strategies in the country.","link":"https://news.yahoo.co.jp/expert/articles/7e723ec064c78b26a731efeb6af033c34f71a21d","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"21财经","pais":"China","titulo":"Just 1 tube of blood! New technology developed by teachers and students could overcome early gastric cancer screening challenge","resumo":"Researchers in China have developed an innovative technique based on just a single blood sample for the early detection of gastric cancer. This medical solution promises to revolutionize preventive screenings, dramatically increasing cure rates and patient survival. The breakthrough represents a major milestone in applying biotechnology for rapid and less invasive diagnostics in healthcare.","link":"https://www.21jingji.com/article/20261004/herald/3e08f455c202c9751e0509f2d2b985a1.html","categoria":"HEALTH","lang":"en"},{"fonte":"The Economic Times","pais":"India","titulo":"Canon in talks with chip design companies in India, plans local service centers","resumo":"Imaging giant Canon is in strategic talks with key players in India's semiconductor ecosystem. The initiative aims to establish local technical support and service centers, strengthening the country's technological supply chain. This move reflects India's growth as an emerging chip manufacturing hub and attracts crucial global investments to the sector.","link":"https://m.economictimes.com/industry/cons-products/electronics/canon-in-talks-with-those-engaged-in-key-chip-projects-in-india-plans-local-service-centres/articleshow/134670273.cms","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Countries put the brakes on Artificial Intelligence","resumo":"Governments across various nations are beginning to impose stricter restrictions and regulations on the development of Artificial Intelligence. The measure seeks to curb risks associated with privacy, data security, and the ethical use of these tools. This movement marks an important transition in global technology governance toward more effective control.","link":"https://www.cmjornal.pt/tecnologia/amp/paises-metem-travao-a-inteligencia-artificial","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Canal Rural","pais":"Brazil","titulo":"Unprecedented Embrapa technology transforms sugar into raw material for industry","resumo":"Embrapa researchers have developed a pioneering technology capable of converting sugar into a high-value industrial input.\nThe innovation promises to reduce dependence on fossil sources and create sustainable alternatives for various chemical sectors.\nThe breakthrough positions Brazil at the forefront of the global bioeconomy, uniting biotechnology and agricultural sustainability.","link":"https://www.canalrural.com.br/diversos/tecnologia-inedita-da-embrapa-transforma-acucar-em-materia-prima-para-industria/","categoria":"SCIENCE","lang":"en"},{"fonte":"WSJ","pais":"United States","titulo":"Exclusive: New AI czar unveils goals and members of the White House task force","resumo":"The newly appointed official overseeing artificial intelligence strategy in the United States has publicly presented the primary goals of the new government group.\nThe team will feature prominent experts, tech industry leaders, and regulatory authorities to guide oversight efforts.\nThe action plan focuses on creating frameworks to mitigate catastrophic risks without stifling innovation and the country's leadership in the field.","link":"https://www.wsj.com/tech/ai/new-ai-task-force-to-report-on-risks-of-technology-after-public-and-industry-concerns-b6308bef","categoria":"DIGITAL GOVERNANCE","lang":"en"},{"fonte":"Futura, le média qui explore le monde","pais":"France","titulo":"This battery technology skips lithium and targets near-instant recharging","resumo":"Researchers have developed a promising alternative to traditional lithium-ion batteries, eliminating dependence on this mineral.\nThe new system uses abundant and sustainable materials to enable extremely short charging times.\nThe innovation has the potential to transform the energy storage industry and accelerate the adoption of electric vehicles.","link":"https://www.futura-sciences.com/tech/actualites/batterie-cette-technologie-batterie-passe-lithium-vise-recharge-quasi-instantanee-k2m6-138178/","categoria":"ENERGY","lang":"en"},{"fonte":"Sky Sports","pais":"United Kingdom","titulo":"Croatia 0-7 England: Amazing Nations League win as Harry Kane and Bukayo Saka each score twice","resumo":"The England national team secured a historic victory by thrashing Croatia 7-0 in a Nations League match. The clash was highlighted by brilliant performances from Harry Kane and Bukayo Saka, who scored two goals each during the game. The expressive result consolidates English dominance in the tournament and generates widespread reaction in global sports media. The blowout marks one of the team's most dominant performances in recent years.","link":"https://www.skysports.com/football/news/13594637/croatia-0-7-england-amazing-nations-league-win-as-harry-kane-and-bukayo-saka-each-score-twice-in-huge-victory","categoria":"SPORTS","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"The AI job apocalypse is postponed (for now)","resumo":"Although concerns persist regarding job displacement by artificial intelligence, analysts point out that the transition is occurring more gradually than anticipated.\nThe immediate impact focuses more on task reorganization and productivity gains than on immediate mass layoffs.\nHowever, the labor market will continue to demand constant adaptation and technical upskilling to face future transformations.","link":"https://elpais.com/economia/2026-10-04/el-apocalipsis-laboral-de-la-ia-se-pospone-por-ahora.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Artificial Intelligence: Apple Plans Privacy Alerts for AI Agents on Mac","resumo":"Apple plans to implement new privacy alerts for Mac computers operated by artificial intelligence agents.\nThe feature will warn users whenever the AI attempts to access or manipulate personal data and sensitive information.\nThe initiative aims to increase transparency and give consumers greater control over the processing of their information.\nAs a result, the company seeks to set new security standards for autonomous software.","link":"https://www.sueddeutsche.de/wirtschaft/kuenstliche-intelligenz-apple-plant-datenwarnung-bei-ki-agenten-auf-mac-computern-dpa.urn-newsml-dpa-com-20090101-261004-930-785672","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Total Control Over Acceleration and Braking: We Test Aisin's Electrification Technology","resumo":"Automotive giant Aisin has conducted practical tests of its latest electrification and traction control technologies.\nThe company, which supplies over 40 global automakers, demonstrated significant advancements in the integration of electric motors, transmissions, and braking response systems.\nThe track test highlights the strong competitiveness of the Japanese industry in the global race toward the transition to high-performance electric vehicles.","link":"https://news.yahoo.co.jp/articles/af128e3f83a26b93af382d7e2361200446ebbf60","categoria":"MOBILITY","lang":"en"},{"fonte":"Motor16","pais":"China","titulo":"EZ-60: Our Mazda CX-6e Gets Updated in China with Extra Hands-Free Driving Tech","resumo":"The Mazda CX-6e electric SUV has received significant updates in the Chinese market, standing out for the inclusion of advanced autonomous driving assistance technologies. The model now supports sophisticated hands-free driving features, reinforcing the brand's competitiveness in the smart vehicle sector. This technological evolution directly addresses the growing demand for automation and automotive connectivity in Asia.","link":"https://www.motor16.com/las-ultimas-noticias/ez-60-mazda-cx-6e-china-extra/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"News On AIR","pais":"India","titulo":"Andhra Pradesh Chief Minister Seeks IIT Alumni Support for Technology and Education","resumo":"The government of Andhra Pradesh has initiated a strategic collaboration with alumni from the Indian Institutes of Technology (IIT). The goal is to drive innovation in the educational sector and modernize the state's technological infrastructure. The partnership intends to attract investments in research and development, consolidating the region as a hub of excellence for the new generation of technology professionals in India.","link":"https://newsonair.gov.in/andhra-pradesh-cm-seeks-iit-alumni-support-for-technology-and-education/","categoria":"EDUCATION","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"NASA Lets You Adopt a Pixel from the Roman Telescope's First Images","resumo":"The American space agency has launched an interactive initiative inviting the public to symbolically participate in space exploration. Enthusiasts can adopt specific pixels from the images captured by the Nancy Grace Roman Telescope. The campaign aims to bring science closer to society and engage new generations in astronomy.","link":"https://pplware.sapo.pt/ciencia/nasa-deixa-o-adotar-um-pixel-das-primeiras-imagens-do-telescopio-roman/","categoria":"SCIENCE","lang":"en"},{"fonte":"mistobrasil.com","pais":"Brazil","titulo":"BYD Debuts Technology That Charges Electric Cars in Just 5 Minutes","resumo":"BYD has unveiled a new ultra-fast charging system that allows electric vehicles to be replenished in just 5 minutes.\nThe new development promises to revolutionize the automotive market by drastically reducing waiting times at charging stations.\nThe technology aims to accelerate the global transition to electric mobility and eliminate one of the main barriers to EV adoption.","link":"https://mistobrasil.com/2026/10/03/byd-estreia-tecnologia-que-recarrega-carro-em-5-minutos/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"United States","titulo":"OpenAI Safety Leader Resigns and Warns Company Culture Is 'Broken'","resumo":"A key executive focused on the safety of advanced AI systems has announced his departure from OpenAI, issuing harsh criticisms of the startup's leadership.\nAccording to the report, internal processes prioritize the rapid launch of commercial products at the expense of alignment and risk control.\nThe resignation has sounded a global alarm within the scientific and regulatory community regarding the urgency of establishing external oversight over these companies.","link":"https://www.theguardian.com/technology/2026/oct/03/openai-safety-leader-quits-warning-ai-companys-culture-is-broken","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"BBC","pais":"France","titulo":"How the Science Behind Cats' Eyes Is Inspiring Robot Camera Tech","resumo":"Inspired by feline vision, scientists have developed advanced biomimetic optical systems to equip robotic devices.\nThe new technology allows cameras to process images with high precision and lower energy consumption under varying light conditions.\nThe breakthrough promises to enhance the autonomous navigation of drones, smart vehicles, and industrial systems.","link":"https://www.bbc.com/afrique/articles/cq39mgxjg0gjo","categoria":"ROBOTICS","lang":"en"},{"fonte":"Sky Sports","pais":"England","titulo":"Croatia 0-7 England: Thumping Win Reinvigorates Thomas Tuchel's Project After World Cup Blow","resumo":"England's commanding triumph over Croatia has breathed new life into manager Thomas Tuchel's tenure at the helm of the national team. Following their frustrating performance at the last World Cup, the squad displayed tactical growth and strong offensive power on the pitch. However, analysts point out that the real test to measure the success of this rebuild will be their upcoming match against Spain, which will serve as a definitive barometer for the English project's ambitions.","link":"https://www.skysports.com/football/news/13594631/croatia-0-7-england-thumping-win-reinvigorates-thomas-tuchels-project-after-world-cup-blow-but-next-spain-test-will-define-progress-towards-success","categoria":"FOOTBALL","lang":"en"},{"fonte":"3DJuegos","pais":"Spain","titulo":"Good News for PC Gamers! Microsoft Prepares Tech That Will Benefit NVIDIA GPU Owners","resumo":"Microsoft is developing a new feature to optimize gaming performance on Windows, aiming to make better use of NVIDIA graphics card hardware.\nThe new feature seeks to reduce memory consumption and improve frame rates in demanding titles.\nAs a result, PC gamers will be able to achieve significant performance gains without the need for immediate hardware upgrades.","link":"https://www.3djuegos.com/pc/noticias/buenas-noticias-para-jugadores-pc-microsoft-tiene-lista-tecnologia-que-beneficiara-a-duenos-gpu-nvidia","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"WiWo","pais":"Germany","titulo":"TSMC Dresden: An Exclusive Look Inside Europe's Most Important Chip Factory","resumo":"TSMC has unveiled the first exclusive details of its new mega-factory in Dresden, considered the most important in Europe.\nThe manufacturing plant is strategic for supplying the high demand for semiconductors from the European automotive and industrial sectors.\nThe project strengthens Germany's position as a technology hub and reduces the region's vulnerability to global supply crises.\nThe initiative marks a new era for the continent's digital and manufacturing sovereignty.","link":"https://www.wiwo.de/technologie/wirtschaft-von-oben/tsmc-dresden-ein-erster-exklusiver-einblick-in-europas-wichtigste-chipfabrik/100257891.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"自動運転ラボ","pais":"Japan","titulo":"Wayve, Backed by SoftBank's Masayoshi Son, Signs Formal Partnership with Mercedes-Benz on Autonomous Driving","resumo":"British autonomous vehicle startup Wayve, backed by SoftBank Group's fund led by Masayoshi Son, has formalized a strategic partnership with Mercedes-Benz.\nThe collaboration aims to integrate Wayve's end-to-end machine learning artificial intelligence technology into the German automaker's passenger vehicles.\nThe move consolidates the relevance of Japanese investments in accelerating and spreading advanced autonomous mobility solutions in the global market.","link":"https://jidounten-lab.com/u_68476","categoria":"INNOVATION","lang":"en"},{"fonte":"生物通","pais":"China","titulo":"Criteria-Based Decision Support System for Abandoned Mine Reuse: A Classification Framework Integrating Technological and Socioeconomic Constraints","resumo":"A new academic study proposes a strategic system to optimize the reuse of abandoned mines through multifaceted criteria. The methodology rigorously integrates technological, environmental, and socioeconomic constraints to create a sustainable decision-making hierarchy. The project aims to transform industrial liabilities into viable opportunities for ecological and urban development.","link":"https://www.ebiotrade.com/newsf/2026-10/20261004000118737.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"The Times of India","pais":"India","titulo":"How Far Has Indian Sports Come in Dealing with Menstrual Cycles?","resumo":"Sports in India have undergone significant changes in the approach to menstrual health among high-performance athletes. With cultural taboos breaking down, coaches and medical teams are beginning to adapt training regimens based on the female hormonal cycle. This scientific and cultural evolution improves athletes' performance and promotes well-being in an unprecedented way within the national sports landscape.","link":"https://timesofindia.indiatimes.com/sports/asian-games-2026/how-far-has-indian-sports-come-in-dealing-with-menstrual-cycles/articleshow/134669526.cms","categoria":"HEALTH","lang":"en"},{"fonte":"TecheNet","pais":"Portugal","titulo":"Vertu Smartphones: Luxury or Real Technology?","resumo":"Vertu brand devices continue to divide opinions in the ultra-high-end mobile device market. Known for their exotic materials and exorbitant prices, they combine exclusivity with advanced technical specifications.\nThe central discussion revolves around whether the price charged justifies the technological innovations offered.","link":"https://www.techenet.com/2026/10/smartphones-vertu-luxo-ou-tecnologia/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Exame","pais":"Brazil","titulo":"Novartis Pays Up to $7.8 Billion for Chinese Technology to 'Reset' Immune System","resumo":"Pharmaceutical giant Novartis has closed a multibillion-dollar deal worth up to $7.8 billion to acquire a Chinese medical technology.\nThe treatment seeks to 'reset' the immune system to combat severe autoimmune and immune disorders in an innovative way.\nThe transaction highlights China's growing prominence in the global biotechnology and cutting-edge therapies sector.","link":"https://exame.com/invest/mercados/novartis-paga-ate-us-78-bi-por-tecnologia-chinesa-para-resetar-sistema-imunologico/","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"The New York Times","pais":"United States","titulo":"With Elon Musk's Return to Washington, Potential Conflicts of Interest Resurface","resumo":"Billionaire Elon Musk's re-engagement with the political landscape in Washington raises ethical concerns regarding the influence of his corporate ventures.\nAs the leader of Tesla, SpaceX, and xAI, his proximity to government agencies could generate regulatory decisions favorable to his private enterprises.\nAnalysts point out that the overlap between private commercial interests and federal public policies demands greater transparency from watchdogs.","link":"https://www.nytimes.com/2026/10/03/us/politics/elon-musk-pentagon-returns-to-washington.html","categoria":"TECH POLICY","lang":"en"},{"fonte":"Sud Ouest","pais":"France","titulo":"Renault to Invest More Than 10 Billion Euros in Electric Vehicles Over the Next Five Years","resumo":"Group Renault has announced a major investment plan focused on the expansion and electrification of its automotive fleet.\nThe strategy aims to consolidate the company's leadership in the European market amid the industry's energy transition.\nHowever, the execution of the funding will depend on the stability of the political and social context in France.","link":"https://www.sudouest.fr/economie/auto-moto/automobile-le-groupe-renault-investira-plus-de-10-milliards-d-euros-sur-cinq-ans-dans-les-vehicules-electriques-si-le-contexte-social-et-politique-en-france-le-permet-30906243.php","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"Sky Sports","pais":"England","titulo":"Jude Bellingham: England and Real Madrid Star Tipped for Greatness by Roy Keane","resumo":"Former player and pundit Roy Keane showered praise on young star Jude Bellingham after his flawless performance against Croatia. The Real Madrid and England midfielder has established himself as one of the most influential figures in modern world football. Keane stated that Bellingham's maturity and extraordinary talent put him on a direct path to achieving greatness in the sport. The remarks reinforce the enthusiasm surrounding the athlete, touted as a pillar of the national team's future.","link":"https://www.skysports.com/football/news/13594630/jude-bellingham-england-and-real-madrid-star-tipped-for-greatness-after-croatia-thrashing-by-roy-keane","categoria":"SPORTS","lang":"en"},{"fonte":"Expansión","pais":"Spain","titulo":"How Airbnb Is Implementing Artificial Intelligence Across the Entire Booking Process","resumo":"Airbnb is integrating advanced artificial intelligence models to personalize the search and customer service experience for users on the platform.\nThe technology optimizes everything from accommodation recommendations to automated real-time support for guests and hosts.\nThe strategy aims to increase booking efficiency and transform the platform into a hyper-personalized travel assistant.","link":"https://www.expansion.com/tecnologia/2026/10/03/asi-implantando-airbnb-ia-proceso-reservas.html","categoria":"INNOVATION","lang":"en"},{"fonte":"taz.de","pais":"Germany","titulo":"Drones, AI, and Armed Forces: The Future of Defense Technology","resumo":"The integration of autonomous drones and artificial intelligence in the military sector is redefining the future of defense technologies.\nAutomation on the battlefield allows for faster responses, but also raises profound ethical and regulatory debates.\nThe race for cutting-edge military technologies drives innovations that transform both the defense and civil industries.\nExperts warn of the urgent need for new global security frameworks.","link":"https://taz.de/Drohnen-KI-und-Militaer/!6210140/","categoria":"INNOVATION","lang":"en"},{"fonte":"南海日日新聞","pais":"Japan","titulo":"Cutting-Edge Tech Experience and Typing Competition Mark 'Digital Day' in Amagi City","resumo":"The city of Amagi hosted the 'Digital Day' event, bringing local residents together to experience the latest technological innovations and promote digital inclusion in the region.\nThe program featured interactive workshops, demonstrations of new devices, and an exciting typing speed competition.\nThe local government initiative reinforces national efforts to reduce the technological gap and bring the regional population closer to digital transformation.","link":"https://www.nankainn.com/news/gvmnt-admin/%E6%9C%80%E6%96%B0%E6%8A%80%E8%A1%93%E3%82%92%E4%BD%93%E9%A8%93%E3%80%80%E3%82%BF%E3%82%A4%E3%83%94%E3%83%B3%E3%82%B0%E3%83%90%E3%83%88%E3%83%AB%E3%81%A7%E7%86%B1%E6%88%A6%E3%82%82%E3%80%80%E3%83%87","categoria":"EVENT","lang":"en"},{"fonte":"生物通","pais":"China","titulo":"Compromise Between Magnetic Loss and Efficiency of Neodymium-Iron-Boron Traction Motors in China's EV Economy","resumo":"Researchers analyzed the critical balance between magnetic losses and energy efficiency in electric vehicle motors in China. The study focuses on the use of neodymium-iron-boron magnets, which are essential for high-power performance in the sustainable automotive industry. The findings provide valuable technical guidelines to optimize motor manufacturing and reduce energy consumption in the sector.","link":"https://www.ebiotrade.com/newsf/2026-10/20261004000234603.htm","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Times of India","pais":"India","titulo":"How Sports Science and Global Exposure Fueled India's Record Asian Games Boxing Campaign","resumo":"India's historic boxing campaign at the Asian Games was fueled by the rigorous adoption of modern sports science methods. Access to international competitions and global exchanges allowed athletes to hone physical recovery techniques and performance analysis. This advancement solidifies the nation as an emerging powerhouse in combat sports through technological innovation.","link":"https://timesofindia.indiatimes.com/sports/asian-games-2026/how-sports-science-and-global-exposure-fuelled-indias-record-asian-games-boxing-campaign/articleshow/134669218.cms","categoria":"SPORTS","lang":"en"},{"fonte":"distritonline.pt","pais":"Portugal","titulo":"How 'De-Extinction' Technology for Animals Could Help Prevent Further Extinctions","resumo":"Scientific advancements in gene editing and biotechnology are opening doors to the potential recovery of extinct species. Beyond the initial fascination, researchers highlight that these same tools can be applied to strengthen the genetic diversity of currently threatened animals. The main objective is to build effective barriers against future extinction waves.","link":"https://www.distritonline.pt/8860-como-tecnologia-ressuscitar-animais/","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"OpenAI Safety Leader Resigns, Stating Company Culture Is 'Broken'","resumo":"The head of OpenAI's safety and governance team has resigned, openly criticizing the company's direction.\nAccording to the executive, the internal culture prioritized the rapid release of commercial products at the expense of AI safety.\nThe departure reignites the global debate regarding the responsibility and risks of accelerated artificial intelligence development.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/03/lider-de-seguranca-da-openai-pede-demissao-e-diz-que-cultura-da-empresa-esta-quebrada.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"NBC News","pais":"United States","titulo":"Global Tech Policymakers Agree to Adopt AI in Science","resumo":"International leaders and policymakers have reached a consensus to accelerate the integration of artificial intelligence into scientific research.\nThe cooperation aims to optimize medical breakthroughs, climate research, and the creation of advanced materials through massive data processing.\nThe agreement also establishes principles for the ethical sharing of technological infrastructure and databases among participating nations.","link":"https://www.nbcnews.com/tech/tech-news/global-tech-policymakers-embrace-ai-science-rcna600974","categoria":"SCIENCE","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"Non-Alcoholic Beer Presents a Major Health Disadvantage","resumo":"Despite the rise in non-alcoholic beer consumption as a healthy alternative, experts warn of hidden health risks.\nAnalyses reveal that the product can have a high carbohydrate content, causing unwanted blood sugar spikes.\nThe finding reinforces the need for consumer awareness when substituting alcoholic beverages in their diets.","link":"https://www.science-et-vie.com/corps-et-sante/la-biere-sans-alcool-presente-un-inconvenient-majeur-pour-la-sante-261636.html","categoria":"HEALTH","lang":"en"},{"fonte":"Sky Sports","pais":"England","titulo":"Croatia vs. England: England Player Ratings in the Nations League Thrashing","resumo":"Following the resounding 7-0 scoreline against Croatia, the individual ratings of England's players received significant attention from the press. Attacking and midfield players earned the highest scores due to their efficiency and volume of play. The flawless collective performance was reflected in high ratings, praising the team's tactical discipline. Each athlete's individual performance reinforces the fierce competition for spots in the starting lineup.","link":"https://www.skysports.com/football/video/13594845/international-ratings-edit-with-fix","categoria":"SPORTS","lang":"en"},{"fonte":"La Opinión A Coruña","pais":"Spain","titulo":"Sensors in Nursing Homes and AI in Factories: Spanish Technology Aims to Anticipate Risks","resumo":"Technological projects developed in Galicia use smart sensors and predictive algorithms to identify hazardous situations before they occur.\nWhile in nursing homes the technology monitors vital signs and falls, in industries AI predicts machinery failures and workplace accidents.\nThe initiative highlights the potential of the local ecosystem in creating solutions focused on human prevention and safety.","link":"https://www.laopinioncoruna.es/economia/2026/10/04/sensores-residencias-inteligencia-artificial-fabricas-ticket-innova-innovacion-tecnologia-raiola-enxenia-economia-xunta-igape-ayudas-ia-134953040.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"東洋経済オンライン","pais":"Japan","titulo":"OpenAI Safety Executive Resigns and Warns Major AI Companies Are Ignoring Technological Risks","resumo":"A senior executive on OpenAI's safety team has stepped down, publicly warning that leading artificial intelligence companies are not doing enough to mitigate the technology's risks.\nThe warning highlights growing global concerns over the race to develop advanced language models without adequate ethical safeguards.\nThe episode reignites intense debates surrounding the urgent need for regulation and rigorous governance in the artificial intelligence sector.","link":"https://toyokeizai.net/articles/-/960082","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"黑龙江日报","pais":"China","titulo":"Jianlong Beiman Special Steel's Iron Oxide Alloy Recovery Technology Reaches International Leadership","resumo":"Jianlong Beiman Special Steel has achieved global prominence with its new recycling and recovery technology for iron oxide alloys. The innovative process raises industry efficiency and sustainability standards in heavy metallurgy. This achievement reinforces the capability of Chinese industry to lead technological advancements aimed at the circular economy.","link":"https://www.hljnews.cn/jjny/content/2026-10/04/content_911220.html","categoria":"INNOVATION","lang":"en"},{"fonte":"Firstpost","pais":"India","titulo":"OpenAI Safety Leader Resigns, Warns That Technology Development Culture Is 'Broken'","resumo":"The resignation of a prominent OpenAI safety leader has sparked intense debates on ethics in artificial intelligence development. The professional pointed out structural flaws and commercial pressures that jeopardize humanity's safety in the face of rapid model advancement. The case has global repercussions, raising crucial discussions about regulation and corporate responsibility in the tech sector.","link":"https://www.firstpost.com/tech/openai-safety-leader-resigns-warns-culture-of-developing-the-technology-is-broken-14050222.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"br.investing.com","pais":"Brazil","titulo":"White House Creates AI Task Force to Assess and Mitigate Technology Risks","resumo":"The United States government has announced the creation of a special task force focused on mapping the risks of artificial intelligence.\nThe initiative will bring together experts from the public and private sectors to establish security and privacy guidelines.\nThe move aims to balance technological innovation with the protection of citizens against potential negative impacts of AI.","link":"https://br.investing.com/news/economy-news/casa-branca-cria-forcatarefa-de-ia-para-avaliar-riscos-da-tecnologia-2082484","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The Atlantic","pais":"United States","titulo":"'Don't Write With AI,' Say the People Who Use AI to Write","resumo":"A curious phenomenon is emerging among professionals who use generative AI tools daily while advising the general public to exercise caution.\nAlthough they take advantage of the productivity offered by language models, these users warn about the loss of originality, personal voice, and critical thinking.\nThe debate highlights the modern paradox of relying on automated technologies while trying to preserve the authenticity of human writing.","link":"https://www.theatlantic.com/technology/2026/10/meet-the-ai-writing-hypocrites/688872/","categoria":"DIGITAL TRENDS","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
