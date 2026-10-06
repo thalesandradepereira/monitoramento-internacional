@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-SXIUZkRHoJrehef4/d4p2NTr'; script-src 'nonce-SXIUZkRHoJrehef4/d4p2NTr'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="SXIUZkRHoJrehef4/d4p2NTr">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">06/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="SXIUZkRHoJrehef4/d4p2NTr">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Exame","pais":"Brasil","titulo":"Migrar para inteligência artificial pode elevar o salário? Veja o que muda na carreira de tecnologia","resumo":"A adoção massiva da inteligência artificial está transformando o mercado de trabalho e redefinindo as competências exigidas dos profissionais de tecnologia. Especialistas apontam que a especialização em ferramentas avançadas pode resultar em valorização salarial significativa. Essa mudança exige requalificação constante para acompanhar as novas demandas corporativas globais.","link":"https://exame.com/inteligencia-artificial/migrar-para-inteligencia-artificial-pode-elevar-o-salario-veja-o-que-muda-na-carreira-de-tecnologia/","categoria":"CARREIRA TECH","lang":"pt"},{"fonte":"CXOToday.com","pais":"Estados Unidos","titulo":"Integral Ad Science fornecerá medição de segurança de marca em anúncios do ChatGPT","resumo":"A Integral Ad Science expandiu sua atuação para oferecer ferramentas de segurança e adequação de marca em anúncios dentro do ChatGPT. Essa iniciativa busca garantir maior controle para anunciantes em ambientes impulsionados por inteligência artificial generativa. O impacto direto é a criação de um ecossistema publicitário mais confiável e seguro para marcas globais.","link":"https://cxotoday.com/media-coverage/integral-ad-science-to-provide-brand-safety-and-suitability-measurement-in-chatgpt-ads/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Pour la Science","pais":"França","titulo":"Os 'pontos vermelhos' podem ser 'estrelas-buracos negros'","resumo":"Pesquisadores apontam que misteriosos objetos celestes distantes, conhecidos como pequenos pontos vermelhos, podem na verdade representar uma nova fase estelar fascinante. A descoberta desafia modelos atuais de astrofísica e pode reescrever a nossa compreensão sobre a evolução inicial do universo. Astrônomos planejam usar novos telescópios para confirmar a verdadeira natureza desses corpos cósmicos.","link":"https://www.pourlascience.fr/sr/echos-des-labos/un-trou-noir-geant-deguise-en-etoile-29630.php","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"University of Bristol","pais":"Inglaterra","titulo":"Outubro: Empresa spinout de Bristol transforma a ciência das asas de mariposas em material acústico revolucionário","resumo":"Uma nova inovação tecnológica desenvolvida no Reino Unido promete transformar a indústria de isolamento acústico ao se basear na estrutura natural das asas de mariposas. Essa pesquisa avançada demonstra como a biomimética pode gerar materiais altamente eficientes para controle de ruído. O impacto esperado abrange desde a construção civil até a aviação, promovendo ambientes mais silenciosos e sustentáveis.","link":"https://www.bristol.ac.uk/news/2026/october/bristol-spinout-turns-moth-wing-science-into-revolutionary-acoustic-material.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Revista Emprendedores","pais":"Espanha","titulo":"O que acontecerá com as startups de IA após o 'hype' desta tecnologia?","resumo":"Especialistas discutem o futuro e a sustentabilidade das empresas emergentes focadas em inteligência artificial. O debate analisa como o mercado deve se comportar após o período inicial de euforia tecnológica. A transição busca separar modismos passageiros de soluções corporativas realmente sólidas e duradouras.","link":"https://emprendedores.es/inteligencia-artificial/startups-ia-tras-hype/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"it-daily.net","pais":"Alemanha","titulo":"Aeroporto de Hamburgo aposta em nova tecnologia para detecção de drones","resumo":"O Aeroporto de Hamburgo implementou um sistema avançado para identificar drones não autorizados em seu espaço aéreo. A tecnologia visa mitigar riscos crescentes à aviação civil e evitar interrupções nos voos comerciais. Essa medida reforça a segurança aeroportuária diante do aumento do tráfego de aeronaves não tripuladas na Europa.","link":"https://www.it-daily.net/shortnews/hamburger-flughafen-drohnenerkennung","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"時事ドットコム","pais":"Japão","titulo":"Tecnologia de navegação autônoma em navios das Forças de Autodefesa com IA integrada","resumo":"O governo japonês iniciou pesquisas e desenvolvimento para integrar inteligência artificial e tecnologia de navegação autônoma em embarcações militares. O projeto visa aumentar a eficiência operacional e mitigar a escassez de pessoal nas forças navais. A iniciativa representa um avanço significativo na modernização tecnológica da defesa nacional e na automação de frotas complexas.","link":"https://www.jiji.com/jc/article?k=2026100600112\u0026g=pol","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"美通社","pais":"China","titulo":"Quantinuum faz parceria com a Universidade da Austrália Ocidental para impulsionar capacidades de tecnologia quântica","resumo":"A Quantinuum uniu forças com a Universidade da Austrália Ocidental para fortalecer o ecossistema de tecnologia quântica na região. A colaboração visa acelerar pesquisas avançadas e promover o desenvolvimento de inovações tecnológicas de ponta. Essa parceria estratégica destaca o crescimento global e o interesse na computação quântica e suas aplicações práticas.","link":"https://www.prnasia.com/story/550649-1.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"PR Newswire UK","pais":"Índia","titulo":"Alternicq fortalece estratégia de embalagens inovadoras e faz parceria com a britânica Pulpex para trazer tecnologia avançada de garrafas de celulose para a Índia","resumo":"A Alternicq firmou uma parceria estratégica com a empresa britânica Pulpex para introduzir no mercado indiano tecnologia de ponta em garrafas à base de celulose. A iniciativa visa transformar o setor de embalagens sustentáveis, reduzindo drasticamente o uso de plástico. Essa inovação atende à crescente demanda por alternativas ecológicas na cadeia de suprimentos global e local.","link":"https://www.prnewswire.co.uk/news-releases/alternicq-strengthens-its-innovative-packaging-strategy-partners-with-uk-based-pulpex-to-bring-advanced-pulp-based-bottle-technology-to-india-302898087.html","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"Expresso","pais":"Portugal","titulo":"Carros elétricos em Portugal ultrapassam pela primeira vez as vendas dos híbridos e alcançam a liderança do mercado","resumo":"Os veículos totalmente elétricos superaram os híbridos em vendas no mercado português, marcando uma virada histórica na mobilidade do país. Esse avanço reflete a crescente preferência dos consumidores por alternativas sustentáveis e a expansão da infraestrutura de recarga. A tendência consolida Portugal como um polo relevante na transição energética da indústria automotiva europeia.","link":"https://expresso.pt/economia/2026-10-06-carros-eletricos-em-portugal-ultrapassam-pela-primeira-vez-as-vendas-dos-hibridos-e-alcancam-a-lideranca-do-mercado-1fe875f2?utm_source=expresso\u0026utm_medium=content\u0026utm_campaign=WEB\u0026utm_content=/economia/2026-10-06-carros-eletricos-em-portugal-ultrapassam-pela-primeira-vez-as-vendas-dos-hibridos-e-alcancam-a-lideranca-do-mercado-1fe875f2","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Balada IN","pais":"Brasil","titulo":"Stella Tecnologia cria IA para conversar com Santos Dumont e desenvolve especialistas digitais","resumo":"Uma empresa brasileira desenvolveu uma inteligência artificial inovadora capaz de simular conversas com o pioneiro da aviação Santos Dumont. A tecnologia utiliza processamento de linguagem natural avançado para criar avatares históricos e especialistas digitais interativos. O projeto destaca a capacidade criativa nacional no desenvolvimento de soluções imersivas e educacionais.","link":"https://www.portalin.com.br/in-loco/stella-tecnologia-cria-ia-para-conversar-com-santos-dumont-e-desenvolve-especialistas-digitais/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The Times of India","pais":"Estados Unidos","titulo":"Enquanto Sam Altman aceita os riscos da IA, OpenAI busca novos talentos para mitigar problemas","resumo":"A liderança da OpenAI adota uma postura de aceitação sobre os inevitáveis efeitos colaterais e falhas associadas ao avanço rápido da inteligência artificial. Em contrapartida, processos de contratação recentes buscam profissionais capazes de identificar e solucionar falhas críticas nos sistemas. A medida reflete os desafios éticos e operacionais enfrentados pelas principais empresas do setor tecnológico.","link":"https://timesofindia.indiatimes.com/technology/tech-news/while-ceo-sam-altman-wants-world-to-accept-bad-things-about-ai-openai-wants-new-hires-to-tell-how-they-can-make-the-technology-work-for-humanitys-benefit/articleshow/134723882.cms","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Sud Ouest","pais":"França","titulo":"Pays de Born / Biscarrosse: A Festa da Ciência retorna de 8 a 10 outubro","resumo":"O evento anual promete envolver a comunidade local com diversas atividades interativas, oficinas práticas e palestras científicas. A iniciativa visa aproximar o público geral, especialmente os jovens, das inovações e descobertas nas áreas de tecnologia e ciências. A programação busca incentivar vocações científicas através da curiosidade e do aprendizado acessível.","link":"https://www.sudouest.fr/landes/biscarrosse/pays-de-born-biscarrosse-la-fete-de-la-science-revient-du-8-au-10-octobre-30910542.php","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Prêmio Nobel de medicina de 2026 é concedido por pesquisas sobre os mistérios do cérebro","resumo":"O prestigioso Prêmio Nobel de Medicina foi concedido a cientistas cujas pesquisas revolucionaram a compreensão das complexidades e mistérios do cérebro humano. O avanço científico detalha mecanismos neurais fundamentais que há muito intrigavam a comunidade médica internacional. Essa descoberta abre portas cruciais para o desenvolvimento de terapias inovadoras no tratamento de doenças neurodegenerativas graves.","link":"https://www.theguardian.com/science/2026/oct/05/nobel-prize-medicine-2026-winner","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"WeatherNext 3, o modelo com IA que prevê fenômenos atmosféricos com muito mais precisão","resumo":"Um novo modelo de inteligência artificial promete revolucionar a previsão de eventos climáticos extremos com alta exatidão. A ferramenta utiliza algoritmos avançados para analisar dados meteorológicos em tempo real. O impacto direto é a melhoria na preparação e resposta a desastres naturais em diferentes regiões.","link":"https://elpais.com/tecnologia/2026-10-06/weathernext-3-el-modelo-con-ia-que-predice-fenomenos-atmosfericos-con-mucha-mas-precision.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"SMEStreet","pais":"Alemanha","titulo":"UPM Nordland Papier implementa tecnologia de economia de água em fábrica alemã","resumo":"A fábrica alemã de papel UPM Nordland Papier expandiu a utilização de tecnologias inovadoras voltadas para a conservação de recursos hídricos. A iniciativa otimiza processos industriais e reduz significativamente o consumo global de água na produção. Com isso, a empresa fortalece seus compromissos ambientais e de sustentabilidade no setor fabril.","link":"https://smestreet.in/sectors/upm-nordland-papier-scales-water-saving-technology-across-german-paper-mill-12627747","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"手机新浪网","pais":"Japão","titulo":"Empresa japonesa desenvolve tecnologia de carregamento sem fio para carros elétricos em movimento","resumo":"Empresas no Japão avançaram no desenvolvimento de sistemas capazes de carregar veículos elétricos sem fio enquanto eles transitam pelas vias. Essa inovação promete eliminar a ansiedade de autonomia e reduzir a dependência de grandes baterias físicas. A tecnologia tem o potencial de transformar a infraestrutura de transportes e acelerar a transição energética global.","link":"https://k.sina.com.cn/article_5953190046_162d6789e06703tpx6.html?from=auto","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"电子工程专辑","pais":"China","titulo":"Visão geral: A aplicação da tecnologia de detecção de fóton único de alta precisão em laser Ranging por satélite","resumo":"Pesquisadores destacaram os avanços na tecnologia de detecção de fóton único de alta precisão aplicada ao mapeamento a laser de satélites. O método melhora significativamente a acurácia de medições espaciais e o rastreamento de objetos orbitais. Essa evolução tecnológica é fundamental para impulsionar futuras missões aeroespaciais e a observação da Terra.","link":"https://www.eet-china.com/mp/a528971.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Rediff","pais":"Índia","titulo":"Uttar Pradesh visa liderança em economia digital com fabricação de microchips","resumo":"O estado de Uttar Pradesh está se posicionando como um polo central na economia digital indiana ao apostar fortemente na fabricação de microchips. A iniciativa busca atrair investimentos tecnológicos de peso e fomentar a infraestrutura local de semicondutores. Com isso, o governo estadual pretende impulsionar a inovação industrial e gerar milhares de empregos qualificados.","link":"https://www.rediff.com/news/report/up-moves-to-microchip-manufacturing-builds-digital-economy/20261006.htm","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"jornaleconomico.sapo.pt","pais":"Portugal","titulo":"Portugal é a 19.ª economia mais rica da Europa em 2026, segundo análise da BestBrokers com dados do FMI","resumo":"Um estudo recente baseado em projeções do Fundo Monetário Internacional destacou a posição de Portugal no cenário econômico europeu para 2026. O país figura na décima nona colocação entre as nações mais ricas do continente, impulsionado por setores estratégicos e inovação. A análise serve como termômetro para investidores globais que acompanham o desenvolvimento financeiro português.","link":"https://jornaleconomico.sapo.pt/noticias/portugal-e-a-19-a-economia-mais-rica-da-europa-em-2026-segundo-analise-da-bestbrokers-com-dados-do-fmi/","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Vietnam.vn","pais":"Brasil","titulo":"Formação de mestrandos e doutorandos em energia nuclear: Integrando IA e tecnologia digital","resumo":"Programas de pós-graduação estão modernizando a matriz curricular para integrar inteligência artificial e tecnologias digitais na pesquisa nuclear. O objetivo é capacitar novos mestres e doutores para lidar com sistemas complexos e simulações avançadas no setor energético. Essa integração fortalece a inovação científica e a segurança em projetos de alta tecnologia.","link":"https://www.vietnam.vn/pt/dao-tao-thac-si-tien-si-dien-hat-nhan-tich-hop-ai-va-cong-nghe-so","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"insurancejournal.com","pais":"Estados Unidos","titulo":"Ciência climática sob ataque político chega à Suprema Corte dos EUA","resumo":"O debate sobre a validade e o financiamento de pesquisas científicas relacionadas ao clima atingiu a mais alta instância judicial dos Estados Unidos. O caso coloca em xeque a autonomia de órgãos de pesquisa frente a pressões e interferências político-partidárias. A decisão final poderá estabelecer precedentes fundamentais para o futuro da investigação científica no país.","link":"https://www.insurancejournal.com/news/national/2026/10/06/888027.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Le Dauphiné Libéré","pais":"França","titulo":"Economia. A partir de Toulaud, AR Technologies traz soluções para empresas com falta de técnicos de manutenção","resumo":"Uma empresa inovadora na França desenvolveu soluções tecnológicas para amenizar a escassez crítica de profissionais de manutenção no mercado industrial. O sistema otimiza processos e oferece suporte remoto avançado para manter as linhas de produção ativas. A iniciativa representa um alívio importante para o setor corporativo diante dos desafios atuais de mão de obra.","link":"https://www.ledauphine.com/economie/2026/10/06/depuis-toulaud-ar-technologies-solutionne-les-entreprises-en-manque-de-techniciens-de-maintenance","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Emergency Services Times","pais":"Inglaterra","titulo":"Serviço de ambulância testa tecnologia digital para apoiar funcionários no registro de dados","resumo":"O sistema de saúde britânico iniciou testes práticos com novas ferramentas digitais voltadas para otimizar o trabalho de equipes de atendimento de emergência. A tecnologia visa reduzir a burocracia e melhorar a precisão no registro de informações clínicas durante os chamados críticos. Com isso, espera-se agilizar o fluxo de atendimento e garantir maior segurança para os pacientes transportados.","link":"https://emergencyservicestimes.com/2026/10/06/ambulance-service-trials-digital-technology-to-support-staff-with-record-keeping/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"Quantos tipos de Polo Norte existem na Terra: os cientistas distinguem até seis diferentes","resumo":"Pesquisadores revelam que a definição geográfica e científica do Polo Norte vai muito além de um único ponto fixo no mapa. O estudo detalha as diferentes categorias consideradas pela ciência moderna, incluindo variações magnéticas e de eixo de rotação. A descoberta amplia a compreensão sobre a dinâmica complexa do nosso planeta.","link":"https://www.eldebate.com/ciencia/20261006/cuantos-tipos-polo-norte-hay-tierra-cientificos-distinguen-hasta-seis-diferentes_466172.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"springerprofessional.de","pais":"Alemanha","titulo":"Novo Hyundai Tucson chega ao mercado com três opções de motorização","resumo":"O utilitário esportivo Hyundai Tucson foi lançado oficialmente com três alternativas de propulsão para atender a diferentes demandas dos consumidores. O modelo combina atualizações estéticas marcantes com avanços em eficiência energética e conectividade interna. A novidade busca consolidar a posição competitiva da marca no disputado mercado europeu de SUVs.","link":"https://www.springerprofessional.de/sport-utility-vehicle/fahrzeugtechnik/neuer-hyundai-tucson-startet-mit-drei-antrieben/53808112","categoria":"LANÇAMENTO","lang":"pt"},{"fonte":"EnterpriseZine","pais":"Japão","titulo":"Deloitte Tohmatsu e Mitsubishi Estate inauguram polo de coinovação em tecnologia quântica em Tóquio","resumo":"Um novo centro focado no avanço da tecnologia quântica será estabelecido no distrito de Marunouchi, em Tóquio, através de uma parceria estratégica. O espaço busca conectar pesquisadores, corporações e startups para acelerar a aplicação comercial de soluções quânticas. A iniciativa reforça o compromisso do Japão em se posicionar como líder global neste setor científico estratégico.","link":"https://enterprisezine.jp/article/detail/25233","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"电子工程专辑","pais":"China","titulo":"Desenvolvendo tecnologia de sensores fotoelétricos de precisão, a Chuanzhou Technology conclui financiamento Pré-A++ de quase 100 milhões","resumo":"A startup Chuanzhou Technology garantiu recentemente um aporte financeiro na faixa de quase 100 milhões de yuans em sua rodada Pré-A++. Os recursos serão direcionados para a pesquisa e desenvolvimento contínuo de sensores fotoelétricos de alta precisão. O investimento reforça a confiança do mercado no potencial de inovação e na aplicação industrial da empresa.","link":"https://www.eet-china.com/mp/a528973.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Nasscom","pais":"Índia","titulo":"Tecnologia Quântica: A prontidão da Índia, posição global e imperativos-chave","resumo":"Um relatório recente analisa a preparação estratégica da Índia no campo da tecnologia quântica e sua relevância no cenário global. O documento destaca os principais desafios e investimentos necessários para consolidar o país como uma potência quântica. A corrida tecnológica exige colaboração intensa entre o setor acadêmico, governamental e industrial.","link":"https://community.nasscom.in/report/nasscom-insights/quantum-technology-indias-readiness-global-position-and-key-imperatives","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"agendaculturalporto.org","pais":"Portugal","titulo":"MUMMA abre à noite para descobrir o que a ciência revela por trás de uma pintura","resumo":"O museu MUMMA promoveu uma iniciativa noturna inovadora para revelar os segredos científicos ocultos em obras de arte pictóricas. Utilizando tecnologias avançadas de análise, especialistas demonstram como a ciência decodifica materiais, técnicas e o estado de conservação de pinturas. O evento aproxima o público geral da pesquisa laboratorial aplicada ao patrimônio cultural e histórico.","link":"https://agendaculturalporto.org/eventos/mumma-abre-a-noite-para-descobrir-o-que-a-ciencia-revela-por-tras-de-uma-pintura/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Exame","pais":"Brasil","titulo":"Como a Falconi turbinou sua capacidade de gestão com R$ 100 milhões em tecnologia e IA","resumo":"A consultoria Falconi investiu uma quantia expressiva para modernizar seus processos internos utilizando inteligência artificial e plataformas tecnológicas. O aporte financeiro permitiu automatizar análises complexas de dados e otimizar a tomada de decisões estratégicas para clientes corporativos. A iniciativa demonstra como grandes empresas tradicionais estão acelerando a transformação digital para manter a competitividade.","link":"https://exame.com/negocios/falconi-gestao-tecnologia-ia/","categoria":"NEGÓCIOS TECH","lang":"pt"},{"fonte":"aha.org","pais":"Estados Unidos","titulo":"Valleywise Health torna-se o primeiro hospital do Arizona a implementar a tecnologia LifeBubble NICU","resumo":"O hospital Valleywise Health introduziu a inovadora tecnologia LifeBubble NICU em sua unidade de terapia intensiva neonatal no estado do Arizona. A ferramenta foi desenvolvida para aprimorar o monitoramento e o cuidado especializado de recém-nascidos em estado crítico. A implementação pioneira promete elevar os padrões de segurança e eficácia no atendimento médico infantil.","link":"https://www.aha.org/tellingthehospitalstory/stories/valleywise-health-becomes-first-arizona-hospital-implement-lifebubble-nicu-technology","categoria":"SAÚDE","lang":"pt"},{"fonte":"Ouest-France","pais":"França","titulo":"Aromas, mel, lanche...: A Festa da Ciência será saborosa em Saint-Lô, em torno de 'temáticas crocantes'","resumo":"A tradicional celebração científica na cidade francesa combinará gastronomia e pesquisa em eventos interativos e divertidos para toda a família. O público poderá explorar a ciência por trás dos alimentos através de experimentos sensoriais e palestras com especialistas. A proposta inovadora busca demonstrar como a tecnologia e a química estão presentes no cotidiano culinário.","link":"https://www.ouest-france.fr/normandie/saint-lo-50000/aromes-miel-gouter-la-fete-de-la-science-sera-gourmande-a-saint-lo-autour-de-thematiques-croustillantes-bc8e7aa4-bce0-11f1-8ea4-97dc4d7cca62","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Aceite 'coisas ruins' em troca dos benefícios da IA, diz Sam Altman","resumo":"O CEO da OpenAI, Sam Altman, gerou debates intensos ao afirmar publicamente que a sociedade precisará aceitar certos impactos negativos em troca do progresso avassalador da inteligência artificial. A declaração ressalta os dilemas éticos e os riscos inerentes à rápida expansão tecnológica global atual. Especialistas e reguladores agora discutem onde traçar a linha entre inovação desenfreada e a segurança pública.","link":"https://www.theguardian.com/technology/2026/oct/05/sam-altman-open-ai-chatgpt-benefits-risks","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Motril Digital","pais":"Espanha","titulo":"Granada: A UGR cria um laboratório de alta tecnologia para controlar e operar à distância as grandes infraestruturas científicas do futuro","resumo":"A Universidade de Granada inaugurou um espaço inovador voltado para o gerenciamento remoto de complexos científicos avançados. O laboratório combina automação e conectividade de ponta para otimizar pesquisas de grande escala. A iniciativa posiciona a região na vanguarda da gestão tecnológica para o progresso científico.","link":"https://www.motrildigital.news/granada-la-ugr-crea-un-laboratorio-de-alta-tecnologia-para-controlar-y-operar-a-distancia-las-grandes-infraestructuras-cientificas-del-futuro","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"watch.impress.co.jp","pais":"Japão","titulo":"Carregamento de EVs em movimento: Honda e parceiros desenvolvem tecnologia base com testes públicos previstos para 2027","resumo":"A Honda e outras empresas associadas uniram forças para criar a tecnologia de base para recarga de veículos elétricos em pleno tráfego. Testes práticos em vias públicas estão programados para começar a partir do ano fiscal de 2027. O projeto busca viabilizar estradas eletrificadas para tornar a mobilidade sustentável mais prática e eficiente.","link":"https://www.watch.impress.co.jp/docs/news/2145935.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"新浪财经","pais":"China","titulo":"China aplica fibra óptica oca, tecnologia-chave de comunicação de próxima geração, criando uma ferrovia de 'levitação magnética' para sinais ópticos na era da computação de IA","resumo":"A China implementou com sucesso fibras ópticas de núcleo oco para revolucionar a transmissão de dados na era da inteligência artificial. A nova infraestrutura funciona como uma via de alta velocidade extremamente eficiente para sinais ópticos, reduzindo a latência. O avanço técnico promete suportar as crescentes demandas computacionais de data centers e redes de IA.","link":"https://finance.sina.cn/stock/jdts/2026-10-06/detail-iniufxcp5836432.d.html?vt=4\u0026cid=76993\u0026node_id=76993","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"India Shipping News","pais":"Índia","titulo":"Diretor-geral da DFCCIL analisa operações dos corredores de frete, planos futuros e modernização impulsionada por tecnologia","resumo":"O diretor-geral da DFCCIL, Alok Tiwari, conduziu uma revisão abrangente sobre as operações dos corredores dedicados de frete e os futuros planos de expansão. O encontro enfatizou a integração de tecnologias modernas para otimizar a logística e o transporte ferroviário no país. A modernização visa aumentar a eficiência operativa e reduzir os custos logísticos nacionais.","link":"https://indiashippingnews.com/infrastructure/dfccil-md-alok-tiwari-reviews-dfc-operations-future-ewdfc-plans-and-technology-driven-modernisation/","categoria":"INFRAESTRUTURA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Clucky: um despertador que não deixa adiar","resumo":"Desenvolvido como uma solução criativa para combater o hábito de adiar o alarme, o dispositivo Clucky promete revolucionar as manhãs dos usuários. O gadget foca em metodologias de engajamento para garantir o despertar imediato, eliminando a procrastinação matinal. Essa nova ferramenta tecnológica de consumo ganha destaque pela originalidade em simplificar a rotina diária.","link":"https://sapo.pt/artigo/clucky-um-despertador-que-nao-deixa-adiar-6ac42dcd251665e3d631d05d","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Mundo Conectado","pais":"Brasil","titulo":"Lenovo lança smartwatch com tela grande, 50 esportes e bateria para até 9 dias","resumo":"A Lenovo apresentou ao mercado um novo relógio inteligente focado em autonomia prolongada e monitoramento abrangente de atividades físicas. O dispositivo conta com display amplo de alta visibilidade e suporte para dezenas de modalidades esportivas diferentes. Com bateria de longa duração, o lançamento busca atrair usuários que valorizam praticidade e desempenho no dia a dia.","link":"https://www.mundoconectado.com.br/vestiveis/lenovo-lanca-smartwatch-com-tela-grande-50-esportes-e-bateria-para-ate-9-dias/","categoria":"GADGETS","lang":"pt"},{"fonte":"Pioneer Daily","pais":"Estados Unidos","titulo":"Prêmio Nobel de Medicina abre nova era na ciência do cérebro","resumo":"A premiação do Nobel de Medicina deste ano destacou descobertas revolucionárias voltadas para a compreensão complexa do cérebro humano. Os estudos premiados abrem caminhos promissores para o tratamento de doenças neurológicas degenerativas até então incuráveis. O impacto científico redefine fronteiras e acelera o desenvolvimento de terapias inovadoras na medicina moderna.","link":"https://dailypioneer.com/news/nobel-in-medicine-opens-new-era-in-brain-science","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Premium Beauty News","pais":"França","titulo":"IFF lança sua tecnologia de perfumaria em base aquosa, Aquascent","resumo":"A indústria de fragrâncias dá um passo importante rumo à sustentabilidade com o lançamento de uma tecnologia inovadora baseada em água. O novo método substitui solventes tradicionais, reduzindo o impacto ambiental sem comprometer a qualidade ou a fixação dos aromas. A novidade deve transformar o desenvolvimento de produtos no mercado cosmético global.","link":"https://www.premiumbeautynews.com/fr/iff-lance-sa-technologie-de,28297","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"ciencia.gob.es","pais":"Espanha","titulo":"O MICIU impulsiona a Cátedra Arrels para converter ciência e inovação em soluções contra as mudanças climáticas","resumo":"O ministério espanhol promove uma nova cátedra acadêmica focada no desenvolvimento de tecnologias verdes práticas. O objetivo principal é transformar pesquisas científicas avançadas em ferramentas aplicáveis no combate à crise climática. A medida reforça o compromisso do país com a sustentabilidade através do conhecimento.","link":"https://www.ciencia.gob.es/Noticias/2026/octubre/firma-Catedra-Arrels.html","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"NEDO, Universidade de Tecnologia de Nagaoka e AIST desenvolvem tecnologia de triagem de microrganismos","resumo":"Um consórcio de instituições de pesquisa japonesas desenvolveu uma nova técnica de triagem baseada em gotículas contendo microrganismos úteis. A inovação otimiza a identificação de cepas biológicas com alto potencial para aplicações industriais e ambientais. A descoberta fortalece a biotecnologia nacional e abre portas para novos processos produtivos sustentáveis.","link":"https://www.nikkei.com/article/DGXZRSP713438_W6A001C2000000/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"人民网","pais":"China","titulo":"Volume de carga e descarga de navio único no Porto de Yantian, em Shenzhen, quebra o recorde dos portos chineses","resumo":"O Porto de Yantian, localizado em Shenzhen, estabeleceu uma nova marca histórica ao registrar o maior volume de operações em um único navio no país. O feito demonstra a alta eficiência operacional e o uso de tecnologias avançadas de automação logística na infraestrutura portuária chinesa. Essa otimização fortalece a cadeia de suprimentos global e o fluxo comercial da região.","link":"http://finance.people.com.cn/n1/2026/1006/c1004-40809767.html","categoria":"INFRAESTRUTURA","lang":"pt"},{"fonte":"The Times of India","pais":"Índia","titulo":"IIT Roorkee e India Optel unem forças para pesquisa em tecnologia de defesa e colaboração industrial","resumo":"O prestes instituto IIT Roorkee firmou uma parceria com a India Optel para impulsionar pesquisas avançadas em tecnologias voltadas para a defesa nacional. A colaboração busca integrar o conhecimento acadêmico com a capacidade de produção industrial do setor de defesa. O acordo promete acelerar o desenvolvimento de equipamentos de alta tecnologia fabricados localmente.","link":"https://timesofindia.indiatimes.com/education/news/iit-roorkee-and-india-optel-join-hands-for-defence-technology-research-and-industry-collaboration/articleshow/134722105.cms","categoria":"PESQUISA","lang":"pt"},{"fonte":"SÁBADO","pais":"Portugal","titulo":"Nobel da Medicina: Trabalho premiado \"transformou profundamente as neurociências\"","resumo":"A premiação máxima da medicina reconheceu uma pesquisa inovadora que alterou de forma irreversível os rumos do estudo do cérebro. A descoberta premiada abriu novos horizontes para a compreensão de doenças neurológicas complexas e o funcionamento das sinapses. Esse marco científico reforça a importância do financiamento contínuo em pesquisas de ponta voltadas à saúde humana.","link":"https://www.sabado.pt/ciencia---saude/detalhe/nobel-da-medicina-trabalho-premiado-transformou-profundamente-as-neurociencias","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Ex-pesquisador da Anthropic alerta que corrida pela IA traz riscos que a própria indústria ainda não compreende","resumo":"Um ex-pesquisador da empresa Anthropic expressou preocupações profundas sobre o ritmo acelerado de desenvolvimento de modelos de inteligência artificial. Segundo o especialista, a pressa em lançar tecnologias avançadas cria vulnerabilidades que nem mesmo os próprios desenvolvedores conseguem mitigar completamente. O alerta reforça a necessidade urgente de regulamentações mais rígidas e protocolos de segurança no setor.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/10/05/ex-pesquisador-da-anthropic-alerta-que-corrida-pela-ia-traz-riscos-que-a-propria-industria-ainda-nao-compreende.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"ScienceAlert","pais":"Estados Unidos","titulo":"Cientistas encontram ligação surpreendente entre gatos e a felicidade em 93 países","resumo":"Uma ampla pesquisa global conduzida em 93 países revelou correlações inesperadas entre a convivência com gatos e níveis de bem-estar humano. Os dados sugerem que a presença desses animais de estimação pode influenciar positivamente a saúde mental e emocional de seus tutores em diferentes culturas. O estudo desperta novo interesse científico sobre os benefícios terapêuticos dos animais de estimação.","link":"https://www.sciencealert.com/scientists-find-a-surprising-link-between-cats-and-happiness-across-93-countries","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Reporterre, le média de l'écologie","pais":"França","titulo":"Mais ondas de calor: Companhias petrolíferas são responsáveis pela metade, segundo a ciência","resumo":"Um novo estudo científico quantifica a responsabilidade direta das grandes corporações de combustíveis fósseis no aumento das ondas de calor extremas. A pesquisa utiliza modelos climáticos avançados para conectar emissões corporativas passadas a eventos meteorológicos severos recentes. Os dados fortalecem argumentos legais e sociais para cobrar maior responsabilização ambiental das empresas.","link":"https://reporterre.net/Plus-de-canicules-les-compagnies-petrolieres-sont-responsables-pour-moitie-selon-la","categoria":"CLIMA","lang":"pt"},{"fonte":"Exame","pais":"Brazil","titulo":"Can migrating to artificial intelligence boost your salary? Here is what is changing in tech careers","resumo":"The massive adoption of artificial intelligence is transforming the labor market and redefining the skills required of tech professionals. Experts point out that specialization in advanced tools can lead to significant salary appreciation. This shift demands constant upskilling to keep up with new global corporate demands.","link":"https://exame.com/inteligencia-artificial/migrar-para-inteligencia-artificial-pode-elevar-o-salario-veja-o-que-muda-na-carreira-de-tecnologia/","categoria":"TECH CAREERS","lang":"en"},{"fonte":"CXOToday.com","pais":"United States","titulo":"Integral Ad Science to provide brand safety measurement for ChatGPT ads","resumo":"Integral Ad Science has expanded its operations to offer brand safety and suitability tools for advertisements within ChatGPT. This initiative seeks to ensure greater control for advertisers in environments driven by generative artificial intelligence. The direct impact is the creation of a more reliable and secure advertising ecosystem for global brands.","link":"https://cxotoday.com/media-coverage/integral-ad-science-to-provide-brand-safety-and-suitability-measurement-in-chatgpt-ads/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Pour la Science","pais":"France","titulo":"Could 'little red dots' be 'black hole stars'?","resumo":"Researchers point out that mysterious distant celestial objects, known as little red dots, may actually represent a fascinating new stellar phase. The discovery challenges current astrophysics models and could rewrite our understanding of the early evolution of the universe. Astronomers plan to use new telescopes to confirm the true nature of these cosmic bodies.","link":"https://www.pourlascience.fr/sr/echos-des-labos/un-trou-noir-geant-deguise-en-etoile-29630.php","categoria":"SCIENCE","lang":"en"},{"fonte":"University of Bristol","pais":"United Kingdom","titulo":"Bristol spinout company turns moth wing science into revolutionary acoustic material","resumo":"A new technological innovation developed in the UK promises to transform the acoustic insulation industry by drawing on the natural structure of moth wings. This advanced research demonstrates how biomimetics can generate highly efficient materials for noise control. The expected impact ranges from civil construction to aviation, promoting quieter and more sustainable environments.","link":"https://www.bristol.ac.uk/news/2026/october/bristol-spinout-turns-moth-wing-science-into-revolutionary-acoustic-material.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Revista Emprendedores","pais":"Spain","titulo":"What will happen to AI startups after the technology's hype?","resumo":"Experts discuss the future and sustainability of emerging companies focused on artificial intelligence. The debate analyzes how the market is expected to behave following the initial period of technological euphoria. The transition seeks to separate passing fads from truly solid and lasting corporate solutions.","link":"https://emprendedores.es/inteligencia-artificial/startups-ia-tras-hype/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"it-daily.net","pais":"Germany","titulo":"Hamburg Airport adopts new technology for drone detection","resumo":"Hamburg Airport has implemented an advanced system to identify unauthorized drones in its airspace. The technology aims to mitigate growing risks to civil aviation and prevent disruptions to commercial flights. This measure reinforces airport security amid the increase in unmanned aircraft traffic in Europe.","link":"https://www.it-daily.net/shortnews/hamburger-flughafen-drohnenerkennung","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"時事ドットコム","pais":"Japan","titulo":"Autonomous navigation technology in Self-Defense Forces ships featuring integrated AI","resumo":"The Japanese government has initiated research and development to integrate artificial intelligence and autonomous navigation technology into military vessels. The project aims to increase operational efficiency and mitigate personnel shortages in naval forces. The initiative represents a significant advance in the technological modernization of national defense and the automation of complex fleets.","link":"https://www.jiji.com/jc/article?k=2026100600112\u0026g=pol","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"美通社","pais":"China","titulo":"Quantinuum partners with the University of Western Australia to boost quantum technology capabilities","resumo":"Quantinuum has joined forces with the University of Western Australia to strengthen the quantum technology ecosystem in the region. The collaboration aims to accelerate advanced research and promote the development of cutting-edge technological innovations. This strategic partnership highlights global growth and interest in quantum computing and its practical applications.","link":"https://www.prnasia.com/story/550649-1.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"PR Newswire UK","pais":"India","titulo":"Alternicq strengthens innovative packaging strategy, partners with Britain's Pulpex to bring advanced pulp bottle technology to India","resumo":"Alternicq has entered into a strategic partnership with British company Pulpex to introduce cutting-edge pulp-based bottle technology to the Indian market. The initiative aims to transform the sustainable packaging sector, drastically reducing the use of plastic. This innovation meets the growing demand for eco-friendly alternatives in the global and local supply chains.","link":"https://www.prnewswire.co.uk/news-releases/alternicq-strengthens-its-innovative-packaging-strategy-partners-with-uk-based-pulpex-to-bring-advanced-pulp-based-bottle-technology-to-india-302898087.html","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"Expresso","pais":"Portugal","titulo":"Electric cars in Portugal outperform hybrids in sales for the first time, claiming market leadership","resumo":"All-electric vehicles have surpassed hybrids in sales on the Portuguese market, marking a historic turning point in the country's mobility. This advance reflects growing consumer preference for sustainable alternatives and the expansion of charging infrastructure. The trend consolidates Portugal as a key hub in the energy transition of the European automotive industry.","link":"https://expresso.pt/economia/2026-10-06-carros-eletricos-em-portugal-ultrapassam-pela-primeira-vez-as-vendas-dos-hibridos-e-alcancam-a-lideranca-do-mercado-1fe875f2?utm_source=expresso\u0026utm_medium=content\u0026utm_campaign=WEB\u0026utm_content=/economia/2026-10-06-carros-eletricos-em-portugal-ultrapassam-pela-primeira-vez-as-vendas-dos-hibridos-e-alcancam-a-lideranca-do-mercado-1fe875f2","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Balada IN","pais":"Brazil","titulo":"Stella Tecnologia creates AI to converse with Santos Dumont and develops digital specialists","resumo":"A Brazilian company has developed an innovative artificial intelligence capable of simulating conversations with aviation pioneer Santos Dumont. The technology utilizes advanced natural language processing to create historical avatars and interactive digital specialists. The project highlights national creative capability in developing immersive and educational solutions.","link":"https://www.portalin.com.br/in-loco/stella-tecnologia-cria-ia-para-conversar-com-santos-dumont-e-desenvolve-especialistas-digitais/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The Times of India","pais":"United States","titulo":"While Sam Altman accepts AI risks, OpenAI seeks new talent to mitigate problems","resumo":"OpenAI's leadership is adopting an accepting stance regarding the inevitable side effects and flaws associated with the rapid advancement of artificial intelligence. In contrast, recent hiring processes are seeking professionals capable of identifying and solving critical system flaws. The measure reflects the ethical and operational challenges faced by leading companies in the tech sector.","link":"https://timesofindia.indiatimes.com/technology/tech-news/while-ceo-sam-altman-wants-world-to-accept-bad-things-about-ai-openai-wants-new-hires-to-tell-how-they-can-make-the-technology-work-for-humanitys-benefit/articleshow/134723882.cms","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Sud Ouest","pais":"France","titulo":"Pays de Born / Biscarrosse: Science Festival returns from October 8 to 10","resumo":"The annual event promises to engage the local community with various interactive activities, hands-on workshops, and scientific lectures. The initiative aims to bring the general public, especially youth, closer to innovations and discoveries in the fields of technology and science. The program seeks to encourage scientific vocations through curiosity and accessible learning.","link":"https://www.sudouest.fr/landes/biscarrosse/pays-de-born-biscarrosse-la-fete-de-la-science-revient-du-8-au-10-octobre-30910542.php","categoria":"SCIENCE","lang":"en"},{"fonte":"The Guardian","pais":"United Kingdom","titulo":"2026 Nobel Prize in Medicine awarded for research into the mysteries of the brain","resumo":"The prestigious Nobel Prize in Medicine has been awarded to scientists whose research has revolutionized the understanding of the complexities and mysteries of the human brain. The scientific breakthrough details fundamental neural mechanisms that have long puzzled the international medical community. This discovery opens crucial doors for the development of innovative therapies in the treatment of severe neurodegenerative diseases.","link":"https://www.theguardian.com/science/2026/oct/05/nobel-prize-medicine-2026-winner","categoria":"SCIENCE","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"WeatherNext 3, the AI model that predicts atmospheric phenomena with much greater precision","resumo":"A new artificial intelligence model promises to revolutionize the prediction of extreme weather events with high accuracy. The tool utilizes advanced algorithms to analyze meteorological data in real time. The direct impact is the improvement of preparedness and response to natural disasters in different regions.","link":"https://elpais.com/tecnologia/2026-10-06/weathernext-3-el-modelo-con-ia-que-predice-fenomenos-atmosfericos-con-mucha-mas-precision.html","categoria":"SCIENCE","lang":"en"},{"fonte":"SMEStreet","pais":"Germany","titulo":"UPM Nordland Papier Implements Water-Saving Technology at German Mill","resumo":"German paper mill UPM Nordland Papier has expanded its use of innovative technologies focused on water resource conservation. The initiative optimizes industrial processes and significantly reduces overall water consumption in production. As a result, the company strengthens its environmental and sustainability commitments in the manufacturing sector.","link":"https://smestreet.in/sectors/upm-nordland-papier-scales-water-saving-technology-across-german-paper-mill-12627747","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"手机新浪网","pais":"Japan","titulo":"Japanese Company Develops Wireless Charging Technology for Electric Vehicles in Motion","resumo":"Companies in Japan have advanced in the development of systems capable of wirelessly charging electric vehicles while they travel on roads. This innovation promises to eliminate range anxiety and reduce dependence on large physical batteries. The technology has the potential to transform transportation infrastructure and accelerate the global energy transition.","link":"https://k.sina.com.cn/article_5953190046_162d6789e06703tpx6.html?from=auto","categoria":"INNOVATION","lang":"en"},{"fonte":"电子工程专辑","pais":"China","titulo":"Overview: The Application of High-Precision Single-Photon Detection Technology in Satellite Laser Ranging","resumo":"Researchers highlighted advancements in high-precision single-photon detection technology applied to satellite laser mapping. This method significantly improves spatial measurement accuracy and the tracking of orbital objects. This technological evolution is fundamental to driving future aerospace missions and Earth observation.","link":"https://www.eet-china.com/mp/a528971.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Rediff","pais":"India","titulo":"Uttar Pradesh Aims for Digital Economy Leadership with Microchip Manufacturing","resumo":"The state of Uttar Pradesh is positioning itself as a central hub in India's digital economy by heavily investing in microchip manufacturing. The initiative seeks to attract major technology investments and foster local semiconductor infrastructure. Through this, the state government aims to boost industrial innovation and generate thousands of skilled jobs.","link":"https://www.rediff.com/news/report/up-moves-to-microchip-manufacturing-builds-digital-economy/20261006.htm","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"jornaleconomico.sapo.pt","pais":"Portugal","titulo":"Portugal Ranks as Europe's 19th Richest Economy in 2026, According to BestBrokers Analysis Using IMF Data","resumo":"A recent study based on International Monetary Fund projections highlighted Portugal's position in the European economic landscape for 2026. The country ranks nineteenth among the continent's wealthiest nations, driven by strategic sectors and innovation. The analysis serves as a barometer for global investors monitoring Portugal's financial development.","link":"https://jornaleconomico.sapo.pt/noticias/portugal-e-a-19-a-economia-mais-rica-da-europa-em-2026-segundo-analise-da-bestbrokers-com-dados-do-fmi/","categoria":"ECONOMY","lang":"en"},{"fonte":"Vietnam.vn","pais":"Brazil","titulo":"Training Master's and Doctoral Students in Nuclear Energy: Integrating AI and Digital Technology","resumo":"Graduate programs are modernizing their curricula to integrate artificial intelligence and digital technologies into nuclear research. The goal is to train new master's and doctoral graduates to handle complex systems and advanced simulations in the energy sector. This integration strengthens scientific innovation and safety in high-tech projects.","link":"https://www.vietnam.vn/pt/dao-tao-thac-si-tien-si-dien-hat-nhan-tich-hop-ai-va-cong-nghe-so","categoria":"SCIENCE","lang":"en"},{"fonte":"insurancejournal.com","pais":"United States","titulo":"Climate Science Under Political Attack Reaches the U.S. Supreme Court","resumo":"The debate over the validity and funding of climate-related scientific research has reached the highest court in the United States. The case challenges the autonomy of research agencies in the face of political-partisan pressures and interference. The final decision could establish foundational precedents for the future of scientific investigation in the country.","link":"https://www.insurancejournal.com/news/national/2026/10/06/888027.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"Le Dauphiné Libéré","pais":"France","titulo":"Economy: Operating from Toulaud, AR Technologies Delivers Solutions for Companies Facing Maintenance Technician Shortages","resumo":"An innovative company in France has developed technological solutions to ease the critical shortage of maintenance professionals in the industrial market. The system optimizes processes and offers advanced remote support to keep production lines running. The initiative provides a major relief to the corporate sector amid current labor challenges.","link":"https://www.ledauphine.com/economie/2026/10/06/depuis-toulaud-ar-technologies-solutionne-les-entreprises-en-manque-de-techniciens-de-maintenance","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Emergency Services Times","pais":"England","titulo":"Ambulance Service Pilots Digital Technology to Support Staff with Record-Keeping","resumo":"The British health system has launched practical trials of new digital tools aimed at optimizing the work of emergency response teams. The technology aims to reduce bureaucracy and improve the accuracy of recording clinical information during critical calls. This is expected to streamline patient flow and ensure greater safety for transported patients.","link":"https://emergencyservicestimes.com/2026/10/06/ambulance-service-trials-digital-technology-to-support-staff-with-record-keeping/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"How Many Types of North Poles Exist on Earth: Scientists Distinguish Up to Six Different Ones","resumo":"Researchers reveal that the geographic and scientific definition of the North Pole goes far beyond a single fixed point on the map. The study details the different categories considered by modern science, including magnetic variations and axis-of-rotation shifts. The discovery broadens our understanding of our planet's complex dynamics.","link":"https://www.eldebate.com/ciencia/20261006/cuantos-tipos-polo-norte-hay-tierra-cientificos-distinguen-hasta-seis-diferentes_466172.html","categoria":"SCIENCE","lang":"en"},{"fonte":"springerprofessional.de","pais":"Germany","titulo":"New Hyundai Tucson Hits the Market with Three Powertrain Options","resumo":"The Hyundai Tucson SUV has been officially launched with three propulsion alternatives to meet different consumer demands. The model combines striking aesthetic updates with advancements in energy efficiency and in-cabin connectivity. The new release aims to solidify the brand's competitive position in the fiercely contested European SUV market.","link":"https://www.springerprofessional.de/sport-utility-vehicle/fahrzeugtechnik/neuer-hyundai-tucson-startet-mit-drei-antrieben/53808112","categoria":"LAUNCHES","lang":"en"},{"fonte":"EnterpriseZine","pais":"Japan","titulo":"Deloitte Tohmatsu and Mitsubishi Estate Open Quantum Technology Co-Innovation Hub in Tokyo","resumo":"A new center focused on advancing quantum technology will be established in Tokyo's Marunouchi district through a strategic partnership. The space aims to connect researchers, corporations, and startups to accelerate the commercial application of quantum solutions. The initiative reinforces Japan's commitment to positioning itself as a global leader in this strategic scientific sector.","link":"https://enterprisezine.jp/article/detail/25233","categoria":"SCIENCE","lang":"en"},{"fonte":"电子工程专辑","pais":"China","titulo":"Developing Precision Photoelectric Sensor Technology, Chuanzhou Technology Completes Pre-A++ Financing of Nearly 100 Million","resumo":"Startup Chuanzhou Technology recently secured financial backing in the range of nearly 100 million yuan in its Pre-A++ funding round. The funds will be directed toward the research and ongoing development of high-precision photoelectric sensors. The investment reinforces market confidence in the company's innovation potential and industrial applications.","link":"https://www.eet-china.com/mp/a528973.html","categoria":"BUSINESS","lang":"en"},{"fonte":"Nasscom","pais":"India","titulo":"Quantum Technology: India's Readiness, Global Position, and Key Imperatives","resumo":"A recent report analyzes India's strategic preparedness in the field of quantum technology and its relevance on the global stage. The document highlights the main challenges and investments needed to establish the country as a quantum powerhouse. The technological race requires intense collaboration between the academic, governmental, and industrial sectors.","link":"https://community.nasscom.in/report/nasscom-insights/quantum-technology-indias-readiness-global-position-and-key-imperatives","categoria":"SCIENCE","lang":"en"},{"fonte":"agendaculturalporto.org","pais":"Portugal","titulo":"MUMMA Opens at Night to Reveal What Science Discovers Behind a Painting","resumo":"The MUMMA museum hosted an innovative nighttime initiative to reveal the hidden scientific secrets behind pictorial works of art. Using advanced analysis technologies, experts demonstrated how science decodes materials, techniques, and the conservation status of paintings. The event brings the general public closer to laboratory research applied to cultural and historical heritage.","link":"https://agendaculturalporto.org/eventos/mumma-abre-a-noite-para-descobrir-o-que-a-ciencia-revela-por-tras-de-uma-pintura/","categoria":"SCIENCE","lang":"en"},{"fonte":"Exame","pais":"Brazil","titulo":"How Falconi boosted its management capacity with R$ 100 million in technology and AI","resumo":"Consulting firm Falconi invested a significant amount to modernize its internal processes using artificial intelligence and technology platforms. The financial contribution allowed for the automation of complex data analyses and optimized strategic decision-making for corporate clients. The initiative demonstrates how large traditional companies are accelerating digital transformation to maintain competitiveness.","link":"https://exame.com/negocios/falconi-gestao-tecnologia-ia/","categoria":"TECH BUSINESS","lang":"en"},{"fonte":"aha.org","pais":"United States","titulo":"Valleywise Health becomes the first Arizona hospital to implement LifeBubble NICU technology","resumo":"Valleywise Health hospital has introduced the innovative LifeBubble NICU technology in its neonatal intensive care unit in the state of Arizona. The tool was developed to enhance the monitoring and specialized care of critically ill newborns. The pioneering implementation promises to raise safety and efficacy standards in infant medical care.","link":"https://www.aha.org/tellingthehospitalstory/stories/valleywise-health-becomes-first-arizona-hospital-implement-lifebubble-nicu-technology","categoria":"HEALTH","lang":"en"},{"fonte":"Ouest-France","pais":"France","titulo":"Aromas, honey, snacks...: The Science Festival will be flavorful in Saint-Lô, centered around 'crispy themes'","resumo":"The traditional science celebration in the French city will combine gastronomy and research in interactive, fun events for the whole family. The public will be able to explore the science behind food through sensory experiments and lectures with experts. The innovative proposal seeks to demonstrate how technology and chemistry are present in everyday cooking.","link":"https://www.ouest-france.fr/normandie/saint-lo-50000/aromes-miel-gouter-la-fete-de-la-science-sera-gourmande-a-saint-lo-autour-de-thematiques-croustillantes-bc8e7aa4-bce0-11f1-8ea4-97dc4d7cca62","categoria":"SCIENCE","lang":"en"},{"fonte":"The Guardian","pais":"United Kingdom","titulo":"Accept 'bad things' in exchange for the benefits of AI, says Sam Altman","resumo":"OpenAI CEO Sam Altman sparked intense debate by publicly stating that society will need to accept certain negative impacts in exchange for the overwhelming progress of artificial intelligence. The statement highlights the ethical dilemmas and inherent risks of the current rapid global technological expansion. Experts and regulators are now discussing where to draw the line between unbridled innovation and public safety.","link":"https://www.theguardian.com/technology/2026/oct/05/sam-altman-open-ai-chatgpt-benefits-risks","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Motril Digital","pais":"Spain","titulo":"Granada: UGR creates a high-tech lab to control and remotely operate the major scientific infrastructures of the future","resumo":"The University of Granada has inaugurated an innovative space dedicated to the remote management of advanced scientific complexes. The lab combines automation and cutting-edge connectivity to optimize large-scale research. The initiative positions the region at the forefront of technological management for scientific progress.","link":"https://www.motrildigital.news/granada-la-ugr-crea-un-laboratorio-de-alta-tecnologia-para-controlar-y-operar-a-distancia-las-grandes-infraestructuras-cientificas-del-futuro","categoria":"INNOVATION","lang":"en"},{"fonte":"watch.impress.co.jp","pais":"Japan","titulo":"EV charging on the move: Honda and partners develop core technology with public tests planned for 2027","resumo":"Honda and other partner companies have joined forces to create the core technology for charging electric vehicles in the middle of traffic. Practical tests on public roads are scheduled to begin starting in fiscal year 2027. The project aims to make electrified roads viable to make sustainable mobility more practical and efficient.","link":"https://www.watch.impress.co.jp/docs/news/2145935.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"新浪财经","pais":"China","titulo":"China applies hollow-core fiber optics, a key next-generation communication technology, creating a 'magnetic levitation' railway for optical signals in the AI computing era","resumo":"China has successfully implemented hollow-core optical fibers to revolutionize data transmission in the artificial intelligence era. The new infrastructure works as an extremely efficient high-speed highway for optical signals, reducing latency. The technical breakthrough promises to support the growing computational demands of data centers and AI networks.","link":"https://finance.sina.cn/stock/jdts/2026-10-06/detail-iniufxcp5836432.d.html?vt=4\u0026cid=76993\u0026node_id=76993","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"India Shipping News","pais":"India","titulo":"DFCCIL Managing Director reviews freight corridor operations, future plans, and technology-driven modernization","resumo":"DFCCIL Managing Director Alok Tiwari conducted a comprehensive review of dedicated freight corridor operations and future expansion plans. The meeting emphasized the integration of modern technologies to optimize logistics and rail transport in the country. The modernization aims to increase operational efficiency and reduce national logistics costs.","link":"https://indiashippingnews.com/infrastructure/dfccil-md-alok-tiwari-reviews-dfc-operations-future-ewdfc-plans-and-technology-driven-modernisation/","categoria":"INFRASTRUCTURE","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Clucky: an alarm clock that doesn't let you hit snooze","resumo":"Developed as a creative solution to combat the habit of snoozing the alarm, the Clucky device promises to revolutionize users' mornings. The gadget focuses on engagement methodologies to guarantee an immediate wake-up, eliminating morning procrastination. This new consumer technology tool stands out for its originality in simplifying daily routines.","link":"https://sapo.pt/artigo/clucky-um-despertador-que-nao-deixa-adiar-6ac42dcd251665e3d631d05d","categoria":"INNOVATION","lang":"en"},{"fonte":"Mundo Conectado","pais":"Brazil","titulo":"Lenovo launches smartwatch with large display, 50 sports modes, and up to 9-day battery life","resumo":"Lenovo has introduced a new smart watch to the market focused on extended battery life and comprehensive physical activity monitoring. The device features a large, high-visibility display and support for dozens of different sports modes. With long-lasting battery life, the launch aims to attract users who value practicality and daily performance.","link":"https://www.mundoconectado.com.br/vestiveis/lenovo-lanca-smartwatch-com-tela-grande-50-esportes-e-bateria-para-ate-9-dias/","categoria":"GADGETS","lang":"en"},{"fonte":"Pioneer Daily","pais":"United States","titulo":"Nobel Prize in Medicine opens a new era in brain science","resumo":"This year's Nobel Prize in Medicine highlighted groundbreaking discoveries aimed at understanding the complex human brain. The awarded studies open promising paths for the treatment of hitherto incurable neurodegenerative neurological diseases. The scientific impact redefines boundaries and accelerates the development of innovative therapies in modern medicine.","link":"https://dailypioneer.com/news/nobel-in-medicine-opens-new-era-in-brain-science","categoria":"SCIENCE","lang":"en"},{"fonte":"Premium Beauty News","pais":"France","titulo":"IFF launches its water-based fragrance technology, Aquascent","resumo":"The fragrance industry takes a major step toward sustainability with the launch of an innovative water-based technology. The new method replaces traditional solvents, reducing environmental impact without compromising the quality or longevity of aromas. The novelty is expected to transform product development in the global cosmetic market.","link":"https://www.premiumbeautynews.com/fr/iff-lance-sa-technologie-de,28297","categoria":"INNOVATION","lang":"en"},{"fonte":"ciencia.gob.es","pais":"Spain","titulo":"MICIU promotes the Arrels Chair to turn science and innovation into solutions against climate change","resumo":"The Spanish ministry is promoting a new academic chair focused on developing practical green technologies. The main objective is to transform advanced scientific research into applicable tools in the fight against the climate crisis. The measure reinforces the country's commitment to sustainability through knowledge.","link":"https://www.ciencia.gob.es/Noticias/2026/octubre/firma-Catedra-Arrels.html","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"NEDO, Nagaoka University of Technology, and AIST develop microorganism screening technology","resumo":"A consortium of Japanese research institutions has developed a new screening technique based on droplets containing useful microorganisms. The innovation optimizes the identification of biological strains with high potential for industrial and environmental applications. The discovery strengthens national biotechnology and opens doors for new sustainable production processes.","link":"https://www.nikkei.com/article/DGXZRSP713438_W6A001C2000000/","categoria":"CIÊNCIA","lang":"en"},{"fonte":"人民网","pais":"China","titulo":"Single-ship loading and unloading volume at Yantian Port in Shenzhen breaks record for Chinese ports","resumo":"Yantian Port, located in Shenzhen, set a new historical mark by recording the highest volume of operations on a single ship in the country. The feat demonstrates high operational efficiency and the use of advanced logistics automation technologies in Chinese port infrastructure. This optimization strengthens the global supply chain and regional trade flow.","link":"http://finance.people.com.cn/n1/2026/1006/c1004-40809767.html","categoria":"INFRASTRUCTURE","lang":"en"},{"fonte":"The Times of India","pais":"India","titulo":"IIT Roorkee and India Optel join hands for defense technology research and industrial collaboration","resumo":"The prestigious institute IIT Roorkee has partnered with India Optel to boost advanced research in technologies focused on national defense. The collaboration seeks to integrate academic knowledge with the industrial production capacity of the defense sector. The agreement promises to accelerate the development of high-tech locally manufactured equipment.","link":"https://timesofindia.indiatimes.com/education/news/iit-roorkee-and-india-optel-join-hands-for-defence-technology-research-and-industry-collaboration/articleshow/134722105.cms","categoria":"RESEARCH","lang":"en"},{"fonte":"SÁBADO","pais":"Portugal","titulo":"Nobel Prize in Medicine: Award-winning work \"profoundly transformed neurosciences\"","resumo":"The highest award in medicine recognized groundbreaking research that has irreversibly altered the course of brain studies. The awarded discovery has opened new horizons for understanding complex neurological diseases and the functioning of synapses. This scientific milestone reinforces the importance of continuous funding in cutting-edge research aimed at human health.","link":"https://www.sabado.pt/ciencia---saude/detalhe/nobel-da-medicina-trabalho-premiado-transformou-profundamente-as-neurociencias","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Former Anthropic researcher warns that AI race brings risks the industry itself does not yet understand","resumo":"A former researcher at Anthropic has expressed deep concerns about the accelerated pace of artificial intelligence model development. According to the expert, the rush to launch advanced technologies creates vulnerabilities that even developers themselves cannot fully mitigate. The warning reinforces the urgent need for stricter regulations and security protocols in the sector.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/10/05/ex-pesquisador-da-anthropic-alerta-que-corrida-pela-ia-traz-riscos-que-a-propria-industria-ainda-nao-compreende.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"ScienceAlert","pais":"United States","titulo":"Scientists find surprising link between cats and happiness across 93 countries","resumo":"A comprehensive global study conducted across 93 countries has revealed unexpected correlations between living with cats and levels of human well-being. The data suggests that the presence of these pets can positively influence the mental and emotional health of their owners across different cultures. The study sparks new scientific interest in the therapeutic benefits of pets.","link":"https://www.sciencealert.com/scientists-find-a-surprising-link-between-cats-and-happiness-across-93-countries","categoria":"SCIENCE","lang":"en"},{"fonte":"Reporterre, le média de l'écologie","pais":"France","titulo":"More heatwaves: Oil companies are responsible for half, according to science","resumo":"A new scientific study quantifies the direct responsibility of major fossil fuel corporations in the rise of extreme heatwaves. The research uses advanced climate models to connect past corporate emissions to recent severe weather events. The data strengthens legal and social arguments to demand greater environmental accountability from companies.","link":"https://reporterre.net/Plus-de-canicules-les-compagnies-petrolieres-sont-responsables-pour-moitie-selon-la","categoria":"CLIMATE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
