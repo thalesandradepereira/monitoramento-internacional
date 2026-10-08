@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-5gc42Hv/k1/QpyBJdoBBRsIm'; script-src 'nonce-5gc42Hv/k1/QpyBJdoBBRsIm'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="5gc42Hv/k1/QpyBJdoBBRsIm">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">08/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="5gc42Hv/k1/QpyBJdoBBRsIm">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"G1","pais":"Brasil","titulo":"Exoesqueletos: conheça a tecnologia que amplia a força humana","resumo":"Os exoesqueletos representam uma revolução na robótica vestível, projetados para potencializar a capacidade física e a resistência humana. Essa inovação tem ganhado destaque em setores industriais e médicos, reduzindo lesões e aumentando a produtividade dos trabalhadores. O avanço promete transformar a rotina em ambientes de alto esforço e reabilitação motora.","link":"https://g1.globo.com/saude/noticia/2026/10/08/exoesqueletos-como-tecnologia-que-aumenta-forca-e-resistencia-ja-e-usada-no-mundo.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Hill","pais":"Estados Unidos","titulo":"Trump premiará a Elon Musk com a Medalha Nacional de Ciências","resumo":"O ex-presidente Donald Trump anunciou a concessão da Medalha Nacional de Ciências ao empresário Elon Musk. A honraria reconhece as contribuições significativas de Musk para a tecnologia e inovação espacial. O evento destaca a forte relação entre figuras proeminentes do setor tecnológico e a política norte-americana.","link":"https://thehill.com/homenews/administration/6135421-trump-awards-national-medal-science/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Tarbes Infos","pais":"França","titulo":"Séméac celebra a Festa da Ciência entre exploração de terras austrais e viagem ao coração do cérebro","resumo":"O município de Séméac promoveu mais uma edição da Festa da Ciência, envolvendo a comunidade em exibições interativas.\nO evento destacou tanto a exploração de regiões austrais quanto estudos avançados sobre o funcionamento cerebral.\nA iniciativa visa aproximar o público geral do conhecimento científico de forma lúdica e acessível.","link":"http://www.tarbes-infos.com/spip.php?article44171","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Times of India","pais":"Inglaterra","titulo":"HubSpot, uma das maiores empresas de tecnologia do Reino Unido, corta centenas de vagas; CEO se pronuncia","resumo":"A gigante tecnológica HubSpot anunciou um corte expressivo em sua força de trabalho no Reino Unido, eliminando centenas de postos de trabalho. A decisão foi comunicada aos funcionários diretamente pelo CEO através de um e-mail interno de demissão em massa. O impacto gera preocupações sobre a estabilidade no setor de tecnologia britânico e reflete a onda global de reestruturações corporativas.","link":"https://timesofindia.indiatimes.com/technology/tech-news/hubspot-one-of-the-uks-biggest-technology-companies-is-cutting-hundreds-of-jobs-ceo-in-layoff-email-to-employees-i-want-to-make-it-clear-that-/articleshow/134777875.cms","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Atlántico Hoy","pais":"Espanha","titulo":"Canárias está na lanterna da Espanha em graduados em ciência e tecnologia: representam apenas 12,5%","resumo":"Um estudo recente revela que a região autônoma das Canárias possui uma das menores taxas de formados em áreas científicas e tecnológicas em todo o território espanhol. Essa baixa representatividade acende um alerta sobre a necessidade de incentivo à educação e capacitação técnica local. O cenário impacta diretamente a competitividade da região no mercado de trabalho moderno e na economia digital.","link":"https://www.atlanticohoy.com/sociedad/canarias-cola-espana-en-titulados-en-ciencia-tecnologia-solo-representan-125_1568123_102.html","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Núcleo em vez de casca: O primeiro relógio nuclear entra em funcionamento","resumo":"Cientistas conseguiram fazer o primeiro relógio nuclear funcionar com sucesso, utilizando o núcleo do átomo em vez da eletrosfera convencional. Esta inovação tecnológica promete revolucionar a precisão de medições temporais e abrir portas para novas descobertas na física quântica e navegação espacial.","link":"https://wissenschaft.de/artikel/kern-statt-huelle-die-erste-atomkernuhr-tickt","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"Kawasaki Heavy Industries obtém sucesso em testes de funcionamento de motor de avião a hidrogênio","resumo":"A Kawasaki Heavy Industries alcançou um marco significativo ao realizar testes de operação bem-sucedidos em seu motor de avião movido a hidrogênio. Esse avanço tecnológico coloca a empresa na vanguarda da aviação sustentável e da transição energética global. O desenvolvimento de motores limpos promete reduzir drasticamente as emissões de carbono no setor aeroespacial comercial nos próximos anos.","link":"https://www.nikkei.com/article/DGXZRSP713622_08102026000000","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"中国新闻网","pais":"China","titulo":"Primeira organização internacional de padronização para paisagens de gelo e neve é estabelecida na China","resumo":"A China sediará a primeira organização técnica internacional focada na padronização profissional de paisagens de gelo e neve no mundo. Essa iniciativa consolida a liderança do país no desenvolvimento de normas técnicas para o turismo invernal e eventos esportivos. A medida promete impulsionar a cooperação global, elevar a qualidade dos serviços e garantir maior segurança e inovação tecnológica no setor.","link":"https://www.chinanews.com.cn/sh/2026/10-08/10709018.shtml","categoria":"PADRONIZAÇÃO","lang":"pt"},{"fonte":"The News Mill","pais":"Índia","titulo":"PM Modi destaca o papel da Índia Digital na democratização da tecnologia no IMC 2026","resumo":"O primeiro-ministro Narendra Modi enfatizou no IMC 2026 como a iniciativa Índia Digital tem sido fundamental para democratizar o acesso tecnológico no país. A transformação digital busca incluir todas as camadas da sociedade no desenvolvimento econômico. Essa evolução fortalece a infraestrutura nacional e posiciona a Índia como um polo de inovação global.","link":"https://thenewsmill.com/2026/10/pm-modi-highlights-digital-indias-role-in-technology-democratisation-at-imc-2026/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Tecnologia que detecta sinais elétricos de microalgas marinhas desenvolvida em Coimbra","resumo":"Pesquisadores em Coimbra desenvolveram uma tecnologia inovadora capaz de detectar sinais elétricos emitidos por microalgas marinhas. O avanço científico promete abrir novos caminhos para o monitoramento ambiental e o estudo dos ecossistemas aquáticos. A ferramenta destaca o papel de Portugal na vanguarda da investigação biotecnológica e na criação de soluções sustentáveis.","link":"https://sapo.pt/artigo/tecnologia-que-deteta-sinais-eletricos-de-microalgas-marinhas-desenvolvida-em-coimbra-6ac72daf9c1f5d41576d6b6f","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Samsung prevê salto de 780% no lucro graças à demanda por chips de IA","resumo":"A gigante sul-coreana Samsung registrou projeções impressionantes de crescimento financeiro impulsionadas pelo boom da Inteligência Artificial. A alta demanda global por semicondutores avançados e chips de memória especializados foi o principal motor para esse resultado histórico. O cenário reflete a dependência crescente da indústria tecnológica em relação aos componentes de alto desempenho.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/10/07/samsung-preve-salto-de-780percent-no-lucro-gracas-a-demanda-por-chips-de-ia.ghtml","categoria":"MERCADO","lang":"pt"},{"fonte":"BBC","pais":"Estados Unidos","titulo":"Margaret Hamilton, cujo software ajudou a pousar a Apollo 11 na Lua, morre aos 90 anos","resumo":"Faleceu aos 90 anos Margaret Hamilton, pioneira da computação e figura fundamental no desenvolvimento de software para o programa espacial Apollo. Seu trabalho na criação de sistemas de código a bordo evitou abortagens críticas durante a missão histórica da Apollo 11. Hamilton deixa um legado inestimável para a engenharia de software e exploração espacial.","link":"https://www.bbc.com/news/articles/cx5yn46j41zpo","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Sud Ouest","pais":"França","titulo":"Soustons: a Festa da Ciência homenageia a culinária e os sabores de outono","resumo":"A cidade de Soustons integrou a gastronomia local às comemorações da Festa da Ciência deste ano.\nAtividades interativas exploraram a química e a física por trás dos pratos típicos e sabores outonais.\nO evento conectou tradições culinárias regionais com a curiosidade científica e a educação alimentar.","link":"https://www.sudouest.fr/landes/soustons/soustons-la-fete-de-la-science-met-a-l-honneur-la-cuisine-et-les-saveurs-d-automne-30897660.php","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Margaret Hamilton, pioneira cuja programação levou a Apollo 11 à Lua, morre aos 90 anos","resumo":"A renomada cientista da computação Margaret Hamilton faleceu aos 90 anos, deixando um legado monumental na história da exploração espacial. Seu trabalho pioneiro no desenvolvimento do software de bordo foi fundamental para o sucesso da missão Apollo 11 em 1969. Ela se torna um eterno símbolo da engenharia de software e da inspiração para mulheres na ciência.","link":"https://www.theguardian.com/science/2026/oct/07/margaret-hamilton-moon-computer-software","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Atlántico","pais":"Espanha","titulo":"Conxemar 5.0: tecnologia, robótica e IA para o setor de peixes e frutos do mar","resumo":"A feira Conxemar destaca a integração de tecnologias avançadas, robótica e inteligência artificial na indústria de processamento de pescados. As inovações apresentadas visam otimizar a cadeia de suprimentos, garantindo maior eficiência, sustentabilidade e controle de qualidade nos produtos do mar. Essa transformação digital redefine os processos industriais tradicionais para atender às demandas globais.","link":"https://www.atlantico.net/economia/conxemar-5-tecnologia-robotica-e_1_20261008-4442840.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Segredo antienvelhecimento do animal terrestre mais velho do mundo é desvendado","resumo":"Pesquisadores desvendaram os mecanismos biológicos que permitem ao animal terrestre mais longevo do mundo resistir aos efeitos do envelhecimento avançado. A descoberta traz novas perspectivas para a biomedicina e estudos sobre a longevidade, podendo inspirar futuras terapias para humanos.","link":"https://wissenschaft.de/artikel/anti-aging-geheimnis-des-aeltesten-lebenden-landtiers-gelueftet","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"PR TIMES","pais":"Japão","titulo":"Tecnologia torna a observação de paratletismo ainda mais divertida com introdução inédita de narração por IA","resumo":"Utilizando tecnologias avançadas de comunicação universal, o Japão introduziu a narração por inteligência artificial em eventos de paratletismo. Essa inovação visa proporcionar uma experiência de torcida inclusiva, acessível e muito mais emocionante para todos os públicos. A iniciativa demonstra o impacto positivo da tecnologia na promoção da acessibilidade no esporte.","link":"https://prtimes.jp/main/html/rd/p/000006996.000052467.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Investing.com India","pais":"China","titulo":"Por que as ações da Shanghai Biren Technology estão em queda hoje?","resumo":"As ações da Shanghai Biren Technology registraram quedas significativas no mercado financeiro recente, gerando preocupações entre investidores. A empresa, uma das principais apostas chinesas no setor de semicondutores e inteligência artificial, enfrenta volatilidade devido a pressões macroeconômicas. Analistas avaliam o impacto dessas oscilações no ecossistema tecnológico local e nas cadeias de suprimentos globais.","link":"https://in.investing.com/news/stock-market-news/why-is-shanghai-biren-technology-stock-sliding-today-93CH-5623342","categoria":"MERCADO","lang":"pt"},{"fonte":"TheWire.in","pais":"Índia","titulo":"FinSecure 2026 da Data Sutram destaca infraestrutura de confiança para economia de 30 trilhões de dólares na Índia","resumo":"O evento FinSecure 2026 apontou a infraestrutura de confiança como um pilar crítico para o crescimento econômico indiano rumo à meta de 30 trilhões de dólares. Especialistas debateram a segurança de dados e a prevenção de fraudes como alicerces para o setor financeiro. A iniciativa reforça a necessidade de ecossistemas digitais seguros para atrair investimentos globais.","link":"https://m.thewire.in/article/ptiprnews/data-sutrams-finsecure-2026-highlights-trust-infrastructure-as-critical-to-indias-path-towards-a-30-trillion-dollar-economy/amp?utm=relatedarticles","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Viz.ai: uso de inteligência artificial para acelerar diagnósticos médicos","resumo":"A plataforma Viz.ai emprega algoritmos avançados de inteligência artificial para otimizar e acelerar diagnósticos críticos na área da saúde. A tecnologia atua na identificação rápida de condições graves, permitindo que equipes médicas intervenham de forma mais ágil. Essa inovação representa um marco na integração entre tecnologia e medicina de precisão.","link":"https://sapo.pt/artigo/viz-ai-usa-ai-para-acelerar-diagnosticos-6ac6d1efc1802de9f34d9f51","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Trump entregará principal honraria científica dos EUA a Elon Musk e outros executivos da tecnologia","resumo":"O governo norte-americano anunciou a concessão de sua mais alta comenda científica e tecnológica a figuras proeminentes do setor. Entre os homenageados está o bilionário Elon Musk, reconhecido por suas contribuições disruptivas na exploração espacial e inovação digital. A premiação destaca a crescente influência dos líderes de tecnologia na geopolítica e na economia global.","link":"https://g1.globo.com/tecnologia/noticia/2026/10/07/trump-medalha-executivos-da-tecnologia.ghtml","categoria":"TRENDING","lang":"pt"},{"fonte":"Popular Science","pais":"Estados Unidos","titulo":"Os primeiros relógios nucleares do mundo estão em funcionamento","resumo":"Cientistas deram um passo histórico ao colocar em funcionamento os primeiros relógios nucleares do mundo. Esta nova tecnologia promete uma precisão temporal sem precedentes, superando drasticamente os relógios atômicos atuais. O avanço deve impactar diretamente a física fundamental, sistemas de navegação e redes globais de comunicação.","link":"https://www.popsci.com/technology/first-nuclear-clocks/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Le Progrès","pais":"França","titulo":"Oyonnax: o que lhe reserva a Festa da Ciência no centro cultural Aragon","resumo":"O centro cultural Aragon, em Oyonnax, preparou uma programação especial voltada para a difusão científica.\nOficinas, palestras e exposições foram disponibilizadas para todas as idades durante o evento.\nA proposta busca estimular vocações científicas e promover o debate sobre inovações na sociedade.","link":"https://www.leprogres.fr/culture-loisirs/2026/10/08/ce-que-vous-reserve-la-fete-de-la-science-au-centre-culturel-aragon","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"EdTech Innovation Hub","pais":"Inglaterra","titulo":"Chefe de Tecnologia da Microsoft na África do Sul, Asif Valley, deixa o cargo após uma década","resumo":"Asif Valley encerrou um ciclo de dez anos à frente da liderança técnica da Microsoft na África do Sul, marcando uma era de forte expansão. Durante sua gestão, ele esteve no centro de transformações cruciais nas áreas de computação em nuvem, inteligência artificial e capacitação digital. Sua saída abre espaço para novos rumos na estratégia tecnológica regional da empresa.","link":"https://www.edtechinnovationhub.com/news/microsoft-south-africa-technology-chief-asif-valley-exits-after-decade-spanning-cloud-ai-and-digital-skills","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"La Vanguardia","pais":"Espanha","titulo":"Conheça o Faro Santander: de Goya e Frida Kahlo à tecnologia imersiva","resumo":"O centro cultural Faro Santander combina o melhor da arte clássica de grandes mestres com experiências de tecnologia imersiva de ponta. A iniciativa transforma a forma como o público interage com exposições históricas e artísticas através de recursos digitais inovadores. O projeto consolida o turismo cultural espanhol como um polo pioneiro na fusão entre patrimônio e inovação.","link":"https://www.lavanguardia.com/cultura/20261008/11652393/asi-faro-santander-goya-frida-kahlo-tecnologia-inmersiva-brl.html","categoria":"CULTURA DIGITAL","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Primeira detecção de metanol pesado no espaço sideral","resumo":"Astrônomos registraram pela primeira vez a presença de metanol pesado em regiões profundas do universo, expandindo o entendimento sobre a química interestelar. O achado é fundamental para rastrear a origem de compostos orgânicos complexos e entender a formação de sistemas estelares.","link":"https://wissenschaft.de/artikel/erster-nachweis-von-schwerem-methanol-im-weltall","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"PR TIMES","pais":"Japão","titulo":"Instalação de comunicação via satélite para testes do padrão 5G NTN é construída no Centro de Tecnologia Espacial de Kashima","resumo":"Uma nova infraestrutura voltada para testes do padrão de comunicação via satélite 5G NTN foi estabelecida na província de Ibaraki. O projeto busca expandir a conectividade de próxima geração, permitindo cobertura de rede mesmo em áreas remotas ou afetadas por desastres. Essa tecnologia fortalece as telecomunicações avançadas do país e amplia as fronteiras da comunicação móvel.","link":"https://prtimes.jp/main/html/rd/p/000001617.000012900.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"红网","pais":"China","titulo":"Escola e Instituto de Tecnologias do Futuro da Universidade de Ciência e Tecnologia de Changsha são inaugurados","resumo":"A Universidade de Ciência e Tecnologia de Changsha inaugurou oficialmente sua nova Escola e Instituto de Tecnologias do Futuro. O polo acadêmico tem como objetivo acelerar a pesquisa de ponta e formar talentos altamente qualificados em áreas estratégicas da inovação. A iniciativa reforça o compromisso da instituição com o desenvolvimento tecnológico nacional e a integração entre ciência e indústria.","link":"https://edu.rednet.cn/content/646054/90/16348921.html","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"The Times of India","pais":"Índia","titulo":"Mercado de smartphones abaixo de 20.000 rupias pode caminhar para um colapso devido a tecnologia controversa","resumo":"O mercado indiano de smartphones intermediários e básicos enfrenta riscos de reestruturação severa devido à adoção de tecnologias polarizadas. Consumidores e fabricantes debatem os impactos dessa tendência nos custos e na durabilidade dos dispositivos populares. A mudança pode alterar drasticamente as preferências de compra no segundo maior mercado móvel do mundo.","link":"https://timesofindia.indiatimes.com/technology/tech-news/sub-rs-20000-smartphone-market-may-be-heading-to-a-collapse-and-reason-is-the-most-loved-and-hated-technology-right-now/articleshow/134780743.cms","categoria":"MERCADO","lang":"pt"},{"fonte":"Universidade de Aveiro","pais":"Portugal","titulo":"Música e tecnologia para todos: projeto de pesquisador do Digimedia distinguido pela FCT","resumo":"Um projeto pioneiro que une música e tecnologia inclusiva foi recentemente reconhecido pela Fundação para a Ciência e a Tecnologia. A iniciativa visa democratizar o acesso à criação artística através de ferramentas tecnológicas inovadoras. O prêmio reforça a importância de abordagens interdisciplinares para o desenvolvimento social e cultural.","link":"https://www.ua.pt/pt/noticias/9/99515","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Estadão","pais":"Brasil","titulo":"O que muda na formação de profissionais de tecnologia com a chegada da IA","resumo":"A rápida evolução da Inteligência Artificial está forçando uma reformulação profunda nos currículos educacionais e na capacitação em TI. Habilidades tradicionais de programação agora dividem espaço com o domínio de algoritmos avançados, ética digital e engenharia de prompts. Esse movimento busca preparar uma nova geração de profissionais para um mercado de trabalho em transformação.","link":"https://www.estadao.com.br/em-alta/tecmundo/big-techs/o-que-muda-na-formacao-de-profissionais-de-tecnologia-com-a-chegada-da-ia/","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"Phys.org","pais":"Estados Unidos","titulo":"Nova tecnologia de exibição combina brilho recorde com pixels que esticam como borracha","resumo":"Pesquisadores desenvolveram uma tecnologia inovadora de telas que une níveis inéditos de brilho à capacidade de esticar como borracha. O material abre portas para telas flexíveis e maleáveis aplicáveis em dispositivos vestíveis e eletrônicos avançados. A inovação promete revolucionar o design de interfaces visuais no futuro próximo.","link":"https://phys.org/news/2026-10-display-technology-combines-brightness-pixels.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Investing.com France","pais":"França","titulo":"Por que as ações da Shanghai Biren Technology estão despencando hoje?","resumo":"As ações da empresa de tecnologia Shanghai Biren registraram uma queda abrupta nos mercados financeiros.\nAnalistas apontam pressões regulatórias e o impacto de novas restrições internacionais no setor de semicondutores.\nEsse movimento reflete a volatilidade contínua e as incertezas geopolíticas na indústria global de tecnologia.","link":"https://fr.investing.com/news/stock-market-news/pourquoi-le-titre-shanghai-biren-technologie-chutetil-aujourdhui--93CH-3626208","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"'Parem de criticar' – a mulher que tenta impedir a fuga de empresas do Reino Unido","resumo":"Uma executiva de destaque assumiu a missão de combater o pessimismo econômico e reverter a tendência de fuga de empresas do mercado britânico. O foco do seu trabalho é dialogar com investidores e corporações para restaurar a confiança na economia local pós-Brexit. A iniciativa busca reter talentos e manter o país competitivo diante de novos polos globais de inovação.","link":"https://www.bbc.com/news/articles/cmgqwydpd4xwo","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Motor16","pais":"Espanha","titulo":"Stellantis introduz a tecnologia da Wayve em modelos para avançar na condução semiautônoma","resumo":"A montadora Stellantis integrou os sistemas de inteligência artificial da Wayve em veículos selecionados para impulsionar o desenvolvimento de tecnologias de condução semiautônoma. A parceria busca aprimorar a capacidade dos carros de navegar em ambientes urbanos complexos de forma autônoma e segura. Essa evolução representa um passo importante na corrida tecnológica do setor automotivo europeu.","link":"https://www.motor16.com/las-ultimas-noticias/stellantis-wayve-500e-grecale/","categoria":"AUTOMOTIVO","lang":"pt"},{"fonte":"筑波大学","pais":"Japão","titulo":"Assistir a eventos esportivos pode reduzir sintomas depressivos em pacientes com cardiopatia congênita","resumo":"Uma nova pesquisa médica revelou que a experiência de assistir a competições esportivas presenciais pode amenizar quadros depressivos em pacientes com cardiopatia congênita. O estudo destaca a importância do engajamento social e recreativo para a melhoria da saúde mental e bem-estar geral. Os achados abrem caminhos para abordagens terapêuticas complementares no tratamento de doenças cardíacas.","link":"https://www.tsukuba.ac.jp/journal/medicine-health/20261008140000.html","categoria":"SAÚDE","lang":"pt"},{"fonte":"观点网","pais":"China","titulo":"Zhenyu Industry conclui pesquisa tecnológica e desenvolvimento de amostras para produtos centrais de sensores táteis flexíveis","resumo":"A empresa Zhenyu Industry anunciou a conclusão bem-sucedida da pesquisa tecnológica e do desenvolvimento de amostras para seus sensores táteis flexíveis. Esse componente central é fundamental para avanços em robótica avançada e interfaces humano-máquina de última geração. O marco tecnológico demonstra a capacidade industrial da China em dominar tecnologias críticas para a automação inteligente.","link":"https://www.guandian.cn/article/20261008/609981.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Economic Times","pais":"Índia","titulo":"Edelweiss Asset Management lança fundo de ações de tecnologia dos EUA na GIFT City em parceria com o JPMorgan","resumo":"A Edelweiss Asset Management introduziu o Edelweiss US Technology Equity Fund na GIFT City, com foco em investimentos geridos pelo JPMorgan. A novidade amplia o acesso de investidores indianos a portfólios globais de inovação e tecnologia de ponta. O movimento consolida a GIFT City como um centro financeiro internacional estratégico para a Índia.","link":"https://m.economictimes.com/mf/mf-news/edelweiss-asset-management-launches-edelweiss-us-technology-equity-fund-in-gift-city-invests-in-jpmorgan-us-technology-fund/articleshow/134780921.cms","categoria":"INVESTIMENTOS","lang":"pt"},{"fonte":"Expresso","pais":"Portugal","titulo":"Quantas vezes o PIB português pode valer o impulso da inteligência artificial?","resumo":"Especialistas analisam o impacto econômico potencial que a adoção massiva da inteligência artificial pode gerar no Produto Interno Bruto de Portugal. O estudo examina como a automação e os ganhos de produtividade podem transformar a economia nacional nos próximos anos. A discussão enfatiza a urgência de investimentos estratégicos no setor tecnológico.","link":"https://expresso.pt/podcasts/economia-dia-a-dia/2026-10-07-quantas-vezes-o-pib-portugues-pode-valer-o-impulso-da-ia--47e41f07","categoria":"ECONOMIA","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"É #FAKE foto de eleitores com tornozeleira eletrônica e roupa vermelha em fila para votar na eleição; imagem foi feita com IA","resumo":"Uma imagem gerada por inteligência artificial circulou amplamente nas redes sociais com o intuito de desinformar o eleitorado durante o período eleitoral. A checagem de fatos confirmou que a cena retratada é completamente fictícia e manipulada por tecnologia sintética. O caso reforça os perigos das deepfakes e da desinformação visual na integridade dos processos democráticos.","link":"https://g1.globo.com/fato-ou-fake/eleicoes/noticia/2026/10/07/e-fake-foto-de-eleitores-com-tornozeleira-eletronica-e-roupa-vermelha-em-fila-para-votar-na-eleicao-imagem-foi-feita-com-ia.ghtml","categoria":"TRENDING","lang":"pt"},{"fonte":"Purdue Polytechnic","pais":"Estados Unidos","titulo":"Professor da Purdue Polytechnic garante patente para tecnologia de célula solar de função dupla","resumo":"Um professor da Purdue Polytechnic garantiu uma nova patente para uma tecnologia inovadora de células solares de dupla função. O sistema otimiza a captação de energia ao realizar processos adicionais de conversão de luz e calor simultaneamente. A novidade representa um avanço importante para a eficiência das energias renováveis.","link":"https://polytechnic.purdue.edu/newsroom/purdue-polytechnic-professor-secures-patent-dual-function-solar-cell-technology","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Ouest-France","pais":"França","titulo":"Morte de Margaret Hamilton, pioneira americana da ciência da computação e figura do programa Apollo","resumo":"O mundo perdeu Margaret Hamilton, engenheira cujo trabalho foi crucial para o sucesso das missões Apollo.\nEla liderou a equipe que desenvolveu o software de bordo que levou o homem à Lua.\nSeu legado permanece como pilar fundamental para o desenvolvimento da ciência da computação moderna.","link":"https://www.ouest-france.fr/monde/etats-unis/mort-de-margaret-hamilton-pionniere-americaine-en-science-de-linformatique-et-figure-du-programme-apollo-3b78696c-c2c0-11f1-a107-88e926908e5f","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Cientistas que depositam fé na tecnologia são menos propensos a agir contra as mudanças climáticas","resumo":"Um novo estudo revelou que indivíduos que confiam excessivamente em soluções tecnológicas futuras tendem a se engajar menos em ações práticas contra as mudanças climáticas hoje. Essa mentalidade de que a inovação resolverá todos os problemas ecológicos pode gerar complacência na sociedade e nos governos. O levantamento alerta para a necessidade de equilibrar o desenvolvimento técnico com a responsabilidade ambiental imediata.","link":"https://www.theguardian.com/environment/2026/oct/07/scientists-technology-less-likely-climate-crisis-action","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"El Español","pais":"Espanha","titulo":"Juan Luis Hortelano: \"O VDS demonstrou que Valência conecta tecnologia, investimento e negócios em escala global\"","resumo":"O evento VDS consolidou Valência como um dos principais hubs de inovação e tecnologia da Europa, atraindo investidores e líderes globais. A declaração destaca o papel fundamental da cidade espanhola na criação de um ecossistema fértil para startups e parcerias estratégicas internacionais. O impacto do encontro fortalece a posição do país no mapa tecnológico mundial.","link":"https://www.elespanol.com/invertia/disruptores/ecosistema-startup/startups/20261008/juan-luis-hortelano-vds-demostrado-valencia-conecta-tecnologia-inversion-negocio-escala-global/1003744409858_0.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Shinichi Takeda parabeniza Kenso Soai, vencedor do Prêmio Nobel de Química, destacando o papel fundamental da ciência","resumo":"O renomado cientista japonês Kenso Soai foi celebrado por sua conquista do Prêmio Nobel de Química, recebendo homenagens de personalidades como Shinichi Takeda. O reconhecimento ressalta a importância de investigações focadas em responder a perguntas fundamentais sobre a natureza e a matéria. A premiação coroa a excelência de longo prazo da comunidade científica do Japão.","link":"https://news.yahoo.co.jp/articles/684d0d9ec0cb3db6f6caff2ef12fd071245a6356","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Yahoo Finance","pais":"China","titulo":"Beijing 51World Digital Twin Technology lidera estas 3 principais ações de automação","resumo":"A Beijing 51World Digital Twin Technology destacou-se recentemente entre as três principais ações do setor de automação no mercado asiático. A empresa é reconhecida por suas inovações em tecnologias de gêmeos digitais, aplicadas em cidades inteligentes e simulações industriais. Esse reconhecimento reflete o forte crescimento e o apetite dos investidores por soluções avançadas de visualização de dados.","link":"https://finance.yahoo.com/technology/ai/articles/beijing-51world-digital-twin-technology-031921288.html","categoria":"AUTOMAÇÃO","lang":"pt"},{"fonte":"Moneycontrol.com","pais":"Índia","titulo":"Índia visa transição de consumidora a definidora de padrões tecnológicos e quer liderar corrida global do 6G, diz Scindia","resumo":"O ministro Jyotiraditya Scindia afirmou que a Índia pretende deixar de ser apenas consumidora de tecnologia para se tornar criadora de padrões globais. O país busca assumir a liderança na corrida internacional pelo desenvolvimento da tecnologia 6G. Essa ambição reflete o fortalecimento da capacidade de pesquisa e desenvolvimento em telecomunicações no território indiano.","link":"https://www.moneycontrol.com/news/india/india-aims-to-shift-from-technology-taker-to-standard-setter-lead-global-6g-race-scindia-14047370.html","categoria":"TELECOMUNICAÇÕES","lang":"pt"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Google disponibiliza ferramenta para verificar conteúdos gerados por inteligência artificial","resumo":"A Google lançou uma nova solução tecnológica voltada para a identificação e verificação de conteúdos produzidos por inteligência artificial. A ferramenta surge como resposta aos crescentes desafios relacionados à autenticidade da informação e ao combate à desinformação digital. Com isso, busca-se garantir maior transparência no ecossistema de internet.","link":"https://www.cmjornal.pt/tecnologia/detalhe/google-disponibiliza-ferramenta-para-verificar-conteudos-gerados-por-ia","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Microsoft diz que novo laptop com chip da Nvidia supera MacBooks","resumo":"A Microsoft acirrou a competição no mercado de computadores portáteis ao lançar um dispositivo equipado com chip gráfico da Nvidia. Segundo a empresa, o novo equipamento apresenta desempenho superior em tarefas complexas em comparação aos concorrentes da Apple. A novidade promete redefinir os padrões de potência e eficiência para criadores de conteúdo e profissionais exigentes.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/10/07/microsoft-diz-que-novo-laptop-com-chip-da-nvidia-supera-macbooks.ghtml","categoria":"LANÇAMENTO","lang":"pt"},{"fonte":"NASA (.gov)","pais":"Estados Unidos","titulo":"NASA divulga dados e imagens de ciências lunares da missão Artemis II","resumo":"A NASA liberou recentemente um novo conjunto de dados e imagens científicas obtidas através da missão lunar Artemis II. O material fornece informações cruciais sobre a geologia e o ambiente da Lua para futuras explorações humanas. Esses dados fortalecem o planejamento das próximas etapas do programa de retorno lunar.","link":"https://www.nasa.gov/blogs/missions/2026/10/07/nasa-releases-artemis-ii-lunar-science-data-images/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"G1","pais":"Brazil","titulo":"Exoskeletons: Discover the technology that enhances human strength","resumo":"Exoskeletons represent a revolution in wearable robotics, designed to boost human physical capacity and endurance. This innovation has gained prominence in industrial and medical sectors, reducing injuries and increasing worker productivity. The advancement promises to transform routines in high-effort environments and motor rehabilitation.","link":"https://g1.globo.com/saude/noticia/2026/10/08/exoesqueletos-como-tecnologia-que-aumenta-forca-e-resistencia-ja-e-usada-no-mundo.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Hill","pais":"United States","titulo":"Trump to award Elon Musk the National Medal of Science","resumo":"Former President Donald Trump announced the awarding of the National Medal of Science to entrepreneur Elon Musk. The honor recognizes Musk's significant contributions to technology and space innovation. The event highlights the strong relationship between prominent figures in the tech sector and North American politics.","link":"https://thehill.com/homenews/administration/6135421-trump-awards-national-medal-science/","categoria":"SCIENCE","lang":"en"},{"fonte":"Tarbes Infos","pais":"France","titulo":"Séméac celebrates the Festival of Science between southern land exploration and a journey to the heart of the brain","resumo":"The municipality of Séméac hosted another edition of the Festival of Science, engaging the community in interactive exhibits.\nThe event highlighted both the exploration of southern regions and advanced studies on brain function.\nThe initiative aims to bring the general public closer to scientific knowledge in a playful and accessible way.","link":"http://www.tarbes-infos.com/spip.php?article44171","categoria":"SCIENCE","lang":"en"},{"fonte":"The Times of India","pais":"United Kingdom","titulo":"HubSpot, one of the UK's biggest tech companies, cuts hundreds of jobs; CEO speaks out","resumo":"Tech giant HubSpot announced a significant cut to its UK workforce, eliminating hundreds of jobs. The decision was communicated to employees directly by the CEO through an internal mass layoff email. The impact raises concerns about stability in the British tech sector and reflects the global wave of corporate restructurings.","link":"https://timesofindia.indiatimes.com/technology/tech-news/hubspot-one-of-the-uks-biggest-technology-companies-is-cutting-hundreds-of-jobs-ceo-in-layoff-email-to-employees-i-want-to-make-it-clear-that-/articleshow/134777875.cms","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Atlántico Hoy","pais":"Spain","titulo":"Canary Islands trail Spain in science and tech graduates, accounting for just 12.5%","resumo":"A recent study reveals that the autonomous region of the Canary Islands has one of the lowest rates of graduates in scientific and technological fields across Spanish territory. This low representation sounds an alarm regarding the need for local educational incentives and technical training. The scenario directly impacts the region's competitiveness in the modern job market and digital economy.","link":"https://www.atlanticohoy.com/sociedad/canarias-cola-espana-en-titulados-en-ciencia-tecnologia-solo-representan-125_1568123_102.html","categoria":"EDUCATION","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"Nucleus instead of shell: The first nuclear clock begins operation","resumo":"Scientists have successfully made the first nuclear clock operational, using the atomic nucleus instead of the conventional electron shell. This technological innovation promises to revolutionize the precision of time measurements and open doors for new discoveries in quantum physics and space navigation.","link":"https://wissenschaft.de/artikel/kern-statt-huelle-die-erste-atomkernuhr-tickt","categoria":"SCIENCE","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"Kawasaki Heavy Industries succeeds in test runs of hydrogen aircraft engine","resumo":"Kawasaki Heavy Industries achieved a significant milestone by conducting successful operational tests on its hydrogen-powered aircraft engine. This technological advancement places the company at the forefront of sustainable aviation and the global energy transition. The development of clean engines promises to drastically reduce carbon emissions in the commercial aerospace sector in the coming years.","link":"https://www.nikkei.com/article/DGXZRSP713622_08102026000000","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"中国新闻网","pais":"China","titulo":"First international standardization organization for ice and snow landscapes established in China","resumo":"China will host the first international technical organization focused on the professional standardization of ice and snow landscapes in the world. This initiative solidifies the country's leadership in developing technical standards for winter tourism and sporting events. The measure promises to boost global cooperation, elevate service quality, and ensure greater safety and technological innovation in the sector.","link":"https://www.chinanews.com.cn/sh/2026/10-08/10709018.shtml","categoria":"STANDARDIZATION","lang":"en"},{"fonte":"The News Mill","pais":"India","titulo":"PM Modi highlights Digital India's role in democratizing technology at IMC 2026","resumo":"Prime Minister Narendra Modi emphasized at IMC 2026 how the Digital India initiative has been fundamental in democratizing technological access across the country. The digital transformation seeks to include all layers of society in economic development. This evolution strengthens national infrastructure and positions India as a global innovation hub.","link":"https://thenewsmill.com/2026/10/pm-modi-highlights-digital-indias-role-in-technology-democratisation-at-imc-2026/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Technology that detects electrical signals from marine microalgae developed in Coimbra","resumo":"Researchers in Coimbra have developed an innovative technology capable of detecting electrical signals emitted by marine microalgae. The scientific advancement promises to open new paths for environmental monitoring and the study of aquatic ecosystems. The tool highlights Portugal's role at the forefront of biotechnological research and the creation of sustainable solutions.","link":"https://sapo.pt/artigo/tecnologia-que-deteta-sinais-eletricos-de-microalgas-marinhas-desenvolvida-em-coimbra-6ac72daf9c1f5d41576d6b6f","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Samsung projects 780% profit jump thanks to AI chip demand","resumo":"South Korean giant Samsung posted impressive financial growth projections driven by the Artificial Intelligence boom. High global demand for advanced semiconductors and specialized memory chips was the main driver for this historic result. The scenario reflects the tech industry's growing reliance on high-performance components.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/10/07/samsung-preve-salto-de-780percent-no-lucro-gracas-a-demanda-por-chips-de-ia.ghtml","categoria":"MARKET","lang":"en"},{"fonte":"BBC","pais":"United States","titulo":"Margaret Hamilton, whose software helped land Apollo 11 on the Moon, dies at 90","resumo":"Margaret Hamilton, computing pioneer and fundamental figure in the development of software for the Apollo space program, has passed away at 90. Her work creating onboard code systems prevented critical aborts during the historic Apollo 11 mission. Hamilton leaves behind an invaluable legacy for software engineering and space exploration.","link":"https://www.bbc.com/news/articles/cx5yn46j41zpo","categoria":"SCIENCE","lang":"en"},{"fonte":"Sud Ouest","pais":"France","titulo":"Soustons: The Festival of Science honors autumn cuisine and flavors","resumo":"The city of Soustons integrated local gastronomy into this year's Festival of Science celebrations.\nInteractive activities explored the chemistry and physics behind typical dishes and autumn flavors.\nThe event connected regional culinary traditions with scientific curiosity and food education.","link":"https://www.sudouest.fr/landes/soustons/soustons-la-fete-de-la-science-met-a-l-honneur-la-cuisine-et-les-saveurs-d-automne-30897660.php","categoria":"SCIENCE","lang":"en"},{"fonte":"The Guardian","pais":"United Kingdom","titulo":"Margaret Hamilton, pioneer whose programming took Apollo 11 to the Moon, dies at 90","resumo":"Renowned computer scientist Margaret Hamilton has died at 90, leaving a monumental legacy in the history of space exploration. Her pioneering work developing onboard software was crucial to the success of the 1969 Apollo 11 mission. She becomes an eternal symbol of software engineering and an inspiration for women in science.","link":"https://www.theguardian.com/science/2026/oct/07/margaret-hamilton-moon-computer-software","categoria":"SCIENCE","lang":"en"},{"fonte":"Atlántico","pais":"Spain","titulo":"Conxemar 5.0: Technology, robotics, and AI for the fish and seafood sector","resumo":"The Conxemar trade show highlights the integration of advanced technologies, robotics, and artificial intelligence in the seafood processing industry. The innovations presented aim to optimize the supply chain, ensuring greater efficiency, sustainability, and quality control in seafood products. This digital transformation redefines traditional industrial processes to meet global demands.","link":"https://www.atlantico.net/economia/conxemar-5-tecnologia-robotica-e_1_20261008-4442840.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"Anti-aging secret of the world's oldest land animal uncovered","resumo":"Researchers have uncovered the biological mechanisms that allow the world's longest-living land animal to resist the effects of advanced aging. The discovery brings new perspectives to biomedicine and longevity studies, potentially inspiring future therapies for humans.","link":"https://wissenschaft.de/artikel/anti-aging-geheimnis-des-aeltesten-lebenden-landtiers-gelueftet","categoria":"SCIENCE","lang":"en"},{"fonte":"PR TIMES","pais":"Japan","titulo":"Technology makes watching para-athletics even more entertaining with the unprecedented introduction of AI narration","resumo":"Utilizing advanced universal communication technologies, Japan has introduced artificial intelligence narration to para-athletics events. This innovation aims to provide an inclusive, accessible, and much more exciting cheering experience for all audiences. The initiative demonstrates the positive impact of technology in promoting accessibility in sports.","link":"https://prtimes.jp/main/html/rd/p/000006996.000052467.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Investing.com India","pais":"China","titulo":"Why is Shanghai Biren Technology stock sliding today?","resumo":"Shanghai Biren Technology shares have seen significant drops in the recent financial market, raising concerns among investors. The company, one of China's primary bets in the semiconductor and artificial intelligence sector, faces volatility due to macroeconomic pressures. Analysts are evaluating the impact of these fluctuations on the local technology ecosystem and global supply chains.","link":"https://in.investing.com/news/stock-market-news/why-is-shanghai-biren-technology-stock-sliding-today-93CH-5623342","categoria":"MARKET","lang":"en"},{"fonte":"TheWire.in","pais":"India","titulo":"Data Sutram's FinSecure 2026 highlights trust infrastructure for India's $30 trillion economy","resumo":"The FinSecure 2026 event pointed to trust infrastructure as a critical pillar for Indian economic growth toward the $30 trillion target. Experts discussed data security and fraud prevention as foundations for the financial sector. The initiative reinforces the need for secure digital ecosystems to attract global investment.","link":"https://m.thewire.in/article/ptiprnews/data-sutrams-finsecure-2026-highlights-trust-infrastructure-as-critical-to-indias-path-towards-a-30-trillion-dollar-economy/amp?utm=relatedarticles","categoria":"BUSINESS","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Viz.ai: Using artificial intelligence to accelerate medical diagnoses","resumo":"The Viz.ai platform employs advanced artificial intelligence algorithms to optimize and accelerate critical healthcare diagnoses. The technology works by quickly identifying serious conditions, allowing medical teams to intervene more agilely. This innovation represents a milestone in the integration of technology and precision medicine.","link":"https://sapo.pt/artigo/viz-ai-usa-ai-para-acelerar-diagnosticos-6ac6d1efc1802de9f34d9f51","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Trump to award top US scientific honor to Elon Musk and other tech executives","resumo":"The U.S. government announced the awarding of its highest scientific and technological commendation to prominent figures in the sector. Among the honorees is billionaire Elon Musk, recognized for his disruptive contributions to space exploration and digital innovation. The award highlights the growing influence of tech leaders in geopolitics and the global economy.","link":"https://g1.globo.com/tecnologia/noticia/2026/10/07/trump-medalha-executivos-da-tecnologia.ghtml","categoria":"TRENDING","lang":"en"},{"fonte":"Popular Science","pais":"United States","titulo":"The world's first nuclear clocks are up and running","resumo":"Scientists have taken a historic step by bringing the world's first nuclear clocks into operation. This new technology promises unprecedented timekeeping precision, drastically outperforming current atomic clocks. The breakthrough is expected to directly impact fundamental physics, navigation systems, and global communication networks.","link":"https://www.popsci.com/technology/first-nuclear-clocks/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Le Progrès","pais":"France","titulo":"Oyonnax: What the Science Festival has in store for you at the Aragon cultural center","resumo":"The Aragon cultural center in Oyonnax has prepared a special program aimed at scientific outreach. Workshops, lectures, and exhibitions were made available for all ages during the event. The proposal seeks to stimulate scientific careers and promote debate on innovations in society.","link":"https://www.leprogres.fr/culture-loisirs/2026/10/08/ce-que-vous-reserve-la-fete-de-la-science-au-centre-culturel-aragon","categoria":"SCIENCE","lang":"en"},{"fonte":"EdTech Innovation Hub","pais":"England","titulo":"Microsoft South Africa Chief Technology Officer Asif Valley steps down after a decade","resumo":"Asif Valley has concluded a ten-year run leading Microsoft's technical direction in South Africa, marking an era of strong expansion. During his tenure, he was at the center of crucial transformations in cloud computing, artificial intelligence, and digital skills training. His departure clears the way for new directions in the company's regional tech strategy.","link":"https://www.edtechinnovationhub.com/news/microsoft-south-africa-technology-chief-asif-valley-exits-after-decade-spanning-cloud-ai-and-digital-skills","categoria":"BUSINESS","lang":"en"},{"fonte":"La Vanguardia","pais":"Spain","titulo":"Discover Faro Santander: From Goya and Frida Kahlo to immersive technology","resumo":"The Faro Santander cultural center combines the best of classical art by great masters with cutting-edge immersive technology experiences. The initiative transforms how the public interacts with historical and artistic exhibitions through innovative digital resources. The project solidifies Spanish cultural tourism as a pioneering hub in the fusion of heritage and innovation.","link":"https://www.lavanguardia.com/cultura/20261008/11652393/asi-faro-santander-goya-frida-kahlo-tecnologia-inmersiva-brl.html","categoria":"DIGITAL CULTURE","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"First detection of heavy methanol in outer space","resumo":"Astronomers have recorded the presence of heavy methanol in deep regions of the universe for the first time, expanding the understanding of interstellar chemistry. The finding is fundamental for tracking the origin of complex organic compounds and understanding the formation of stellar systems.","link":"https://wissenschaft.de/artikel/erster-nachweis-von-schwerem-methanol-im-weltall","categoria":"SCIENCE","lang":"en"},{"fonte":"PR TIMES","pais":"Japan","titulo":"Satellite communication facility for 5G NTN standard testing built at Kashima Space Technology Center","resumo":"A new infrastructure aimed at testing the 5G NTN satellite communication standard has been established in Ibaraki Prefecture. The project seeks to expand next-generation connectivity, allowing network coverage even in remote or disaster-affected areas. This technology strengthens the country's advanced telecommunications and broadens the frontiers of mobile communication.","link":"https://prtimes.jp/main/html/rd/p/000001617.000012900.html","categoria":"SCIENCE","lang":"en"},{"fonte":"红网","pais":"China","titulo":"Changsha University of Science and Technology inaugurates School and Institute of Future Technologies","resumo":"The Changsha University of Science and Technology has officially inaugurated its new School and Institute of Future Technologies. The academic hub aims to accelerate cutting-edge research and train highly qualified talent in strategic areas of innovation. The initiative reinforces the institution's commitment to national technological development and the integration of science and industry.","link":"https://edu.rednet.cn/content/646054/90/16348921.html","categoria":"EDUCATION","lang":"en"},{"fonte":"The Times of India","pais":"India","titulo":"Sub-20,000 rupee smartphone market may be heading toward a collapse due to controversial technology","resumo":"The Indian mid-range and entry-level smartphone market faces risks of severe restructuring due to the adoption of polarized technologies. Consumers and manufacturers are debating the impacts of this trend on the costs and durability of popular devices. The shift could drastically alter purchasing preferences in the world's second-largest mobile market.","link":"https://timesofindia.indiatimes.com/technology/tech-news/sub-rs-20000-smartphone-market-may-be-heading-to-a-collapse-and-reason-is-the-most-loved-and-hated-technology-right-now/articleshow/134780743.cms","categoria":"MARKET","lang":"en"},{"fonte":"Universidade de Aveiro","pais":"Portugal","titulo":"Music and technology for everyone: Digimedia researcher project recognized by FCT","resumo":"A pioneering project uniting music and inclusive technology has been recently recognized by the Foundation for Science and Technology. The initiative aims to democratize access to artistic creation through innovative technological tools. The award reinforces the importance of interdisciplinary approaches for social and cultural development.","link":"https://www.ua.pt/pt/noticias/9/99515","categoria":"INNOVATION","lang":"en"},{"fonte":"Estadão","pais":"Brazil","titulo":"What Changes in the Training of Tech Professionals with the Arrival of AI","resumo":"The rapid evolution of Artificial Intelligence is forcing a profound overhaul of educational curricula and IT training. Traditional programming skills now share space with mastery of advanced algorithms, digital ethics, and prompt engineering. This movement aims to prepare a new generation of professionals for a transforming labor market.","link":"https://www.estadao.com.br/em-alta/tecmundo/big-techs/o-que-muda-na-formacao-de-profissionais-de-tecnologia-com-a-chegada-da-ia/","categoria":"EDUCATION","lang":"en"},{"fonte":"Phys.org","pais":"United States","titulo":"New Display Technology Combines Record Brightness with Pixels That Stretch Like Rubber","resumo":"Researchers have developed an innovative screen technology that unites unprecedented levels of brightness with the ability to stretch like rubber. The material opens doors for flexible and pliable displays applicable in wearable devices and advanced electronics. The innovation promises to revolutionize visual interface design in the near future.","link":"https://phys.org/news/2026-10-display-technology-combines-brightness-pixels.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Investing.com France","pais":"France","titulo":"Why Are Shanghai Biren Technology Shares Plummeting Today?","resumo":"Shares of technology company Shanghai Biren registered an abrupt drop in financial markets. Analysts point to regulatory pressures and the impact of new international restrictions in the semiconductor sector. This movement reflects ongoing volatility and geopolitical uncertainties in the global tech industry.","link":"https://fr.investing.com/news/stock-market-news/pourquoi-le-titre-shanghai-biren-technologie-chutetil-aujourdhui--93CH-3626208","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"'Stop Talking Britain Down' – The Woman Trying to Stop the Flight of UK Businesses","resumo":"A prominent executive has taken on the mission of combating economic pessimism and reversing the trend of companies fleeing the British market. The focus of her work is engaging with investors and corporations to restore confidence in the post-Brexit local economy. The initiative seeks to retain talent and keep the country competitive in the face of new global innovation hubs.","link":"https://www.bbc.com/news/articles/cmgqwydpd4xwo","categoria":"ECONOMY","lang":"en"},{"fonte":"Motor16","pais":"Spain","titulo":"Stellantis Introduces Wayve Technology in Models to Advance Semiautonomous Driving","resumo":"Automaker Stellantis has integrated Wayve's artificial intelligence systems into selected vehicles to boost the development of semiautonomous driving technologies. The partnership seeks to enhance cars' ability to navigate complex urban environments autonomously and safely. This evolution represents an important step in the European automotive sector's technological race.","link":"https://www.motor16.com/las-ultimas-noticias/stellantis-wayve-500e-grecale/","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"筑波大学","pais":"Japan","titulo":"Watching Sporting Events May Reduce Depressive Symptoms in Patients with Congenital Heart Disease","resumo":"New medical research has revealed that the experience of attending live sports competitions can alleviate depressive symptoms in patients with congenital heart disease. The study highlights the importance of social and recreational engagement for the improvement of mental health and overall well-being. The findings open avenues for complementary therapeutic approaches in the treatment of heart conditions.","link":"https://www.tsukuba.ac.jp/journal/medicine-health/20261008140000.html","categoria":"HEALTH","lang":"en"},{"fonte":"观点网","pais":"China","titulo":"Zhenyu Industry Completes Technological Research and Sample Development for Core Flexible Tactile Sensor Products","resumo":"Zhenyu Industry announced the successful completion of technological research and sample development for its flexible tactile sensors. This core component is fundamental for breakthroughs in advanced robotics and next-generation human-machine interfaces. The technological milestone demonstrates China's industrial capacity to master critical technologies for smart automation.","link":"https://www.guandian.cn/article/20261008/609981.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Economic Times","pais":"India","titulo":"Edelweiss Asset Management Launches US Technology Equity Fund in GIFT City in Partnership with JPMorgan","resumo":"Edelweiss Asset Management has introduced the Edelweiss US Technology Equity Fund in GIFT City, focusing on investments managed by JPMorgan. The new offering broadens Indian investors' access to global innovation portfolios and cutting-edge technology. The move consolidates GIFT City as a strategic international financial center for India.","link":"https://m.economictimes.com/mf/mf-news/edelweiss-asset-management-launches-edelweiss-us-technology-equity-fund-in-gift-city-invests-in-jpmorgan-us-technology-fund/articleshow/134780921.cms","categoria":"INVESTMENTS","lang":"en"},{"fonte":"Expresso","pais":"Portugal","titulo":"How Many Times Over Can the Portuguese GDP Be Boosted by Artificial Intelligence?","resumo":"Experts analyze the potential economic impact that the massive adoption of artificial intelligence could generate on Portugal's Gross Domestic Product. The study examines how automation and productivity gains could transform the national economy in the coming years. The discussion emphasizes the urgency of strategic investments in the tech sector.","link":"https://expresso.pt/podcasts/economia-dia-a-dia/2026-10-07-quantas-vezes-o-pib-portugues-pode-valer-o-impulso-da-ia--47e41f07","categoria":"ECONOMY","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"It's #FAKE: Photo of Voters Wearing Electronic Ankle Monitors and Red Shirts in Line to Vote Is AI-Generated","resumo":"An image generated by artificial intelligence widely circulated on social media aiming to disinform the electorate during the electoral period. Fact-checking confirmed that the depicted scene is completely fictitious and manipulated via synthetic technology. The case reinforces the dangers of deepfakes and visual disinformation to the integrity of democratic processes.","link":"https://g1.globo.com/fato-ou-fake/eleicoes/noticia/2026/10/07/e-fake-foto-de-eleitores-com-tornozeleira-eletronica-e-roupa-vermelha-em-fila-para-votar-na-eleicao-imagem-foi-feita-com-ia.ghtml","categoria":"TRENDING","lang":"en"},{"fonte":"Purdue Polytechnic","pais":"United States","titulo":"Purdue Polytechnic Professor Secures Patent for Dual-Function Solar Cell Technology","resumo":"A Purdue Polytechnic professor has secured a new patent for an innovative dual-function solar cell technology. The system optimizes energy capture by performing additional light and heat conversion processes simultaneously. The innovation represents an important breakthrough for renewable energy efficiency.","link":"https://polytechnic.purdue.edu/newsroom/purdue-polytechnic-professor-secures-patent-dual-function-solar-cell-technology","categoria":"SCIENCE","lang":"en"},{"fonte":"Ouest-France","pais":"France","titulo":"Death of Margaret Hamilton, American Computer Science Pioneer and Apollo Program Figure","resumo":"The world has lost Margaret Hamilton, an engineer whose work was crucial to the success of the Apollo missions. She led the team that developed the onboard software that took humankind to the Moon. Her legacy remains a fundamental pillar for the development of modern computer science.","link":"https://www.ouest-france.fr/monde/etats-unis/mort-de-margaret-hamilton-pionniere-americaine-en-science-de-linformatique-et-figure-du-programme-apollo-3b78696c-c2c0-11f1-a107-88e926908e5f","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Scientists Who Place Faith in Technology Are Less Likely to Take Climate Crisis Action","resumo":"A new study has revealed that individuals who overly trust future technological solutions tend to engage less in practical actions against climate change today. This mindset that innovation will solve all ecological problems can breed complacency in society and governments. The survey warns of the need to balance technical development with immediate environmental responsibility.","link":"https://www.theguardian.com/environment/2026/oct/07/scientists-technology-less-likely-climate-crisis-action","categoria":"SCIENCE","lang":"en"},{"fonte":"El Español","pais":"Spain","titulo":"Juan Luis Hortelano: \"VDS Has Demonstrated That Valencia Connects Technology, Investment, and Business on a Global Scale\"","resumo":"The VDS event has consolidated Valencia as one of Europe's leading innovation and tech hubs, attracting global investors and leaders. The statement highlights the Spanish city's pivotal role in creating a fertile ecosystem for startups and international strategic partnerships. The impact of the gathering strengthens the country's position on the global technology map.","link":"https://www.elespanol.com/invertia/disruptores/ecosistema-startup/startups/20261008/juan-luis-hortelano-vds-demostrado-valencia-conecta-tecnologia-inversion-negocio-escala-global/1003744409858_0.html","categoria":"BUSINESS","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Shinichi Takeda Congratulates Nobel Prize in Chemistry Winner Kenso Soai, Highlighting Science's Fundamental Role","resumo":"Renowned Japanese scientist Kenso Soai was celebrated for his Nobel Prize in Chemistry win, receiving honors from figures such as Shinichi Takeda. The recognition underscores the importance of investigations focused on answering fundamental questions about nature and matter. The award crowns the long-term excellence of Japan's scientific community.","link":"https://news.yahoo.co.jp/articles/684d0d9ec0cb3db6f6caff2ef12fd071245a6356","categoria":"SCIENCE","lang":"en"},{"fonte":"Yahoo Finance","pais":"China","titulo":"Beijing 51World Digital Twin Technology Leads These Top 3 Automation Stocks","resumo":"Beijing 51World Digital Twin Technology recently stood out among the top three automation stocks in the Asian market. The company is recognized for its innovations in digital twin technologies applied to smart cities and industrial simulations. This recognition reflects strong growth and investor appetite for advanced data visualization solutions.","link":"https://finance.yahoo.com/technology/ai/articles/beijing-51world-digital-twin-technology-031921288.html","categoria":"AUTOMATION","lang":"en"},{"fonte":"Moneycontrol.com","pais":"India","titulo":"India Aims to Shift from Technology Consumer to Standard Setter and Lead Global 6G Race, Says Scindia","resumo":"Minister Jyotiraditya Scindia stated that India aims to transition from merely consuming technology to becoming a creator of global standards. The country seeks to take the lead in the international race for the development of 6G technology. This ambition reflects the strengthening of telecommunications research and development capabilities within Indian territory.","link":"https://www.moneycontrol.com/news/india/india-aims-to-shift-from-technology-taker-to-standard-setter-lead-global-6g-race-scindia-14047370.html","categoria":"TELECOMMUNICATIONS","lang":"en"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Google Releases Tool to Verify AI-Generated Content","resumo":"Google has launched a new technological solution aimed at identifying and verifying content produced by artificial intelligence. The tool emerges as a response to growing challenges regarding the authenticity of information and the fight against digital misinformation. By doing so, it aims to ensure greater transparency within the internet ecosystem.","link":"https://www.cmjornal.pt/tecnologia/detalhe/google-disponibiliza-ferramenta-para-verificar-conteudos-gerados-por-ia","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Microsoft Says New Laptop with Nvidia Chip Outperforms MacBooks","resumo":"Microsoft has intensified competition in the laptop market by launching a device equipped with an Nvidia graphics chip. According to the company, the new equipment delivers superior performance in complex tasks compared to Apple's competitors. The release promises to redefine power and efficiency standards for content creators and demanding professionals.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/10/07/microsoft-diz-que-novo-laptop-com-chip-da-nvidia-supera-macbooks.ghtml","categoria":"LAUNCHES","lang":"en"},{"fonte":"NASA (.gov)","pais":"United States","titulo":"NASA Releases Lunar Science Data and Images from Artemis II Mission","resumo":"NASA recently released a new set of scientific data and images obtained through the Artemis II lunar mission. The material provides crucial information on the geology and environment of the Moon for future human exploration. This data strengthens the planning for the next stages of the lunar return program.","link":"https://www.nasa.gov/blogs/missions/2026/10/07/nasa-releases-artemis-ii-lunar-science-data-images/","categoria":"SCIENCE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
