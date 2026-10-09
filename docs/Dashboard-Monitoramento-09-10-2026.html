@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-5qn3VGpvq+kkzqZyaJy+kTQl'; script-src 'nonce-5qn3VGpvq+kkzqZyaJy+kTQl'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="5qn3VGpvq+kkzqZyaJy+kTQl">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">09/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="5qn3VGpvq+kkzqZyaJy+kTQl">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Brasil Inovador","pais":"Brasil","titulo":"Governo dos Estados Unidos condecora Elon Musk e lideranças da tecnologia com a Medalha Nacional de Ciência","resumo":"O governo americano concedeu a prestigiosa Medalha Nacional de Ciência a Elon Musk e a outros líderes do setor tecnológico. A honraria reconhece as contribuições significativas dessas personalidades para o avanço científico e a inovação global. O impacto dessa premiação destaca a crescente influência da indústria tecnológica nas políticas e no desenvolvimento dos Estados Unidos.","link":"https://brasilinovador.com.br/governo-dos-estados-unidos-condecora-elon-musk-e-liderancas-da-tecnologia-com-a-medalha-nacional-de-ciencia/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"A Redação","pais":"Estados Unidos","titulo":"Trump entrega medalhas nacionais a Elon Musk e líderes de tecnologia nos EUA","resumo":"O presidente Donald Trump concedeu importantes honrarias científicas a figuras proeminentes do setor tecnológico norte-americano. Entre os homenageados, Elon Musk recebeu destaque especial na Casa Branca por suas inovações e contribuições para a ciência moderna. O evento reforçou a aproximação estratégica entre a administração federal e os principais nomes da tecnologia nacional.","link":"https://aredacao.com.br/trump-entrega-medalhas-nacionais-a-elon-musk-e-lideres-de-tecnologia-nos-eua/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Slate.fr","pais":"França","titulo":"Esta tecnologia pode abalar a busca por vida extraterrestre na galáxia","resumo":"Uma nova inovação tecnológica promete transformar significativamente os métodos tradicionais de exploração espacial. A ferramenta aumenta a precisão na detecção de bioassinaturas em exoplanetas distantes. Especialistas acreditam que isso acelera a descoberta de indícios de civilizações ou organismos fora da Terra.","link":"https://www.slate.fr/sciences/progres-nanotechnologique-pourrait-bousculer-recherche-vie-extraterrestre-espace-astronomie","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Water Magazine","pais":"Inglaterra","titulo":"Professor da Universidade de Aston explorará tecnologia de membrana inspirada na natureza","resumo":"Um novo projeto de pesquisa liderado pela Universidade de Aston busca desenvolver tecnologias inovadoras baseadas em processos naturais. O estudo tem o potencial de revolucionar a filtragem de água e a eficiência energética industrial. A iniciativa reforça o compromisso britânico com a inovação científica sustentável.","link":"https://www.watermagazine.co.uk/2026/10/09/aston-university-professor-to-explore-nature-inspired-membrane-technology/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"La Razón","pais":"Espanha","titulo":"A optogenética, premiada com o Nobel, devolve parte da visão a pacientes com retinose pigmentar em ensaio publicado no NEJM","resumo":"Um novo ensaio clínico publicado no NEJM demonstra que a optogenética consegue devolver parte da visão a pacientes afetados por retinose pigmentar. A técnica inovadora utiliza princípios da terapia genética combinada com luz para reativar células da retina que haviam perdido a função. O avanço representa uma esperança significativa para o tratamento de doenças degenerativas graves da visão e consolida o potencial clínico desta tecnologia revolucionária.","link":"https://www.larazon.es/tecnologia-consumo/ciencia/optogenetica-premiada-nobel-devuelve-parte-vision-pacientes-retinosis-pigmentaria-ensayo-publicado-nejm_202610096ac7fdb9fb06971aadfeb449.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"FAZ","pais":"Alemanha","titulo":"“A política tecnológica da China lembra a União Soviética”","resumo":"Especialistas analisam os rumos recentes da política tecnológica adotada pela China e suas semelhanças estruturais com o modelo soviético. A discussão aborda o impacto do forte controle estatal na inovação e na competitividade global. O debate é crucial para entender as futuras dinâmicas comerciais e tecnológicas entre as superpotências.","link":"https://www.faz.net/aktuell/wirtschaft/logan-wright-chinas-technologiepolitik-erinnert-an-die-sowjetunion-accg-201285563.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"長崎大学","pais":"Japão","titulo":"Pesquisador da Universidade de Nagasaki recebe prêmio de melhor jovem apresentação na Sociedade Oceanográfica do Japão","resumo":"Durante a conferência de outono da Sociedade Oceanográfica do Japão, um jovem pesquisador do laboratório de química oceanográfica foi premiado por sua excelente apresentação. O reconhecimento destaca a relevância das pesquisas marinhas desenvolvidas no país e o incentivo a novos talentos científicos. A premiação reforça o avanço acadêmico nas ciências do mar e o compromisso contínuo com a inovação e descoberta nesta área fundamental.","link":"https://www.nagasaki-u.ac.jp/ja/news/news5128.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Business Today","pais":"China","titulo":"Por que a China não permite a Starlink? Autor questiona Elon Musk e aponta questões maiores que a tecnologia","resumo":"O debate em torno da proibição da Starlink na China vai muito além de simples questões de qualidade de serviço ou disputas tecnológicas convencionais. O autor do questionamento a Elon Musk destaca que o caso envolve pilares profundos de segurança nacional e soberania de dados. A discussão ressalta o controle rigoroso que Pequim exerce sobre suas redes de comunicação e a infraestrutura digital estratégica do país.","link":"https://www.businesstoday.in/technology/story/why-does-china-not-allow-starlink-author-asks-elon-musk-says-matter-is-bigger-than-technology-quality-of-service-560573-2026-10-09","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"kpmg.com","pais":"Índia","titulo":"O poder por trás da conectividade: O caminho da Índia para a liderança em tecnologia de telecomunicações","resumo":"A Índia avança de forma consistente para se consolidar como líder global em tecnologia de telecomunicações. O fortalecimento da infraestrutura digital e a inovação no setor são fundamentais para impulsionar a conectividade no país. Essa transformação tecnológica promete revolucionar a economia digital e ampliar o acesso à informação em larga escala.","link":"https://kpmg.com/in/en/insights/2026/10/the-power-beneath-connectivity-indias-path-to-telecom-technology-leadership.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Jornal de Notícias","pais":"Portugal","titulo":"Trump condecora Musk com medalha científica e o chama de \"tesouro nacional\"","resumo":"O ex-presidente Donald Trump condecorou o empresário Elon Musk com uma prestigiada medalha científica durante um evento oficial recente. Na ocasião, Trump destacou a relevância das inovações lideradas por Musk e o rotulou publicamente como um verdadeiro tesouro nacional. A homenagem gerou debates intensos sobre a proximidade entre a elite tecnológica e o cenário político atual.","link":"https://www.jn.pt/amp/18135085/trump-condecora-musk-com-medalha-cientifica-e-chama-lhe-tesouro-nacional","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Anthropic proíbe comportamento 'cruel' contra sua IA Claude; entenda","resumo":"A empresa Anthropic implementou novas diretrizes para proibir interações abusivas e cruéis com seu modelo de inteligência artificial Claude. A medida busca estabelecer limites éticos na relação entre humanos e sistemas de IA avançados. Essa decisão levanta debates importantes sobre a responsabilidade corporativa e o tratamento ético dispensado às tecnologias conversacionais.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/08/anthropic-proibe-comportamento-cruel-contra-sua-ia-claude-entenda.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The New York Times","pais":"Estados Unidos","titulo":"‘De tirar o fôlego’ e ‘devastador’: Matemática reage após novo lançamento da OpenAI","resumo":"A comunidade matemática e científica mundial expressou reações intensas e mistas após o mais recente lançamento de inteligência artificial da OpenAI. Especialistas debatem o impacto profundo que o novo modelo pode trazer para a resolução de problemas complexos na área. A ferramenta demonstra capacidades avançadas que desafiam paradigmas tradicionais de cálculo e raciocínio lógico.","link":"https://www.nytimes.com/2026/10/08/science/mathematicians-respond-openai-release.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Le Figaro","pais":"França","titulo":"Donald Trump condecora Elon Musk com medalha por contribuições à ciência e o chama de 'tesouro nacional'","resumo":"O ex-presidente americano Donald Trump homenageou Elon Musk em uma cerimônia oficial de reconhecimento público. A honraria destaca o impacto de suas inovações tecnológicas e espaciais no avanço científico global. O gesto gerou ampla repercussão na mídia e reforçou a influência do empresário no setor.","link":"https://www.lefigaro.fr/flash-actu/donald-trump-decore-elon-musk-d-une-medaille-pour-ses-contributions-a-la-science-et-le-qualifie-de-tresor-national-20261008","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"科学技術振興機構（JST）","pais":"Inglaterra","titulo":"Reino Unido fortalece defesa contra ameaças espaciais com nova estratégia","resumo":"O governo britânico implementou uma nova estratégia voltada para o setor aeroespacial, visando proteger infraestruturas críticas orbitais. A medida responde ao aumento de riscos geopolíticos no espaço exterior e busca consolidar a soberania tecnológica do país. O plano envolve investimentos em monitoramento avançado e colaboração internacional.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261009-6.html","categoria":"DEFESA","lang":"pt"},{"fonte":"El Español","pais":"Espanha","titulo":"Paula González, advogada: \"Se não protegermos os neurodados, qualquer tecnologia poderá ler ou manipular nossa mente\"","resumo":"Especialistas em direito tecnológico alertam sobre a urgência de regulamentar e proteger os neurodados gerados por interfaces cérebro-computador. O avanço acelerado da neurotecnologia coloca em risco a privacidade mental dos indivíduos, abrindo margem para potenciais leituras e manipulações de pensamentos. O debate destaca a necessidade de criar marcos legais rigorosos para salvaguardar a autonomia cognitiva humana diante da inovação desenfreada.","link":"https://www.elespanol.com/mujer/que-hacer/20261009/paula-gonzalez-abogada-no-protegemos-neurodatos-cualquier-tecnologia-podra-leer-manipular-mente/1003744410534_0.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"科学技術振興機構（JST）","pais":"Alemanha","titulo":"BMFTR reorganiza a 'Plataforma Indústria 4.0' para promover o uso de IA industrial","resumo":"O governo alemão reestruturou sua principal plataforma industrial para acelerar a adoção de Inteligência Artificial nos setores produtivos do país. A iniciativa visa manter a competitividade global da indústria alemã frente aos avanços tecnológicos internacionais. Com isso, espera-se estreitar a colaboração entre pesquisa científica e o setor privado.","link":"https://www.jst.go.jp/crds/kaigaikiji/20260810-3.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"TDK considera a venda de seu negócio de cabeças magnéticas em meio a desafios regulatórios e de segurança","resumo":"A gigante japonesa TDK está avaliando a desinvestidura de sua divisão de cabeças magnéticas, um movimento estratégico de grande impacto para o mercado de tecnologia. A decisão envolve análises complexas sobre leis antimonopólio e diretrizes de segurança econômica internacional. Essa reestruturação reflete a adaptação das empresas de alta tecnologia às novas dinâmicas geopolíticas e comerciais globais.","link":"https://www.nikkei.com/article/DGXZQOUC064WS0W6A001C2000000/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"财新","pais":"China","titulo":"Queda drástica nos preços de IA mostra que a tecnologia não será privilégio de poucos","resumo":"A recente queda acentuada nos custos de desenvolvimento e uso de inteligência artificial marca uma transformação profunda no acesso às ferramentas avançadas. Essa democratização do setor garante que inovações de ponta deixem de ser exclusividade de grandes corporações ou potências tecnológicas isoladas. O movimento impulsiona a competitividade global, permitindo que mercados emergentes e empresas de menor porte também aproveitem o potencial revolucionário da IA.","link":"https://opinion.caixin.com/2026-10-09/102491571.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"News On AIR","pais":"Índia","titulo":"Índia e Gana assinam 2 memorandos de entendimento para fortalecer cooperação em ciência, educação e agricultura","resumo":"Os governos da Índia e de Gana firmaram novos acordos estratégicos voltados para o desenvolvimento científico, educacional e agrícola. A parceria visa promover a troca de conhecimentos tecnológicos e impulsionar a inovação entre as nações. Essa iniciativa bilateral reforça o compromisso mútuo com o crescimento sustentável e o progresso baseado na ciência.","link":"https://newsonair.gov.in/india-ghana-sign-2-mous-to-strengthen-cooperation-in-science-education-and-agriculture/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Público","pais":"Portugal","titulo":"Orçamento da ciência aumenta 15% em Portugal, ainda sem novidades da nova agência","resumo":"O governo português anunciou um incremento expressivo de 15% no orçamento voltado para o setor da ciência no país. A medida visa impulsionar a investigação científica e o desenvolvimento tecnológico em diversas instituições acadêmicas e de pesquisa. No entanto, a comunidade científica ainda aguarda diretrizes concretas sobre a implementação da anunciada nova agência de fomento.","link":"https://www.publico.pt/2026/10/08/ciencia/noticia/orcamento-ciencia-aumenta-15-novidades-nova-agencia-2190720","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"UOL Notícias","pais":"Brasil","titulo":"Trump comprou R$ 25 mi em títulos da SpaceX antes de nova política espacial","resumo":"Investigações revelaram que Donald Trump adquiriu milhões em títulos da SpaceX pouco antes do anúncio de diretrizes governamentais voltadas para o setor espacial. A transação gerou discussões sobre possíveis conflitos de interesse entre investimentos privados e decisões políticas públicas. O caso repercute fortemente nos cenários político e tecnológico internacional.","link":"https://noticias.uol.com.br/internacional/ultimas-noticias/2026/10/08/trump-compra-ate-us-5-milhoes-em-divida-da-spacex-antes-de-politica.ghtm","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"O GLOBO","pais":"Estados Unidos","titulo":"Apple prepara lançamento de MacBook com tela sensível ao toque e novo iPad mini no fim deste mês, diz agência","resumo":"A gigante de Cupertino planeja novidades significativas para o seu ecossistema de hardware nas próximas semanas, segundo informações recentes. Entre os destaques estão a introdução de uma tela sensível ao toque em notebooks e a atualização da linha de tablets compactos. Essas inovações buscam atender às demandas crescentes dos consumidores por maior interatividade e versatilidade.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/10/08/apple-prepara-lancamento-de-macbook-com-tela-sensivel-ao-toque-e-novo-ipad-mini-no-fim-deste-mes.ghtml","categoria":"LANÇAMENTO","lang":"pt"},{"fonte":"科学技術振興機構（JST）","pais":"França","titulo":"França 2030: Início de chamada para projetos voltados à sustentabilidade de dispositivos digitais","resumo":"O governo francês lançou uma nova iniciativa estratégica para promover a economia circular no setor de eletrônicos. O programa visa financiar projetos inovadores que aumentem a durabilidade e reduzam o impacto ambiental de equipamentos. A medida faz parte do plano nacional para consolidar uma indústria tecnológica mais verde.","link":"https://www.jst.go.jp/crds/kaigaikiji/20260910-2.html","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"科学技術振興機構（JST）","pais":"Inglaterra","titulo":"Kat Little é nomeada nova secretária permanente do Departamento de Negócios","resumo":"Cat Little assumiu o cargo de secretária permanente no Departamento de Negócios, Inovação, Ciência e Comércio do Reino Unido. Sua liderança será fundamental para conduzir políticas públicas de estímulo à economia e avanço tecnológico. A mudança na cúpula administrativa visa acelerar a agenda de inovação do governo.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261009-7.html","categoria":"GOVERNO","lang":"pt"},{"fonte":"MONCLOA.COM","pais":"Espanha","titulo":"Espanha testa com sucesso a tecnologia que guiará os próximos veículos utilitários esportivos na Lua","resumo":"A Espanha realizou com sucesso testes de campo utilizando tecnologias avançadas de navegação autônoma projetadas para guiar futuros rovers lunares. Os sistemas avaliados incluem inteligência artificial e sensores de alta precisão capazes de operar em ambientes extraterrestres extremos. O marco reforça a participação da indústria e da pesquisa espanhola em missões espaciais de exploração da Lua.","link":"https://www.moncloa.com/2026/10/09/espana-tecnologia-luna-3444569/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Berlin Institute of Health at Charité","pais":"Alemanha","titulo":"Palestra Convidada | Marco Fritzsche: “Engenharia de novas tecnologias para colher imunidade controlada por células T”","resumo":"O renomado pesquisador Marco Fritzsche apresenta inovações em engenharia tecnológica aplicadas à imunologia celular. O estudo aborda novas abordagens para modular a imunidade controlada por células T com precisão sem precedentes. A descoberta promete abrir portas para tratamentos médicos avançados e terapias inovadoras no futuro.","link":"https://www.bihealth.org/en/notices/guest-lecture-marco-fritzsche-engineering-new-technology-to-harvest-t-cell-controlled-immunity","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"Mitsubishi Estate e Deloitte Tohmatsu estabelecem centro de pesquisa em tecnologia quântica em Marunouchi","resumo":"As empresas uniram forças para inaugurar um novo polo dedicado ao estudo e aplicação prática de tecnologias quânticas no distrito financeiro de Tóquio. O centro visa acelerar a colaboração entre a indústria e a pesquisa acadêmica, desenvolvendo casos de uso inovadores. A iniciativa busca posicionar o Japão na vanguarda da revolução quântica, atraindo talentos e fomentando o ecossistema tecnológico local.","link":"https://www.nikkei.com/article/DGXZQOMG00002_Z01C26A0000000/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"中国科学院","pais":"China","titulo":"Equipe de pesquisa alcança distribuição de chaves quânticas resistente a ruídos","resumo":"Pesquisadores chineses conseguiram um avanço significativo na área de criptografia quântica ao desenvolverem um método eficaz de distribuição de chaves imune a ruídos. Essa inovação supera barreiras técnicas históricas que comprometiam a estabilidade e a segurança das comunicações em ambientes ruidosos. O progresso fortalece a infraestrutura nacional de segurança da informação e acelera a adoção comercial de redes quânticas ultrasseguras.","link":"https://www.cas.cn/cm/202610/t20261009_5121565.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Rediff","pais":"Índia","titulo":"Dependência das chuvas representa principal desafio para a economia rural da Índia: ONU","resumo":"Relatório recente da ONU aponta que a alta dependência das monções e das chuvas continua a ameaçar a estabilidade da economia rural indiana. A falta de sistemas avançados de irrigação e de suporte tecnológico deixa os agricultores vulneráveis às mudanças climáticas. O estudo destaca a urgência de investimentos em infraestrutura e inovação agrícola para mitigar esses riscos.","link":"https://www.rediff.com/news/commentary/2026/oct/09/rain-dependence-poses-key-challenge-to-indias-rural-economy-un/6eef9f1bfc32b40b1280a822df135dde","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Faculdade de Ciências da Universidade de Lisboa","pais":"Portugal","titulo":"\"A Ciência é o Caminho\" entra na shortlist dos APPM Marketing Awards 2026","resumo":"A campanha inspiradora intitulada \"A Ciência é o Caminho\" conquistou uma indicação de destaque na lista de finalistas dos APPM Marketing Awards 2026. O projeto se destacou pela capacidade de comunicar conceitos científicos complexos ao público de forma acessível, engajadora e inovadora. Esse reconhecimento reforça a importância de estratégias criativas de marketing na valorização da ciência perante a sociedade.","link":"https://ciencias.ulisboa.pt/noticias/a-ciencia-e-o-caminho-na-shortlist-dos-appm-marketing-awards-2026","categoria":"MARKETING","lang":"pt"},{"fonte":"Época Negócios","pais":"Brasil","titulo":"Astrônomos detectam misteriosa explosão de energia vinda de uma galáxia distante","resumo":"Cientistas registraram uma explosão de energia cósmica incomum originada nos confins do universo, desafiando modelos astrofísicos atuais. O fenômeno intrigou pesquisadores devido à sua intensidade e origem desconhecida até o momento. A descoberta abre novas portas para a compreensão de eventos extremos no espaço profundo.","link":"https://epocanegocios.globo.com/google/amp/ciencia-e-saude/noticia/2026/10/astronomos-detectam-misteriosa-explosao-de-energia-vinda-de-uma-galaxia-distante.ghtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The New York Times","pais":"Estados Unidos","titulo":"ONU alerta contra tecnologia usada para ler mentes de cidadãos","resumo":"As Nações Unidas emitiram um alerta formal a respeito do avanço e do uso inadequado de tecnologias voltadas para a leitura de pensamentos e monitoramento neural. O órgão internacional destacou os riscos severos associados à violação da privacidade mental e dos direitos humanos fundamentais. Especialistas pedem regulamentações urgentes para conter possíveis abusos governamentais e corporativos nesta área.","link":"https://www.nytimes.com/2026/10/08/world/europe/united-nations-technology-warning.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"La Provence","pais":"França","titulo":"A Festa da Ciência em La Tour-d'Aigues coloca os sabores em destaque","resumo":"O tradicional evento científico na cidade francesa uniu a gastronomia à divulgação do conhecimento para o público geral. Pesquisadores apresentaram experimentos interativos focados na química e na biologia dos alimentos. A iniciativa busca aproximar a comunidade local das descobertas científicas de forma lúdica e acessível.","link":"https://www.laprovence.com/article/region/2105589699160914/la-fete-de-la-science-a-la-tour-daigues-met-les-saveurs-a-lhonneur","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"科学技術振興機構（JST）","pais":"Inglaterra","titulo":"Conselho Consultivo de Estratégia Industrial propõe expansão de investimentos em capacitação","resumo":"O Conselho Consultivo de Estratégia Industrial do Reino Unido recomendou que empregadores ampliem os investimentos na qualificação profissional. A proposta visa preparar a força de trabalho para os desafios da economia moderna e da transformação digital. O foco é reduzir o déficit de habilidades técnicas no mercado britânico.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261009-2.html","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"El Periódico de la Energía","pais":"Espanha","titulo":"Nordex Electrolyzers reivindica a partir de Navarra a capacidade de fabricar tecnologia de hidrogênio verde","resumo":"A empresa Nordex Electrolyzers destacou a partir de Navarra o seu potencial estratégico na fabricação de tecnologia voltada para a produção de hidrogênio verde. A iniciativa fortalece a transição energética europeia ao apostar em fontes renováveis e na autonomia industrial de equipamentos limpos. O projeto consolida a região como um polo relevante no desenvolvimento de soluções sustentáveis para o futuro.","link":"https://elperiodicodelaenergia.com/nordex-electrolyzers-reivindica-desde-navarra-la-capacidad-para-fabricar-tecnologia-de-hidrogeno-verde/","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Projetos de defesa - Exército alemão deve receber mísseis de cruzeiro","resumo":"O governo alemão planeja reforçar significativamente as capacidades estratégicas de suas forças armadas com a aquisição de novos mísseis de cruzeiro. A medida reflete a mudança na política de defesa do país diante do atual cenário geopolítico europeu e global. Especialistas debatem os impactos orçamentários e operacionais dessa modernização militar.","link":"https://www.sueddeutsche.de/politik/ruestungsprojekte-deutsches-heer-soll-marschflugkoerper-bekommen-dpa.urn-newsml-dpa-com-20090101-261009-930-812956","categoria":"DEFESA","lang":"pt"},{"fonte":"AFPBB News","pais":"Japão","titulo":"Japão conquista mais um Prêmio Nobel em Química enquanto vizinhos debatem desafios em pesquisas de longo prazo","resumo":"O Japão consolida sua liderança científica ao acumular reconhecimentos consecutivos no Nobel de Química, evidenciando a força de suas instituições. Em contrapartida, debates regionais apontam para as dificuldades estruturais de outros países asiáticos em financiar pesquisas científicas duradouras. O cenário destaca a importância crucial de políticas públicas sólidas e financiamento sustentável para a inovação acadêmica.","link":"https://www.afpbb.com/articles/biz/3656870?ctm_campaign=biz_news","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"中国科学院","pais":"China","titulo":"Cientistas chineses observam experimentalmente estados topológicos críticos pela primeira vez","resumo":"Em um marco importante para a física moderna, cientistas da China registraram com sucesso a observação experimental de estados topológicos críticos. A descoberta abre novos caminhos para a compreensão de fenômenos quânticos complexos e o comportamento da matéria sob condições extremas. Esse avanço fornece uma base sólida para o desenvolvimento futuro de novos materiais e dispositivos eletrônicos de alta performance.","link":"https://www.cas.cn/cm/202610/t20261009_5121563.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"News On AIR","pais":"Índia","titulo":"Prudência fiscal, reformas e investimentos em infraestrutura fortaleceram a economia da Índia: Nirmala Sitharaman","resumo":"A ministra das Finanças destacou que a disciplina fiscal, aliada a reformas estruturais profundas, foi crucial para impulsionar o crescimento econômico indiano. Os expressivos investimentos públicos em infraestrutura modernizaram o país e atraíram novos capitais globais. Essas medidas consolidam a Índia como uma das economias mais resilientes e dinâmicas do cenário internacional.","link":"https://newsonair.gov.in/fiscal-prudence-reforms-and-infrastructure-investment-strengthened-indias-economy-nirmala-sitharaman/","categoria":"ECONOMIA","lang":"pt"},{"fonte":"ECO","pais":"Portugal","titulo":"“Portugal é a porta ideal para a tecnologia dos EUA chegar à Europa”, afirma Rubio","resumo":"O alto funcionário norte-americano Marco Rubio destacou o papel estratégico de Portugal como um polo fundamental de inovação no continente europeu. Segundo ele, a infraestrutura e o ecossistema local facilitam a expansão e a integração de tecnologias avançadas dos Estados Unidos na Europa. A declaração sinaliza um estreitamento das parcerias bilaterais focadas no avanço do setor tecnológico.","link":"https://eco.sapo.pt/2026/10/08/portugal-e-porta-ideal-para-tecnologia-dos-eua-chegar-a-europa-diz-rubio/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Siará Tech Summit 2026 começa em Fortaleza reunindo ecossistema de inovação, tecnologia e negócios","resumo":"O evento Siará Tech Summit 2026 teve início em Fortaleza com foco em impulsionar o ecossistema de inovação e tecnologia do Nordeste. A conferência reúne especialistas, empresários e startups para debater tendências de mercado e novas oportunidades de negócios. A iniciativa consolida a região como um polo tecnológico em expansão no país.","link":"https://g1.globo.com/ce/ceara/especial-publicitario/sebrae-ceara/inovacao-e-negocios/noticia/2026/10/08/siara-tech-summit-2026-comeca-em-fortaleza-reunindo-ecossistema-de-inovacao-tecnologia-e-negocios.ghtml","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Jornal Económico","pais":"Estados Unidos","titulo":"IA, drones e tecnologia espacial redefinem o mercado de defesa dos EUA e impulsionam gigantes do setor","resumo":"O ecossistema de defesa dos Estados Unidos passa por uma transformação profunda impulsionada por inovações em inteligência artificial, sistemas autônomos e exploração espacial. Grandes empresas do setor estão reestruturando operações para integrar essas novas capacidades estratégicas em suas ofertas militares. Essa modernização visa garantir a superioridade tecnológica frente a potenciais concorrentes globais no cenário geopolítico atual.","link":"https://jornaleconomico.sapo.pt/noticias/ia-drones-e-tecnologia-espacial-redefinem-o-mercado-de-defesa-dos-eua-e-impulsionam-gigantes-do-setor/","categoria":"DEFESA","lang":"pt"},{"fonte":"Ville de Chambéry","pais":"França","titulo":"Sabores sábios: neste fim de semana, a ciência vai à mesa na Vila das Ciências","resumo":"Atividades interativas e palestras exploram a relação entre a ciência moderna e a culinária durante o evento deste fim de semana. Visitantes podem participar de demonstrações práticas que explicam transformações químicas dos alimentos. O projeto visa estimular o interesse popular pelas ciências exatas e naturais.","link":"https://www.chambery.fr/actualite/1679/109-saveurs-savantes-ce-week-end-la-science-passe-a-table-au-village-des-sciences.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"科学技術振興機構（JST）","pais":"Inglaterra","titulo":"Governo apoia empresas britânicas de IA com edital de 100 milhões de libras","resumo":"O governo britânico lançou um fundo de 100 milhões de libras para apoiar empresas de inteligência artificial focadas em serviços públicos. A iniciativa busca integrar tecnologias avançadas na administração estatal, melhorando a eficiência e o atendimento aos cidadãos. O projeto destaca o papel do Reino Unido como polo global de desenvolvimento em IA.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261009-4.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ConSalud","pais":"Espanha","titulo":"O salto da tecnologia quântica para a medicina: sensores para monitorar o cérebro em tempo real","resumo":"A aplicação da tecnologia quântica na medicina dá um passo importante com o desenvolvimento de sensores ultrassensíveis capazes de monitorar a atividade cerebral em tempo real. Essa inovação promete diagnósticos mais precisos e um acompanhamento detalhado de distúrbios neurológicos complexos. A integração entre física quântica e ciências da saúde abre portas para tratamentos médicos altamente personalizados e eficientes.","link":"https://www.consalud.es/saludigital/innovacion-tecnologica/los-sensores-cuanticos-abren-una-nueva-era-en-la-medicina-con-aplicaciones-para-monitorizar-el-cerebro-en-coma.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Mindener Tageblatt","pais":"Alemanha","titulo":"Autoridades aplicam multa milionária à Volkswagen","resumo":"A gigante automobilística Volkswagen foi penalizada com uma multa milionária por órgãos reguladores devido a infrações recentes. A punição reforça o rigor da fiscalização sobre o setor corporativo e o cumprimento de normas regulatórias na Alemanha. O caso gera repercussão sobre a governança e a conformidade legal das grandes montadoras.","link":"https://www.mt.de/weltnews/wirtschaft/wirtschaft-ueberblick/Aufseher-brummen-Volkswagen-Millionenstrafe-auf-24436704.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"科学技術振興機構（JST）","pais":"Japão","titulo":"NIST participa da 'Missão Gênesis' para acelerar a inovação em inteligência artificial","resumo":"O Instituto Nacional de Padrões e Tecnologia (NIST) integrou a iniciativa internacional voltada para impulsionar o desenvolvimento avançado de inteligência artificial. O projeto busca estabelecer diretrizes, mitigar riscos e promover avanços colaborativos seguros no ecossistema global de IA. Essa participação reforça o compromisso institucional com a regulamentação ética e o progresso tecnológico acelerado.","link":"https://www.jst.go.jp/crds/kaigaikiji/20260910-3.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"天津大学新闻网","pais":"China","titulo":"Lançado o menor e mais leve sistema integrado de interface cérebro-computador não invasiva do mundo","resumo":"Um novo avanço científico na China resultou no lançamento do menor e mais leve sistema integrado de interface cérebro-computador não invasiva do planeta. A tecnologia miniaturizada promete transformar a interação humano-máquina, facilitando aplicações na área médica e na reabilitação de pacientes. Com maior portabilidade e conforto, o dispositivo representa um salto significativo na usabilidade de tecnologias neurotecnológicas.","link":"https://news.tju.edu.cn/info/1005/615379.htm","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"India Today","pais":"Índia","titulo":"Conferência India Today Mumbai 2026 começa abordando política, segurança e esportes","resumo":"O aguardado evento anual reuniu líderes, especialistas e autoridades para debater os rumos da política nacional e da segurança estratégica. Painéis dedicados ao esporte também marcaram a abertura, discutindo o papel do país nas competições globais. A conferência serve como um importante termômetro para os principais temas que estão em alta na sociedade indiana.","link":"https://www.indiatoday.in/amp/india/video/india-today-conclave-mumbai-2026-begins-with-politics-security-and-sports-ytvd-3013041-2026-10-09","categoria":"TRENDING TOPICS","lang":"pt"},{"fonte":"Viana TV","pais":"Portugal","titulo":"Visita às obras do Viana STARTS revela futuro espaço dedicado à ciência, tecnologia e arte","resumo":"Uma recente visita técnica às obras do complexo Viana STARTS permitiu vislumbrar a estrutura do futuro polo multifuncional da região. O espaço inovador foi planejado para integrar iniciativas nas áreas de ciência, tecnologia e expressão artística, promovendo a interdisciplinaridade. A expectativa é que o local impulsione a economia criativa e o desenvolvimento tecnológico local nos próximos anos.","link":"https://vianatv.pt/visita-as-obras-do-viana-starts-revela-futuro-espaco-dedicado-a-ciencia-tecnologia-e-arte/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Brasil Inovador","pais":"Brazil","titulo":"US Government Awards Elon Musk and Tech Leaders the National Medal of Science","resumo":"The US government has awarded the prestigious National Medal of Science to Elon Musk and other leaders in the tech sector. The honor recognizes these figures' significant contributions to scientific advancement and global innovation. The impact of this award highlights the growing influence of the tech industry on United States policy and development.","link":"https://brasilinovador.com.br/governo-dos-estados-unidos-condecora-elon-musk-e-liderancas-da-tecnologia-com-a-medalha-nacional-de-ciencia/","categoria":"SCIENCE","lang":"en"},{"fonte":"A Redação","pais":"United States","titulo":"Trump Presents National Medals to Elon Musk and Tech Leaders in the US","resumo":"President Donald Trump has awarded major scientific honors to prominent figures in the North American tech sector. Among the honorees, Elon Musk received special distinction at the White House for his innovations and contributions to modern science. The event reinforced the strategic rapprochement between the federal administration and leading names in domestic technology.","link":"https://aredacao.com.br/trump-entrega-medalhas-nacionais-a-elon-musk-e-lideres-de-tecnologia-nos-eua/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Slate.fr","pais":"France","titulo":"This Technology Could Upend the Search for Extraterrestrial Life in the Galaxy","resumo":"A new technological innovation promises to significantly transform traditional methods of space exploration. The tool increases accuracy in detecting biosignatures on distant exoplanets. Experts believe this will accelerate the discovery of evidence of civilizations or organisms beyond Earth.","link":"https://www.slate.fr/sciences/progres-nanotechnologique-pourrait-bousculer-recherche-vie-extraterrestre-espace-astronomie","categoria":"SCIENCE","lang":"en"},{"fonte":"Water Magazine","pais":"United Kingdom","titulo":"Aston University Professor to Explore Nature-Inspired Membrane Technology","resumo":"A new research project led by Aston University aims to develop innovative technologies based on natural processes. The study has the potential to revolutionize water filtration and industrial energy efficiency. The initiative reinforces the UK's commitment to sustainable scientific innovation.","link":"https://www.watermagazine.co.uk/2026/10/09/aston-university-professor-to-explore-nature-inspired-membrane-technology/","categoria":"SCIENCE","lang":"en"},{"fonte":"La Razón","pais":"Spain","titulo":"Nobel-Winning Optogenetics Restores Partial Vision to Retinitis Pigmentosa Patients in NEJM Study","resumo":"A new clinical trial published in NEJM demonstrates that optogenetics can restore partial vision to patients affected by retinitis pigmentosa. The innovative technique uses gene therapy principles combined with light to reactivate retinal cells that had lost their function. The breakthrough represents significant hope for treating severe degenerative vision diseases and consolidates the clinical potential of this revolutionary technology.","link":"https://www.larazon.es/tecnologia-consumo/ciencia/optogenetica-premiada-nobel-devuelve-parte-vision-pacientes-retinosis-pigmentaria-ensayo-publicado-nejm_202610096ac7fdb9fb06971aadfeb449.html","categoria":"SCIENCE","lang":"en"},{"fonte":"FAZ","pais":"Germany","titulo":"“China’s Technology Policy is Reminiscent of the Soviet Union”","resumo":"Experts analyze the recent directions of China's technology policy and its structural similarities to the Soviet model. The discussion addresses the impact of heavy state control on innovation and global competitiveness. The debate is crucial for understanding future commercial and technological dynamics between superpowers.","link":"https://www.faz.net/aktuell/wirtschaft/logan-wright-chinas-technologiepolitik-erinnert-an-die-sowjetunion-accg-201285563.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"長崎大学","pais":"Japan","titulo":"Nagasaki University Researcher Receives Best Young Presentation Award at the Oceanographic Society of Japan","resumo":"During the autumn conference of the Oceanographic Society of Japan, a young researcher from the chemical oceanography laboratory was awarded for an outstanding presentation. The recognition highlights the relevance of marine research developed in the country and encourages new scientific talent. The award reinforces academic advancement in marine sciences and a continued commitment to innovation and discovery in this vital field.","link":"https://www.nagasaki-u.ac.jp/ja/news/news5128.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Business Today","pais":"China","titulo":"Why Doesn't China Allow Starlink? Author Questions Elon Musk and Points to Issues Bigger Than Technology","resumo":"The debate surrounding Starlink's ban in China goes far beyond simple service quality issues or conventional technological disputes. The author questioning Elon Musk points out that the case involves deep pillars of national security and data sovereignty. The discussion highlights Beijing's strict control over its communication networks and the country's strategic digital infrastructure.","link":"https://www.businesstoday.in/technology/story/why-does-china-not-allow-starlink-author-asks-elon-musk-says-matter-is-bigger-than-technology-quality-of-service-560573-2026-10-09","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"kpmg.com","pais":"India","titulo":"The Power Behind Connectivity: India's Path to Telecom Technology Leadership","resumo":"India is consistently advancing to establish itself as a global leader in telecommunications technology. Strengthening digital infrastructure and sector innovation are fundamental to boosting connectivity across the country. This technological transformation promises to revolutionize the digital economy and vastly expand access to information.","link":"https://kpmg.com/in/en/insights/2026/10/the-power-beneath-connectivity-indias-path-to-telecom-technology-leadership.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Jornal de Notícias","pais":"Portugal","titulo":"Trump Awards Musk Scientific Medal and Calls Him a \"National Treasure\"","resumo":"Former President Donald Trump awarded businessman Elon Musk a prestigious scientific medal during a recent official event. On the occasion, Trump highlighted the relevance of Musk's innovations and publicly labeled him a true national treasure. The tribute sparked intense debate regarding the closeness between the tech elite and the current political landscape.","link":"https://www.jn.pt/amp/18135085/trump-condecora-musk-com-medalha-cientifica-e-chama-lhe-tesouro-nacional","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Anthropic Bans 'Cruel' Behavior Toward Its Claude AI; Understand","resumo":"Anthropic has implemented new guidelines to prohibit abusive and cruel interactions with its Claude artificial intelligence model. The measure seeks to establish ethical limits in the relationship between humans and advanced AI systems. This decision raises important debates regarding corporate responsibility and the ethical treatment afforded to conversational technologies.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/08/anthropic-proibe-comportamento-cruel-contra-sua-ia-claude-entenda.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The New York Times","pais":"United States","titulo":"'Breathtaking' and 'Devastating': Mathematicians React After New OpenAI Release","resumo":"The global mathematical and scientific community expressed intense and mixed reactions following OpenAI's latest artificial intelligence release. Experts are debating the profound impact the new model could bring to solving complex problems in the field. The tool demonstrates advanced capabilities that challenge traditional paradigms of calculation and logical reasoning.","link":"https://www.nytimes.com/2026/10/08/science/mathematicians-respond-openai-release.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Le Figaro","pais":"France","titulo":"Donald Trump Awards Elon Musk Medal for Contributions to Science, Calls Him a 'National Treasure'","resumo":"Former U.S. President Donald Trump honored Elon Musk in an official public recognition ceremony. The honor highlights the impact of his technological and space innovations on global scientific advancement. The gesture generated widespread media reaction and reinforced the businessman's influence in the sector.","link":"https://www.lefigaro.fr/flash-actu/donald-trump-decore-elon-musk-d-une-medaille-pour-ses-contributions-a-la-science-et-le-qualifie-de-tresor-national-20261008","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"科学技術振興機構（JST）","pais":"United Kingdom","titulo":"UK Strengthens Defense Against Space Threats with New Strategy","resumo":"The British government has implemented a new strategy aimed at the aerospace sector, seeking to protect critical orbital infrastructure. The measure responds to rising geopolitical risks in outer space and aims to consolidate the country's technological sovereignty. The plan involves investments in advanced monitoring and international collaboration.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261009-6.html","categoria":"DEFENSE","lang":"en"},{"fonte":"El Español","pais":"Spain","titulo":"Paula González, Attorney: \"If We Don't Protect Neurodata, Any Technology Could Read or Manipulate Our Minds\"","resumo":"Tech law experts warn of the urgency to regulate and protect neurodata generated by brain-computer interfaces. The rapid advancement of neurotechnology threatens individuals' mental privacy, opening the door to potential thought reading and manipulation. The debate highlights the need to create rigorous legal frameworks to safeguard human cognitive autonomy in the face of unbridled innovation.","link":"https://www.elespanol.com/mujer/que-hacer/20261009/paula-gonzalez-abogada-no-protegemos-neurodatos-cualquier-tecnologia-podra-leer-manipular-mente/1003744410534_0.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"科学技術振興機構（JST）","pais":"Germany","titulo":"BMFTR reorganizes 'Industry 4.0 Platform' to promote the use of industrial AI","resumo":"The German government has restructured its main industrial platform to accelerate the adoption of Artificial Intelligence across the country's productive sectors. The initiative aims to maintain the global competitiveness of German industry in the face of international technological advancements. As a result, closer collaboration between scientific research and the private sector is expected.","link":"https://www.jst.go.jp/crds/kaigaikiji/20260810-3.html","categoria":"SCIENCE","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"TDK considers selling its magnetic head business amid regulatory and security challenges","resumo":"Japanese tech giant TDK is evaluating the divestiture of its magnetic head division, a strategic move with a major impact on the technology market. The decision involves complex analyses regarding antitrust laws and international economic security guidelines. This restructuring reflects how high-tech companies are adapting to new global geopolitical and commercial dynamics.","link":"https://www.nikkei.com/article/DGXZQOUC064WS0W6A001C2000000/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"财新","pais":"China","titulo":"Drastic drop in AI prices shows that technology will not be a privilege for the few","resumo":"The recent sharp decline in the costs of developing and using artificial intelligence marks a profound transformation in access to advanced tools. This democratization of the sector ensures that cutting-edge innovations are no longer exclusively held by large corporations or isolated technological powers. The movement boosts global competitiveness, allowing emerging markets and smaller companies to also harness the revolutionary potential of AI.","link":"https://opinion.caixin.com/2026-10-09/102491571.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"News On AIR","pais":"India","titulo":"India and Ghana sign 2 Memorandums of Understanding to strengthen cooperation in science, education, and agriculture","resumo":"The governments of India and Ghana have signed new strategic agreements aimed at scientific, educational, and agricultural development. The partnership seeks to promote the exchange of technological knowledge and boost innovation between the nations. This bilateral initiative reinforces a mutual commitment to sustainable growth and science-based progress.","link":"https://newsonair.gov.in/india-ghana-sign-2-mous-to-strengthen-cooperation-in-science-education-and-agriculture/","categoria":"SCIENCE","lang":"en"},{"fonte":"Público","pais":"Portugal","titulo":"Science budget increases by 15% in Portugal, still with no news on the new agency","resumo":"The Portuguese government has announced a significant 15% increase in the country's science sector budget. The measure aims to boost scientific research and technological development across various academic and research institutions. However, the scientific community is still awaiting concrete guidelines regarding the implementation of the announced new funding agency.","link":"https://www.publico.pt/2026/10/08/ciencia/noticia/orcamento-ciencia-aumenta-15-novidades-nova-agencia-2190720","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"UOL Notícias","pais":"Brazil","titulo":"Trump bought R$ 25M in SpaceX bonds ahead of new space policy","resumo":"Investigations revealed that Donald Trump acquired millions in SpaceX bonds shortly before the announcement of government guidelines directed at the space sector. The transaction sparked discussions regarding potential conflicts of interest between private investments and public policy decisions. The case has deeply resonated across the international political and technological landscapes.","link":"https://noticias.uol.com.br/internacional/ultimas-noticias/2026/10/08/trump-compra-ate-us-5-milhoes-em-divida-da-spacex-antes-de-politica.ghtm","categoria":"BUSINESS","lang":"en"},{"fonte":"O GLOBO","pais":"United States","titulo":"Apple prepares to launch touch-screen MacBook and new iPad mini late this month, agency says","resumo":"The Cupertino giant plans significant updates to its hardware ecosystem in the coming weeks, according to recent reports. Highlights include the introduction of a touch screen on laptops and an update to the compact tablet lineup. These innovations aim to meet growing consumer demands for greater interactivity and versatility.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/10/08/apple-prepara-lancamento-de-macbook-com-tela-sensivel-ao-toque-e-novo-ipad-mini-no-fim-deste-mes.ghtml","categoria":"LAUNCHES","lang":"en"},{"fonte":"科学技術振興機構（JST）","pais":"France","titulo":"France 2030: Call for projects launched for digital device sustainability","resumo":"The French government has launched a new strategic initiative to promote a circular economy in the electronics sector. The program aims to finance innovative projects that increase durability and reduce the environmental impact of equipment. The measure is part of the national plan to consolidate a greener tech industry.","link":"https://www.jst.go.jp/crds/kaigaikiji/20260910-2.html","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"科学技術振興機構（JST）","pais":"England","titulo":"Cat Little appointed new Permanent Secretary of the Department for Business","resumo":"Cat Little has assumed the position of Permanent Secretary at the United Kingdom's Department for Business, Innovation, Science and Trade. Her leadership will be fundamental in driving public policies to stimulate the economy and technological advancement. The change in administrative leadership aims to accelerate the government's innovation agenda.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261009-7.html","categoria":"GOVERNMENT","lang":"en"},{"fonte":"MONCLOA.COM","pais":"Spain","titulo":"Spain successfully tests technology that will guide next-generation lunar SUVs","resumo":"Spain has successfully conducted field tests using advanced autonomous navigation technologies designed to guide future lunar rovers. The evaluated systems include artificial intelligence and high-precision sensors capable of operating in extreme extraterrestrial environments. This milestone reinforces the participation of Spanish industry and research in lunar space exploration missions.","link":"https://www.moncloa.com/2026/10/09/espana-tecnologia-luna-3444569/","categoria":"INNOVATION","lang":"en"},{"fonte":"Berlin Institute of Health at Charité","pais":"Germany","titulo":"Guest Lecture | Marco Fritzsche: “Engineering new technology to harvest T-cell controlled immunity”","resumo":"Renowned researcher Marco Fritzsche presents technological engineering innovations applied to cellular immunology. The study explores new approaches to modulate T-cell-controlled immunity with unprecedented precision. The discovery promises to pave the way for advanced medical treatments and innovative therapies in the future.","link":"https://www.bihealth.org/en/notices/guest-lecture-marco-fritzsche-engineering-new-technology-to-harvest-t-cell-controlled-immunity","categoria":"SCIENCE","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"Mitsubishi Estate and Deloitte Tohmatsu establish quantum technology research center in Marunouchi","resumo":"The companies have joined forces to open a new hub dedicated to the study and practical application of quantum technologies in Tokyo's financial district. The center aims to accelerate collaboration between industry and academic research, developing innovative use cases. The initiative seeks to position Japan at the forefront of the quantum revolution, attracting talent and fostering the local tech ecosystem.","link":"https://www.nikkei.com/article/DGXZQOMG00002_Z01C26A0000000/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"中国科学院","pais":"China","titulo":"Research team achieves noise-resistant quantum key distribution","resumo":"Chinese researchers have achieved a significant breakthrough in the field of quantum cryptography by developing an effective noise-immune key distribution method. This innovation overcomes historical technical barriers that compromised the stability and security of communications in noisy environments. The progress strengthens national information security infrastructure and accelerates the commercial adoption of ultra-secure quantum networks.","link":"https://www.cas.cn/cm/202610/t20261009_5121565.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"Rediff","pais":"India","titulo":"Rain dependence poses key challenge to India's rural economy: UN","resumo":"A recent UN report points out that heavy reliance on monsoons and rainfall continues to threaten the stability of India's rural economy. A lack of advanced irrigation systems and technological support leaves farmers vulnerable to climate change. The study highlights the urgency of investments in infrastructure and agricultural innovation to mitigate these risks.","link":"https://www.rediff.com/news/commentary/2026/oct/09/rain-dependence-poses-key-challenge-to-indias-rural-economy-un/6eef9f1bfc32b40b1280a822df135dde","categoria":"ECONOMY","lang":"en"},{"fonte":"Faculdade de Ciências da Universidade de Lisboa","pais":"Portugal","titulo":"\"Science is the Way\" makes the shortlist for the APPM Marketing Awards 2026","resumo":"The inspiring campaign titled \"Science is the Way\" earned a prominent spot on the shortlist for the APPM Marketing Awards 2026. The project stood out for its ability to communicate complex scientific concepts to the public in an accessible, engaging, and innovative way. This recognition reinforces the importance of creative marketing strategies in promoting the value of science to society.","link":"https://ciencias.ulisboa.pt/noticias/a-ciencia-e-o-caminho-na-shortlist-dos-appm-marketing-awards-2026","categoria":"MARKETING","lang":"en"},{"fonte":"Época Negócios","pais":"Brazil","titulo":"Astronomers Detect Mysterious Burst of Energy from a Distant Galaxy","resumo":"Scientists have recorded an unusual cosmic energy burst originating from the edges of the universe, challenging current astrophysical models. The phenomenon has puzzled researchers due to its intensity and as-yet-unknown origin. The discovery opens new doors for understanding extreme events deep in space.","link":"https://epocanegocios.globo.com/google/amp/ciencia-e-saude/noticia/2026/10/astronomos-detectam-misteriosa-explosao-de-energia-vinda-de-uma-galaxia-distante.ghtml","categoria":"SCIENCE","lang":"en"},{"fonte":"The New York Times","pais":"United States","titulo":"UN Warns Against Technology Used to Read Citizens' Minds","resumo":"The United Nations has issued a formal warning regarding the advancement and misuse of technologies aimed at thought reading and neural monitoring. The international body highlighted the severe risks associated with the violation of mental privacy and fundamental human rights. Experts are calling for urgent regulations to curb potential government and corporate abuses in this area.","link":"https://www.nytimes.com/2026/10/08/world/europe/united-nations-technology-warning.html","categoria":"SCIENCE","lang":"en"},{"fonte":"La Provence","pais":"France","titulo":"The Science Festival in La Tour-d'Aigues Puts Flavors in the Spotlight","resumo":"The traditional scientific event in the French town combined gastronomy with the dissemination of knowledge for the general public. Researchers presented interactive experiments focused on food chemistry and biology. The initiative seeks to bring the local community closer to scientific discoveries in a playful and accessible way.","link":"https://www.laprovence.com/article/region/2105589699160914/la-fete-de-la-science-a-la-tour-daigues-met-les-saveurs-a-lhonneur","categoria":"SCIENCE","lang":"en"},{"fonte":"科学技術振興機構（JST）","pais":"England","titulo":"Industrial Strategy Advisory Council Proposes Expansion of Training Investments","resumo":"The UK's Industrial Strategy Advisory Council has recommended that employers increase investments in professional qualification. The proposal aims to prepare the workforce for the challenges of the modern economy and digital transformation. The focus is on reducing the technical skills gap in the British market.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261009-2.html","categoria":"EDUCATION","lang":"en"},{"fonte":"El Periódico de la Energía","pais":"Spain","titulo":"Nordex Electrolyzers Claims Capability to Manufacture Green Hydrogen Technology from Navarra","resumo":"Nordex Electrolyzers highlighted its strategic potential from Navarra in the manufacturing of technology aimed at green hydrogen production. The initiative strengthens the European energy transition by betting on renewable sources and the industrial autonomy of clean equipment. The project consolidates the region as a relevant hub in the development of sustainable solutions for the future.","link":"https://elperiodicodelaenergia.com/nordex-electrolyzers-reivindica-desde-navarra-la-capacidad-para-fabricar-tecnologia-de-hidrogeno-verde/","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Defense Projects: German Army Set to Receive Cruise Missiles","resumo":"The German government plans to significantly strengthen the strategic capabilities of its armed forces with the acquisition of new cruise missiles. The measure reflects a shift in the country's defense policy in the face of the current European and global geopolitical scenario. Experts are debating the budgetary and operational impacts of this military modernization.","link":"https://www.sueddeutsche.de/politik/ruestungsprojekte-deutsches-heer-soll-marschflugkoerper-bekommen-dpa.urn-newsml-dpa-com-20090101-261009-930-812956","categoria":"DEFENSE","lang":"en"},{"fonte":"AFPBB News","pais":"Japan","titulo":"Japan Wins Another Nobel Prize in Chemistry While Neighbors Debate Long-Term Research Challenges","resumo":"Japan consolidates its scientific leadership by accumulating consecutive recognitions in the Nobel Prize in Chemistry, evidencing the strength of its institutions. Conversely, regional debates point to the structural difficulties of other Asian countries in funding long-term scientific research. The scenario highlights the crucial importance of solid public policies and sustainable financing for academic innovation.","link":"https://www.afpbb.com/articles/biz/3656870?ctm_campaign=biz_news","categoria":"SCIENCE","lang":"en"},{"fonte":"中国科学院","pais":"China","titulo":"Chinese Scientists Experimentally Observe Critical Topological States for the First Time","resumo":"In a major milestone for modern physics, scientists in China have successfully recorded the experimental observation of critical topological states. The discovery opens new avenues for understanding complex quantum phenomena and the behavior of matter under extreme conditions. This breakthrough provides a solid foundation for the future development of new materials and high-performance electronic devices.","link":"https://www.cas.cn/cm/202610/t20261009_5121563.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"News On AIR","pais":"India","titulo":"Fiscal Prudence, Reforms, and Infrastructure Investment Have Strengthened India's Economy: Nirmala Sitharaman","resumo":"The Finance Minister emphasized that fiscal discipline, combined with deep structural reforms, has been crucial in boosting Indian economic growth. Expressive public investments in infrastructure have modernized the country and attracted new global capital. These measures consolidate India as one of the most resilient and dynamic economies on the international stage.","link":"https://newsonair.gov.in/fiscal-prudence-reforms-and-infrastructure-investment-strengthened-indias-economy-nirmala-sitharaman/","categoria":"ECONOMY","lang":"en"},{"fonte":"ECO","pais":"Portugal","titulo":"\"Portugal is the Ideal Gateway for U.S. Technology to Reach Europe,\" Says Rubio","resumo":"Senior U.S. official Marco Rubio highlighted Portugal's strategic role as a fundamental innovation hub on the European continent. According to him, local infrastructure and ecosystems facilitate the expansion and integration of advanced technologies from the United States into Europe. The statement signals a strengthening of bilateral partnerships focused on advancing the tech sector.","link":"https://eco.sapo.pt/2026/10/08/portugal-e-porta-ideal-para-tecnologia-dos-eua-chegar-a-europa-diz-rubio/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Siará Tech Summit 2026 Kicks Off in Fortaleza, Bringing Together Innovation, Technology, and Business Ecosystems","resumo":"The Siará Tech Summit 2026 kicked off in Fortaleza with a focus on boosting the innovation and technology ecosystem in Brazil's Northeast. The conference brings together experts, entrepreneurs, and startups to discuss market trends and new business opportunities. The initiative consolidates the region as a growing technological hub in the country.","link":"https://g1.globo.com/ce/ceara/especial-publicitario/sebrae-ceara/inovacao-e-negocios/noticia/2026/10/08/siara-tech-summit-2026-comeca-em-fortaleza-reunindo-ecossistema-de-inovacao-tecnologia-e-negocios.ghtml","categoria":"INNOVATION","lang":"en"},{"fonte":"Jornal Económico","pais":"United States","titulo":"AI, Drones, and Space Technology Redefine U.S. Defense Market and Boost Sector Giants","resumo":"The U.S. defense ecosystem is undergoing a profound transformation driven by innovations in artificial intelligence, autonomous systems, and space exploration. Major companies in the sector are restructuring operations to integrate these new strategic capabilities into their military offerings. This modernization aims to guarantee technological superiority against potential global competitors in the current geopolitical landscape.","link":"https://jornaleconomico.sapo.pt/noticias/ia-drones-e-tecnologia-espacial-redefinem-o-mercado-de-defesa-dos-eua-e-impulsionam-gigantes-do-setor/","categoria":"DEFENSE","lang":"en"},{"fonte":"Ville de Chambéry","pais":"France","titulo":"Savory Science: This Weekend, Science Comes to the Table at the Science Village","resumo":"Interactive activities and lectures explore the relationship between modern science and culinary arts during this weekend's event. Visitors can participate in practical demonstrations explaining the chemical transformations of food. The project aims to stimulate popular interest in the exact and natural sciences.","link":"https://www.chambery.fr/actualite/1679/109-saveurs-savantes-ce-week-end-la-science-passe-a-table-au-village-des-sciences.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"科学技術振興機構（JST）","pais":"England","titulo":"Government Supports British AI Companies with £100 Million Grant","resumo":"The British government has launched a £100 million fund to support artificial intelligence companies focused on public services. The initiative seeks to integrate advanced technologies into state administration, improving efficiency and citizen care. The project highlights the UK's role as a global hub for AI development.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261009-4.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ConSalud","pais":"Spain","titulo":"The Leap of Quantum Technology to Medicine: Sensors to Monitor the Brain in Real Time","resumo":"The application of quantum technology in medicine takes a major step forward with the development of ultra-sensitive sensors capable of monitoring brain activity in real time. This innovation promises more precise diagnoses and detailed tracking of complex neurological disorders. The integration of quantum physics and health sciences opens doors for highly personalized and efficient medical treatments.","link":"https://www.consalud.es/saludigital/innovacion-tecnologica/los-sensores-cuanticos-abren-una-nueva-era-en-la-medicina-con-aplicaciones-para-monitorizar-el-cerebro-en-coma.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Mindener Tageblatt","pais":"Germany","titulo":"Authorities Issue Multi-Million Dollar Fine Against Volkswagen","resumo":"Automotive giant Volkswagen has been penalized with a multi-million dollar fine by regulatory bodies due to recent infractions. The punishment reinforces the strict oversight of the corporate sector and compliance with regulatory standards in Germany. The case is generating repercussions regarding the governance and legal compliance of major automakers.","link":"https://www.mt.de/weltnews/wirtschaft/wirtschaft-ueberblick/Aufseher-brummen-Volkswagen-Millionenstrafe-auf-24436704.html","categoria":"BUSINESS","lang":"en"},{"fonte":"科学技術振興機構（JST）","pais":"Japan","titulo":"NIST Participates in 'Genesis Mission' to Accelerate Artificial Intelligence Innovation","resumo":"The National Institute of Standards and Technology (NIST) has joined the international initiative aimed at boosting advanced artificial intelligence development. The project seeks to establish guidelines, mitigate risks, and promote safe collaborative advancements within the global AI ecosystem. This participation reinforces the institution's commitment to ethical regulation and accelerated technological progress.","link":"https://www.jst.go.jp/crds/kaigaikiji/20260910-3.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"天津大学新闻网","pais":"China","titulo":"World's Smallest and Lightest Non-Invasive Brain-Computer Interface Integrated System Launched","resumo":"A new scientific breakthrough in China has resulted in the launch of the planet's smallest and lightest non-invasive brain-computer interface integrated system. The miniaturized technology promises to transform human-machine interaction, facilitating applications in the medical field and patient rehabilitation. Offering greater portability and comfort, the device represents a significant leap forward in the usability of neurotechnologies.","link":"https://news.tju.edu.cn/info/1005/615379.htm","categoria":"INNOVATION","lang":"en"},{"fonte":"India Today","pais":"India","titulo":"India Today Conclave Mumbai 2026 Kicks Off Addressing Politics, Security, and Sports","resumo":"The highly anticipated annual event brought together leaders, experts, and officials to debate the directions of national policy and strategic security. Panels dedicated to sports also marked the opening, discussing the country's role in global competitions. The conference serves as an important barometer for the top topics trending in Indian society.","link":"https://www.indiatoday.in/amp/india/video/india-today-conclave-mumbai-2026-begins-with-politics-security-and-sports-ytvd-3013041-2026-10-09","categoria":"TRENDING TOPICS","lang":"en"},{"fonte":"Viana TV","pais":"Portugal","titulo":"Inspection of Viana STARTS Construction Reveals Future Space Dedicated to Science, Technology, and Art","resumo":"A recent technical visit to the construction of the Viana STARTS complex provided a glimpse into the structure of the region's future multifunctional hub. The innovative space was designed to integrate initiatives in the areas of science, technology, and artistic expression, promoting interdisciplinarity. It is expected that the location will boost the local creative economy and technological development in the coming years.","link":"https://vianatv.pt/visita-as-obras-do-viana-starts-revela-futuro-espaco-dedicado-a-ciencia-tecnologia-e-arte/","categoria":"INNOVATION","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
