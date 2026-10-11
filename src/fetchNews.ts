@@ -108,6 +108,73 @@ export async function fetchRssXml(
   throw lastError
 }
 
+type FeedSource = { nome: string; url: string }
+
+const BING_COUNTRY_CODES: Record<string, string> = {
+  Brasil: 'BR',
+  'Estados Unidos': 'US',
+  'França': 'FR',
+  Inglaterra: 'GB',
+  Espanha: 'ES',
+  Alemanha: 'DE',
+  'Japão': 'JP',
+  China: 'CN',
+  'Índia': 'IN',
+  Portugal: 'PT',
+}
+
+export function buildBingNewsRssUrl(source: FeedSource): string {
+  const google = new URL(source.url)
+  const query = (google.searchParams.get('q') || '').replace(/\bwhen:1d\b/gi, '').trim()
+  const country = BING_COUNTRY_CODES[source.nome]
+  if (!query || !country) throw new Error('[fetch] País ou consulta RSS não configurada para contingência.')
+
+  const bing = new URL('https://www.bing.com/news/search')
+  bing.searchParams.set('q', query + ' loc:' + country)
+  bing.searchParams.set('cc', country)
+  bing.searchParams.set('setlang', google.searchParams.get('hl') || 'en-US')
+  bing.searchParams.set('format', 'rss')
+  return bing.toString()
+}
+
+export function unwrapNewsLink(link: string): string {
+  try {
+    const url = new URL(link)
+    if (url.hostname !== 'www.bing.com' || url.pathname !== '/news/apiclick.aspx') return link
+    const destination = url.searchParams.get('url')
+    if (!destination) return link
+    const article = new URL(destination)
+    return article.protocol === 'https:' || article.protocol === 'http:' ? article.toString() : link
+  } catch {
+    return link
+  }
+}
+
+export async function fetchSourceFeed(
+  source: FeedSource,
+  fetchImpl: typeof fetch = fetch,
+  waitImpl: (ms: number) => Promise<void> = wait,
+) {
+  async function loadFeed(url: string) {
+    const feed = await parser.parseString(await fetchRssXml(url, fetchImpl, waitImpl))
+    if (!feed.items?.length) throw new Error('Feed RSS sem matérias')
+    return feed
+  }
+
+  try {
+    return { provider: 'google' as const, feed: await loadFeed(source.url) }
+  } catch (primaryError) {
+    const reason = primaryError instanceof Error ? primaryError.message : String(primaryError)
+    console.warn('[fetch] ' + source.nome + ': Google News indisponível (' + reason + '); tentando Bing News.')
+    try {
+      return { provider: 'bing' as const, feed: await loadFeed(buildBingNewsRssUrl(source)) }
+    } catch (backupError) {
+      const fallbackReason = backupError instanceof Error ? backupError.message : String(backupError)
+      throw new Error('[fetch] ' + source.nome + ': Google News ' + reason + '; Bing News ' + fallbackReason)
+    }
+  }
+}
+
 export async function buscarNoticias(): Promise<Noticia[]> {
   const corte = Date.now() - config.janelaHoras * 60 * 60 * 1000
   const history = getSentNewsHistory().map(newsHistoryKey).filter(Boolean)
@@ -116,8 +183,8 @@ export async function buscarNoticias(): Promise<Noticia[]> {
 
   const resultados = await Promise.allSettled(
     FONTES_RSS.map((f) => fetchLimit(async () => {
-      const xml = await fetchRssXml(f.url)
-      const feed = await parser.parseString(xml)
+      const { feed, provider } = await fetchSourceFeed(f)
+      if (provider === 'bing') console.info('[fetch] ' + f.nome + ': cobertura recuperada via Bing News.')
       const itens: Noticia[] = []
       for (const item of feed.items || []) {
         const iso = item.isoDate || item.pubDate
@@ -140,7 +207,7 @@ export async function buscarNoticias(): Promise<Noticia[]> {
           fonte: fonteReal,
           pais: f.nome,
           titulo: tituloLimpo,
-          link: item.link.trim(),
+          link: unwrapNewsLink(item.link.trim()),
           data,
         })
       }
