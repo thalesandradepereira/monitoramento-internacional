@@ -8,7 +8,7 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.11
+> **Versão / Version:** 1.1.12
 >
 > **Fuso operacional / Operational timezone:** `America/Sao_Paulo`
 >
@@ -29,6 +29,18 @@ A arquitetura opera com três princípios centrais:
 - **fail-closed:** estado incerto ou entrega parcial nunca autoriza retry cego;
 - **idempotência diária:** uma data já concluída não gera novo e-mail ou nova Story;
 - **múltiplos relógios:** GitHub principal, watchdog e Google Cloud Scheduler podem acordar o pipeline de forma redundante.
+
+### Release v1.1.12 — contingência RSS e segurança em 11/10/2026
+
+**Incidente:** [run 38117234171](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/38117234171), disparada pelo Google Cloud Scheduler, encontrou HTTP 503 em **10/10** consultas RSS do Google News. O sistema bloqueou corretamente dashboard/e-mails quando a cobertura ficou abaixo de `MIN_SUCCESSFUL_SOURCES=7`.
+
+**Recuperação comprovada:** a execução [38118864188](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/38118864188), iniciada às 03h41 de 11/10/2026, processou **897 notícias únicas**, concluiu o dashboard e obteve **8/8 aceites SMTP, zero falhas**; o job social também concluiu. As execuções posteriores são encerradas pela idempotência diária. Não reenviar e-mails da mesma data.
+
+**Prevenção:** cada país passa a consultar primeiro Google News e, quando houver erro HTTP, RSS malformado ou feed vazio, tenta uma fonte independente, Bing News RSS, com consulta e localidade apropriadas. O fallback é validado via RSS Parser e respeita janela temporal, deduplicação e cobertura mínima existentes. Links com wrappers Bing são convertidos ao URL original quando seguro. **Nenhum provedor autoriza publicação com menos do mínimo de fontes válidas.** Bing News RSS não é uma API versionada; disponibilidade e cobertura devem continuar monitoradas.
+
+**Segurança:** auditoria identificou [GHSA-jqcg-44mw-7w3h](https://github.com/advisories/GHSA-jqcg-44mw-7w3h), vulnerabilidade CRITICAL de IP spoofing na dependência transitiva `proxy-addr`. `package.json` aplica override para **2.0.8** e `package-lock.json` foi regenerado por npm em GitHub Actions com SHA512 e auditoria. O código não altera permissões, envio SMTP, D1, scheduler ou publisher.
+
+**QA:** regressões dedicadas `tests/rssFallback.test.ts` e suite completa de CI devem passar antes da publicação do release.
 
 ### Release v1.1.11 — detecção da quota genérica Gemini em 03/10/2026
 
@@ -221,6 +233,18 @@ O Google Cloud Scheduler remove o **scheduler do GitHub** como relógio único, 
 **Global Media Monitoring** is an automated pipeline that collects and deduplicates international news, uses Google Gemini for editorial triage and summarization, generates **PT-BR** and **EN-US** output, publishes a daily HTML dashboard, sends individualized e-mails, and wakes the private social publisher.
 
 The system is built around **fail-closed behavior**, **daily idempotency**, and **multiple clocks**.
+
+### v1.1.12 — independent RSS fallback and security patch (2026-10-11)
+
+**Incident:** [run 38117234171](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/38117234171) encountered HTTP 503 across **all 10 Google News RSS country feeds**. The existing minimum-coverage gate correctly prevented partial publication.
+
+**Recovered on the same date:** [run 38118864188](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/38118864188) processed **897 unique news entries**, produced the daily dashboard, and reported **8/8 SMTP accepts, zero failed sends**. The dependent social publisher completed. Daily idempotency prevents duplicate sends.
+
+**Resilience:** country-scoped Bing News RSS is used if the primary Google News feed fails, is malformed or has no items. Existing country coverage, time window, deduplication and fail-closed requirements remain in force. Safe Bing redirect links are unwrapped. Bing RSS is unversioned, so it remains a contingency rather than a guaranteed service.
+
+**Security:** regenerated npm lockfile and pinned `proxy-addr@2.0.8` to address the [GHSA-jqcg-44mw-7w3h](https://github.com/advisories/GHSA-jqcg-44mw-7w3h) critical vulnerability. No changes to delivery credentials, SMTP, D1, scheduling, or social integration.
+
+**Tests:** regression coverage in `tests/rssFallback.test.ts`; full CI must pass before publication.
 
 ### v1.1.11 — generic Gemini project quota recovery (2026-10-03)
 
