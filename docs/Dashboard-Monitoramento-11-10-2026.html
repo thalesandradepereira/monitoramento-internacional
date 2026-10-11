@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-LIaHPRbkvTbu+zwWFLKf02uW'; script-src 'nonce-LIaHPRbkvTbu+zwWFLKf02uW'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="LIaHPRbkvTbu+zwWFLKf02uW">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">11/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="LIaHPRbkvTbu+zwWFLKf02uW">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Valor Econômico","pais":"Brasil","titulo":"CEO da Microsoft pede 'freio de emergência' para o avanço da inteligência artificial","resumo":"O CEO da Microsoft destacou a necessidade premente de estabelecer mecanismos de segurança robustos para acompanhar o desenvolvimento acelerado da inteligência artificial.\nA proposta inclui a criação de um 'freio de emergência' capaz de interromper sistemas autônomos fora de controle antes que ofereçam riscos graves à humanidade.\nEssa declaração reflete a crescente preocupação de grandes líderes da tecnologia com a regulação global e a governança ética na era da IA avançada.","link":"https://valor.globo.com/google/amp/empresas/tecnologia/noticia/2026/10/10/ceo-da-microsoft-pede-um-freio-de-emergencia-para-a-ia-avancada.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"新浪网","pais":"Estados Unidos","titulo":"Trump concede Prêmio de Ciência dos EUA; Elon Musk e outros cinco líderes de tecnologia são premiados","resumo":"O presidente dos Estados Unidos realizou a entrega de uma prestigiada honraria científica nacional, contemplando figuras de destaque no setor de tecnologia. Entre os homenageados está Elon Musk, ao lado de outros cinco líderes da indústria de inovação e desenvolvimento tecnológico. A premiação destaca a contribuição desses executivos para o avanço da ciência e da economia americana. O evento ressalta a forte ligação entre o governo federal e as grandes empresas de tecnologia do país.","link":"https://k.sina.com.cn/article_7811053788_m1d19338dc03301b7lo.html?from=tech","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Le nouvel Economiste","pais":"França","titulo":"FMI: economia mundial dividida entre IA e choque energético","resumo":"O Fundo Monetário Internacional alertou que a economia global enfrenta um momento crítico de transição, pressionada pelas transformações da inteligência artificial e pelos choques no setor energético.\nEnquanto a IA promete impulsionar a produtividade, os desafios energéticos e fiscais ameaçam o crescimento em diversas regiões.\nO relatório destaca a importância de políticas equilibradas para mitigar riscos de desigualdade e instabilidade financeira mundial.","link":"https://www.lenouveleconomiste.fr/fmi-leconomie-mondiale-tiraillee-entre-lia-et-le-choc-energetique-142031/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Sky Sports","pais":"Inglaterra","titulo":"Sky Sports e Guinness lançam novos serviços de acessibilidade na cobertura da Premier League","resumo":"A Sky Sports firmou uma parceria com a Guinness para introduzir novos recursos de acessibilidade em suas transmissões da Premier League no Reino Unido. As iniciativas incluem audiodescrição aprimorada e linguagem de sinais projetadas para tornar o consumo de esportes mais inclusivo. A medida representa um avanço significativo no uso de tecnologias assistivas voltadas para grandes transmissões ao vivo.","link":"https://www.skysports.com/football/news/13595862/sky-sports-and-guinness-launch-new-accessibility-services-across-premier-league-coverage","categoria":"ACESSIBILIDADE","lang":"pt"},{"fonte":"La Razón","pais":"Espanha","titulo":"HUCA faz história na Espanha com nova tecnologia para pacientes com diabetes tipo 1","resumo":"O Hospital Universitário Central de Astúrias (HUCA) tornou-se pioneiro na Espanha ao implementar uma tecnologia avançada para o tratamento da diabetes tipo 1.\nA inovação permite um monitoramento contínuo e altamente preciso dos níveis de glicose, melhorando a qualidade de vida dos pacientes.\nEsse avanço representa um marco no uso de soluções digitais aplicadas à saúde pública, reduzindo complicações graves associadas à doença.","link":"https://www.larazon.es/asturias/huca-hace-historia-espana-nueva-tecnologia-pacientes-diabetes-tipo-1-b30m_202610116acb09e4bafd3d73635d413d.html","categoria":"SAÚDE E TECNOLOGIA","lang":"pt"},{"fonte":"Webike Japan","pais":"Japão","titulo":"Honda revela segredos de desenvolvimento da nova CB1000F na Europa","resumo":"A Honda detalhou o processo de desenvolvimento da nova CB1000F para o mercado europeu, destacando a união do estilo clássico da linha CB-F com inovações tecnológicas modernas.\nA motocicleta foi projetada para entregar alto desempenho aliado a sistemas avançados de pilotagem, garantindo maior eficiência mecânica, conforto e segurança.\nO lançamento reforça a estratégia da fabricante japonesa de revitalizar ícones do passado utilizando engenharia de ponta para atrair o público contemporâneo.","link":"https://japan.webike.net/moto_news/pt-pt/honda-reveals-development-secrets-as-the-cb1000f-launches-in-europe-fusing-the-style-of-the-legendary-cb-f-with-modern-technology/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"新浪财经","pais":"China","titulo":"Novo Avanço da ChangXin: Produtos com Arquitetura 4F² Devem Ser Lançados no Final do Ano","resumo":"A empresa chinesa de semicondutores ChangXin Storage (CXMT) anunciou um avanço significativo no desenvolvimento de memórias DRAM ao adotar a arquitetura 4F².\nEsta nova tecnologia promete aumentar dramaticamente a densidade de integração e reduzir os custos de fabricação dos chips de memória.\nO lançamento dos primeiros produtos baseados nessa arquitetura está previsto para o final deste ano.\nA inovação reforça a competitividade da indústria nacional de chips da China no cenário global.","link":"https://finance.sina.cn/2026-10-10/detail-iniututc2096002.d.html?vt=4","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Economic Times","pais":"Índia","titulo":"Tricog Health estabelece meta de 100 milhões de exames cardíacos até 2030, afirma CEO","resumo":"A startup indiana de tecnologia em saúde Tricog Health anunciou a meta de realizar 100 milhões de triagens cardíacas até o ano de 2030.\nLiderada pelo CEO Dr. Charit Bhograj, a empresa utiliza inteligência artificial combinada com diagnóstico médico para acelerar a detecção de problemas cardíacos.\nA iniciativa busca democratizar o acesso a exames preventivos em regiões remotas da Índia e de outros países em desenvolvimento.\nCom essa expansão, a Tricog pretende reduzir significativamente os índices de mortalidade por doenças cardiovasculares diagnosticadas tardiamente.","link":"https://m.economictimes.com/industry/healthcare/biotech/healthcare/tricog-health-targets-100-million-cardiac-screenings-by-2030-ceo-dr-charit-bhograj/articleshow/134866110.cms","categoria":"SAÚDE E TECNOLOGIA","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"CAR-T: A guerra contra o câncer mudou e cientistas criam células que caçam tumores","resumo":"A terapia com células CAR-T representa um avanço revolucionário no tratamento do câncer ao reprogramar o próprio sistema imunológico do paciente.\nCientistas conseguiram modificar geneticamente os linfócitos T para identificar e destruir células tumorais com alta precisão.\nEssa abordagem inovadora transforma o combate às neoplasias e traz novas esperanças para casos antes considerados incuráveis.\nO impacto dessa descoberta promete redefinir os protocolos da oncologia moderna nos próximos anos.","link":"https://pplware.sapo.pt/ciencia/car-t-a-guerra-contra-o-cancro-mudou-cientistas-estao-a-criar-celulas-para-cacar-tumores/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Cassilândia Notícias","pais":"Brasil","titulo":"Tecnologia criada por brasileiro pode economizar bilhões em fertilizantes no agronegócio","resumo":"Uma nova tecnologia desenvolvida em Mato Grosso do Sul promete revolucionar o setor agrícola ao otimizar a aplicação de fertilizantes nas lavouras.\nA inovação tem potencial para gerar uma economia de bilhões de reais aos produtores, reduzindo desperdícios e minimizando impactos ambientais no solo.\nO avanço destaca o protagonismo da ciência e inovação nacional no desenvolvimento de soluções de alta tecnologia para o agronegócio.","link":"https://www.cassilandianoticias.com.br/cassilandia/tecnologia-criada-por-cassilandense-pode-economizar-bilhoes-em-fertilizantes-no-agro","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"APOD: Pesca no Gelo por Neutrinos Cósmicos","resumo":"A Imagem Astronômica do Dia destaca um projeto fascinante de física de partículas focado na detecção de neutrinos cósmicos em regiões polares. A tecnologia utiliza sensores enterrados profundamente no gelo para capturar sinais dessas elusivas partículas subatômicas vindas do espaço profundo. Esse método inovador permite aos cientistas mapear eventos cósmicos de alta energia e compreender melhor as origens do universo. O estudo exemplifica como a astrofísica avançada utiliza ambientes extremos da Terra para investigações espaciais.","link":"https://science.nasa.gov/image-article/apod-2026-october-11-ice-fishing-for-cosmic-neutrinos/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"www.lamarseillaise.fr","pais":"França","titulo":"Árvores revelam erupção solar extraordinária ocorrida há 14.300 anos","resumo":"Análises em anéis de árvores fossilizadas nos Alpes franceses revelaram evidências da maior tempestade solar já registrada, ocorrida há mais de 14 mil anos.\nOs cientistas mediram picos de radiocarbono para identificar o evento massivo de prótons solares.\nA descoberta é fundamental para entender o impacto potencial que tempestades solares extremas semelhantes poderiam causar nas redes elétricas e de comunicação modernas.","link":"https://www.lamarseillaise.fr/societe/science-des-arbres-temoignent-d-une-eruption-solaire-hors-norme-il-y-a-14300-ans-LN20787628","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"IA está criando um 'valor adicional humano' para a arte feita por pessoas, mas isso vai durar?","resumo":"O avanço da inteligência artificial generativa no meio cultural está gerando um movimento de valorização comercial de obras produzidas exclusivamente por pessoas. Colecionadores e consumidores têm demonstrado maior disposição a pagar por criações genuinamente humanas em relação às geradas por máquinas. No entanto, especialistas questionam se esse sobrepreço do fator humano irá se sustentar no longo prazo.","link":"https://www.bbc.com/news/articles/c5vgjm3gk7rzo","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"La Opinión de Murcia","pais":"Espanha","titulo":"Sevilla FC aposta na tecnologia da InjuryPro, spin-off da UCAM","resumo":"O Sevilla FC fechou uma parceria com a InjuryPro, uma spin-off científica da Universidade Católica de Múrcia, para aplicar tecnologia na prevenção de lesões.\nA ferramenta utiliza análise avançada de dados para monitorar a carga física e prever riscos de lesões musculares nos atletas de alto rendimento.\nA iniciativa demonstra como a inovação acadêmica e o uso de dados estão transformando a medicina esportiva no futebol profissional.","link":"https://www.laopiniondemurcia.es/formacion/universidades/2026/10/11/sevilla-fc-apuesta-tecnologia-injurypro-135182836.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"科学网—新闻","pais":"China","titulo":"Grande Modelo de Genômica Patológica DeepGEM 2.0 É Lançado Oficialmente","resumo":"A versão 2.0 do DeepGEM, um grande modelo de inteligência artificial voltado para patologia e genômica, foi apresentada oficialmente na China.\nA ferramenta combina análise de imagens histopatológicas com dados genéticos para acelerar diagnósticos médicos e personalizar tratamentos.\nCom maior precisão e capacidade de processamento, o modelo representa um avanço importante na integração de IA com a medicina de precisão.\nO lançamento reforça a posição do país na vanguarda da bioinformática aplicada à saúde.","link":"https://news.sciencenet.cn/htmlnews/2026/10/572731.shtm","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The420.in","pais":"Índia","titulo":"Primeiro-Ministro Modi defende tecnologia para rastrear a origem de conteúdos de IA e deepfakes","resumo":"O Primeiro-Ministro da Índia fez um apelo global pelo desenvolvimento de soluções tecnológicas capazes de identificar a origem de mídias geradas por IA.\nA declaração destaca a preocupação crescente com a disseminação de deepfakes, desinformação e os impactos da inteligência artificial sem regulamentação.\nModi enfatizou a importância de estabelecer marcas d'água digitais e padrões éticos globais para garantir a integridade da informação.\nA proposta busca equilibrar o avanço da inovação tecnológica com a segurança da sociedade e a proteção contra fraudes.","link":"https://the420.in/pm-modi-ai-deepfake-detection-tools/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Diário do Distrito","pais":"Portugal","titulo":"Parlamento visita casas construídas por impressão 3D em busca de soluções para a habitação","resumo":"Deputados do Parlamento realizaram uma visita técnica a empreendimentos residenciais erguidos por meio da tecnologia de impressão 3D.\nA iniciativa busca avaliar métodos construtivos mais rápidos, sustentáveis e acessíveis para mitigar a crise imobiliária no país.\nA utilização da automação na construção civil pode reduzir drasticamente os custos e o tempo de entrega de moradias populares.\nA medida sinaliza um interesse crescente do setor público em adotar soluções tecnológicas para desafios sociais urbanos.","link":"https://diariodistrito.sapo.pt/parlamento-visita-casas-feitas-por-impressao-3d-a-procura-de-respostas-para-a-habitacao/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Vietnam.vn","pais":"Brasil","titulo":"Integrando a inteligência artificial nas escolas sem substituir o aprendizado","resumo":"A inserção da inteligência artificial no ambiente educacional traz debates urgentes sobre como equilibrar a inovação tecnológica com o desenvolvimento do pensamento crítico.\nEspecialistas alertam para a importância de utilizar a IA como ferramenta de suporte, mantendo o protagonismo dos professores e o esforço cognitivo dos alunos.\nA iniciativa busca guiar instituições na formulação de diretrizes pedagógicas éticas e eficientes para o uso das novas tecnologias.","link":"https://www.vietnam.vn/pt/dua-ai-vao-truong-hoc-khong-de-cong-nghe-lam-thay-viec-hoc","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Genocide Watch","pais":"Estados Unidos","titulo":"Israel utilizou tecnologia baseada em IA para destruir infraestrutura em Gaza","resumo":"Relatórios indicam o uso crescente de sistemas avançados de inteligência artificial em operações militares na Faixa de Gaza para mapear e direcionar ataques à infraestrutura. A integração de algoritmos de aprendizado de máquina no campo de batalha acelera o processo de tomada de decisão e a seleção de alvos em conflitos armados. O caso levanta debates éticos e regulatórios globais sobre o papel da IA em estratégias de defesa e no direito internacional humanitário. A situação evidencia a rápida militarização de tecnologias emergentes em cenários de guerra moderna.","link":"https://www.genocidewatch.com/single-post/israel-used-ai-assisted-technology-to-destroy-infrastructure-in-gaza","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Actu.fr","pais":"França","titulo":"Disco voador 'pousa' em aldeia na França e atrai a atenção de curiosos","resumo":"Uma estrutura em formato de disco voador foi instalada no pequeno município de Côte-d’Or, na França, chamando a atenção de moradores e visitantes locais.\nLonge de ser uma invasão alienígena, a obra arquitetônica futurista combina design inovador e conceitos de moradia alternativa.\nA iniciativa destaca-se como uma atração peculiar que mistura arte, tecnologia construtiva e curiosidade popular na região.","link":"https://actu.fr/bourgogne-franche-comte/vitteaux_21710/cette-soucoupe-volante-a-atterri-dans-un-village-de-cote-d-or-et-ce-n-est-pas-de-la-science-fiction_64904026.html","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"La Nueva España","pais":"Espanha","titulo":"A ciência em um tuit: Telescópio sob o gelo","resumo":"Cientistas destacam o avanço de telescópios instalados sob espessas camadas de gelo em regiões polares para capturar partículas subatômicas como neutrinos.\nEssas instalações astronômicas utilizam o gelo denso como um meio natural de detecção para observar sinais cósmicos quase imperceptíveis.\nA abordagem inovadora amplia as fronteiras da astrofísica ao permitir o estudo de fenômenos extremos e remotos do universo.","link":"https://www.lne.es/opinion/2026/10/11/ciencia-tuit-telescopio-hielo-135208327.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BBC","pais":"China","titulo":"Por Que a China Considera uma Ameaça a IA que Imita Relações Humanas","resumo":"As autoridades regulatórias da China estão intensificando a atenção sobre sistemas de inteligência artificial projetados para simular relacionamentos afetivos com humanos.\nO governo chinês teme que o apego emocional a chatbots possa gerar impactos psicológicos negativos, além de manipular comportamentos e comprometer dados.\nA preocupação impulsiona debates sobre a criação de novas diretrizes para limitar a simulação de empatia e afeição por algoritmos.\nO movimento reflete uma postura pioneira no controle social da tecnologia interpessoal.","link":"https://www.bbc.com/portuguese/articles/c6kg07ggd9y2o","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"OpenGov Asia","pais":"Índia","titulo":"Índia fortalece polos de ciência e tecnologia por meio da colaboração","resumo":"A Índia está impulsionando seu ecossistema nacional de inovação ao fortalecer polos de ciência e tecnologia através de parcerias estratégicas.\nA iniciativa reúne universidades, setores industriais e órgãos governamentais para otimizar pesquisas e acelerar o desenvolvimento tecnológico.\nO objetivo principal é transformar descobertas científicas em soluções comerciais escaláveis para atender aos desafios socioeconômicos do país.\nEssa abordagem colaborativa visa posicionar a Índia como um centro global de referência em pesquisa e desenvolvimento.","link":"https://opengovasia.com/india-strengthens-science-and-technology-clusters-through-collaboration/","categoria":"CIÊNCIA E TECNOLOGIA","lang":"pt"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Obama aponta \"grande desafio\" na coordenação entre EUA e China sobre Inteligência Artificial","resumo":"O ex-presidente norte-americano Barack Obama alertou para a complexidade da diplomacia tecnológica entre as duas maiores potências mundiais.\nA corrida pela hegemonia na inteligência artificial exige acordos internacionais urgentes para evitar riscos existenciais e cibernéticos.\nSegundo Obama, a falta de governança global compartilhada pode intensificar as tensões geopolíticas e desestabilizar o mercado tecnológico.\nO avanço acelerado da IA requer diretrizes éticas e de segurança estabelecidas em conjunto pelas grandes nações.","link":"https://www.cmjornal.pt/tecnologia/amp/obama-aponta-grande-desafio-na-coordenacao-entre-eua-e-china-sobre-ia","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Metrópoles","pais":"Brasil","titulo":"Instabilidade no financiamento da ciência prejudica chances de Nobel para o Brasil","resumo":"A oscilação constante nos investimentos públicos voltados à pesquisa e desenvolvimento no Brasil continua sendo um dos principais entraves para o país conquistar um Prêmio Nobel.\nCientistas e pesquisadores alertam que a falta de orçamentos previsíveis e de longo prazo desestimula projetos de grande impacto e provoca a fuga de cérebros.\nA consolidação de uma política científica estável é vista como fundamental para colocar a inovação nacional em patamar competitivo internacional.","link":"https://www.metropoles.com/ciencia/instabilidade-em-recursos-para-a-ciencia-atrapalha-brasil-a-ganhar-um-nobel","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Universe Today","pais":"Estados Unidos","titulo":"Relatório preliminar de ciência lunar para a missão Artemis II é publicado!","resumo":"A NASA e parceiros científicos divulgaram o relatório preliminar com as diretrizes e objetivos de pesquisa para a missão tripulada Artemis II. O documento detalha os experimentos programados para analisar a superfície e o ambiente de radiação ao redor da Lua. A missão marca um passo decisivo no retorno da humanidade à exploração lunar e na preparação para futuras viagens a Marte. Os dados coletados prometem transformar nossa compreensão científica sobre a formação do satélite natural e do sistema solar.","link":"https://www.universetoday.com/articles/the-preliminary-lunar-science-report-for-artemis-ii-is-out","categoria":"AEROESPACIAL","lang":"pt"},{"fonte":"ladepeche.fr","pais":"França","titulo":"Mistério Saint-Roman: ciência busca aviadores franceses que podem ter cruzado o Atlântico antes de Lindbergh","resumo":"Um século após o desaparecimento da aeronave Saint-Roman, pesquisadores utilizam tecnologias científicas avançadas para solucionar o mistério da travessia do Atlântico.\nA expedição busca evidências de que aviadores franceses teriam concluído o voo sem escalas antes da famosa marca de Charles Lindbergh.\nO uso de mapeamento oceânico e análise de destroços renova as esperanças de reescrever um capítulo decisivo da história da aviação.","link":"https://www.ladepeche.fr/2026/10/11/le-mystere-saint-roman-un-siecle-apres-la-science-sur-les-traces-des-aviateurs-francais-qui-ont-peut-etre-traverse-latlantique-avant-lindbergh-13594506.php","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Investing.com España","pais":"Espanha","titulo":"Confiança mundial na ciência cai para níveis abaixo do período pré-pandemia","resumo":"Um estudo recente alerta para a queda na confiança pública global em relação à ciência, atingindo índices inferiores aos de antes da pandemia.\nO aumento da desinformação e a polarização política são apontados como os principais impulsionadores do ceticismo contra dados científicos.\nEspecialistas reforçam a necessidade urgente de estratégias de comunicação mais transparentes para recuperar a credibilidade das instituições.","link":"https://es.investing.com/news/economy-news/la-confianza-mundial-en-la-ciencia-cae-por-debajo-de-niveles-prepandemia-3868779","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"东方财富","pais":"China","titulo":"China Propõe Proibição de Maçanetas Totalmente Embutidas e Telas Dobráveis em Veículos","resumo":"Quatro órgãos governamentais da China abriram consulta pública para novas normas de segurança automotiva que proíbem o uso de maçanetas totalmente ocultas em carros.\nA medida visa garantir a abertura mecânica das portas em emergências e acidentes, onde a falha elétrica de maçanetas retráteis representa alto risco.\nAlém disso, a proposta veta o uso de telas dobráveis nos painéis dos veículos para evitar distrações e falhas mecânicas.\nA regulamentação pode impactar profundamente o design dos veículos elétricos fabricados no país.","link":"https://wap.eastmoney.com/a/202610103891960543.html","categoria":"REGULAMENTAÇÃO","lang":"pt"},{"fonte":"Vinetur","pais":"Índia","titulo":"Vendas de cerveja em Karnataka disparam 49,69% após revisão de política fiscal","resumo":"As vendas de cerveja no estado indiano de Karnataka registraram um crescimento expressivo de 49,69% após mudanças na estrutura tributária sobre o álcool.\nA revisão das políticas fiscais tornou os preços mais competitivos, estimulando o consumo e impulsionando a arrecadação estadual.\nO aumento no volume comercializado reflete uma alteração direta no comportamento do mercado consumidor e na dinâmica das bebidas alcoólicas na região.\nEspecialistas apontam que a medida econômica serve de modelo para analisar os impactos de adequações fiscais no varejo.","link":"https://www.vinetur.com/pt/20261010108710/karnataka-beer-sales-jumped-4969-under-revised-alcohol-tax-policy.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"The Portugal News","pais":"Portugal","titulo":"Universidade portuguesa desenvolve nova tecnologia para monitorar populações de microalgas","resumo":"Pesquisadores de uma universidade em Portugal criaram um sistema tecnológico avançado dedicado ao monitoramento contínuo de microalgas.\nA inovação permite acompanhar a dinâmica desses ecossistemas aquáticos em tempo real, auxiliando na preservação ambiental e na aquicultura.\nCom maior precisão na coleta de dados, a ferramenta previne o surgimento de florações tóxicas que ameaçam a biodiversidade marinha.\nA solução reforça o papel da academia portuguesa no desenvolvimento de biotecnologias aplicadas à sustentabilidade dos oceanos.","link":"https://www.theportugalnews.com/pt/noticias/2026-10-10/portugal-universidade-desenvolve-nova-tecnologia-para-monitorizar-populacoes-de-microalgas/1098837","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Globo","pais":"Brasil","titulo":"Maior torre eólica do mundo surpreende por dimensões e capacidade de geração","resumo":"A construção da torre eólica mais alta do mundo marca um novo patamar no setor de energias renováveis e engenharia de grande porte.\nProjetada para captar ventos em altitudes elevadas com maior eficiência, a estrutura promete ampliar significativamente a produção de energia limpa em larga escala.\nA novidade gera altas expectativas no mercado global por acelerar a transição energética e diminuir custos operacionais de longo prazo.","link":"https://revistagalileu.globo.com/google/amp/tecnologia/noticia/2026/10/torre-eolica-mais-alta-do-mundo-surpreende-pelo-tamanho-e-gera-expectativas.ghtml","categoria":"ENERGIA LIMPA","lang":"pt"},{"fonte":"Boston 25 News","pais":"Estados Unidos","titulo":"Museu de Ciência de Boston inaugura novo espaço imersivo de quase mil metros quadrados","resumo":"O Museu de Ciência de Boston abriu as portas de uma nova instalação imersiva projetada para transformar a educação científica e a experiência dos visitantes. O espaço integra projeções de alta tecnologia, simulações interativas e ambientes multissensoriais para explorar conceitos complexos da ciência moderna. A iniciativa busca atrair públicos de todas as idades e incentivar o interesse por carreiras nas áreas de tecnologia e inovação. A atração se consolida como um novo marco cultural e educacional no estado de Massachusetts.","link":"https://www.boston25news.com/news/local/boston-museum-science-opens-new-10000-square-foot-immersive-venue/EGTAWLOXORGOTDDGTU7AFOUM5M/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Investing.com France","pais":"França","titulo":"Confiança global na ciência cai para níveis inferiores aos do período pré-pandemia","resumo":"Um novo estudo internacional revelou que a confiança do público na ciência e nos cientistas sofreu um declínio acentuado em escala global.\nO índice atual é inferior ao registrado antes da pandemia de COVID-19, impulsionado pela desinformação e pela polarização política.\nEspecialistas alertam que essa perda de credibilidade pode comprometer o combate a futuras crises de saúde e o avanço de políticas baseadas em evidências.","link":"https://fr.investing.com/news/economy-news/la-confiance-mondiale-envers-la-science-chute-sous-les-niveaux-davant-la-pandemie-3629801","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Elblogoferoz","pais":"Espanha","titulo":"O segredo dos sorrisos naturais: como a tecnologia digital repara dentes de forma imperceptível","resumo":"A odontologia digital está revolucionando procedimentos restauradores por meio do uso de escaneamento 3D e impressão de altíssima precisão.\nEssas ferramentas permitem a criação de próteses perfeitamente adaptadas à anatomia e à coloração natural da dentição de cada paciente.\nAlém do ganho estético imperceptível, a tecnologia reduz o tempo de tratamento e melhora significativamente o conforto durante as consultas.","link":"https://www.elblogoferoz.com/2026/10/11/salud-el-secreto-de-las-sonrisas-naturales-como-la-tecnologia-digital-logra-reparar-dientes-de-forma-imperceptible/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Science et vie","pais":"China","titulo":"Floresta Subterrânea de 128 Mil Anos É Descoberta a 626 Metros de Profundidade na China","resumo":"Cientistas descobriram uma floresta subterrânea preservada com cerca de 128 mil anos no abismo natural Xiaozhai Tiankeng, na China.\nLocalizado a uma profundidade de 626 metros, o ecossistema isolado abriga diversas espécies vegetais e animais extremamente raras e adaptadas.\nO achado oferece uma oportunidade única para estudar a evolução biológica e o clima do passado em um ambiente praticamente intocado.\nA descoberta é considerada uma das maiores relíquias ecológicas registradas na história recente.","link":"https://www.science-et-vie.com/nature-et-environnement/une-foret-souterraine-vieille-de-128-000-ans-a-ete-decouverte-a-626-metres-de-profondeur-dans-le-puits-celeste-chinois-xiaozhai-tiankeng-et-elle-regorge-despeces-tres-rares-238536.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"JP Morgan Chase se destaca como o banco mais avançado em tecnologia","resumo":"O JP Morgan Chase consolidou sua liderança no setor financeiro global ao figurar como a instituição mais madura na adoção tecnológica.\nO banco tem investido bilhões de dólares na modernização de infraestrutura, uso de inteligência artificial e automação de serviços.\nEssa estratégia digital permitiu otimizar processos internos, aumentar a segurança cibernética e melhorar a experiência do cliente.\nO modelo de inovação contínua adotado pela instituição serve de benchmark para a transformação digital do setor bancário.","link":"https://jornaleconomico.sapo.pt/noticias/jp-morgan-chase-e-o-banco-mais-avancado-na-tecnologia/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Campanha de Lula acusa Meta de interferência eleitoral e aciona TSE e ANPD","resumo":"A campanha presidencial brasileira formalizou denúncias contra a Meta alegando possíveis tentativas de interferência no processo eleitoral por meio de suas plataformas.\nO caso foi levado ao Tribunal Superior Eleitoral e à Autoridade Nacional de Proteção de Dados para apuração de irregularidades no impulsionamento e uso de dados.\nO episódio intensifica o debate sobre o papel das Big Techs na integridade das eleições e na regulação das redes sociais no país.","link":"https://g1.globo.com/politica/eleicoes/2026/noticia/2026/10/10/campanha-de-lula-acusa-meta-de-tentar-interferir-nas-eleicoes-e-diz-que-acionara-tse-e-anpd.ghtml","categoria":"REDES SOCIAIS","lang":"pt"},{"fonte":"The Motley Fool","pais":"Estados Unidos","titulo":"Melhor ação de Inteligência Artificial: Arm vs. Marvell Technology","resumo":"Uma análise comparativa avalia o potencial de crescimento e o valor de mercado de duas gigantes dos semicondutores: Arm e Marvell Technology. Ambas desempenham papéis fundamentais no fornecimento de arquitetura e chips especializados para impulsionar datacenters e sistemas de IA. O relatório examina métricas financeiras, vantagens competitivas e projeções de demanda à medida que o setor de inteligência artificial se expande. A disputa reflete a forte concorrência no mercado de hardware essencial para a infraestrutura tecnológica do futuro.","link":"https://www.fool.com/coverage/better-buy/2026/10/10/better-artificial-intelligence-stock-arm-vs-marvell-technology/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"JHM","pais":"França","titulo":"Festa da Ciência destaca descobertas sobre o Sistema Solar","resumo":"A edição deste ano da Festa da Ciência trouxe o Sistema Solar como um dos seus temas centrais de divulgação científica.\nO evento reuniu astrônomos e o público geral para explorar novos dados sobre planetas, asteroides e a evolução astronômica.\nA iniciativa buscou desmistificar conceitos astrofísicos complexos por meio de oficinas interativas e exposições imersivas direcionadas a todas as idades.","link":"https://jhm.fr/la-fete-de-la-science-a-mis-en-lumiere-le-systeme-solaire/","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"Noticias de Gipuzkoa","pais":"Espanha","titulo":"Da robótica ao câncer e às florestas: a ciência se reúne em Bergara","resumo":"O município de Bergara sediará um encontro científico multidisciplinar abordando temas centrais como robótica, oncologia e gestão sustentável de florestas.\nO evento reunirá especialistas de diversas disciplinas para compartilhar avanços de ponta e debater novos caminhos para a pesquisa tecnológica.\nA iniciativa busca aproximar a sociedade dos desenvolvimentos científicos recentes e destacar seu impacto no cotidiano.","link":"https://www.noticiasdegipuzkoa.eus/gipuzkoa/bertan/2026/10/10/robotica-cancer-pasando-bosques-ciencia-11637577.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"新浪网","pais":"China","titulo":"CTO da Shanghai Wafer Apresenta Palestra sobre Chips Especializados, Poder Computacional de IA e Ciência dos Materiais","resumo":"O diretor de tecnologia da Shanghai Wafer Material Co., Li Wenzhong, apresentará um estudo detalhado sobre o desenvolvimento de chips especializados orientados a aplicações práticas.\nA palestra abordará os desafios do consumo de energia e capacidade computacional exigidos pelos avanços da inteligência artificial.\nSerão discutidas novas abordagens na ciência dos materiais de semicondutores para otimizar o desempenho do hardware de IA.\nO evento destaca o esforço da indústria chinesa em superar os gargalos físicos da microeletrônica moderna.","link":"https://k.sina.com.cn/article_5953466437_162dab0450670bemsq.html?from=tech","categoria":"SEMICONDUTORES","lang":"pt"},{"fonte":"4gnews","pais":"Portugal","titulo":"OLED vs IPS: Qual é a melhor tecnologia de tela para jogos?","resumo":"A escolha entre os painéis OLED e IPS tornou-se um dos debates centrais para entusiastas de jogos eletrônicos e tecnologia.\nEnquanto o OLED se destaca pelos pretos profundos, contraste infinito e tempo de resposta quase instantâneo, o IPS oferece excelente precisão de cor e maior durabilidade.\nAnálises técnicas indicam que a decisão depende das prioridades do usuário, considerando o orçamento e o ambiente de uso.\nA evolução dessas tecnologias de tela continua a ditar os padrões do mercado de monitores e TVs gamers.","link":"https://4gnews.pt/oled-vs-ips-qual-a-melhor-tecnologia-de-ecra-para-jogar/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Finanças, Câmbio e Investimentos","pais":"Brasil","titulo":"Confiança global na ciência cai abaixo dos níveis pré-pandemia","resumo":"Um novo levantamento global revelou que o nível de confiança da população na ciência e nos cientistas registrou uma queda inédita, ficando abaixo do patamar pré-pandêmico.\nO fenômeno é impulsionado pela disseminação acelerada de desinformação, polarização política e desconfiança crescente em instituições de pesquisa.\nO cenário acende um alerta sobre os desafios de comunicação científica e a necessidade urgente de reconstruir a credibilidade pública no método científico.","link":"https://br.investing.com/news/economy-news/confianca-global-na-ciencia-cai-abaixo-dos-niveis-prepandemia-2088448","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"STAT","pais":"Estados Unidos","titulo":"Norte-americanos confiam mais na ciência do que cidadãos de outros países, aponta pesquisa","resumo":"Um novo estudo global revela que a população dos Estados Unidos apresenta níveis de confiança nas instituições e descobertas científicas superiores à média de outros países pesquisados. A pesquisa analisa a percepção pública sobre o impacto do avanço científico na sociedade, na saúde e na economia global. O resultado destaca a forte cultura de inovação e o prestígio da comunidade acadêmica e de pesquisa no território americano. Os dados oferecem insights valiosos para a formulação de políticas públicas de comunicação e educação científica.","link":"https://www.statnews.com/2026/10/10/u-s-trust-science-higher-than-other-nations-wellcome-survey/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"lanouvellerepublique.fr","pais":"França","titulo":"'Aprender se divertindo é bem melhor!': em Poitiers, Festa da Ciência encanta famílias","resumo":"A cidade de Poitiers recebeu a Festa da Ciência com uma programação voltada ao engajamento de famílias e jovens estudantes.\nAs atividades práticas e experimentos lúdicos permitiram que os participantes aprendessem conceitos científicos de forma acessível e interativa.\nO evento reforça a importância da popularização científica para despertar o interesse das novas gerações pelas carreiras de tecnologia e inovação.","link":"https://www.lanouvellerepublique.fr/poitiers/apprendre-en-s-amusant-c-est-quand-meme-mieux-a-poitiers-la-fete-de-la-science-emerveille-les-familles-1791659254","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"Yahoo Finanzas","pais":"Espanha","titulo":"Uma mudança de governo na Espanha poderia afetar a política energética?","resumo":"A instabilidade política na Espanha gera debates sobre os rumos do setor de energia e o cumprimento das metas de transição ecológica do país.\nAnalistas avaliam como eventuais trocas governamentais podem impactar incentivos a energias renováveis e a regulação de mercados limpos.\nO cenário traz incertezas estratégicas para investidores e empresas de tecnologia focadas na modernização da matriz energética.","link":"https://es-us.finanzas.yahoo.com/noticias/cambio-gobierno-espa%C3%B1a-afectar-pol%C3%ADtica-021228495.html","categoria":"ENERGIA","lang":"pt"},{"fonte":"South China Morning Post","pais":"China","titulo":"Especialista em Nanotecnologia Antonio Facchetti Junta-se à HKUST Vindo do Georgia Tech","resumo":"O renomado cientista Antonio Facchetti, especialista em nanotecnologia e eletrônica flexível, deixou o Georgia Tech para integrar o corpo docente da Universidade de Ciência e Tecnologia de Hong Kong.\nReconhecido por suas pesquisas em materiais semicondutores orgânicos, a contratação reforça a atratividade das instituições locais para grandes talentos globais.\nA chegada do pesquisador deve impulsionar projetos avançados em dispositivos eletrônicos de última geração no ecossistema acadêmico chinês.\nO movimento evidencia o fortalecimento da pesquisa científica de ponta na Ásia.","link":"https://www.scmp.com/news/china/science/article/3370290/nanotechnology-expert-antonio-facchetti-joins-hkust-georgia-tech-us","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O Mirante","pais":"Portugal","titulo":"Zona Livre Tecnológica de Abrantes ganha equipe dedicada para atração de investimentos","resumo":"A Zona Livre Tecnológica de Abrantes passou a contar com uma equipe especializada para impulsionar a captação de capital e novos projetos.\nO espaço funciona como um ambiente de testes regulatório que facilita o desenvolvimento de inovações e novas soluções digitais.\nCom a nova estrutura de gestão, a região pretende atrair empresas de ponta e criar um ecossistema empreendedor dinâmico.\nA iniciativa posiciona Abrantes como um polo estratégico para o teste e a expansão de tecnologias emergentes em Portugal.","link":"https://omirante.pt/sociedade/2026-10-10-zona-livre-tecnologica-de-abrantes-ganha-equipa-propria-para-captar-investimento-6a02f8a3","categoria":"INVESTIMENTO","lang":"pt"},{"fonte":"Exame","pais":"Brasil","titulo":"Os melhores robôs aspiradores de 2026: modelos eficientes e custo-benefício","resumo":"Uma avaliação detalhada das principais opções de robôs aspiradores lançados em 2026 analisa quais modelos cumprem com eficiência a promessa de limpar e passar pano.\nA análise compara funcionalidades avançadas de navegação inteligente, potência de sucção e autonomia para orientar o consumidor sobre quais valem o investimento.\nO mercado de automação residencial segue em forte expansão no país com dispositivos cada vez mais autônomos e integrados.","link":"https://exame.com/tecnologia/examelab/os-melhores-robos-aspiradores-de-2026-quais-realmente-passam-o-pano-e-valem-o-investimento/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Valor Econômico","pais":"Brazil","titulo":"Microsoft CEO Calls for 'Emergency Brake' on Artificial Intelligence Advancement","resumo":"The CEO of Microsoft emphasized the urgent need to establish robust safety mechanisms to keep pace with the accelerated development of artificial intelligence.\nThe proposal includes creating an 'emergency brake' capable of halting out-of-control autonomous systems before they pose severe risks to humanity.\nThis statement reflects growing concern among major tech leaders regarding global regulation and ethical governance in the era of advanced AI.","link":"https://valor.globo.com/google/amp/empresas/tecnologia/noticia/2026/10/10/ceo-da-microsoft-pede-um-freio-de-emergencia-para-a-ia-avancada.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"新浪网","pais":"United States","titulo":"Trump Awards US Science Medal; Elon Musk and Five Other Tech Leaders Honored","resumo":"The President of the United States presented a prestigious national scientific award to prominent figures in the technology sector. Among those honored is Elon Musk, alongside five other leaders from the innovation and technological development industry. The award highlights the contributions of these executives to the advancement of American science and the economy. The event underscores the strong ties between the federal government and the country's major tech companies.","link":"https://k.sina.com.cn/article_7811053788_m1d19338dc03301b7lo.html?from=tech","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Le nouvel Economiste","pais":"France","titulo":"IMF: Global Economy Torn Between AI and Energy Shock","resumo":"The International Monetary Fund warned that the global economy is facing a critical transition period, pressured by the transformations of artificial intelligence and disruptions in the energy sector.\nWhile AI promises to boost productivity, energy and fiscal challenges threaten growth across multiple regions.\nThe report highlights the importance of balanced policies to mitigate the risks of global inequality and financial instability.","link":"https://www.lenouveleconomiste.fr/fmi-leconomie-mondiale-tiraillee-entre-lia-et-le-choc-energetique-142031/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Sky Sports","pais":"England","titulo":"Sky Sports and Guinness Launch New Accessibility Services for Premier League Coverage","resumo":"Sky Sports has partnered with Guinness to introduce new accessibility features in its UK Premier League broadcasts. The initiatives include enhanced audio description and sign language designed to make sports consumption more inclusive. This move represents a significant breakthrough in the use of assistive technologies tailored for major live broadcasts.","link":"https://www.skysports.com/football/news/13595862/sky-sports-and-guinness-launch-new-accessibility-services-across-premier-league-coverage","categoria":"ACCESSIBILITY","lang":"en"},{"fonte":"La Razón","pais":"Spain","titulo":"HUCA Makes History in Spain with New Technology for Type 1 Diabetes Patients","resumo":"The Central University Hospital of Asturias (HUCA) has become a pioneer in Spain by implementing advanced technology for the treatment of type 1 diabetes.\nThe innovation allows for continuous and highly precise monitoring of glucose levels, improving patients' quality of life.\nThis breakthrough marks a milestone in the use of digital solutions applied to public health, reducing severe complications associated with the disease.","link":"https://www.larazon.es/asturias/huca-hace-historia-espana-nueva-tecnologia-pacientes-diabetes-tipo-1-b30m_202610116acb09e4bafd3d73635d413d.html","categoria":"HEALTH AND TECHNOLOGY","lang":"en"},{"fonte":"Webike Japan","pais":"Japan","titulo":"Honda Reveals Development Secrets of the New CB1000F in Europe","resumo":"Honda detailed the development process of the new CB1000F for the European market, highlighting the union of the classic CB-F line styling with modern technological innovations.\nThe motorcycle was engineered to deliver high performance combined with advanced riding systems, ensuring greater mechanical efficiency, comfort, and safety.\nThe launch reinforces the Japanese manufacturer's strategy to revitalize past icons using cutting-edge engineering to appeal to contemporary audiences.","link":"https://japan.webike.net/moto_news/pt-pt/honda-reveals-development-secrets-as-the-cb1000f-launches-in-europe-fusing-the-style-of-the-legendary-cb-f-with-modern-technology/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"新浪财经","pais":"China","titulo":"ChangXin's New Breakthrough: Products with 4F² Architecture Expected to Launch by Year-End","resumo":"Chinese semiconductor firm ChangXin Memory Technologies (CXMT) has announced a significant breakthrough in the development of DRAM memory by adopting the 4F² architecture.\nThis new technology promises to dramatically increase integration density and reduce manufacturing costs for memory chips.\nThe launch of the first products based on this architecture is scheduled for the end of this year.\nThis innovation reinforces the competitiveness of China's domestic chip industry on the global stage.","link":"https://finance.sina.cn/2026-10-10/detail-iniututc2096002.d.html?vt=4","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Economic Times","pais":"India","titulo":"Tricog Health Sets Goal of 100 Million Cardiac Screenings by 2030, Says CEO","resumo":"Indian health-tech startup Tricog Health has announced a target of conducting 100 million cardiac screenings by the year 2030.\nLed by CEO Dr. Charit Bhograj, the company uses artificial intelligence combined with medical diagnostics to accelerate the detection of heart problems.\nThe initiative seeks to democratize access to preventive screenings in remote regions of India and other developing countries.\nWith this expansion, Tricog aims to significantly reduce mortality rates from late-diagnosed cardiovascular diseases.","link":"https://m.economictimes.com/industry/healthcare/biotech/healthcare/tricog-health-targets-100-million-cardiac-screenings-by-2030-ceo-dr-charit-bhograj/articleshow/134866110.cms","categoria":"HEALTH AND TECHNOLOGY","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"CAR-T: The War Against Cancer Has Changed as Scientists Create Tumor-Hunting Cells","resumo":"CAR-T cell therapy represents a revolutionary advance in cancer treatment by reprogramming the patient's own immune system.\nScientists have successfully genetically modified T lymphocytes to identify and destroy tumor cells with high precision.\nThis innovative approach transforms the fight against neoplasms and brings new hope for cases previously considered incurable.\nThe impact of this discovery promises to redefine modern oncology protocols in the coming years.","link":"https://pplware.sapo.pt/ciencia/car-t-a-guerra-contra-o-cancro-mudou-cientistas-estao-a-criar-celulas-para-cacar-tumores/","categoria":"SCIENCE","lang":"en"},{"fonte":"Cassilândia Notícias","pais":"Brazil","titulo":"Technology Created by Brazilian Could Save Billions on Fertilizers in Agribusiness","resumo":"A new technology developed in Mato Grosso do Sul promises to revolutionize the agricultural sector by optimizing fertilizer application in crops.\nThe innovation has the potential to generate billions of reais in savings for producers, reducing waste and minimizing environmental impacts on the soil.\nThe breakthrough highlights the leadership of domestic science and innovation in developing high-tech solutions for agribusiness.","link":"https://www.cassilandianoticias.com.br/cassilandia/tecnologia-criada-por-cassilandense-pode-economizar-bilhoes-em-fertilizantes-no-agro","categoria":"INNOVATION","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"APOD: Ice Fishing for Cosmic Neutrinos","resumo":"The Astronomy Picture of the Day highlights a fascinating particle physics project focused on detecting cosmic neutrinos in polar regions. The technology uses sensors buried deep within the ice to capture signals from these elusive subatomic particles coming from deep space. This innovative method allows scientists to high-energy cosmic events and better understand the origins of the universe. The study exemplifies how advanced astrophysics utilizes Earth's extreme environments for space research.","link":"https://science.nasa.gov/image-article/apod-2026-october-11-ice-fishing-for-cosmic-neutrinos/","categoria":"SCIENCE","lang":"en"},{"fonte":"www.lamarseillaise.fr","pais":"France","titulo":"Trees Reveal Extraordinary Solar Eruption That Occurred 14,300 Years Ago","resumo":"Analyses of fossilized tree rings in the French Alps have revealed evidence of the largest solar storm ever recorded, which occurred more than 14,000 years ago.\nScientists measured radiocarbon spikes to identify the massive solar proton event.\nThe discovery is crucial for understanding the potential impact that similar extreme solar storms could have on modern electrical and communication grids.","link":"https://www.lamarseillaise.fr/societe/science-des-arbres-temoignent-d-une-eruption-solaire-hors-norme-il-y-a-14300-ans-LN20787628","categoria":"SCIENCE","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"AI is Creating 'Human Plus Value' for Art Made by People, But Will It Last?","resumo":"The advancement of generative artificial intelligence in the cultural sphere is driving a movement of commercial appreciation for works produced exclusively by humans. Collectors and consumers have shown a greater willingness to pay for genuinely human creations compared to those generated by machines. However, experts question whether this premium for the human factor will be sustainable in the long run.","link":"https://www.bbc.com/news/articles/c5vgjm3gk7rzo","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"La Opinión de Murcia","pais":"Spain","titulo":"Sevilla FC Bets on InjuryPro Technology, UCAM Spin-off","resumo":"Sevilla FC has signed a partnership with InjuryPro, a scientific spin-off from the Catholic University of Murcia, to apply technology in injury prevention.\nThe tool uses advanced data analysis to monitor physical load and predict the risk of muscle injuries in high-performance athletes.\nThe initiative demonstrates how academic innovation and the use of data are transforming sports medicine in professional soccer.","link":"https://www.laopiniondemurcia.es/formacion/universidades/2026/10/11/sevilla-fc-apuesta-tecnologia-injurypro-135182836.html","categoria":"INNOVATION","lang":"en"},{"fonte":"科学网—新闻","pais":"China","titulo":"DeepGEM 2.0 Pathology Genomics Large Model Officially Launched","resumo":"Version 2.0 of DeepGEM, a large artificial intelligence model focused on pathology and genomics, was officially unveiled in China.\nThe tool combines histopathological image analysis with genetic data to accelerate medical diagnoses and personalize treatments.\nFeaturing higher precision and processing capacity, the model represents a major breakthrough in the integration of AI with precision medicine.\nThe launch reinforces the country's position at the forefront of bioinformatics applied to health.","link":"https://news.sciencenet.cn/htmlnews/2026/10/572731.shtm","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The420.in","pais":"India","titulo":"Prime Minister Modi Advocates for Technology to Track the Origin of AI Content and Deepfakes","resumo":"The Prime Minister of India has made a global appeal for the development of technological solutions capable of identifying the origin of AI-generated media.\nThe statement highlights growing concern over the spread of deepfakes, misinformation, and the impacts of unregulated artificial intelligence.\nModi emphasized the importance of establishing digital watermarks and global ethical standards to ensure the integrity of information.\nThe proposal seeks to balance the advancement of technological innovation with societal security and protection against fraud.","link":"https://the420.in/pm-modi-ai-deepfake-detection-tools/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Diário do Distrito","pais":"Portugal","titulo":"Parliament Visits 3D-Printed Homes in Search of Housing Solutions","resumo":"Members of Parliament conducted a technical visit to residential developments built using 3D-printing technology.\nThe initiative aims to evaluate faster, more sustainable, and affordable construction methods to mitigate the country's housing crisis.\nThe use of automation in civil construction can drastically reduce the costs and delivery times for public housing.\nThe move signals a growing interest from the public sector in adopting technological solutions for urban social challenges.","link":"https://diariodistrito.sapo.pt/parlamento-visita-casas-feitas-por-impressao-3d-a-procura-de-respostas-para-a-habitacao/","categoria":"INNOVATION","lang":"en"},{"fonte":"Vietnam.vn","pais":"Brazil","titulo":"Integrating Artificial Intelligence in Schools Without Replacing Learning","resumo":"The introduction of artificial intelligence into the educational environment sparks urgent debates on how to balance technological innovation with the development of critical thinking.\nExperts warn of the importance of using AI as a support tool, maintaining the central role of teachers and the cognitive effort of students.\nThe initiative seeks to guide institutions in formulating ethical and efficient pedagogical guidelines for the use of new technologies.","link":"https://www.vietnam.vn/pt/dua-ai-vao-truong-hoc-khong-de-cong-nghe-lam-thay-viec-hoc","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Genocide Watch","pais":"United States","titulo":"Israel Used AI-Powered Technology to Destroy Infrastructure in Gaza","resumo":"Reports indicate the growing use of advanced artificial intelligence systems in military operations in the Gaza Strip to map and target infrastructure. The integration of machine learning algorithms on the battlefield accelerates the decision-making process and target selection in armed conflicts. The case raises global ethical and regulatory debates regarding the role of AI in defense strategies and international humanitarian law. The situation highlights the rapid militarization of emerging technologies in modern warfare scenarios.","link":"https://www.genocidewatch.com/single-post/israel-used-ai-assisted-technology-to-destroy-infrastructure-in-gaza","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Actu.fr","pais":"France","titulo":"Flying Saucer 'Lands' in French Village and Attracts Curious Onlookers","resumo":"A flying saucer-shaped structure has been installed in the small municipality of Côte-d’Or in France, catching the attention of local residents and visitors.\nFar from being an alien invasion, the futuristic architectural work combines innovative design and alternative housing concepts.\nThe initiative stands out as a peculiar attraction that blends art, construction technology, and popular curiosity in the region.","link":"https://actu.fr/bourgogne-franche-comte/vitteaux_21710/cette-soucoupe-volante-a-atterri-dans-un-village-de-cote-d-or-et-ce-n-est-pas-de-la-science-fiction_64904026.html","categoria":"TRENDS","lang":"en"},{"fonte":"La Nueva España","pais":"Spain","titulo":"Science in a Tweet: Telescope Under the Ice","resumo":"Scientists highlight the advancement of telescopes installed beneath thick layers of ice in polar regions to capture subatomic particles such as neutrinos.\nThese astronomical facilities use dense ice as a natural detection medium to observe nearly imperceptible cosmic signals.\nThe innovative approach expands the frontiers of astrophysics by allowing the study of extreme and remote phenomena in the universe.","link":"https://www.lne.es/opinion/2026/10/11/ciencia-tuit-telescopio-hielo-135208327.html","categoria":"SCIENCE","lang":"en"},{"fonte":"BBC","pais":"China","titulo":"Why China Considers AI That Mimics Human Relationships a Threat","resumo":"Chinese regulatory authorities are intensifying their focus on artificial intelligence systems designed to simulate emotional relationships with humans.\nThe Chinese government fears that emotional attachment to chatbots could generate negative psychological impacts, in addition to manipulating behavior and compromising data.\nThis concern drives debates on the creation of new guidelines to limit the simulation of empathy and affection by algorithms.\nThe move reflects a pioneering stance in the social control of interpersonal technology.","link":"https://www.bbc.com/portuguese/articles/c6kg07ggd9y2o","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"OpenGov Asia","pais":"India","titulo":"India Strengthens Science and Technology Clusters Through Collaboration","resumo":"India is boosting its national innovation ecosystem by strengthening science and technology clusters through strategic partnerships.\nThe initiative brings together universities, industrial sectors, and government bodies to optimize research and accelerate technological development.\nThe main objective is to transform scientific discoveries into scalable commercial solutions to address the country's socioeconomic challenges.\nThis collaborative approach aims to position India as a global reference hub in research and development.","link":"https://opengovasia.com/india-strengthens-science-and-technology-clusters-through-collaboration/","categoria":"SCIENCE AND TECHNOLOGY","lang":"en"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Obama Points to 'Major Challenge' in Coordination Between US and China on Artificial Intelligence","resumo":"Former US President Barack Obama warned of the complexity of technological diplomacy between the two largest global superpowers.\nThe race for hegemony in artificial intelligence requires urgent international agreements to avoid existential and cyber risks.\nAccording to Obama, the lack of shared global governance can intensify geopolitical tensions and destabilize the tech market.\nThe accelerated advancement of AI requires ethical and security guidelines established jointly by major nations.","link":"https://www.cmjornal.pt/tecnologia/amp/obama-aponta-grande-desafio-na-coordenacao-entre-eua-e-china-sobre-ia","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Metrópoles","pais":"Brazil","titulo":"Instability in Science Funding Harms Brazil's Chances of Winning a Nobel Prize","resumo":"Constant fluctuations in public investments directed toward research and development in Brazil continue to be one of the main obstacles for the country to win a Nobel Prize.\nScientists and researchers warn that the lack of predictable, long-term budgets discourages high-impact projects and drives brain drain.\nThe consolidation of a stable scientific policy is seen as fundamental to placing national innovation on an internationally competitive level.","link":"https://www.metropoles.com/ciencia/instabilidade-em-recursos-para-a-ciencia-atrapalha-brasil-a-ganhar-um-nobel","categoria":"SCIENCE","lang":"en"},{"fonte":"Universe Today","pais":"United States","titulo":"Preliminary Lunar Science Report for the Artemis II Mission is Released!","resumo":"NASA and scientific partners have released the preliminary report with research guidelines and objectives for the crewed Artemis II mission. The document details the experiments scheduled to analyze the surface and radiation environment surrounding the Moon. The mission marks a decisive step in humanity's return to lunar exploration and in preparation for future journeys to Mars. The collected data promises to transform our scientific understanding of the formation of our natural satellite and the solar system.","link":"https://www.universetoday.com/articles/the-preliminary-lunar-science-report-for-artemis-ii-is-out","categoria":"AEROSPACE","lang":"en"},{"fonte":"ladepeche.fr","pais":"France","titulo":"Saint-Roman Mystery: Science Seeks French Aviators Who May Have Crossed the Atlantic Before Lindbergh","resumo":"A century after the disappearance of the Saint-Roman aircraft, researchers are using advanced scientific technologies to solve the mystery of the Atlantic crossing.\nThe expedition is searching for evidence that French aviators completed the nonstop flight before Charles Lindbergh's famous milestone.\nThe use of ocean mapping and wreckage analysis renews hopes of rewriting a decisive chapter in aviation history.","link":"https://www.ladepeche.fr/2026/10/11/le-mystere-saint-roman-un-siecle-apres-la-science-sur-les-traces-des-aviateurs-francais-qui-ont-peut-etre-traverse-latlantique-avant-lindbergh-13594506.php","categoria":"SCIENCE","lang":"en"},{"fonte":"Investing.com España","pais":"Spain","titulo":"Global Trust in Science Falls to Levels Below Pre-Pandemic Period","resumo":"A recent study warns of a drop in global public trust regarding science, reaching rates lower than those before the pandemic.\nThe rise of misinformation and political polarization are pointed out as the main drivers of skepticism against scientific data.\nExperts reinforce the urgent need for more transparent communication strategies to recover the credibility of institutions.","link":"https://es.investing.com/news/economy-news/la-confianza-mundial-en-la-ciencia-cae-por-debajo-de-niveles-prepandemia-3868779","categoria":"TRENDS","lang":"en"},{"fonte":"东方财富","pais":"China","titulo":"China Proposes Ban on Fully Flush Door Handles and Folding Screens in Vehicles","resumo":"Four government bodies in China have opened a public consultation for new automotive safety regulations that ban the use of fully hidden door handles in cars.\nThe measure aims to ensure the mechanical opening of doors during emergencies and accidents, where electrical failure of retractable handles poses a high risk.\nAdditionally, the proposal vets the use of folding screens on vehicle dashboards to avoid driver distraction and mechanical failures.\nThe regulation could profoundly impact the design of electric vehicles manufactured in the country.","link":"https://wap.eastmoney.com/a/202610103891960543.html","categoria":"REGULATION","lang":"en"},{"fonte":"Vinetur","pais":"India","titulo":"Beer Sales in Karnataka Surge 49.69% Following Tax Policy Revision","resumo":"Beer sales in the Indian state of Karnataka registered an expressive growth of 49.69% following changes to the tax structure on alcohol.\nThe revision of fiscal policies made prices more competitive, stimulating consumption and boosting state revenue.\nThe increase in the volume sold reflects a direct change in consumer market behavior and the dynamics of alcoholic beverages in the region.\nExperts point out that the economic measure serves as a model for analyzing the impacts of fiscal adjustments on retail.","link":"https://www.vinetur.com/pt/20261010108710/karnataka-beer-sales-jumped-4969-under-revised-alcohol-tax-policy.html","categoria":"BUSINESS","lang":"en"},{"fonte":"The Portugal News","pais":"Portugal","titulo":"Portuguese university develops new technology to monitor microalgae populations","resumo":"Researchers at a university in Portugal have created an advanced technological system dedicated to the continuous monitoring of microalgae. The innovation makes it possible to monitor the dynamics of these aquatic ecosystems in real time, helping with environmental preservation and aquaculture. With greater precision in data collection, the tool prevents the emergence of toxic blooms that threaten marine biodiversity. The solution reinforces the role of Portuguese academia in the development of biotechnologies applied to ocean sustainability.","link":"https://www.theportugalnews.com/pt/noticias/2026-10-10/portugal-universidade-desenvolve-nova-tecnologia-para-monitorizar-populacoes-de-microalgas/1098837","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Globo","pais":"Brazil","titulo":"Largest wind tower in the world surprises with dimensions and generation capacity","resumo":"The construction of the world's tallest wind tower marks a new level in the renewable energy and large engineering sector. Designed to capture winds at high altitudes with greater efficiency, the structure promises to significantly expand the production of clean energy on a large scale. The novelty generates high expectations in the global market for accelerating the energy transition and reducing long-term operating costs.","link":"https://revistagalileu.globo.com/google/amp/tecnologia/noticia/2026/10/torre-eolica-mais-alta-do-mundo-surpreende-pelo-tamanho-e-gera-expectativas.ghtml","categoria":"CLEAN ENERGY","lang":"en"},{"fonte":"Boston 25 News","pais":"United States","titulo":"Boston Museum of Science opens new immersive space measuring almost 1,000 square meters","resumo":"The Boston Museum of Science has opened the doors to a new immersive facility designed to transform science education and the visitor experience. The space integrates high-tech projections, interactive simulations and multi-sensory environments to explore complex concepts of modern science. The initiative seeks to attract audiences of all ages and encourage interest in careers in the areas of technology and innovation. The attraction consolidates itself as a new cultural and educational landmark in the state of Massachusetts.","link":"https://www.boston25news.com/news/local/boston-museum-science-opens-new-10000-square-foot-immersive-venue/EGTAWLOXORGOTDDGTU7AFOUM5M/","categoria":"INNOVATION","lang":"en"},{"fonte":"Investing.com France","pais":"France","titulo":"Global trust in science falls below pre-pandemic levels","resumo":"A new international study has revealed that public trust in science and scientists has suffered a sharp decline on a global scale. The current rate is lower than that recorded before the COVID-19 pandemic, driven by misinformation and political polarization. Experts warn that this loss of credibility could compromise the fight against future health crises and the advancement of evidence-based policies.","link":"https://fr.investing.com/news/economy-news/la-confiance-mondiale-envers-la-science-chute-sous-les-niveaux-davant-la-pandemie-3629801","categoria":"SCIENCE","lang":"en"},{"fonte":"Elblogoferoz","pais":"Spain","titulo":"The secret to natural smiles: how digital technology repairs teeth imperceptibly","resumo":"Digital dentistry is revolutionizing restorative procedures through the use of 3D scanning and ultra-high-precision printing. These tools allow the creation of prosthetics perfectly adapted to the anatomy and natural color of each patient's teeth. In addition to the imperceptible aesthetic gain, the technology reduces treatment time and significantly improves comfort during consultations.","link":"https://www.elblogoferoz.com/2026/10/11/salud-el-secreto-de-las-sonrisas-naturales-como-la-tecnologia-digital-logra-reparar-dientes-de-forma-imperceptible/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Science et vie","pais":"China","titulo":"128,000-Year-Old Underground Forest Discovered 626 Meters Deep in China","resumo":"Scientists have discovered a preserved underground forest about 128,000 years old in the Xiaozhai Tiankeng natural abyss, in China. Located at a depth of 626 meters, the isolated ecosystem is home to several extremely rare and adapted plant and animal species. The find offers a unique opportunity to study past biological evolution and climate in a virtually untouched environment. The discovery is considered one of the greatest ecological relics recorded in recent history.","link":"https://www.science-et-vie.com/nature-et-environnement/une-foret-souterraine-vieille-de-128-000-ans-a-ete-decouverte-a-626-metres-de-profondeur-dans-le-puits-celeste-chinois-xiaozhai-tiankeng-et-elle-regorge-despeces-tres-rares-238536.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"JP Morgan Chase stands out as the most technology-advanced bank","resumo":"JP Morgan Chase consolidated its leadership in the global financial sector by appearing as the most mature institution in technological adoption. The bank has invested billions of dollars in modernizing infrastructure, using artificial intelligence and automating services. This digital strategy allowed us to optimize internal processes, increase cybersecurity and improve the customer experience. The continuous innovation model adopted by the institution serves as a benchmark for the digital transformation of the banking sector.","link":"https://jornaleconomico.sapo.pt/noticias/jp-morgan-chase-e-o-banco-mais-avancado-na-tecnologia/","categoria":"BUSINESS","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Lula's campaign accuses Meta of electoral interference and sues TSE and ANPD","resumo":"The Brazilian presidential campaign formalized complaints against Meta alleging possible attempts to interfere in the electoral process through its platforms. The case was taken to the Superior Electoral Court and the National Data Protection Authority to investigate irregularities in the promotion and use of data. The episode intensifies the debate about the role of Big Techs in the integrity of elections and the regulation of social networks in the country.","link":"https://g1.globo.com/politica/eleicoes/2026/noticia/2026/10/10/campanha-de-lula-acusa-meta-de-tentar-interferir-nas-eleicoes-e-diz-que-acionara-tse-e-anpd.ghtml","categoria":"SOCIAL MEDIA","lang":"en"},{"fonte":"The Motley Fool","pais":"United States","titulo":"Best Artificial Intelligence Action: Arm vs. Arm Marvell Technology","resumo":"A comparative analysis evaluates the growth potential and market value of two semiconductor giants: Arm and Marvell Technology. Both play key roles in providing specialized architecture and chips to power data centers and AI systems. The report examines financial metrics, competitive advantages, and demand projections as the artificial intelligence industry expands. The dispute reflects the strong competition in the hardware market essential for the technological infrastructure of the future.","link":"https://www.fool.com/coverage/better-buy/2026/10/10/better-artificial-intelligence-stock-arm-vs-marvell-technology/","categoria":"BUSINESS","lang":"en"},{"fonte":"JHM","pais":"France","titulo":"Science Festival highlights discoveries about the Solar System","resumo":"This year's edition of the Science Festival brought the Solar System as one of its central themes for scientific dissemination. The event brought together astronomers and the general public to explore new data about planets, asteroids and astronomical evolution. The initiative sought to demystify complex astrophysical concepts through interactive workshops and immersive exhibitions aimed at all ages.","link":"https://jhm.fr/la-fete-de-la-science-a-mis-en-lumiere-le-systeme-solaire/","categoria":"ASTRONOMY","lang":"en"},{"fonte":"Noticias de Gipuzkoa","pais":"Spain","titulo":"From robotics to cancer to forests: science meets in Bergara","resumo":"The municipality of Bergara will host a multidisciplinary scientific meeting addressing central themes such as robotics, oncology and sustainable forest management. The event will bring together experts from different disciplines to share cutting-edge advances and debate new paths for technological research. The initiative seeks to bring society closer to recent scientific developments and highlight their impact on everyday life.","link":"https://www.noticiasdegipuzkoa.eus/gipuzkoa/bertan/2026/10/10/robotica-cancer-pasando-bosques-ciencia-11637577.html","categoria":"SCIENCE","lang":"en"},{"fonte":"新浪网","pais":"China","titulo":"CTO of Shanghai Wafer Presents Talk on Specialized Chips, AI Computing Power and Materials Science","resumo":"Shanghai Wafer Material Co. Chief Technology Officer Li Wenzhong will present a detailed study on the development of specialized chips aimed at practical applications. The talk will address the challenges of energy consumption and computational capacity required by advances in artificial intelligence. New approaches in semiconductor materials science to optimize the performance of AI hardware will be discussed. The event highlights Chinese industry's efforts to overcome the physical bottlenecks of modern microelectronics.","link":"https://k.sina.com.cn/article_5953466437_162dab0450670bemsq.html?from=tech","categoria":"SEMICONDUCTORS","lang":"en"},{"fonte":"4gnews","pais":"Portugal","titulo":"OLED vs IPS: Which is the best screen technology for gaming?","resumo":"The choice between OLED and IPS panels has become one of the central debates for gaming and technology enthusiasts. While OLED stands out for its deep blacks, infinite contrast and almost instantaneous response time, IPS offers excellent color accuracy and greater durability. Technical analyzes indicate that the decision depends on the user's priorities, considering the budget and the usage environment. The evolution of these screen technologies continues to dictate the standards of the gaming monitor and TV market.","link":"https://4gnews.pt/oled-vs-ips-qual-a-melhor-tecnologia-de-ecra-para-jogar/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Finanças, Câmbio e Investimentos","pais":"Brazil","titulo":"Global trust in science falls below pre-pandemic levels","resumo":"A new global survey revealed that the population's level of trust in science and scientists registered an unprecedented drop, falling below the pre-pandemic level. The phenomenon is driven by the accelerated spread of misinformation, political polarization and growing distrust in research institutions. The scenario raises an alert about the challenges of scientific communication and the urgent need to rebuild public credibility in the scientific method.","link":"https://br.investing.com/news/economy-news/confianca-global-na-ciencia-cai-abaixo-dos-niveis-prepandemia-2088448","categoria":"SCIENCE","lang":"en"},{"fonte":"STAT","pais":"United States","titulo":"North Americans trust science more than citizens of other countries, survey finds","resumo":"A new global study reveals that the United States population has higher levels of trust in scientific institutions and discoveries than the average in other countries surveyed. The research analyzes public perception about the impact of scientific advances on society, health and the global economy. The result highlights the strong culture of innovation and the prestige of the academic and research community in the United States. The data offers valuable insights for the formulation of public communication and science education policies.","link":"https://www.statnews.com/2026/10/10/u-s-trust-science-higher-than-other-nations-wellcome-survey/","categoria":"SCIENCE","lang":"en"},{"fonte":"lanouvellerepublique.fr","pais":"France","titulo":"'Learning while having fun is much better!': in Poitiers, the Science Festival delights families","resumo":"The city of Poitiers hosted the Science Festival with a program aimed at engaging families and young students.\nHands-on activities and playful experiments allowed participants to learn scientific concepts in an accessible and interactive way.\nThe event reinforces the importance of scientific popularization to spark the new generations' interest in technology and innovation careers.","link":"https://www.lanouvellerepublique.fr/poitiers/apprendre-en-s-amusant-c-est-quand-meme-mieux-a-poitiers-la-fete-de-la-science-emerveille-les-familles-1791659254","categoria":"EDUCATION","lang":"en"},{"fonte":"Yahoo Finanzas","pais":"Spain","titulo":"Could a change of government in Spain affect energy policy?","resumo":"Political instability in Spain is sparking debate over the direction of the energy sector and compliance with the country's ecological transition goals.\nAnalysts are assessing how potential changes in government could impact incentives for renewable energy and the regulation of clean markets.\nThe scenario brings strategic uncertainty for investors and technology companies focused on modernizing the energy matrix.","link":"https://es-us.finanzas.yahoo.com/noticias/cambio-gobierno-espa%C3%B1a-afectar-pol%C3%ADtica-021228495.html","categoria":"ENERGY","lang":"en"},{"fonte":"South China Morning Post","pais":"China","titulo":"Nanotechnology Expert Antonio Facchetti Joins HKUST from Georgia Tech","resumo":"Renowned scientist Antonio Facchetti, an expert in nanotechnology and flexible electronics, has left Georgia Tech to join the faculty of the Hong Kong University of Science and Technology.\nRecognized for his research in organic semiconductor materials, his hiring reinforces the attractiveness of local institutions to top global talent.\nThe researcher's arrival is expected to boost advanced projects in next-generation electronic devices within the Chinese academic ecosystem.\nThe move highlights the strengthening of cutting-edge scientific research in Asia.","link":"https://www.scmp.com/news/china/science/article/3370290/nanotechnology-expert-antonio-facchetti-joins-hkust-georgia-tech-us","categoria":"SCIENCE","lang":"en"},{"fonte":"O Mirante","pais":"Portugal","titulo":"Abrantes Technological Free Zone gains dedicated team for investment attraction","resumo":"The Abrantes Technological Free Zone now has a specialized team to boost the acquisition of capital and new projects.\nThe space functions as a regulatory testing environment that facilitates the development of innovations and new digital solutions.\nWith the new management structure, the region aims to attract cutting-edge companies and create a dynamic entrepreneurial ecosystem.\nThe initiative positions Abrantes as a strategic hub for testing and expanding emerging technologies in Portugal.","link":"https://omirante.pt/sociedade/2026-10-10-zona-livre-tecnologica-de-abrantes-ganha-equipa-propria-para-captar-investimento-6a02f8a3","categoria":"INVESTMENT","lang":"en"},{"fonte":"Exame","pais":"Brazil","titulo":"The best robot vacuums of 2026: efficient models offering great value","resumo":"A detailed evaluation of the leading robot vacuum options launched in 2026 analyzes which models efficiently deliver on the promise of vacuuming and mopping.\nThe review compares advanced smart navigation features, suction power, and battery life to guide consumers on which ones are worth the investment.\nThe smart home automation market continues to expand rapidly across the country with increasingly autonomous and integrated devices.","link":"https://exame.com/tecnologia/examelab/os-melhores-robos-aspiradores-de-2026-quais-realmente-passam-o-pano-e-valem-o-investimento/","categoria":"TECHNOLOGY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
