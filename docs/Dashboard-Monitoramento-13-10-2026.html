@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-AItlSV1QAFQYpqSZe7UX1/5h'; script-src 'nonce-AItlSV1QAFQYpqSZe7UX1/5h'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="AItlSV1QAFQYpqSZe7UX1/5h">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">13/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="AItlSV1QAFQYpqSZe7UX1/5h">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"GZH","pais":"Brasil","titulo":"Geely EX5 EM-i, híbrido plug-in: conforto, sofisticação e avançada tecnologia","resumo":"O novo SUV híbrido plug-in da Geely chega ao mercado unindo alto padrão de conforto e soluções tecnológicas avançadas. O modelo aposta em eficiência energética e conectividade para atrair consumidores exigentes. A novidade reforça a tendência de eletrificação e modernização no setor automotivo global.","link":"https://gauchazh.clicrbs.com.br/comportamento/carros/sobre-rodas/noticia/2026/10/geely-ex5-em-i-hibrido-plug-in-conforto-sofisticacao-e-avancada-tecnologia-cmv6692ys00cd013qvkzwswjv.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Axios","pais":"Estados Unidos","titulo":"ASSISTA: Conversas sobre a crescente economia de biotecnologia e ciências da vida em Huntsville","resumo":"Especialistas discutem o rápido avanço e a expansão do setor de biotecnologia na região. O ecossistema local atrai investimentos significativos e impulsiona a inovação científica. A iniciativa fortalece a posição da cidade como um polo emergente de saúde e tecnologia nos Estados Unidos.","link":"https://www.axios.com/2026/10/13/watch-beyond-the-breakthrough-huntsvilles-biotech-rise","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Les Numériques","pais":"França","titulo":"“Exatamente a imagem que eu queria”: francês captura raios vermelhos invisíveis a olho nu e foto corre o mundo","resumo":"Um fotógrafo francês conseguiu registrar raros relâmpagos vermelhos na alta atmosfera que são praticamente imperceptíveis a olho nu. A impressionante imagem rapidamente ganhou repercussão internacional e encantou entusiastas da ciência e astronomia. O feito destaca a beleza dos fenômenos atmosféricos ocultos e o avanço da fotografia especializada.","link":"https://www.lesnumeriques.com/science-espace/precisement-l-image-que-je-voulais-ce-francais-a-capture-des-eclairs-rouges-presque-invisibles-a-l-oeil-nu-sa-photo-fait-le-tour-du-monde-n263244.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Paramédicos do Nordeste da Inglaterra experimentam ferramenta de anotações por IA","resumo":"Profissionais de saúde de emergência na região Nordeste estão testando uma nova inteligência artificial para registrar dados de atendimento. A tecnologia visa reduzir a carga burocrática dos paramédicos após chamados. Com isso, espera-se que o tempo de resposta e o foco no cuidado ao paciente sejam otimizados de forma significativa.","link":"https://www.bbc.com/news/articles/cqp9gy99y2ldo","categoria":"SAÚDE","lang":"pt"},{"fonte":"National Geographic España","pais":"Espanha","titulo":"Nem vulcões nem tectônica de placas: o Sol e a Lua podem desencadear terremotos e a ciência finalmente sabe como","resumo":"Um novo estudo científico revela que forças gravitacionais exercidas pelo Sol e pela Lua têm um papel direto na deflagração de tremores terrestres. Essa descoberta surpreendente redefine a compreensão tradicional sobre a sismologia e abre portas para métodos inéditos de monitoramento geológico global. A pesquisa promete aprimorar os sistemas de alerta precoce e mitigar riscos em regiões altamente vulneráveis a catástrofes naturais.","link":"https://www.nationalgeographic.es/ciencia/ni-volcanes-ni-solo-tectonica-placas-sol-y-luna-pueden-desencadenar-terremotos-y-ciencia-por-fin-sabe-como_29513","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Deutschlandfunk","pais":"Alemanha","titulo":"Ministro Digital Wildberger quer taxar receitas de IA na Alemanha","resumo":"O ministro digital propõe a implementação de uma nova tributação sobre as receitas geradas por inteligência artificial no país. A medida busca regular o mercado tecnológico emergente e garantir retorno financeiro para a economia local. Especialistas debatem os impactos dessa regulamentação na inovação e na competitividade das empresas alemãs no cenário global.","link":"https://www.deutschlandfunk.de/digitalminister-wildberger-will-ki-umsaetze-in-deutschland-besteuern-100.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"宗像経済新聞","pais":"Japão","titulo":"Exposição de tecnologias avançadas, abertura do CEATEC","resumo":"A feira de tecnologia CEATEC foi oficialmente aberta, destacando inovações voltadas para o futuro da sociedade. O evento reúne empresas e pesquisadores para apresentar avanços disruptivos em diversas áreas. A expectativa é atrair um grande público interessado nas tendências tecnológicas globais.","link":"https://munakata.keizai.biz/gpnews/1773414/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"TradingKey","pais":"China","titulo":"CXMT avança na tecnologia 4F²: qual é o tamanho da sua ameaça de mercado para Samsung, SK Hynix e Kioxia?","resumo":"A fabricante chinesa CXMT está avançando significativamente no desenvolvimento da tecnologia de memória 4F². Este progresso técnico desafia diretamente líderes globais do setor, como Samsung, SK Hynix e Kioxia. O movimento acirra a concorrência no mercado de semicondutores e demonstra a crescente autonomia tecnológica da China.","link":"https://www.tradingkey.com/es/analysis/stocks/us-stocks/262213155-cxmt-4f2-dram-threat-samsung-sk-hynix-kioxia-tradingkey","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Manufacturing Today India","pais":"Índia","titulo":"Tecnologia embarcada: A inteligência por trás dos eletrônicos e as carreiras do amanhã","resumo":"A evolução da tecnologia embarcada está transformando a indústria eletrônica moderna e definindo novas demandas para o mercado de trabalho. O artigo discute como sistemas inteligentes moldam o futuro profissional e exigem novas competências técnicas. Trata-se de um panorama essencial para entender a direção da inovação e o desenvolvimento de carreiras tecnológicas.","link":"https://www.manufacturingtodayindia.com/embedded-technology-transformation","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"HealthNews","pais":"Portugal","titulo":"Câncer digestivo: tecnologia só funciona se o paciente estiver no centro","resumo":"Especialistas discutem o papel central da tecnologia no tratamento de tumores digestivos e na melhoria da precisão médica. O debate reforça que a inovação só traz resultados reais quando colocada a serviço do bem-estar do paciente. A abordagem integra modernos recursos clínicos com o acompanhamento humanizado para garantir melhores prognósticos e qualidade de vida.","link":"https://healthnews.pt/2026/10/13/cancro-digestivo-tecnologia-so-serve-se-o-doente-estiver-no-centro-2/","categoria":"SAÚDE","lang":"pt"},{"fonte":"Agência FAPESP","pais":"Brasil","titulo":"FAPESP assina carta de intenções com ministério da Baviera para ampliar cooperação científica","resumo":"A FAPESP firmou uma nova parceria estratégica com o governo da Baviera para fomentar o intercâmbio em pesquisas científicas. A iniciativa visa financiar conjuntamente projetos inovadores entre instituições do estado de São Paulo e da região alemã. O acordo fortalece o desenvolvimento tecnológico e acadêmico bilateral.","link":"https://agencia.fapesp.br/fapesp-assina-carta-de-intencoes-com-ministerio-da-baviera-para-ampliar-cooperacao-cientifica/59378","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"AIP.ORG","pais":"Estados Unidos","titulo":"Protegendo dados com tecnologia quântica baseada em satélites","resumo":"Pesquisadores desenvolvem novos métodos de criptografia quântica utilizando comunicação via satélite. A tecnologia promete revolucionar a segurança cibernética global contra ameaças futuras. Governos e empresas buscam essa inovação para garantir a inviolabilidade de informações sensíveis.","link":"https://www.aip.org/scilights/protecting-data-with-satellite-based-quantum-technology","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Nice-Matin","pais":"França","titulo":"ADN, IA e impressões digitais: como a ciência ajuda investigadores em crimes? O general François Daoust confessa tudo","resumo":"O general François Daoust detalha como a tecnologia e a ciência forense moderna transformaram a investigação criminal. O uso de inteligência artificial, análise de DNA e rastreamento de impressões digitais tornou-se indispensável para solucionar casos complexos. A entrevista revela os bastidores e o impacto dessas ferramentas inovadoras no trabalho policial.","link":"https://www.nicematin.com/societe/justice/adn-ia-empreintes-numeriques-comment-la-science-aide-les-enqueteurs-sur-un-crime-le-general-francois-daoust-passe-aux-aveux-10740019","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Wales 247","pais":"Inglaterra","titulo":"Empresa científica de Cardiff inicia busca pelos próximos jovens cientistas do País de Gales","resumo":"Uma importante organização de ciência sediada em Cardiff lançou uma iniciativa para descobrir talentos juvenis na região. O projeto busca incentivar o interesse pela pesquisa científica e inovação tecnológica entre estudantes. A ação visa preparar a próxima geração para os desafios globais do setor tecnológico.","link":"https://www.wales247.co.uk/cardiff-science-firm-launches-search-for-wales-next-young-scientists","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Infobae","pais":"Espanha","titulo":"O avanço matemático da IA empurra a ciência para um território novo e estranho","resumo":"A inteligência artificial alcançou patamares matemáticos complexos que estão transformando radicalmente a forma como cientistas realizam pesquisas e formulações teóricas. Esse progresso acelera descobertas em múltiplos campos acadêmicos, gerando debates profundos sobre os limites entre o raciocínio humano e o computacional. O impacto imediato é a criação de modelos preditivos altamente sofisticados que desafiam paradigmas vigentes.","link":"https://www.infobae.com/economist/2026/10/13/el-avance-matematico-de-la-ia-empuja-a-la-ciencia-hacia-un-territorio-nuevo-y-extrano/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Rover de Marte 'Perseverance' quebra recorde de distância","resumo":"O veículo robótico da NASA superou sua marca anterior de percurso em solo marciano, estabelecendo um novo marco na exploração espacial. A conquista demonstra a durabilidade e a eficácia dos sistemas autônomos de navegação do rover. Os dados coletados continuam a fornecer informações cruciais sobre a geologia do planeta vermelho e a busca por sinais de vida.","link":"https://wissenschaft.de/artikel/marsrover-perseverance-knackt-entfernungsrekord","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ロボスタ","pais":"Japão","titulo":"NEDO exibe tecnologias de ponta, como robôs de IA e direção autônoma no CEATEC 2026","resumo":"A organização NEDO marca presença no CEATEC 2026 com demonstrações interativas de robótica avançada e veículos autônomos. As exibições visam mostrar o impacto prático dessas tecnologias na automação industrial e na mobilidade urbana. A iniciativa reforça o compromisso do Japão com a inovação de vanguarda.","link":"https://robotstart.info/article/2026/10/13/382511.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Bloomberg.com","pais":"China","titulo":"CXMT da China reivindica progresso revolucionário em tecnologia de memória, superando rivais coreanos","resumo":"A empresa chinesa CXMT anunciou avanços expressivos em suas tecnologias proprietárias de chips de memória. A conquista coloca a companhia à frente de concorrentes tradicionais da Coreia do Sul em marcos importantes de pesquisa. O feito reforça o dinamismo da indústria nacional de semicondutores frente às pressões externas.","link":"https://www.bloomberg.com/jp/news/articles/2026-10-13/TMTY8LKGIFPU00?srnd=jp-homepage","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Instagram","pais":"Índia","titulo":"Dixon Technologies da Índia firma parceria com a Gemtek Technology para impulsionar fabricação de telecomunicações","resumo":"A Dixon Technologies estabeleceu uma joint venture estratégica com a taiwanesa Gemtek Technology para fortalecer a produção de equipamentos de rede na Índia. A colaboração utiliza expertise em módulos ópticos de alta velocidade para expandir a capacidade industrial local. Essa aliança reflete o avanço do país como polo global de manufatura tecnológica avançada.","link":"https://www.instagram.com/p/DebHdUAjChw/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Correio do Minho","pais":"Portugal","titulo":"Viana do Castelo: Criação de três Centros de Tecnologia e Inovação representa investimento superior a 13,5 milhões","resumo":"A região de Viana do Castelo anuncia um robusto aporte financeiro para impulsionar a infraestrutura tecnológica local. O projeto prevê a implementação de três novos polos voltados à inovação, pesquisa e desenvolvimento industrial. A iniciativa visa dinamizar a economia regional, atrair talentos e consolidar Portugal como referência em polos tecnológicos avançados.","link":"https://www.correiodominho.pt/noticias/viana-do-castelo-criacao-de-tres-centros-de-tecnologia-e-inovacao-representa-investimento-superior-a-13-5-milhoes/171570","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"iPhone 18 Pro: veja como melhorar seus vídeos com controles de foco e luz","resumo":"Novas funções avançadas de captura de vídeo no iPhone 18 Pro permitem ajustes precisos de foco e iluminação em tempo real. Usuários podem explorar recursos profissionais diretamente pelo aplicativo de câmera nativo do smartphone. A tecnologia promete elevar o padrão de produções audiovisuais feitas por criadores de conteúdo móvel.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/10/13/iphone-18-pro-veja-como-melhorar-seus-videos-com-controles-de-foco-e-luz.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Popular Science","pais":"Estados Unidos","titulo":"Dentes humanos apontam quando o chumbo começou a envenenar cidade medieval","resumo":"Cientistas analisaram arcadas dentárias antigas para rastrear os níveis históricos de contaminação por chumbo. A descoberta revela detalhes cruciais sobre o impacto ambiental e industrial na saúde das populações medievais. O estudo demonstra a precisão de novas técnicas arqueológicas e científicas.","link":"https://www.popsci.com/science/teeth-lead-poisoning-medieval-england/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Vie publique","pais":"França","titulo":"O lugar da ciência na França: uma seleção de discursos desde 1980","resumo":"Uma compilação histórica reúne os discursos mais marcantes sobre o papel da ciência na sociedade francesa ao longo das últimas décadas. A iniciativa destaca a evolução das políticas públicas de incentivo à pesquisa e ao desenvolvimento tecnológico no país. O material serve como reflexão sobre a importância do conhecimento científico para o futuro nacional.","link":"https://www.vie-publique.fr/discours-dans-lactualite/304919-discours-publics-sur-le-theme-de-la-science-en-france-depuis-1980","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Al Jazeera","pais":"Inglaterra","titulo":"IA pode se autorreplicar em dispositivos domésticos dentro de 'meses', diz Anthropic","resumo":"Pesquisadores da Anthropic alertaram que avanços rápidos na inteligência artificial podem permitir a autorreplicação autônoma em aparelhos comuns. O fenômeno representa um marco preocupante para a segurança cibernética e o controle de sistemas inteligentes. Especialistas reforçam a urgência de regulamentações mais rígidas para conter riscos imprevistos.","link":"https://www.aljazeera.com/economy/2026/10/13/ai-could-self-replicate-on-home-devices-within-months-anthropic-says","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Sinc","pais":"Espanha","titulo":"O laboratório invisível: como a supercomputação está reescrevendo o método científico","resumo":"O uso intensivo de supercomputadores permite simular fenômenos complexos em escalas antes consideradas impossíveis pela experimentação física tradicional. Essa revolução digital acelera a validação de hipóteses científicas em áreas como física quântica, medicina e climatologia. Com isso, o método científico tradicional ganha uma camada virtual de alta precisão que redefine o futuro da inovação.","link":"https://www.agenciasinc.es/Reportajes/El-laboratorio-invisible-como-la-supercomputacion-esta-reescribiendo-el-metodo-cientifico","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Spektrum der Wissenschaft","pais":"Alemanha","titulo":"»A Física da Viagem Interestelar«: Matemática avançada – não apenas para astronautas","resumo":"Uma análise profunda sobre os conceitos matemáticos e físicos necessários para viabilizar futuras viagens entre sistemas estelares. O artigo explora como teorias complexas deixam de ser ficção científica e passam a ocupar o centro dos debates acadêmicos. A obra destaca a importância da educação científica rigorosa para a próxima geração de pesquisadores espaciais.","link":"https://www.spektrum.de/rezension/buchkritik-zu-the-physics-of-interstellar-travel/2349436","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Newscast.jp","pais":"Japão","titulo":"Cidade de Ebina, Sotetsu Bus e NTT Docomo Business firmam acordo para implementar direção autônoma","resumo":"Uma nova parceria estratégica foi estabelecida para promover a implementação prática de tecnologias de direção autônoma no transporte público. A colaboração une governança local e gigantes da tecnologia para resolver desafios de mobilidade. O projeto piloto promete transformar a eficiência dos serviços de ônibus na região.","link":"https://newscast.jp/smart/news/4025680","categoria":"MOBILIDADE","lang":"pt"},{"fonte":"经济参考报","pais":"China","titulo":"Advanced Micro-Fabrication Equipment estreia na Expo Industrial de Xangai 2026 e equipamento de corrosão vence prêmio CIIF","resumo":"A empresa apresentou suas mais recentes inovações na Feira Internacional da Indústria de Xangai deste ano. Seu equipamento avançado de corrosão se destacou e conquistou o prestigioso prêmio CIIF. A premiação evidencia a alta competitividade e o desenvolvimento acelerado de maquinário pesado para chips na China.","link":"http://jjckb.xinhuanet.com/20261013/b89d9922e70945cf9e93d8184602c3d5/c.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Manufacturing Today India","pais":"Índia","titulo":"IITMAA Sangam 2026 destaca prioridades de tecnologia e inovação na Índia","resumo":"O evento IITMAA Sangam reuniu líderes e especialistas para debater os rumos da inovação e da tecnologia no cenário indiano. Foram abordadas prioridades estratégicas para consolidar o ecossistema digital e científico do país nos próximos anos. As discussões reforçam o compromisso institucional com o desenvolvimento tecnológico sustentável e inclusivo.","link":"https://www.manufacturingtodayindia.com/iitmaa-sangam-2026-technology","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"FMI alerta para riscos da IA e dívidas soberanas elevadas à estabilidade financeira","resumo":"O Fundo Monetário Internacional emitiu um importante alerta sobre os potenciais impactos desestabilizadores da inteligência artificial nos mercados globais. Além da tecnologia, o organismo destacou o perigo representado pelo alto endividamento de diversas nações. O cenário exige cautela regulatória para evitar crises sistêmicas decorrentes da rápida transformação digital e econômica.","link":"https://jornaleconomico.sapo.pt/noticias/fmi-alerta-para-riscos-da-ia-e-dividas-soberanas-elevadas-a-estabilidade-financeira/","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Correio Braziliense","pais":"Brasil","titulo":"FAB usa tecnologia aérea para combater incêndios no Amazonas","resumo":"A Força Aérea Brasileira empregou recursos tecnológicos avançados de monitoramento para combater focos de incêndio na região amazônica. O uso de aeronaves equipadas com sistemas de mapeamento térmico otimizou o direcionamento das equipes de resgate. A ação demonstra a importância da inovação no suporte a emergências ambientais críticas.","link":"https://www.correiobraziliense.com.br/brasil/2026/10/7519385-fab-usa-tecnologia-aerea-para-combater-incendios-no-amazonas.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"Perseverance da NASA estabelece recorde extraterrestre de distância total percorrida","resumo":"O rover Perseverance alcançou uma marca histórica em sua jornada exploratória pela superfície de Marte. A conquista representa um marco impressionante para a engenharia espacial e a autonomia robótica. Os dados coletados continuam a expandir nosso conhecimento sobre o planeta vermelho.","link":"https://science.nasa.gov/blogs/perseverance-mars-rover/2026/10/12/nasas-perseverance-sets-off-world-record-for-total-distance-driven/","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"Zonebourse Suisse","pais":"França","titulo":"Uma correção no mercado de IA afetaria a economia real, avalia autoridade do FMI","resumo":"Representantes do Fundo Monetário Internacional alertam que uma eventual desvalorização no setor de inteligência artificial pode gerar repercussões na economia global. O rápido crescimento das empresas tecnológicas levanta preocupações sobre possíveis bolhas financeiras e seus efeitos colaterais. O monitoramento rigoroso dessas tendências é vital para prevenir crises sistêmicas.","link":"https://ch.zonebourse.com/actualite-bourse/une-correction-du-marche-de-la-ia-toucherait-la-economie-reelle-estime-un-responsable-du-fmi-ce785dddda8df723","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Times","pais":"Inglaterra","titulo":"FMI: Gastos em IA impulsionados por dívida colocam economia global em risco","resumo":"O Fundo Monetário Internacional emitiu um alerta sobre o financiamento agressivo de tecnologias de inteligência artificial baseado em endividamento. O cenário pode gerar bolhas financeiras e desestabilizar mercados internacionais caso o retorno sobre o investimento demore. Analistas pedem cautela e maior supervisão regulatória sobre essas inovações.","link":"https://www.thetimes.com/business/economics/article/circular-deals-ai-debt-threaten-world-economy-imf-q8nz5lrbg","categoria":"ECONOMIA","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"Este pequeno dispositivo mostra em tempo real quanto consome cada eletrodoméstico","resumo":"Um novo aparelho inovador foi lançado no mercado para monitorar o consumo energético individual de cada eletrodoméstico na residência em tempo real. A tecnologia visa empoderar os consumidores na gestão eficiente da eletricidade, resultando em contas de luz menores e maior sustentabilidade. O impacto ambiental e econômico é direto, facilitando a transição para hábitos de consumo mais conscientes nos lares.","link":"https://elpais.com/escaparate/tecnologia/enchufe-inteligente-tapo.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Suspeita de espionagem no espaço: Satélite chinês se aproxima de satélite britânico","resumo":"Movimentos atípicos de um satélite chinês geraram alertas de segurança ao se aproximar perigosamente de um equipamento orbital britânico. O incidente acende o debate geopolítico sobre a segurança nacional e a militarização gradual do espaço sideral. Autoridades espaciais monitoram de perto a situação para evitar colisões e potenciais atos de espionagem tecnológica.","link":"https://www.sueddeutsche.de/politik/china-grossbritannien-spionage-weltraum-satellit-bundeswehr-li.3561222","categoria":"TRENDING","lang":"pt"},{"fonte":"共同通信PRワイヤー","pais":"Japão","titulo":"Lançamento em novembro de 2026 do congelador portátil ultrabaixo 'SC-UF25' com tecnologia FPSC","resumo":"O novo equipamento de refrigeração portátil utiliza a avançada tecnologia FPSC para atingir temperaturas ultrabaixas com alta eficiência energética. O lançamento atende a demandas críticas de transporte de materiais sensíveis na área médica e científica. O produto estará disponível no mercado japonês a partir de meados de novembro.","link":"https://kyodonewsprwire.jp/release/202610067436","categoria":"LANÇAMENTO","lang":"pt"},{"fonte":"Levante-EMV","pais":"China","titulo":"Um campus de 77 hectares e a tecnologia mais recente na China para formar os cientistas do futuro","resumo":"Um novo complexo educacional de grande escala foi inaugurado na China com foco total em infraestrutura científica de ponta. O espaço foi projetado para capacitar talentos de alto nível em áreas estratégicas da tecnologia avançada. A iniciativa faz parte dos esforços de longo prazo do país para liderar a inovação global.","link":"https://www.levante-emv.com/comunitat-valenciana/2026/10/13/campus-77-hectareas-ultima-tecnologia-134852320.amp.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Economic Times","pais":"Índia","titulo":"'Poder para empoderar': Modi enfatiza alcance social mais amplo da tecnologia no Fórum Bloomberg New Economy","resumo":"Durante o Bloomberg New Economy Forum, o primeiro-ministro Narendra Modi destacou o papel fundamental da tecnologia na transformação social. Ele enfatizou que a inovação deve servir como ferramenta de empoderamento para as camadas mais amplas da população. O discurso ressalta a visão governamental de unir crescimento digital e inclusão socioeconômica.","link":"https://m.economictimes.com/news/videos/live-india-is-mother-of-democracy-pm-modi-at-bloomberg-new-economy-forum/videoshow/134909049.cms","categoria":"POLÍTICA","lang":"pt"},{"fonte":"Público","pais":"Portugal","titulo":"Corte de 10% nas verbas para a ciência na nova proposta de orçamento europeu","resumo":"A nova proposta orçamentária da União Europeia contempla uma redução significativa nos recursos destinados ao fomento científico. A medida gerou preocupação entre pesquisadores e líderes acadêmicos, que temem uma desaceleração no desenvolvimento de inovações. A perda de financiamento pode comprometer a competitividade do bloco em setores estratégicos de tecnologia e pesquisa.","link":"https://www.publico.pt/2026/10/12/ciencia/noticia/corte-10-verbas-ciencia-nova-proposta-orcamento-europeu-2191052","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"GWM Haval H7 chega ao Brasil com motor híbrido flex e tração nas quatro rodas","resumo":"O GWM Haval H7 desembarca no Brasil trazendo inovação com sua motorização híbrida flex e tração integral. O veículo foi adaptado para atender às demandas do consumidor brasileiro por sustentabilidade e alto desempenho. O lançamento consolida a expansão de tecnologias eletrificadas no mercado nacional.","link":"https://www1.folha.uol.com.br/mercado/2026/10/gwm-haval-h7-chega-ao-brasil-como-motor-hibrido-flex-e-tracao-nas-quatro-rodas.shtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Fortune","pais":"Estados Unidos","titulo":"Exclusivo: Presidente científico em saída da Microsoft planeja se juntar à equipe da Mercedes na F1 como consultor de IA","resumo":"Um alto executivo de ciência da Microsoft está de mudança para o esporte a motor de elite. Ele atuará como consultor de inteligência artificial na equipe Mercedes de Fórmula 1. A contratação sinaliza a crescente integração de tecnologias avançadas de IA no esporte.","link":"https://fortune.com/2026/10/12/microsoft-peter-lee-departing-science-president-plans-to-join-mercedes-f1-team-as-ai-advisor/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"BFM","pais":"França","titulo":"A Noite da Ciência no INSA Lyon","resumo":"A instituição INSA Lyon promoveu mais uma edição da Noite da Ciência para aproximar o público geral do universo acadêmico e tecnológico. O evento contou com workshops interativos, palestras e demonstrações práticas de inovações desenvolvidas por pesquisadores. A iniciativa visa despertar o interesse das novas gerações pelas carreiras científicas.","link":"https://www.bfmtv.com/lyon/replay-emissions/bfm-lyon-chez-vous/video-la-nuit-de-la-science-a-l-insa-lyon_VN-202610121002.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Sky News","pais":"Inglaterra","titulo":"Economia do Reino Unido deve crescer mais que o esperado, mas famílias enfrentarão inflação maior, diz FMI","resumo":"Projeções recentes indicam uma melhora no crescimento econômico britânico para o próximo período fiscal. No entanto, o FMI alerta que o custo de vida continuará pressionado por uma inflação mais acentuada. O impacto direto recairá sobre as famílias, que precisarão lidar com o encarecimento de produtos e serviços essenciais.","link":"https://news.sky.com/story/uk-economy-to-grow-more-than-expected-but-households-face-sharper-rise-in-inflation-imf-says-13598675","categoria":"ECONOMIA","lang":"pt"},{"fonte":"elDiario.es","pais":"Espanha","titulo":"O automóvel europeu retalia contra a China com elétricos carregados de design, tecnologia e nostalgia","resumo":"As montadoras europeias decidiram contra-atacar o avanço agressivo dos veículos elétricos chineses apostando em linhas clássicas combinadas com tecnologia de ponta. Essa estratégia busca conquistar consumidores nostálgicos que valorizam tanto a estética tradicional quanto a conectividade moderna. O movimento promete agitar o mercado automotivo global e redefinir a competitividade do setor na Europa.","link":"https://www.eldiario.es/motor/sector_y_mercado/automovil-europeo-contraataca-china-electricos-cargados-diseno-tecnologia-nostalgia_1_13580399.html","categoria":"MERCADO","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Arqueólogos encontram a âncora mais antiga do mundo","resumo":"Pesquisadores descobriram um artefato náutico histórico que redefine o conhecimento sobre as antigas rotas marítimas e técnicas de navegação. A peça milenar foi localizada em condições excepcionais de preservação, permitindo análises detalhadas da metalurgia da época. A descoberta oferece novas perspectivas sobre o comércio e a exploração humana nos oceanos ancestrais.","link":"https://wissenschaft.de/artikel/archaeologen-finden-den-aeltesten-anker-der-welt","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Impress Watch","pais":"Japão","titulo":"IA com 'ouvidos' e exibições de óculos de próxima geração entre os destaques do CEATEC","resumo":"O evento CEATEC apresenta inovações fascinantes focadas na interação homem-máquina, incluindo inteligências artificiais com capacidade auditiva aprimorada. Óculos inteligentes com displays de última geração também chamam a atenção dos visitantes pela utilidade prática. Essas novidades apontam para um futuro onde a computação veste-se de forma mais integrada ao cotidiano.","link":"https://www.watch.impress.co.jp/docs/news/2147607.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"深圳政府在线","pais":"China","titulo":"Feira de Tecnologia Industrial da Ásia será inaugurada em Shenzhen em 27 de outubro","resumo":"O principal evento de tecnologia industrial da Ásia se prepara para iniciar suas atividades na cidade de Shenzhen. A feira reunirá especialistas, empresas e inovações de ponta focadas em automação e manufatura avançada. O encontro servirá como vitrine para as principais tendências tecnológicas da região.","link":"https://www.sz.gov.cn/cn/xxgk/zfxxgj/zwdt/content/post_13018062.html","categoria":"EVENTOS","lang":"pt"},{"fonte":"thepamphlet.in","pais":"Índia","titulo":"FMI afirma que a Índia continuará sendo a principal economia de maior crescimento até 2026 e 2027","resumo":"Dados recentes do Fundo Monetário Internacional projetam que a Índia manterá o posto de grande economia com maior ritmo de crescimento global. A previsão desafia percepções pessimistas e consolida a resiliência macroeconômica do país em meio a incertezas globais. Esse desempenho robusto atrai investimentos e fortalece a confiança internacional.","link":"https://thepamphlet.in/imf-says-india-will-remain-the-fastest-growing-major-economy-through-2026-and-2027-not-bad-for-a-dead-economy/","categoria":"ECONOMIA","lang":"pt"},{"fonte":"RTP","pais":"Portugal","titulo":"Estabilização macroeconômica. Robert E. Hall e Michael Woodford são os vencedores do Nobel da Economia de 2026","resumo":"Os economistas norte-americanos Robert E. Hall e Michael Woodford foram agraciados com o prestigioso Prémio Nobel da Economia de 2026. A premiação reconhece suas contribuições fundamentais para a compreensão das taxas de juros e da estabilização macroeconômica. Os modelos desenvolvidos por eles revolucionaram a forma como bancos centrais planejam suas políticas monetárias.","link":"https://www.rtp.pt/noticias/economia/estabilizacao-macroeconomica-robert-e-hall-e-michael-woodford-sao-os-vencedores-do-nobel-da-economia-de-2026_n1771153","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"GZH","pais":"Brazil","titulo":"Geely EX5 EM-i Plug-in Hybrid: Comfort, Sophistication, and Advanced Technology","resumo":"Geely's new plug-in hybrid SUV hits the market combining high standards of comfort with advanced technological solutions. The model focuses on energy efficiency and connectivity to attract demanding consumers. This new release reinforces the trend of electrification and modernization in the global automotive sector.","link":"https://gauchazh.clicrbs.com.br/comportamento/carros/sobre-rodas/noticia/2026/10/geely-ex5-em-i-hibrido-plug-in-conforto-sofisticacao-e-avancada-tecnologia-cmv6692ys00cd013qvkzwswjv.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Axios","pais":"United States","titulo":"WATCH: Conversations on Huntsville's Growing Biotech and Life Sciences Economy","resumo":"Experts discuss the rapid advancement and expansion of the biotech sector in the region. The local ecosystem is attracting significant investment and driving scientific innovation. The initiative strengthens the city's position as an emerging health and technology hub in the United States.","link":"https://www.axios.com/2026/10/13/watch-beyond-the-breakthrough-huntsvilles-biotech-rise","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Les Numériques","pais":"France","titulo":"“Exactly the image I wanted”: Frenchman captures invisible-to-the-naked-eye red lightning, and the photo goes viral worldwide","resumo":"A French photographer managed to capture rare upper-atmosphere red lightning bolts that are virtually imperceptible to the naked eye. The striking image quickly gained international traction and captivated science and astronomy enthusiasts. The feat highlights the beauty of hidden atmospheric phenomena and the advancement of specialized photography.","link":"https://www.lesnumeriques.com/science-espace/precisement-l-image-que-je-voulais-ce-francais-a-capture-des-eclairs-rouges-presque-invisibles-a-l-oeil-nu-sa-photo-fait-le-tour-du-monde-n263244.html","categoria":"SCIENCE","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"North East England Paramedics Pilot AI Note-Taking Tool","resumo":"Emergency healthcare professionals in the North East region are testing a new artificial intelligence tool to record care data. The technology aims to reduce the bureaucratic burden on paramedics following calls. As a result, response times and the focus on patient care are expected to be significantly optimized.","link":"https://www.bbc.com/news/articles/cqp9gy99y2ldo","categoria":"HEALTH","lang":"en"},{"fonte":"National Geographic España","pais":"Spain","titulo":"Neither Volcanoes Nor Plate Tectonics: The Sun and Moon Can Trigger Earthquakes, and Science Finally Knows How","resumo":"A new scientific study reveals that gravitational forces exerted by the Sun and the Moon play a direct role in triggering earthquakes. This surprising discovery redefines traditional understandings of seismology and opens doors for unprecedented global geological monitoring methods. The research promises to improve early warning systems and mitigate risks in regions highly vulnerable to natural disasters.","link":"https://www.nationalgeographic.es/ciencia/ni-volcanes-ni-solo-tectonica-placas-sol-y-luna-pueden-desencadenar-terremotos-y-ciencia-por-fin-sabe-como_29513","categoria":"SCIENCE","lang":"en"},{"fonte":"Deutschlandfunk","pais":"Germany","titulo":"Digital Minister Wildberger Wants to Tax AI Revenues in Germany","resumo":"The digital minister is proposing the implementation of a new tax on revenues generated by artificial intelligence in the country. The measure seeks to regulate the emerging tech market and secure financial returns for the local economy. Experts are debating the impacts of this regulation on the innovation and competitiveness of German companies on the global stage.","link":"https://www.deutschlandfunk.de/digitalminister-wildberger-will-ki-umsaetze-in-deutschland-besteuern-100.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"宗像経済新聞","pais":"Japan","titulo":"Advanced Technology Exhibition, CEATEC Opens","resumo":"The CEATEC technology trade show has officially opened, highlighting innovations aimed at the future of society. The event brings together companies and researchers to showcase disruptive advances across various fields. The expectation is to attract a large audience interested in global technological trends.","link":"https://munakata.keizai.biz/gpnews/1773414/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"TradingKey","pais":"China","titulo":"CXMT Advances 4F² Technology: How Big of a Market Threat Is It to Samsung, SK Hynix, and Kioxia?","resumo":"Chinese manufacturer CXMT is making significant headway in the development of 4F² memory technology. This technical progress directly challenges global industry leaders such as Samsung, SK Hynix, and Kioxia. The move intensifies competition in the semiconductor market and demonstrates China's growing technological autonomy.","link":"https://www.tradingkey.com/es/analysis/stocks/us-stocks/262213155-cxmt-4f2-dram-threat-samsung-sk-hynix-kioxia-tradingkey","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Manufacturing Today India","pais":"India","titulo":"Embedded Technology: The Intelligence Behind Electronics and Tomorrow's Careers","resumo":"The evolution of embedded technology is transforming the modern electronics industry and defining new demands for the job market. The article discusses how smart systems shape the professional future and require new technical skills. It is an essential overview for understanding the direction of innovation and the development of tech careers.","link":"https://www.manufacturingtodayindia.com/embedded-technology-transformation","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"HealthNews","pais":"Portugal","titulo":"Digestive Cancer: Technology Only Works If the Patient Is at the Center","resumo":"Experts discuss the central role of technology in treating digestive tumors and improving medical precision. The debate reinforces that innovation only yields real results when placed at the service of patient well-being. The approach integrates modern clinical resources with humanized monitoring to ensure better prognoses and quality of life.","link":"https://healthnews.pt/2026/10/13/cancro-digestivo-tecnologia-so-serve-se-o-doente-estiver-no-centro-2/","categoria":"HEALTH","lang":"en"},{"fonte":"Agência FAPESP","pais":"Brazil","titulo":"FAPESP Signs Letter of Intent with Bavaria's Ministry to Expand Scientific Cooperation","resumo":"FAPESP has established a new strategic partnership with the government of Bavaria to foster scientific research exchanges. The initiative aims to jointly fund innovative projects between institutions in the state of São Paulo and the German region. The agreement strengthens bilateral technological and academic development.","link":"https://agencia.fapesp.br/fapesp-assina-carta-de-intencoes-com-ministerio-da-baviera-para-ampliar-cooperacao-cientifica/59378","categoria":"SCIENCE","lang":"en"},{"fonte":"AIP.ORG","pais":"United States","titulo":"Protecting Data with Satellite-Based Quantum Technology","resumo":"Researchers are developing new quantum cryptography methods using satellite communication. The technology promises to revolutionize global cybersecurity against future threats. Governments and businesses are turning to this innovation to ensure the inviolability of sensitive information.","link":"https://www.aip.org/scilights/protecting-data-with-satellite-based-quantum-technology","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Nice-Matin","pais":"France","titulo":"DNA, AI, and Fingerprints: How Science Helps Crime Investigators—General François Daoust Tells All","resumo":"General François Daoust details how modern technology and forensic science have transformed criminal investigation. The use of artificial intelligence, DNA analysis, and fingerprint tracking has become indispensable for solving complex cases. The interview reveals behind-the-scenes insights and the impact of these innovative tools on police work.","link":"https://www.nicematin.com/societe/justice/adn-ia-empreintes-numeriques-comment-la-science-aide-les-enqueteurs-sur-un-crime-le-general-francois-daoust-passe-aux-aveux-10740019","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Wales 247","pais":"England","titulo":"Cardiff Science Firm Launches Search for Wales' Next Young Scientists","resumo":"A prominent Cardiff-based science organization has launched an initiative to discover youth talent in the region. The project seeks to encourage interest in scientific research and technological innovation among students. The drive aims to prepare the next generation for global challenges in the tech sector.","link":"https://www.wales247.co.uk/cardiff-science-firm-launches-search-for-wales-next-young-scientists","categoria":"SCIENCE","lang":"en"},{"fonte":"Infobae","pais":"Spain","titulo":"AI's Mathematical Breakthrough Pushes Science into Strange New Territory","resumo":"Artificial intelligence has reached complex mathematical milestones that are radically transforming how scientists conduct research and theoretical formulations. This progress accelerates discoveries across multiple academic fields, sparking deep debates about the boundaries between human and computational reasoning. The immediate impact is the creation of highly sophisticated predictive models that challenge current paradigms.","link":"https://www.infobae.com/economist/2026/10/13/el-avance-matematico-de-la-ia-empuja-a-la-ciencia-hacia-un-territorio-nuevo-y-extrano/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"Mars Rover 'Perseverance' Breaks Distance Record","resumo":"NASA's robotic vehicle has surpassed its previous distance mark on the Martian surface, setting a new milestone in space exploration. The achievement demonstrates the durability and effectiveness of the rover's autonomous navigation systems. Collected data continues to provide crucial information about the Red Planet's geology and the search for signs of life.","link":"https://wissenschaft.de/artikel/marsrover-perseverance-knackt-entfernungsrekord","categoria":"SCIENCE","lang":"en"},{"fonte":"ロボスタ","pais":"Japan","titulo":"NEDO Showcases Cutting-Edge Technologies Like AI Robots and Autonomous Driving at CEATEC 2026","resumo":"The NEDO organization made a strong presence at CEATEC 2026 with interactive demonstrations of advanced robotics and autonomous vehicles. The exhibitions aim to showcase the practical impact of these technologies on industrial automation and urban mobility. The initiative reinforces Japan's commitment to vanguard innovation.","link":"https://robotstart.info/article/2026/10/13/382511.html","categoria":"INNOVATION","lang":"en"},{"fonte":"Bloomberg.com","pais":"China","titulo":"China's CXMT Claims Breakthrough Progress in Memory Technology, Surpassing Korean Rivals","resumo":"Chinese firm CXMT has announced expressive advancements in its proprietary memory chip technologies. The achievement places the company ahead of traditional South Korean competitors in major research milestones. This feat reinforces the dynamism of the domestic semiconductor industry in the face of external pressures.","link":"https://www.bloomberg.com/jp/news/articles/2026-10-13/TMTY8LKGIFPU00?srnd=jp-homepage","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Instagram","pais":"India","titulo":"India's Dixon Technologies Partners with Gemtek Technology to Boost Telecom Manufacturing","resumo":"Dixon Technologies has established a strategic joint venture with Taiwan's Gemtek Technology to strengthen networking equipment production in India. The collaboration utilizes expertise in high-speed optical modules to expand local industrial capacity. This alliance reflects the country's rise as a global hub for advanced technology manufacturing.","link":"https://www.instagram.com/p/DebHdUAjChw/","categoria":"BUSINESS","lang":"en"},{"fonte":"Correio do Minho","pais":"Portugal","titulo":"Viana do Castelo: Creation of Three Technology and Innovation Centers Represents Investment Exceeding 13.5 Million","resumo":"The region of Viana do Castelo has announced a robust financial injection to boost local technological infrastructure. The project outlines the implementation of three new hubs focused on innovation, research, and industrial development. The initiative aims to stimulate the regional economy, attract talent, and cement Portugal as a reference in advanced tech clusters.","link":"https://www.correiodominho.pt/noticias/viana-do-castelo-criacao-de-tres-centros-de-tecnologia-e-inovacao-representa-investimento-superior-a-13-5-milhoes/171570","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"iPhone 18 Pro: See How to Improve Your Videos with Focus and Light Controls","resumo":"New advanced video capture functions on the iPhone 18 Pro allow for precise focus and lighting adjustments in real time. Users can explore professional features directly through the smartphone's native camera app. The technology promises to elevate the standard of audiovisual productions made by mobile content creators.","link":"https://oglobo.globo.com/google/amp/economia/tecnologia/noticia/2026/10/13/iphone-18-pro-veja-como-melhorar-seus-videos-com-controles-de-foco-e-luz.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Popular Science","pais":"United States","titulo":"Human Teeth Reveal When Lead Began Poisoning a Medieval Town","resumo":"Scientists analyzed ancient tooth structures to trace historical levels of lead contamination. The discovery reveals crucial details about the environmental and industrial impact on the health of medieval populations. The study demonstrates the precision of new archaeological and scientific techniques.","link":"https://www.popsci.com/science/teeth-lead-poisoning-medieval-england/","categoria":"SCIENCE","lang":"en"},{"fonte":"Vie publique","pais":"France","titulo":"The Place of Science in France: A Selection of Speeches Since 1980","resumo":"A historical compilation gathers the most striking speeches on the role of science in French society over recent decades. The initiative highlights the evolution of public policies promoting research and technological development in the country. The material serves as a reflection on the importance of scientific knowledge for the national future.","link":"https://www.vie-publique.fr/discours-dans-lactualite/304919-discours-publics-sur-le-theme-de-la-science-en-france-depuis-1980","categoria":"SCIENCE","lang":"en"},{"fonte":"Al Jazeera","pais":"England","titulo":"AI Could Self-Replicate on Home Devices Within 'Months,' Anthropic Says","resumo":"Researchers at Anthropic have warned that rapid advances in artificial intelligence could enable autonomous self-replication on everyday appliances. The phenomenon presents a concerning milestone for cybersecurity and the control of intelligent systems. Experts emphasize the urgency of stricter regulations to contain unforeseen risks.","link":"https://www.aljazeera.com/economy/2026/10/13/ai-could-self-replicate-on-home-devices-within-months-anthropic-says","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Sinc","pais":"Spain","titulo":"The Invisible Laboratory: How Supercomputing Is Rewriting the Scientific Method","resumo":"The intensive use of supercomputers allows researchers to simulate complex phenomena at scales previously considered impossible by traditional physical experimentation. This digital revolution accelerates the validation of scientific hypotheses in areas such as quantum physics, medicine, and climatology. Consequently, the traditional scientific method gains a high-precision virtual layer that redefines the future of innovation.","link":"https://www.agenciasinc.es/Reportajes/El-laboratorio-invisible-como-la-supercomputacion-esta-reescribiendo-el-metodo-cientifico","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Spektrum der Wissenschaft","pais":"Germany","titulo":"»The Physics of Interstellar Travel«: Advanced Mathematics – Not Just for Astronauts","resumo":"A deep analysis of the mathematical and physical concepts necessary to enable future travel between star systems. The article explores how complex theories are moving away from science fiction and taking center stage in academic debates. The work highlights the importance of rigorous scientific education for the next generation of space researchers.","link":"https://www.spektrum.de/rezension/buchkritik-zu-the-physics-of-interstellar-travel/2349436","categoria":"SCIENCE","lang":"en"},{"fonte":"Newscast.jp","pais":"Japan","titulo":"City of Ebina, Sotetsu Bus, and NTT Docomo Business Reach Agreement to Implement Autonomous Driving","resumo":"A new strategic partnership has been established to promote the practical implementation of autonomous driving technologies in public transportation. The collaboration unites local governance and tech giants to solve mobility challenges. The pilot project promises to transform the efficiency of bus services in the region.","link":"https://newscast.jp/smart/news/4025680","categoria":"MOBILITY","lang":"en"},{"fonte":"经济参考报","pais":"China","titulo":"Advanced Micro-Fabrication Equipment Debuts at Shanghai Industry Expo 2026, Etching Equipment Wins CIIF Award","resumo":"The company presented its latest innovations at this year's Shanghai International Industry Fair. Its advanced etching equipment stood out and won the prestigious CIIF award. The accolade highlights the high competitiveness and accelerated development of heavy chip machinery in China.","link":"http://jjckb.xinhuanet.com/20261013/b89d9922e70945cf9e93d8184602c3d5/c.html","categoria":"INNOVATION","lang":"en"},{"fonte":"Manufacturing Today India","pais":"India","titulo":"IITMAA Sangam 2026 Highlights Technology and Innovation Priorities in India","resumo":"The IITMAA Sangam event gathered leaders and experts to discuss the path of innovation and technology in the Indian landscape. Strategic priorities were addressed to consolidate the country's digital and scientific ecosystem in the coming years. The discussions reinforce institutional commitment to sustainable and inclusive technological development.","link":"https://www.manufacturingtodayindia.com/iitmaa-sangam-2026-technology","categoria":"INNOVATION","lang":"en"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"IMF Warns of AI Risks and High Sovereign Debts to Financial Stability","resumo":"The International Monetary Fund has issued a major warning regarding the potential destabilizing impacts of artificial intelligence on global markets. Beyond technology, the organization highlighted the danger posed by high debt levels across various nations. The scenario demands regulatory caution to avoid systemic crises stemming from rapid digital and economic transformation.","link":"https://jornaleconomico.sapo.pt/noticias/fmi-alerta-para-riscos-da-ia-e-dividas-soberanas-elevadas-a-estabilidade-financeira/","categoria":"ECONOMY","lang":"en"},{"fonte":"Correio Braziliense","pais":"Brazil","titulo":"Brazilian Air Force uses aerial technology to combat fires in the Amazon","resumo":"The Brazilian Air Force deployed advanced technological monitoring resources to combat fire hotspots in the Amazon region. The use of aircraft equipped with thermal mapping systems optimized the direction of rescue teams. The action demonstrates the importance of innovation in supporting critical environmental emergencies.","link":"https://www.correiobraziliense.com.br/brasil/2026/10/7519385-fab-usa-tecnologia-aerea-para-combater-incendios-no-amazonas.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"NASA's Perseverance sets extraterrestrial record for total distance driven","resumo":"The Perseverance rover reached a historic milestone in its exploratory journey across the Martian surface. The achievement represents an impressive milestone for space engineering and robotic autonomy. The data collected continues to expand our knowledge of the red planet.","link":"https://science.nasa.gov/blogs/perseverance-mars-rover/2026/10/12/nasas-perseverance-sets-off-world-record-for-total-distance-driven/","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"Zonebourse Suisse","pais":"France","titulo":"An AI market correction would affect the real economy, IMF official assesses","resumo":"Representatives from the International Monetary Fund warn that a potential devaluation in the artificial intelligence sector could trigger repercussions throughout the global economy. The rapid growth of tech companies raises concerns about possible financial bubbles and their side effects. Rigorous monitoring of these trends is vital to prevent systemic crises.","link":"https://ch.zonebourse.com/actualite-bourse/une-correction-du-marche-de-la-ia-toucherait-la-economie-reelle-estime-un-responsable-du-fmi-ce785dddda8df723","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Times","pais":"England","titulo":"IMF: Debt-fueled AI spending puts global economy at risk","resumo":"The International Monetary Fund has issued a warning regarding the aggressive financing of artificial intelligence technologies driven by debt. The scenario could generate financial bubbles and destabilize international markets if the return on investment takes too long. Analysts are calling for caution and greater regulatory oversight over these innovations.","link":"https://www.thetimes.com/business/economics/article/circular-deals-ai-debt-threaten-world-economy-imf-q8nz5lrbg","categoria":"ECONOMY","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"This small device shows in real time how much each appliance consumes","resumo":"A new, innovative device has been launched on the market to monitor the individual energy consumption of each household appliance in real time. The technology aims to empower consumers in efficiently managing electricity, resulting in lower utility bills and greater sustainability. The environmental and economic impact is direct, facilitating the transition to more conscious consumption habits in homes.","link":"https://elpais.com/escaparate/tecnologia/enchufe-inteligente-tapo.html","categoria":"INNOVATION","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Suspected space espionage: Chinese satellite approaches British satellite","resumo":"Atypical movements by a Chinese satellite triggered security alerts as it came dangerously close to British orbital equipment. The incident fuels the geopolitical debate surrounding national security and the gradual militarization of outer space. Space authorities are closely monitoring the situation to prevent collisions and potential acts of technological espionage.","link":"https://www.sueddeutsche.de/politik/china-grossbritannien-spionage-weltraum-satellit-bundeswehr-li.3561222","categoria":"TRENDING","lang":"en"},{"fonte":"共同通信PRワイヤー","pais":"Japan","titulo":"November 2026 launch of the 'SC-UF25' ultra-low portable freezer with FPSC technology","resumo":"The new portable refrigeration equipment utilizes advanced FPSC technology to achieve ultra-low temperatures with high energy efficiency. The launch addresses critical demands for transporting sensitive materials in the medical and scientific fields. The product will be available on the Japanese market starting in mid-November.","link":"https://kyodonewsprwire.jp/release/202610067436","categoria":"PRODUCT LAUNCH","lang":"en"},{"fonte":"Levante-EMV","pais":"China","titulo":"A 190-acre campus and the latest technology in China to train the scientists of the future","resumo":"A large-scale new educational complex has been inaugurated in China with a complete focus on cutting-edge scientific infrastructure. The space was designed to train high-level talent in strategic areas of advanced technology. The initiative is part of the country's long-term efforts to lead global innovation.","link":"https://www.levante-emv.com/comunitat-valenciana/2026/10/13/campus-77-hectareas-ultima-tecnologia-134852320.amp.html","categoria":"SCIENCE","lang":"en"},{"fonte":"The Economic Times","pais":"India","titulo":"'Power to empower': Modi emphasizes broader social reach of technology at Bloomberg New Economy Forum","resumo":"During the Bloomberg New Economy Forum, Prime Minister Narendra Modi highlighted the fundamental role of technology in social transformation. He emphasized that innovation must serve as an empowering tool for the broader strata of the population. The speech underscores the government's vision of uniting digital growth with socio-economic inclusion.","link":"https://m.economictimes.com/news/videos/live-india-is-mother-of-democracy-pm-modi-at-bloomberg-new-economy-forum/videoshow/134909049.cms","categoria":"POLITICS","lang":"en"},{"fonte":"Público","pais":"Portugal","titulo":"10% cut in science funding in the new European budget proposal","resumo":"The European Union's new budget proposal includes a significant reduction in resources allocated to scientific development. The move has sparked concern among researchers and academic leaders, who fear a slowdown in innovation development. The loss of funding could compromise the bloc's competitiveness in strategic technology and research sectors.","link":"https://www.publico.pt/2026/10/12/ciencia/noticia/corte-10-verbas-ciencia-nova-proposta-orcamento-europeu-2191052","categoria":"SCIENCE","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"GWM Haval H7 arrives in Brazil with flex-hybrid engine and all-wheel drive","resumo":"The GWM Haval H7 arrives in Brazil bringing innovation with its flex-fuel hybrid powertrain and all-wheel drive. The vehicle has been adapted to meet Brazilian consumer demands for sustainability and high performance. The launch solidifies the expansion of electrified technologies in the domestic market.","link":"https://www1.folha.uol.com.br/mercado/2026/10/gwm-haval-h7-chega-ao-brasil-como-motor-hibrido-flex-e-tracao-nas-quatro-rodas.shtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Fortune","pais":"United States","titulo":"Exclusive: Departing Microsoft science chief plans to join Mercedes F1 team as AI advisor","resumo":"A senior science executive from Microsoft is moving to elite motorsports. He will act as an artificial intelligence consultant for the Mercedes Formula 1 team. The hire signals the growing integration of advanced AI technologies into sports.","link":"https://fortune.com/2026/10/12/microsoft-peter-lee-departing-science-president-plans-to-join-mercedes-f1-team-as-ai-advisor/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"BFM","pais":"France","titulo":"The Night of Science at INSA Lyon","resumo":"The INSA Lyon institution hosted another edition of the Night of Science to bring the general public closer to the academic and technological world. The event featured interactive workshops, lectures, and practical demonstrations of innovations developed by researchers. The initiative aims to spark the new generations' interest in scientific careers.","link":"https://www.bfmtv.com/lyon/replay-emissions/bfm-lyon-chez-vous/video-la-nuit-de-la-science-a-l-insa-lyon_VN-202610121002.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Sky News","pais":"England","titulo":"UK economy set to grow more than expected, but households will face higher inflation, says IMF","resumo":"Recent projections indicate an improvement in British economic growth for the upcoming fiscal period. However, the IMF warns that the cost of living will continue to be pressured by sharper inflation. The direct impact will fall on households, which will have to deal with rising prices for essential goods and services.","link":"https://news.sky.com/story/uk-economy-to-grow-more-than-expected-but-households-face-sharper-rise-in-inflation-imf-says-13598675","categoria":"ECONOMY","lang":"en"},{"fonte":"elDiario.es","pais":"Spain","titulo":"European automotive industry retaliates against China with EVs loaded with design, technology, and nostalgia","resumo":"European automakers have decided to counter the aggressive advance of Chinese electric vehicles by betting on classic lines combined with cutting-edge technology. This strategy seeks to win over nostalgic consumers who value both traditional aesthetics and modern connectivity. The move promises to shake up the global automotive market and redefine the sector's competitiveness in Europe.","link":"https://www.eldiario.es/motor/sector_y_mercado/automovil-europeo-contraataca-china-electricos-cargados-diseno-tecnologia-nostalgia_1_13580399.html","categoria":"MARKET","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"Archaeologists discover the world's oldest anchor","resumo":"Researchers have uncovered a historic nautical artifact that redefines our understanding of ancient maritime routes and navigation techniques. The millennium-old piece was found in an exceptional state of preservation, allowing for detailed analyses of the era's metallurgy. The discovery offers new perspectives on trade and human exploration across ancestral oceans.","link":"https://wissenschaft.de/artikel/archaeologen-finden-den-aeltesten-anker-der-welt","categoria":"SCIENCE","lang":"en"},{"fonte":"Impress Watch","pais":"Japan","titulo":"AI with 'ears' and next-generation eyewear displays among CEATEC highlights","resumo":"The CEATEC event showcases fascinating innovations focused on human-machine interaction, including artificial intelligence with enhanced hearing capabilities. Smart glasses featuring cutting-edge displays are also drawing visitors' attention for their practical utility. These novelties point to a future where computing is worn more seamlessly into daily life.","link":"https://www.watch.impress.co.jp/docs/news/2147607.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"深圳政府在线","pais":"China","titulo":"Asia Industrial Technology Fair to open in Shenzhen on October 27","resumo":"Asia's premier industrial technology event is preparing to launch its activities in the city of Shenzhen. The fair will bring together experts, companies, and cutting-edge innovations focused on automation and advanced manufacturing. The gathering will serve as a showcase for the region's top technological trends.","link":"https://www.sz.gov.cn/cn/xxgk/zfxxgj/zwdt/content/post_13018062.html","categoria":"EVENTS","lang":"en"},{"fonte":"thepamphlet.in","pais":"India","titulo":"IMF says India will remain the fastest-growing major economy through 2026 and 2027","resumo":"Recent data from the International Monetary Fund projects that India will maintain its position as the major global economy with the fastest growth pace. The forecast challenges pessimistic perceptions and consolidates the country's macroeconomic resilience amid global uncertainties. This robust performance attracts investment and strengthens international confidence.","link":"https://thepamphlet.in/imf-says-india-will-remain-the-fastest-growing-major-economy-through-2026-and-2027-not-bad-for-a-dead-economy/","categoria":"ECONOMY","lang":"en"},{"fonte":"RTP","pais":"Portugal","titulo":"Macroeconomic stabilization: Robert E. Hall and Michael Woodford win the 2026 Nobel Prize in Economics","resumo":"American economists Robert E. Hall and Michael Woodford have been awarded the prestigious 2026 Nobel Prize in Economics. The prize recognizes their fundamental contributions to understanding interest rates and macroeconomic stabilization. The models they developed revolutionized how central banks plan their monetary policies.","link":"https://www.rtp.pt/noticias/economia/estabilizacao-macroeconomica-robert-e-hall-e-michael-woodford-sao-os-vencedores-do-nobel-da-economia-de-2026_n1771153","categoria":"SCIENCE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
