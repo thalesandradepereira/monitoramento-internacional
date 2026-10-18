@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-qRO2Qgpx0fCLyFI+1L8BigCU'; script-src 'nonce-qRO2Qgpx0fCLyFI+1L8BigCU'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="qRO2Qgpx0fCLyFI+1L8BigCU">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">18/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="qRO2Qgpx0fCLyFI+1L8BigCU">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Exame","pais":"Brasil","titulo":"Uma nova teoria pode ajudar a decifrar o ‘pensamento’ da IA — e controlar seus riscos","resumo":"Pesquisadores desenvolveram uma nova estrutura teórica que visa compreender o funcionamento interno dos modelos de inteligência artificial.\nA proposta busca mapear os processos de tomada de decisão dos algoritmos para antecipar comportamentos imprevisíveis.\nCom isso, especialistas esperam mitigar riscos de segurança e garantir o desenvolvimento responsável de novas ferramentas tecnológicas.\nA iniciativa representa um passo crucial para tornar sistemas complexos mais transparentes e alinhados aos interesses humanos.","link":"https://exame.com/tecnologia/uma-nova-teoria-pode-ajudar-a-decifrar-o-pensamento-da-ia-e-controlar-seus-riscos/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Livemint","pais":"Estados Unidos","titulo":"Carro 'voador' Roadster da Tesla: Ferrari patenteou tecnologia de jato semelhante há anos, confirma CEO","resumo":"O CEO da Ferrari, Benedetto Vigna, confirmou que a fabricante italiana registrou anos atrás uma patente de propulsão a jato similar à da Tesla.\nA tecnologia pretende usar propulsores de ar para elevar o desempenho de aceleração do novo Roadster e permitir manobras inéditas.\nEssa revelação demonstra como grandes marcas de luxo exploram a física aeroespacial para transformar a engenharia automotiva.\nO embate entre as montadoras evidencia a busca por inovações radicais no mercado de supercarros elétricos e de alta performance.","link":"https://www.livemint.com/auto-news/teslas-flying-car-roadster-ferrari-patented-similar-jet-technology-years-ago-ceo-benedetto-vigna-confirms-11792295311337.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ID, l'Info Durable","pais":"França","titulo":"Poluição e câncer: o que a ciência sabe e ainda busca entender","resumo":"A relação entre a exposição a poluentes ambientais e o surgimento de câncer é tema de intensos estudos científicos na França.\nPesquisadores buscam mapear como diferentes substâncias químicas presentes no ar e na água afetam o DNA humano e elevam os riscos celulares.\nEmbora diversos fatores já tenham sido comprovados, a ciência ainda trabalha para mensurar os impactos exatos a longo prazo na população.\nCompreender esses mecanismos é fundamental para subsidiar políticas públicas de saúde e conter o avanço dessas enfermidades.","link":"https://www.linfodurable.fr/sante/pollution-et-cancer-ce-que-la-science-sait-et-cherche-encore-comprendre-59406","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Indian Express","pais":"Inglaterra","titulo":"Regulador de concorrência do Reino Unido mira o domínio da Microsoft em softwares corporativos","resumo":"O órgão regulador de concorrência do Reino Unido está intensificando a fiscalização sobre o domínio da Microsoft no mercado de softwares corporativos e serviços de nuvem.\nA investigação busca avaliar se as práticas da gigante de tecnologia limitam a escolha dos consumidores e prejudicam empresas concorrentes no setor.\nCaso sejam confirmadas as irregularidades, medidas regulatórias severas poderão ser impostas para reestruturar as dinâmicas de mercado no país.","link":"https://indianexpress.com/article/technology/tech-news-technology/uk-competition-regulator-targets-microsofts-business-software-grip-10926565/","categoria":"REGULAÇÃO","lang":"pt"},{"fonte":"Telecinco","pais":"Espanha","titulo":"Assim é o 'Tinder da ciência': a plataforma que conecta pacientes a ensaios clínicos que podem ajudá-los","resumo":"Uma nova plataforma digital está revolucionando a medicina ao conectar diretamente pacientes com doenças graves a ensaios clínicos promissores.\nInspirada no funcionamento de aplicativos de relacionamento, a ferramenta utiliza algoritmos para cruzar dados de saúde e identificar tratamentos inovadores.\nO sistema promete acelerar significativamente o recrutamento para pesquisas médicas e oferecer novas esperanças de cura.","link":"https://www.telecinco.es/noticias/ciencia-y-tecnologia/20261018/ensayo-para-mi-plataforma-conecta-pacientes-medicos-investigadores-upp3rs_18_020419147.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Bestseller da Apple - 25 anos de iPod: O ponto de partida para a ascensão da Apple","resumo":"O lendário iPod da Apple completa 25 anos, comemorando um marco histórico que transformou profundamente a indústria da música e da tecnologia. O dispositivo portátil não apenas redefiniu a forma como consumimos áudio digital, como também serviu de catalisador financeiro e criativo para a virada histórica da empresa. Esse sucesso sem precedentes pavimentou a criação do iPhone e consolidou o império moderno da gigante de Cupertino.","link":"https://www.sueddeutsche.de/wirtschaft/apple-bestseller-25-jahre-ipod-startschuss-fuer-apples-hoehenflug-dpa.urn-newsml-dpa-com-20090101-261018-930-855891","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"CNET Japan","pais":"Japão","titulo":"Claude resolve mistério de 25 anos em criptografia em menos de 30 minutos","resumo":"O modelo de inteligência artificial Claude alcançou um marco impressionante ao solucionar um enigma matemático e criptográfico que permanecia sem resposta há mais de duas décadas.\nA conquista foi realizada em menos de meia hora, demonstrando a crescente capacidade dos modelos avançados de IA em lidar com problemas complexos de lógica e computação.\nEste avanço sinaliza uma transformação profunda na pesquisa científica e na segurança da informação mundial.","link":"https://japan.cnet.com/article/35253671/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"新浪网","pais":"China","titulo":"Tecnologia de foguetes da SpaceX: Tesla usa o Roadster para reescrever as regras dos supercarros","resumo":"A Tesla está integrando tecnologias avançadas inspiradas na SpaceX em seu novo modelo Roadster. A iniciativa promete redefinir os padrões de desempenho e engenharia no mercado de supercarros elétricos. O impacto principal reside na aceleração da fusão entre a indústria aeroespacial e a mobilidade de alta performance.","link":"https://k.sina.com.cn/article_7879923946_m1d5ae18ea03303x7iu.html?from=auto","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Investment Guru India","pais":"Índia","titulo":"Economia espacial da Índia deve crescer até US$ 45 bilhões em 7-8 anos","resumo":"O ministro Jitendra Singh destacou que o setor espacial do país apresenta um ritmo acelerado de desenvolvimento. A projeção reforça a capacidade da Índia de atrair investimentos globais e consolidar sua liderança tecnológica. A expansão trará impactos significativos na inovação e na geração de empregos altamente qualificados.","link":"https://investmentguruindia.com/newsdetail/india-s-space-economy-poised-to-grow-to-up-to-45-billion-in-7-8-years-dr-jitendra-singh454948","categoria":"ECONOMIA ESPACIAL","lang":"pt"},{"fonte":"Forbes Portugal","pais":"Portugal","titulo":"Destaques da Semana: Liderança, tecnologia e ambição global","resumo":"Este artigo semanal aborda os principais movimentos do mercado global, conectando inovação tecnológica e estratégias de liderança corporativa. O conteúdo destaca como empresas ambiciosas estão a adaptar-se aos novos desafios digitais para expandirem a sua presença internacional. Trata-se de uma análise essencial para compreender as tendências que moldam o futuro dos negócios e da tecnologia.","link":"https://www.forbespt.com/top-of-the-week-lideranca-tecnologia-e-ambicao-global/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Globo","pais":"Brasil","titulo":"Cabo de internet de 7.000 km da Meta transportará dados pelo fundo do oceano","resumo":"A Meta anunciou o projeto de um cabo submarino de fibra óptica com mais de 7.000 quilômetros de extensão para interconectar continentes.\nA infraestrutura de alta capacidade visa suportar o fluxo crescente de dados impulsionado pelo avanço do consumo de mídias e serviços de IA.\nA instalação no leito oceânico aumentará a resiliência das conexões globais e reduzirá a latência no tráfego de redes digitais.\nO investimento reforça a estratégia das grandes empresas de tecnologia em dominar suas próprias redes de transmissão de dados.","link":"https://revistagalileu.globo.com/tecnologia/noticia/2026/10/cabo-de-internet-de-7000-km-da-meta-transportara-dados-pelo-fundo-do-oceano.ghtml","categoria":"INFRAESTRUTURA","lang":"pt"},{"fonte":"Pompeu Vasconcelos","pais":"Estados Unidos","titulo":"Tesla apresenta carro com tecnologia de voo após 9 anos e prevê produção para 2028","resumo":"Após quase uma década de expectativa, a Tesla detalhou o projeto do seu Roadster equipado com tecnologia inovadora de elevação.\nA montadora projeta iniciar a produção comercial do modelo esportivo até 2028, trazendo recursos inéditos ao mercado.\nA promessa de integrar propulsores promete transformar radicalmente os padrões de aceleração e manuseio dos carros elétricos.\nO anúncio reforça a ambição da fabricante em liderar a próxima revolução do transporte com veículos de alto desempenho.","link":"https://www.portalin.com.br/?p=840469","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"SIC Notícias","pais":"França","titulo":"Caos nos sistemas de refrigeração na França: hackers poderiam atacar minha geladeira?","resumo":"Incidentes recentes envolvendo falhas e invasões em sistemas industriais de refrigeração na França acenderam o alerta sobre cibersegurança.\nA crescente conectividade de eletrodomésticos e equipamentos de refrigeração cria novas vulnerabilidades exploráveis por criminosos virtuais.\nEspecialistas em tecnologia analisam os riscos reais de ataques a dispositivos domésticos e a infraestruturas críticas de armazenamento de alimentos.\nO cenário reforça a necessidade urgente de implementar protocolos mais rigorosos de proteção em dispositivos da Internet das Coisas (IoT).","link":"https://sicnoticias.pt/tecnologia/2026-10-17-caos-nos-sistemas-de-refrigeracao-em-franca-sera-que-os-hackers-conseguiriam-atacar-o-meu-frigorifico--62d94665","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Indian Express","pais":"Inglaterra","titulo":"G7 lançará exercícios para proteção contra ciberataques impulsionados por IA","resumo":"Os países integrantes do G7 planejam realizar simulados de crise para reforçar as defesas globais contra ameaças cibernéticas aprimoradas por inteligência artificial.\nA iniciativa visa identificar vulnerabilidades críticas na infraestrutura digital e padronizar os protocolos de resposta rápida entre as nações aliadas.\nO movimento reflete a crescente preocupação dos governos com o uso malicioso de modelos avançados de IA por cibercriminosos e atores estatais.","link":"https://indianexpress.com/article/technology/tech-news-technology/g7-to-launch-exercises-to-guard-against-ai-cyber-attacks-10926556/","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"Motor16","pais":"Espanha","titulo":"O novo Tesla Roadster chega em 2028 com propulsores para voar; analisamos sua tecnologia","resumo":"A Tesla adiou o lançamento de seu aguardado Roadster para 2028, prometendo uma integração tecnológica inédita em parceria com a SpaceX.\nO veículo elétrico superesportivo pretende incluir pequenos propulsores de ar comprimido para melhorar drasticamente sua aceleração e dinâmica.\nAnalistas avaliam o impacto dessas inovações extremas no setor automotivo e a viabilidade técnica do projeto.","link":"https://www.motor16.com/lo-mas-visto/nuevo-tesla-roadster-en-2028/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"DW.com","pais":"Alemanha","titulo":"Inteligência Artificial: Como a UE pretende alcançar os EUA e a China?","resumo":"A União Europeia intensifica suas discussões estratégicas para reduzir a desvantagem competitiva no setor de inteligência artificial em relação aos Estados Unidos e à China. O bloco busca aliar altos investimentos em infraestrutura e startups a um modelo regulatório focado em segurança e ética. A iniciativa visa garantir a soberania digital europeia e evitar a dependência excessiva das megacorporações tecnológicas estrangeiras.","link":"https://www.dw.com/de/k%C3%BCnstliche-intelligenz-europ%C3%A4ische-union-techbranche-umwelt-sicherheit-arbeitsschutz/a-79686511","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Gazeta do Povo","pais":"Japão","titulo":"Tecnologia japonesa cria combustível solar sem baterias e acelera energia limpa","resumo":"Pesquisadores no Japão desenvolveram uma inovadora tecnologia capaz de gerar combustível solar diretamente, sem a necessidade de sistemas de armazenamento por baterias.\nO avanço promete baratear drasticamente a produção de energia renovável e acelerar a transição para fontes limpas e sustentáveis.\nA inovação posiciona o país na vanguarda da sustentabilidade energética global, reduzindo a dependência de minerais críticos.","link":"https://www.gazetadopovo.com.br/economia/cientistas-japoneses-criam-sistema-que-gera-combustivel-solar-sem-usar-baterias/","categoria":"ENERGIA LIMPA","lang":"pt"},{"fonte":"北京新闻","pais":"China","titulo":"Estudantes de Pequim realizam demonstração prática de inovação científica em inteligência artificial","resumo":"Jovens estudantes da capital chinesa apresentaram projetos práticos voltados à inteligência artificial e inovação tecnológica. O evento destacou o engajamento da nova geração no desenvolvimento de soluções práticas baseadas em algoritmos inteligentes. Essa iniciativa fortalece a base educacional do país voltada para a economia digital e a ciência.","link":"https://www.bj.chinanews.com.cn/news/2026/1018/103753.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The New Indian Express","pais":"Índia","titulo":"Polícia de Rourkela intensifica vigilância no Durga Puja e usa tecnologia contra criminosos","resumo":"As autoridades locais implementaram ferramentas tecnológicas avançadas para garantir a segurança durante as celebrações festivas. O monitoramento inteligente visa coibir ações criminosas e proteger a população aglomerada nos eventos. Essa estratégia demonstra a eficácia da modernização policial em grandes festas populares.","link":"https://www.newindianexpress.com/states/odisha/2026/Oct/18/rourkela-police-tighten-vigil-for-durga-puja-use-technology-to-keep-criminals-at-bay","categoria":"SEGURANÇA","lang":"pt"},{"fonte":"MaisTecnologia","pais":"Portugal","titulo":"Aplicativo da Nvidia passa a controlar a GPU com inteligência artificial por padrão","resumo":"A Nvidia atualizou o seu aplicativo central para delegar o controlo e otimização da placa gráfica diretamente a algoritmos de inteligência artificial. A mudança visa simplificar a experiência do utilizador, automatizando ajustes complexos de desempenho sem necessidade de intervenção manual. Com esta inovação, a empresa reforça o papel da IA no ecossistema de hardware para jogos e aplicações profissionais.","link":"https://www.maistecnologia.com/nvidia-app-da-controlo-da-gpu-a-ia-por-defeito/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Conselho decide abolir segundos extras e reacende debate global sobre a medição do tempo","resumo":"Organizações científicas internacionais concordaram em abolir a adição de segundos intercalares que ajustavam o tempo atômico à rotação da Terra.\nA prática causava instabilidades frequentes em sistemas de navegação, redes de telecomunicações e infraestruturas financeiras globais.\nA decisão visa padronizar a contagem do tempo até pelo menos o próximo século, simplificando a sincronização de dados de alta precisão.\nO debate reacende discussões sobre como a humanidade deve conciliar fenômenos astronômicos naturais e a precisão da tecnologia digital.","link":"https://www1.folha.uol.com.br/ciencia/2026/10/conselho-decide-abolir-segundos-extras-e-reacende-debate-global-sobre-o-tempo.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Estados Unidos","titulo":"Stellantis planeja contratar centenas de engenheiros na Europa e nos EUA","resumo":"A Stellantis planeja contratar centenas de novos engenheiros com foco de atuação distribuído entre a Europa e os Estados Unidos.\nA contratação massiva visa reforçar o desenvolvimento de soluções em mobilidade elétrica e criação de plataformas de software.\nA estratégia busca manter a empresa competitiva diante da rápida transformação tecnológica enfrentada pela indústria automotiva.\nA expansão da equipe técnica destaca a relevância dos mercados ocidentais para a execução do plano global do grupo.","link":"https://oglobo.globo.com/google/amp/economia/noticia/2026/10/17/stellantis-planeja-contratar-centenas-de-engenheiros-na-europa-e-nos-eua.ghtml","categoria":"ENGENHARIA","lang":"pt"},{"fonte":"BBC","pais":"França","titulo":"Protestos na França registram confrontos violentos, saques e incêndios com mais de mil detidos","resumo":"Uma onda de manifestações intensas tomou conta de diversas cidades francesas, resultando em episódios graves de violência e vandalismo.\nEdifícios públicos e privados foram incendiados, enquanto estabelecimentos comerciais sofreram saques em meio ao caos urbano descontrolado.\nAs forças de segurança locais agiram para conter os distúrbios, efetuando a prisão de mais de mil pessoas durante os confrontos.\nO impacto dos acontecimentos domina os debates no país e gera preocupações globais sobre a estabilidade social e a segurança pública.","link":"https://www.bbc.com/zhongwen/articles/cq8ez1wny72xo/simp","categoria":"TRENDING TOPICS","lang":"pt"},{"fonte":"Financial Times","pais":"Inglaterra","titulo":"Economia global deve ter forte crescimento impulsionado pela IA, aponta pesquisa do FT","resumo":"Uma nova pesquisa realizada pelo Financial Times indica que a economia mundial pode passar por uma fase de expansão acelerada devido aos avanços em inteligência artificial.\nEconomistas e líderes do setor preveem ganhos expressivos de produtividade e inovação nos próximos anos em diversos segmentos industriais.\nContudo, especialistas alertam para a necessidade de investimentos contínuos em infraestrutura e adaptação da força de trabalho para sustentar esse crescimento.","link":"https://www.ft.com/content/c6aeb3a1-1874-4947-8ffc-4d993301244a?syn-25a6b1a6=1","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"María Neira, candidata espanhola para dirigir a OMS: “Os novos desafios exigem mais ciência e melhor comunicação”","resumo":"A médica espanhola María Neira apresentou sua candidatura à liderança da Organização Mundial da Saúde com foco no fortalecimento do rigor científico.\nSegundo a especialista, o futuro da saúde pública global depende do combate à desinformação e da aplicação efetiva da ciência nas decisões políticas.\nA proposta busca modernizar as respostas globais diante de emergências sanitárias e crises climáticas.","link":"https://elpais.com/planeta-futuro/2026-10-18/maria-neira-candidata-a-la-oms-los-nuevos-desafios-exigen-mas-ciencia-y-una-mejor-comunicacion-de-la-ciencia.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"DW.com","pais":"Alemanha","titulo":"Alemanha: A economia de Saxônia-Anhalt está realmente em dificuldades?","resumo":"Uma análise aprofundada debate os reais indicadores econômicos do estado de Saxônia-Anhalt, na Alemanha, questionando os diagnósticos de crise persistente na região. Embora o local enfrente desafios como a transição energética e gargalos de mão de obra, novos aportes industriais trazem perspectivas de renovação. O debate reflete as incertezas enfrentadas por todo o setor produtivo alemão no contexto econômico atual.","link":"https://www.dw.com/en/is-saxony-anhalt-economy-as-disadvantaged-as-afd-claims-germany/a-78867143","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Vietnam.vn","pais":"Japão","titulo":"SK hynix apresenta tecnologia de memória para IA de última geração","resumo":"A fabricante sul-coreana SK hynix revelou suas novas soluções de memória de alta largura de banda projetadas especialmente para processamento de inteligência artificial.\nO novo componente oferece taxas de transferência de dados sem precedentes e menor consumo de energia, essenciais para aceleradores gráficos de última geração.\nA novidade fortalece a infraestrutura necessária para suportar o crescimento contínuo de modelos massivos de IA.","link":"https://www.vietnam.vn/pt/sk-hynix-gioi-thieu-cong-nghe-bo-nho-ai-the-he-moi","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"搜狐","pais":"China","titulo":"Relatório de desenvolvimento recente: Superando gargalos, IA acelera a implementação da medicina tradicional","resumo":"Um novo relatório aponta que a inteligência artificial está acelerando a modernização e a aplicação prática das técnicas da medicina tradicional. A tecnologia atua superando antigos gargalos de padronização e eficácia clínica. O impacto global é a fusão bem-sucedida entre o conhecimento ancestral e os algoritmos de ponta.","link":"https://m.sohu.com/a/1089302189_114988?scm=10001.325_13-325_13.0.0-0-0-0-0.5_1334","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"News On AIR","pais":"Índia","titulo":"Ministro do Espaço afirma que economia espacial da Índia pode alcançar US$ 45 bilhões","resumo":"Novas declarações governamentais reforçam o otimismo em torno do crescimento da indústria aeroespacial indiana na próxima década. O avanço tecnológico impulsiona missões comerciais e parcerias estratégicas internacionais. O setor desponta como um dos pilares mais promissores para o futuro econômico do país.","link":"https://newsonair.gov.in/space-minister-dr-jitendra-singh-says-indias-space-economy-is-likely-to-reach-40-45-billion-us-dollars-in-7-8-years/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Portugal News","pais":"Portugal","titulo":"Nova tecnologia melhora significativamente a precisão da cronometragem","resumo":"Um recente avanço tecnológico introduziu sistemas de medição temporal altamente precisos, impactando diretamente competições desportivas e processos industriais. A nova ferramenta reduz a margem de erro a frações mínimas de segundo, garantindo resultados justos e fiáveis. Esta evolução representa um marco importante na engenharia de precisão aplicada ao controlo de tempo.","link":"https://www.theportugalnews.com/br/noticias/2026-10-17/nova-tecnologia-melhora-a-precisao-da-cronometragem/1102143","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Estadão","pais":"Brasil","titulo":"Galaxy S26 Ultra, Claude Code e mais: revista elege as melhores invenções de 2026","resumo":"Uma das principais publicações mundiais destacou as inovações tecnológicas mais promissoras previstas para os próximos anos.\nEntre os destaques estão smartphones avançados com recursos inéditos e ferramentas revolucionárias de desenvolvimento como o Claude Code.\nA lista reflete o avanço acelerado da inteligência artificial aplicada ao ecossistema de software e produtos do cotidiano.\nOs lançamentos sinalizam as principais tendências que moldarão o consumo e o setor de tecnologia na próxima década.","link":"https://www.estadao.com.br/tecmundo/produto-e-review/galaxy-s26-ultra-claude-code-e-mais-revista-elege-melhores-invencoes-de-2026/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"RTP","pais":"Estados Unidos","titulo":"Tesla apresenta versão do modelo esportivo equipado com propulsores","resumo":"A Tesla oficializou a versão do seu modelo esportivo Roadster equipado com propulsores desenvolvidos com apoio da SpaceX.\nOs jatos de ar comprimido prometem proporcionar uma aceleração sem precedentes no segmento de veículos esportivos de série.\nA convergência entre engenharia aeroespacial e automotiva pretende romper barreiras tradicionais de física e velocidade.\nCom essa iniciativa, a empresa busca consolidar sua posição na vanguarda da tecnologia e do design automobilístico mundial.","link":"https://www.rtp.pt/noticias/economia/tesla-apresenta-versao-do-modelo-desportivo-com-propulsores_v1772234","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"CNN Brasil","pais":"França","titulo":"Ninguém vai impor agenda política por meio da violência, diz primeiro-ministro francês","resumo":"Diante da escalada de violência nos protestos que atingem o país, o premiê francês pronunciou-se de forma incisiva contra os atos de vandalismo.\nO chefe de governo enfatizou que o diálogo democrático e a ordem legal não serão substituídos pela coerção ou pela destruição patrimonial.\nMedidas extraordinárias de segurança estão sendo coordenadas pelas autoridades para restaurar a normalidade nas ruas das principais cidades.\nA declaração busca reafirmar a autoridade do Estado perante a crise social e conter o avanço dos distúrbios civis na França.","link":"https://www.cnnbrasil.com.br/internacional/ninguem-vai-impor-agenda-politica-por-meio-da-violencia-diz-premie-frances/","categoria":"POLÍTICA","lang":"pt"},{"fonte":"Chester Standard","pais":"Inglaterra","titulo":"Uma análise sobre o uso da tecnologia de reconhecimento facial em tempo real pela Polícia de Cheshire em Chester","resumo":"A Polícia de Cheshire implementou o uso de tecnologia de reconhecimento facial ao vivo na cidade de Chester para identificar suspeitos e prevenir crimes de forma ostensiva.\nA medida tem gerado debates profundos sobre a eficácia no combate à criminalidade versus os riscos ao direito à privacidade dos cidadãos.\nDefensores dos direitos civis pressionam por regulamentações mais rígidas para garantir a transparência e evitar abusos ou falsos positivos durante as operações públicas.","link":"https://www.chesterstandard.co.uk/news/26642897.cheshire-police-use-live-facial-recignition-technology/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Diario de Navarra","pais":"Espanha","titulo":"Recuperar os dentes no mesmo dia: precisão, experiência e tecnologia para encurtar os tempos de espera","resumo":"Avanços em tecnologia odontológica e planejamento digital estão permitindo que pacientes realizem tratamentos complexos de implantes em apenas 24 horas.\nO uso de escaneamento 3D e impressão de alta precisão reduz drasticamente a necessidade de intervenções invasivas prolongadas.\nA abordagem otimiza os tempos de recuperação, aliando conforto com resultados estéticos eficientes e duradouros.","link":"https://www.diariodenavarra.es/noticias/navarra/2026/10/18/recuperar-dientes-dia-precision-experiencia-tecnologia-acortar-tiempos-espera-838859-15.html","categoria":"SAÚDE E TECNOLOGIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"A IA pode realizar experimentos mentais? A imaginação científica de Einstein e a inteligência artificial","resumo":"Uma reflexão profunda analisa se os sistemas modernos de inteligência artificial são capazes de replicar experimentos mentais, fundamentais para descobertas científicas como as de Albert Einstein.\nO artigo discute os limites entre o processamento estatístico de dados e a verdadeira imaginação teórica nas máquinas.\nO debate levanta questões cruciais sobre até onde a IA pode atuar como uma criadora autônoma de novos paradigmas científicos.","link":"https://news.yahoo.co.jp/expert/articles/6103a5086202ef387dc174d74c681b766d1a6775","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"新华网","pais":"China","titulo":"Comunidade Ásia-Pacífico: Semeando esperança nos arrozais tropicais -- Tecnologia chinesa de arroz híbrido proporciona colheitas abundantes nas Filipinas","resumo":"A tecnologia chinesa de arroz híbrido tem garantido colheitas expressivas e seguras em áreas de cultivo nas Filipinas. Essa cooperação agrícola reforça o compromisso da região Ásia-Pacífico com a segurança alimentar sustentável. O impacto técnico demonstra a eficácia da inovação botânica na superação de crises globais de fome.","link":"http://portuguese.xinhuanet.com/20261018/e198220e135c457398ea3c3daf8244ad/c.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"franceinfo","pais":"Índia","titulo":"Índia deve se consolidar como a quarta maior economia mundial em 2027","resumo":"Apesar de desafios políticos e complexidades locais, projeções indicam um salto expressivo no PIB indiano nos próximos anos. Esse crescimento reflete a força industrial, demográfica e o avanço em setores estratégicos de inovação. A Índia caminha para assumir um papel de maior protagonismo no cenário econômico global.","link":"https://www.franceinfo.fr/replay-radio/d-un-monde-a-l-autre/l-inde-malgre-une-situation-politique-troublee-devrait-s-imposer-en-2027-comme-la-quatrieme-economie-mondiale_8220598.html","categoria":"ECONOMIA","lang":"pt"},{"fonte":"The Portugal News","pais":"Portugal","titulo":"Inovação tecnológica aprimora a exatidão na medição do tempo","resumo":"A evolução dos métodos de cronometragem ganhou um novo impulso com o desenvolvimento de tecnologias avançadas de sensores e processamento. O sistema recém-criado assegura registos temporais de altíssima fidelidade, fundamentais para áreas que exigem rigor absoluto. A novidade promete transformar os padrões estabelecidos em eventos de alta performance e em laboratórios científicos.","link":"https://www.theportugalnews.com/pt/noticias/2026-10-17/nova-tecnologia-melhora-a-precisao-da-medicao-do-tempo/1102136","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Tecnologia usada no Coliseu de Roma vai ajudar a proteger patrimônio do Museu do Ipiranga","resumo":"O Museu do Ipiranga passará a utilizar sensores e métodos de monitoramento estrutural idênticos aos aplicados no Coliseu de Roma.\nA tecnologia de ponta permite diagnosticar vibrações, microfissuras e variações ambientais em tempo real sem danificar a edificação histórica.\nA iniciativa preserva o patrimônio arquitetônico brasileiro ao prever falhas e orientar intervenções preventivas com máxima precisão.\nEssa convergência entre engenharia moderna e preservação histórica estabelece um novo padrão para a conservação de museus no país.","link":"https://g1.globo.com/google/amp/videos-curtos/video/tecnologia-usada-no-coliseu-de-roma-vai-ajudar-a-proteger-patrimonio-do-museu-do-ipiranga-15099377.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"La Voz de Asturias","pais":"Espanha","titulo":"Prós e contras dos suplementos nutricionais: o que a ciência apoia e o que é divulgado sem fundamento","resumo":"O mercado de suplementos alimentares cresceu vertiginosamente, impulsionado por tendências em redes sociais e alegações sem comprovação.\nUma análise detalhada sob a ótica da ciência busca separar produtos cientificamente validados daqueles que são promovidos sem fundamentação médica.\nO artigo alerta para os riscos do consumo sem orientação de especialistas e reforça a importância da nutrição baseada em evidências.","link":"https://www.lavozdeasturias.es/amp/noticia/asturias/2026/10/15/cara-cruz-suplementos-nutricionales-ciencia-respalda-difunde-fundamento/00031792078405405896566.htm?utm_campaign=amp","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Coreia do Norte testa novo torpedo ultra-veloz com integração de IA","resumo":"A Coreia do Norte realizou testes com um novo modelo de torpedo ultrarrápido equipado com algoritmos de inteligência artificial para navegação e identificação de alvos.\nA incorporação de tecnologia autônoma em armamentos de alto alcance gera forte apreensão geopolítica e militar no Leste Asiático, sobretudo para o Japão e vizinhos.\nO evento destaca a rápida militarização de soluções avançadas de inteligência artificial em cenários de conflito estratégico.","link":"https://news.yahoo.co.jp/articles/c34385a6300586ec722f14735b415372ac89acd7","categoria":"TECNOLOGIA MILITAR","lang":"pt"},{"fonte":"中新经纬","pais":"China","titulo":"Observação da Feira de Cantão: Inteligência corporificada da China avança da exibição técnica para a implementação em cenários reais","resumo":"A Feira de Cantão evidenciou a transição da inteligência corporificada na China, que agora foca na aplicação comercial direta e não apenas em protótipos. Essa mudança demonstra a maturidade do ecossistema de robótica e IA no país. O impacto comercial acelera a adoção dessas tecnologias no cotidiano industrial e de serviços.","link":"https://www.jwview.com/jingwei/html/10-18/693006.shtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Investing.com India","pais":"Índia","titulo":"Formulário 4 da Marvell Technology Inc referente a 18 de outubro","resumo":"O documento financeiro detalha movimentações recentes e transações de acionistas importantes da Marvell Technology. A divulgação atende às exigências regulatórias do mercado de capitais e oferece transparência aos investidores. Movimentos desse tipo ajudam a monitorar a confiança interna na empresa e seu desempenho.","link":"https://in.investing.com/news/stock-market-news/form-4-marvell-technology-inc-for-18-october-93CH-5638895","categoria":"MERCADOS","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Tecnologia de ADN ambiental viabiliza o monitoramento de animais selvagens ameaçados","resumo":"Investigadores desenvolveram uma técnica inovadora capaz de recolher e analisar vestígios de ADN presentes no ar para detetar fauna silvestre. Este método não invasivo permite monitorizar espécies em vias de extinção de forma mais eficiente e sem perturbar os habitats naturais. A ferramenta abre novos horizontes para a conservação da biodiversidade global através da biotecnologia.","link":"https://sapo.pt/artigo/tecnologia-de-adn-transportado-pelo-ar-permite-a-monitorizacao-de-animais-selvagens-em-vias-de-extincao-6ad361b8ded6b2a5e31a8d65","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Ministério da Justiça pede que ANPD investigue se Meta descumpriu o Marco Civil da Internet","resumo":"O Ministério da Justiça acionou a Autoridade Nacional de Proteção de Dados para investigar possíveis violações da Meta ao Marco Civil da Internet.\nA apuração analisa o tratamento de dados pessoais de usuários brasileiros e a transparência no direcionamento de conteúdos em suas plataformas.\nCaso sejam constatadas irregularidades, a empresa de tecnologia poderá enfrentar sanções administrativas e multas severas no país.\nO processo destaca o endurecimento da fiscalização governamental sobre o cumprimento das legislações digitais por grandes multinacionais.","link":"https://g1.globo.com/politica/noticia/2026/10/17/ministerio-da-justica-pede-que-anpd-investigue-se-meta-descumpriu-marco-civil-da-internet.ghtml","categoria":"REGULAÇÃO","lang":"pt"},{"fonte":"RTVE.es","pais":"Espanha","titulo":"Cruzando cabos – Tecnologia que cuida, pelúcias com IA em quarentena e o paradoxo de Fermi","resumo":"A convergência entre inteligência artificial e suporte emocional ganha destaque com brinquedos inteligentes projetados para monitorar a saúde infantil.\nEm paralelo, o debate aborda como novos sistemas tecnológicos apoiam o cuidado em isolamento e reacendem discussões sobre o paradoxo de Fermi.\nO artigo reflete sobre o papel da inteligência artificial no cotidiano e o impacto da tecnologia na nossa visão do universo.","link":"https://www.rtve.es/play/audios/cruce-de-cables/cruce-cables-tecnologia-cuida-peluches-ia-cuarentena-paradoja-fermi/17267702/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Forbes JAPAN","pais":"Japão","titulo":"Fuga de cérebros avança em silêncio: investimento contínuo e liberdade intelectual são chaves para reter cientistas","resumo":"O êxodo silencioso de pesquisadores e cientistas de alto nível vem alarmando acadêmicos e formuladores de políticas públicas.\nA retenção desses talentos essenciais exige um financiamento previsível e de longo prazo, além da garantia de um ambiente de liberdade criativa e intelectual.\nSem reformas estruturais no incentivo à pesquisa, o ecossistema de inovação tecnológica do país corre o risco de estagnação.","link":"https://forbesjapan.com/articles/detail/104944","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"新浪网","pais":"China","titulo":"País planeja restringir a exportação de 40 tecnologias, incluindo IA e fotovoltaicos, sinalizando três direções estratégicas","resumo":"O governo chinês estuda impor restrições à exportação de cerca de 40 tecnologias críticas, abrangendo inteligência artificial e energia solar. A medida busca proteger a liderança nacional em setores de alta inovação e segurança econômica. O movimento redefine a dinâmica geopolítica do comércio global de tecnologia avançada.","link":"https://k.sina.com.cn/article_7879996919_1d5af35f702002b94i.html","categoria":"REGULAÇÃO","lang":"pt"},{"fonte":"Diário de Notícias","pais":"Portugal","titulo":"Empresa portuguesa C-MORE desenvolve agente de IA antifalsificação para auditoria de fornecedores","resumo":"A startup portuguesa C-MORE criou um inovador agente de inteligência artificial focado em eliminar alucinações para auditar cadeias de suprimentos. A tecnologia garante maior segurança e fiabilidade na análise de conformidade de fornecedores corporativos. Este avanço reforça a posição de Portugal no desenvolvimento de soluções avançadas de IA para o mercado empresarial.","link":"https://www.dn.pt/economia/portuguesa-c-more-cria-agente-de-ia-prova-de-alucinaes-para-auditar-fornecedores","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Exame","pais":"Brazil","titulo":"A new theory could help decipher AI's 'thinking' — and control its risks","resumo":"Researchers have developed a new theoretical framework aimed at understanding the internal workings of artificial intelligence models. The proposal seeks to map the decision-making processes of algorithms to anticipate unpredictable behaviors. By doing so, experts hope to mitigate security risks and ensure the responsible development of new technological tools. The initiative represents a crucial step toward making complex systems more transparent and aligned with human interests.","link":"https://exame.com/tecnologia/uma-nova-teoria-pode-ajudar-a-decifrar-o-pensamento-da-ia-e-controlar-seus-riscos/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Livemint","pais":"United States","titulo":"Tesla's 'flying' Roadster: Ferrari patented similar jet technology years ago, CEO confirms","resumo":"Ferrari CEO Benedetto Vigna has confirmed that the Italian manufacturer registered a patent for a jet propulsion system similar to Tesla's years ago. The technology intends to use air thrusters to elevate the acceleration performance of the new Roadster and enable unprecedented maneuvers. This revelation demonstrates how major luxury brands are exploring aerospace physics to transform automotive engineering. The clash between automakers highlights the pursuit of radical innovations in the electric and high-performance supercar market.","link":"https://www.livemint.com/auto-news/teslas-flying-car-roadster-ferrari-patented-similar-jet-technology-years-ago-ceo-benedetto-vigna-confirms-11792295311337.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ID, l'Info Durable","pais":"France","titulo":"Pollution and cancer: What science knows and is still trying to understand","resumo":"The relationship between exposure to environmental pollutants and the onset of cancer is the subject of intense scientific study in France. Researchers seek to map how different chemical substances present in air and water affect human DNA and elevate cellular risks. Although various factors have already been proven, science is still working to measure the exact long-term impacts on the population. Understanding these mechanisms is fundamental to supporting public health policies and curbing the advancement of these illnesses.","link":"https://www.linfodurable.fr/sante/pollution-et-cancer-ce-que-la-science-sait-et-cherche-encore-comprendre-59406","categoria":"SCIENCE","lang":"en"},{"fonte":"The Indian Express","pais":"United Kingdom","titulo":"UK competition regulator targets Microsoft's dominance in enterprise software","resumo":"The UK's competition watchdog is stepping up scrutiny over Microsoft's dominance in the enterprise software and cloud services market. The investigation aims to assess whether the tech giant's practices limit consumer choice and harm competing companies in the sector. If irregularities are confirmed, severe regulatory measures could be imposed to restructure market dynamics in the country.","link":"https://indianexpress.com/article/technology/tech-news-technology/uk-competition-regulator-targets-microsofts-business-software-grip-10926565/","categoria":"REGULATION","lang":"en"},{"fonte":"Telecinco","pais":"Spain","titulo":"Meet the 'Tinder of science': The platform connecting patients to clinical trials that could help them","resumo":"A new digital platform is revolutionizing medicine by directly connecting patients with serious illnesses to promising clinical trials. Inspired by the functionality of dating apps, the tool uses algorithms to cross-reference health data and identify innovative treatments. The system promises to significantly accelerate recruitment for medical research and offer new hopes for a cure.","link":"https://www.telecinco.es/noticias/ciencia-y-tecnologia/20261018/ensayo-para-mi-plataforma-conecta-pacientes-medicos-investigadores-upp3rs_18_020419147.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Apple Bestseller - 25 years of the iPod: The starting point for Apple's rise","resumo":"Apple's legendary iPod turns 25, celebrating a historic milestone that profoundly transformed the music and technology industries. The portable device not only redefined how we consume digital audio, but also served as a financial and creative catalyst for the company's historic turnaround. This unprecedented success paved the way for the creation of the iPhone and consolidated the Cupertino giant's modern empire.","link":"https://www.sueddeutsche.de/wirtschaft/apple-bestseller-25-jahre-ipod-startschuss-fuer-apples-hoehenflug-dpa.urn-newsml-dpa-com-20090101-261018-930-855891","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"CNET Japan","pais":"Japan","titulo":"Claude solves 25-year cryptography mystery in under 30 minutes","resumo":"The Claude artificial intelligence model achieved an impressive milestone by solving a mathematical and cryptographic enigma that had remained unanswered for over two decades. The feat was accomplished in less than half an hour, demonstrating the growing capability of advanced AI models to handle complex logic and computing problems. This breakthrough signals a profound transformation in scientific research and global information security.","link":"https://japan.cnet.com/article/35253671/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"新浪网","pais":"China","titulo":"SpaceX rocket technology: Tesla uses the Roadster to rewrite supercar rules","resumo":"Tesla is integrating advanced technologies inspired by SpaceX into its new Roadster model. The initiative promises to redefine performance and engineering standards in the electric supercar market. The primary impact lies in accelerating the merger between the aerospace industry and high-performance mobility.","link":"https://k.sina.com.cn/article_7879923946_m1d5ae18ea03303x7iu.html?from=auto","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Investment Guru India","pais":"India","titulo":"India's space economy projected to grow up to $45 billion in 7-8 years","resumo":"Minister Jitendra Singh highlighted that the country's space sector is experiencing an accelerated pace of development. The projection reinforces India's ability to attract global investments and consolidate its technological leadership. The expansion will bring significant impacts to innovation and the generation of highly skilled jobs.","link":"https://investmentguruindia.com/newsdetail/india-s-space-economy-poised-to-grow-to-up-to-45-billion-in-7-8-years-dr-jitendra-singh454948","categoria":"SPACE ECONOMY","lang":"en"},{"fonte":"Forbes Portugal","pais":"Portugal","titulo":"Top of the Week: Leadership, technology, and global ambition","resumo":"This weekly article addresses key global market movements, connecting technological innovation and corporate leadership strategies. The content highlights how ambitious companies are adapting to new digital challenges to expand their international presence. It is an essential analysis for understanding the trends shaping the future of business and technology.","link":"https://www.forbespt.com/top-of-the-week-lideranca-tecnologia-e-ambicao-global/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Globo","pais":"Brazil","titulo":"Meta's 7,000 km internet cable will transport data across the ocean floor","resumo":"Meta has announced the design of a submarine fiber-optic cable stretching over 7,000 kilometers to interconnect continents. The high-capacity infrastructure aims to support the growing flow of data driven by the advancement of media consumption and AI services. Installation on the ocean floor will increase the resilience of global connections and reduce latency in digital network traffic. The investment reinforces the strategy of major tech companies to control their own data transmission networks.","link":"https://revistagalileu.globo.com/tecnologia/noticia/2026/10/cabo-de-internet-de-7000-km-da-meta-transportara-dados-pelo-fundo-do-oceano.ghtml","categoria":"INFRASTRUCTURE","lang":"en"},{"fonte":"Pompeu Vasconcelos","pais":"United States","titulo":"Tesla unveils car with flying technology after 9 years and targets production for 2028","resumo":"After nearly a decade of anticipation, Tesla has detailed the design of its Roadster equipped with innovative levitation technology. The automaker projects starting commercial production of the sports model by 2028, bringing unprecedented features to the market. The promise of integrating thrusters aims to radically transform acceleration and handling standards for electric cars. The announcement reinforces the manufacturer's ambition to lead the next transportation revolution with high-performance vehicles.","link":"https://www.portalin.com.br/?p=840469","categoria":"INNOVATION","lang":"en"},{"fonte":"SIC Notícias","pais":"France","titulo":"Chaos in French refrigeration systems: Could hackers attack my fridge?","resumo":"Recent incidents involving failures and hacks in industrial refrigeration systems in France have raised cybersecurity red flags. The growing connectivity of home appliances and cooling equipment creates new vulnerabilities that can be exploited by cybercriminals. Technology experts are analyzing the real risks of attacks on household devices and critical food storage infrastructure. The scenario reinforces the urgent need to implement more rigorous protection protocols in Internet of Things (IoT) devices.","link":"https://sicnoticias.pt/tecnologia/2026-10-17-caos-nos-sistemas-de-refrigeracao-em-franca-sera-que-os-hackers-conseguiriam-atacar-o-meu-frigorifico--62d94665","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Indian Express","pais":"United Kingdom","titulo":"G7 to launch exercises to guard against AI-driven cyberattacks","resumo":"G7 member countries plan to conduct crisis simulations to bolster global defenses against cyber threats enhanced by artificial intelligence. The initiative aims to identify critical vulnerabilities in digital infrastructure and standardize rapid response protocols among allied nations. The move reflects growing government concern over the malicious use of advanced AI models by cybercriminals and state actors.","link":"https://indianexpress.com/article/technology/tech-news-technology/g7-to-launch-exercises-to-guard-against-ai-cyber-attacks-10926556/","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"Motor16","pais":"Spain","titulo":"The new Tesla Roadster arrives in 2028 with thrusters to fly; we analyze its technology","resumo":"Tesla has delayed the launch of its highly anticipated Roadster to 2028, promising unprecedented technological integration in partnership with SpaceX. The super-sports electric vehicle intends to include small compressed-air thrusters to drastically improve its acceleration and dynamics. Analysts are evaluating the impact of these extreme innovations on the automotive sector and the technical viability of the project.","link":"https://www.motor16.com/lo-mas-visto/nuevo-tesla-roadster-en-2028/","categoria":"INNOVATION","lang":"en"},{"fonte":"DW.com","pais":"Germany","titulo":"Artificial Intelligence: How the EU Plans to Catch Up with the US and China","resumo":"The European Union is intensifying its strategic discussions to reduce its competitive disadvantage in the artificial intelligence sector compared to the United States and China. The bloc seeks to combine high investments in infrastructure and startups with a regulatory model focused on security and ethics. The initiative aims to guarantee European digital sovereignty and avoid excessive dependence on foreign tech megacorporations.","link":"https://www.dw.com/de/k%C3%BCnstliche-intelligenz-europ%C3%A4ische-union-techbranche-umwelt-sicherheit-arbeitsschutz/a-79686511","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Gazeta do Povo","pais":"Japan","titulo":"Japanese Technology Creates Battery-Free Solar Fuel and Accelerates Clean Energy","resumo":"Researchers in Japan have developed an innovative technology capable of generating solar fuel directly, without the need for battery storage systems.\nThe breakthrough promises to drastically lower the cost of renewable energy production and accelerate the transition to clean and sustainable sources.\nThe innovation positions the country at the forefront of global energy sustainability, reducing its reliance on critical minerals.","link":"https://www.gazetadopovo.com.br/economia/cientistas-japoneses-criam-sistema-que-gera-combustivel-solar-sem-usar-baterias/","categoria":"CLEAN ENERGY","lang":"en"},{"fonte":"北京新闻","pais":"China","titulo":"Beijing Students Hold Practical Demonstration of Scientific Innovation in Artificial Intelligence","resumo":"Young students from the Chinese capital showcased practical projects focused on artificial intelligence and technological innovation. The event highlighted the new generation's engagement in developing practical solutions based on intelligent algorithms. This initiative strengthens the country's educational foundation geared toward the digital economy and science.","link":"https://www.bj.chinanews.com.cn/news/2026/1018/103753.html","categoria":"SCIENCE","lang":"en"},{"fonte":"The New Indian Express","pais":"India","titulo":"Rourkela Police Stepped Up Vigilance for Durga Puja and Use Technology Against Criminals","resumo":"Local authorities have implemented advanced technological tools to ensure safety during the festive celebrations. Intelligent monitoring aims to curb criminal activity and protect the crowds gathered at the events. This strategy demonstrates the effectiveness of police modernization during major popular festivals.","link":"https://www.newindianexpress.com/states/odisha/2026/Oct/18/rourkela-police-tighten-vigil-for-durga-puja-use-technology-to-keep-criminals-at-bay","categoria":"SECURITY","lang":"en"},{"fonte":"MaisTecnologia","pais":"Portugal","titulo":"Nvidia App Now Controls GPU with Artificial Intelligence by Default","resumo":"Nvidia has updated its central application to delegate the control and optimization of the graphics card directly to artificial intelligence algorithms. The shift aims to streamline the user experience by automating complex performance adjustments without requiring manual intervention. With this innovation, the company reinforces the role of AI within the hardware ecosystem for gaming and professional applications.","link":"https://www.maistecnologia.com/nvidia-app-da-controlo-da-gpu-a-ia-por-defeito/","categoria":"INNOVATION","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"Council Decides to Abolish Leap Seconds and Reignites Global Debate on Time Measurement","resumo":"International scientific organizations have agreed to abolish the addition of leap seconds that adjust atomic time to Earth's rotation.\nThe practice caused frequent instabilities in navigation systems, telecommunications networks, and global financial infrastructures.\nThe decision aims to standardize timekeeping until at least the next century, simplifying the synchronization of high-precision data.\nThe debate reignites discussions on how humanity should reconcile natural astronomical phenomena with the precision of digital technology.","link":"https://www1.folha.uol.com.br/ciencia/2026/10/conselho-decide-abolir-segundos-extras-e-reacende-debate-global-sobre-o-tempo.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"United States","titulo":"Stellantis Plans to Hire Hundreds of Engineers in Europe and the US","resumo":"Stellantis plans to hire hundreds of new engineers with their focus distributed between Europe and the United States.\nThe massive hiring spree aims to bolster the development of electric mobility solutions and software platform creation.\nThe strategy seeks to keep the company competitive amid the rapid technological transformation facing the automotive industry.\nThe expansion of the technical team highlights the relevance of Western markets to the execution of the group's global plan.","link":"https://oglobo.globo.com/google/amp/economia/noticia/2026/10/17/stellantis-planeja-contratar-centenas-de-engenheiros-na-europa-e-nos-eua.ghtml","categoria":"ENGINEERING","lang":"en"},{"fonte":"BBC","pais":"France","titulo":"Protests in France See Violent Clashes, Looting, and Fires with Over a Thousand Detained","resumo":"A wave of intense demonstrations swept across several French cities, resulting in severe episodes of violence and vandalism.\nPublic and private buildings were set on fire, while commercial establishments were looted amid uncontrolled urban chaos.\nLocal security forces moved in to contain the disturbances, arresting more than a thousand people during the clashes.\nThe impact of these events dominates national debates and sparks global concerns regarding social stability and public safety.","link":"https://www.bbc.com/zhongwen/articles/cq8ez1wny72xo/simp","categoria":"TRENDING TOPICS","lang":"en"},{"fonte":"Financial Times","pais":"England","titulo":"Global Economy Expected to See Strong Growth Driven by AI, FT Survey Shows","resumo":"A new survey conducted by the Financial Times indicates that the world economy could enter a phase of accelerated expansion due to advancements in artificial intelligence.\nEconomists and industry leaders forecast significant productivity and innovation gains over the coming years across various industrial segments.\nHowever, experts warn of the need for continuous investments in infrastructure and workforce adaptation to sustain this growth.","link":"https://www.ft.com/content/c6aeb3a1-1874-4947-8ffc-4d993301244a?syn-25a6b1a6=1","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"María Neira, Spanish Candidate to Head WHO: 'New Challenges Demand More Science and Better Communication'","resumo":"Spanish physician María Neira has presented her candidacy for the leadership of the World Health Organization, focusing on strengthening scientific rigor.\nAccording to the expert, the future of global public health depends on combating misinformation and effectively applying science to policy decisions.\nThe proposal aims to modernize global responses to health emergencies and climate crises.","link":"https://elpais.com/planeta-futuro/2026-10-18/maria-neira-candidata-a-la-oms-los-nuevos-desafios-exigen-mas-ciencia-y-una-mejor-comunicacion-de-la-ciencia.html","categoria":"SCIENCE","lang":"en"},{"fonte":"DW.com","pais":"Germany","titulo":"Germany: Is Saxony-Anhalt's Economy Really Struggling?","resumo":"An in-depth analysis discusses the actual economic indicators of the state of Saxony-Anhalt in Germany, questioning diagnoses of persistent crisis in the region. Although the area faces challenges such as the energy transition and labor bottlenecks, new industrial investments bring prospects of renewal. The debate reflects the uncertainties facing Germany's entire productive sector in the current economic context.","link":"https://www.dw.com/en/is-saxony-anhalt-economy-as-disadvantaged-as-afd-claims-germany/a-78867143","categoria":"BUSINESS","lang":"en"},{"fonte":"Vietnam.vn","pais":"Japan","titulo":"SK hynix Unveils Next-Generation AI Memory Technology","resumo":"South Korean manufacturer SK hynix has unveiled its new high-bandwidth memory solutions designed specifically for artificial intelligence processing.\nThe new component offers unprecedented data transfer rates and lower energy consumption, which are essential for next-generation graphics accelerators.\nThe innovation strengthens the infrastructure needed to support the continued growth of massive AI models.","link":"https://www.vietnam.vn/pt/sk-hynix-gioi-thieu-cong-nghe-bo-nho-ai-the-he-moi","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"搜狐","pais":"China","titulo":"Recent Development Report: Overcoming Bottlenecks, AI Accelerates the Implementation of Traditional Medicine","resumo":"A new report indicates that artificial intelligence is accelerating the modernization and practical application of traditional medicine techniques. The technology works by overcoming longstanding bottlenecks in standardization and clinical efficacy. The global impact is the successful fusion of ancestral knowledge with cutting-edge algorithms.","link":"https://m.sohu.com/a/1089302189_114988?scm=10001.325_13-325_13.0.0-0-0-0-0.5_1334","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"News On AIR","pais":"India","titulo":"Space Minister States India's Space Economy Could Reach $45 Billion","resumo":"Recent government statements reinforce optimism surrounding the growth of India's aerospace industry over the next decade. Technological advancement drives commercial missions and international strategic partnerships. The sector is emerging as one of the most promising pillars for the country's economic future.","link":"https://newsonair.gov.in/space-minister-dr-jitendra-singh-says-indias-space-economy-is-likely-to-reach-40-45-billion-us-dollars-in-7-8-years/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Portugal News","pais":"Portugal","titulo":"New Technology Significantly Improves Timekeeping Precision","resumo":"A recent technological advancement has introduced highly precise time measurement systems, directly impacting sports competitions and industrial processes. The new tool reduces the margin of error to tiny fractions of a second, ensuring fair and reliable results. This evolution represents a major milestone in precision engineering applied to time control.","link":"https://www.theportugalnews.com/br/noticias/2026-10-17/nova-tecnologia-melhora-a-precisao-da-cronometragem/1102143","categoria":"SCIENCE","lang":"en"},{"fonte":"Estadão","pais":"Brazil","titulo":"Galaxy S26 Ultra, Claude Code, and more: Magazine names the best inventions of 2026","resumo":"One of the world's leading publications highlighted the most promising technological innovations projected for the coming years.\nAmong the highlights are advanced smartphones with unprecedented features and revolutionary development tools like Claude Code.\nThe list reflects the accelerated advancement of artificial intelligence applied to software ecosystems and everyday products.\nThese launches signal the main trends that will shape consumer habits and the tech sector over the next decade.","link":"https://www.estadao.com.br/tecmundo/produto-e-review/galaxy-s26-ultra-claude-code-e-mais-revista-elege-melhores-invencoes-de-2026/","categoria":"INNOVATION","lang":"en"},{"fonte":"RTP","pais":"United States","titulo":"Tesla unveils version of sports model equipped with thrusters","resumo":"Tesla has officially revealed the version of its Roadster sports model equipped with thrusters developed with SpaceX's support.\nThe compressed air jets promise to deliver unprecedented acceleration in the production sports car segment.\nThe convergence of aerospace and automotive engineering aims to break traditional barriers of physics and speed.\nWith this initiative, the company seeks to solidify its position at the forefront of global automotive technology and design.","link":"https://www.rtp.pt/noticias/economia/tesla-apresenta-versao-do-modelo-desportivo-com-propulsores_v1772234","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"CNN Brasil","pais":"France","titulo":"No one will impose a political agenda through violence, says French Prime Minister","resumo":"Faced with escalating violence in protests hitting the country, the French Prime Minister issued a sharp condemnation of the acts of vandalism.\nThe head of government emphasized that democratic dialogue and the rule of law will not be replaced by coercion or property destruction.\nExtraordinary security measures are being coordinated by authorities to restore normality to the streets of major cities.\nThe statement aims to reaffirm the state's authority amid the social crisis and curb the rise of civil unrest in France.","link":"https://www.cnnbrasil.com.br/internacional/ninguem-vai-impor-agenda-politica-por-meio-da-violencia-diz-premie-frances/","categoria":"POLITICS","lang":"en"},{"fonte":"Chester Standard","pais":"England","titulo":"An analysis of Cheshire Police's use of real-time facial recognition technology in Chester","resumo":"Cheshire Police have implemented live facial recognition technology in the city of Chester to identify suspects and proactively prevent crimes.\nThe measure has sparked deep debates regarding the effectiveness of crime-fighting versus risks to citizens' right to privacy.\nCivil rights advocates are pushing for stricter regulations to ensure transparency and prevent abuses or false positives during public operations.","link":"https://www.chesterstandard.co.uk/news/26642897.cheshire-police-use-live-facial-recignition-technology/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Diario de Navarra","pais":"Spain","titulo":"Recovering teeth in a single day: Precision, expertise, and technology to shorten wait times","resumo":"Advancements in dental technology and digital planning are allowing patients to undergo complex implant treatments in just 24 hours.\nThe use of 3D scanning and high-precision printing drastically reduces the need for prolonged invasive procedures.\nThis approach optimizes recovery times, combining comfort with efficient and long-lasting aesthetic results.","link":"https://www.diariodenavarra.es/noticias/navarra/2026/10/18/recuperar-dientes-dia-precision-experiencia-tecnologia-acortar-tiempos-espera-838859-15.html","categoria":"HEALTH AND TECHNOLOGY","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Can AI perform thought experiments? Einstein's scientific imagination and artificial intelligence","resumo":"A profound reflection analyzes whether modern artificial intelligence systems are capable of replicating thought experiments, which are fundamental to scientific breakthroughs like those of Albert Einstein.\nThe article discusses the boundaries between statistical data processing and true theoretical imagination in machines.\nThe debate raises crucial questions about how far AI can act as an autonomous creator of new scientific paradigms.","link":"https://news.yahoo.co.jp/expert/articles/6103a5086202ef387dc174d74c681b766d1a6775","categoria":"SCIENCE","lang":"en"},{"fonte":"新华网","pais":"China","titulo":"Asia-Pacific Community: Sowing hope in tropical rice paddies -- Chinese hybrid rice technology delivers abundant harvests in the Philippines","resumo":"Chinese hybrid rice technology has guaranteed expressive and secure harvests in cultivation areas across the Philippines. This agricultural cooperation reinforces the Asia-Pacific region's commitment to sustainable food security. The technical impact demonstrates the effectiveness of botanical innovation in overcoming global hunger crises.","link":"http://portuguese.xinhuanet.com/20261018/e198220e135c457398ea3c3daf8244ad/c.html","categoria":"SCIENCE","lang":"en"},{"fonte":"franceinfo","pais":"India","titulo":"India expected to cement its position as the world's fourth-largest economy by 2027","resumo":"Despite political challenges and local complexities, projections indicate a significant jump in India's GDP in the coming years. This growth reflects industrial and demographic strength as well as advancements in strategic innovation sectors. India is moving toward assuming a more prominent role on the global economic stage.","link":"https://www.franceinfo.fr/replay-radio/d-un-monde-a-l-autre/l-inde-malgre-une-situation-politique-troublee-devrait-s-imposer-en-2027-comme-la-quatrieme-economie-mondiale_8220598.html","categoria":"ECONOMY","lang":"en"},{"fonte":"The Portugal News","pais":"Portugal","titulo":"Technological innovation enhances accuracy in time measurement","resumo":"The evolution of timekeeping methods has received a new boost with the development of advanced sensor and processing technologies. The newly created system ensures extremely high-fidelity time records, which are fundamental for fields demanding absolute rigor. The innovation promises to transform established standards in high-performance events and scientific laboratories.","link":"https://www.theportugalnews.com/pt/noticias/2026-10-17/nova-tecnologia-melhora-a-precisao-da-medicao-do-tempo/1102136","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Technology used in Rome's Colosseum will help protect the heritage of the Ipiranga Museum","resumo":"The Ipiranga Museum will begin using sensors and structural monitoring methods identical to those applied in Rome's Colosseum.\nState-of-the-art technology makes it possible to diagnose vibrations, micro-cracks, and environmental variations in real time without damaging the historic building.\nThe initiative preserves Brazil's architectural heritage by predicting flaws and guiding preventive interventions with maximum precision.\nThis convergence between modern engineering and historical preservation sets a new standard for museum conservation in the country.","link":"https://g1.globo.com/google/amp/videos-curtos/video/tecnologia-usada-no-coliseu-de-roma-vai-ajudar-a-proteger-patrimonio-do-museu-do-ipiranga-15099377.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"La Voz de Asturias","pais":"Spain","titulo":"Pros and cons of nutritional supplements: What science supports and what is promoted without grounds","resumo":"The dietary supplement market has grown exponentially, driven by social media trends and unproven claims.\nA detailed analysis from a scientific perspective seeks to separate scientifically validated products from those promoted without medical backing.\nThe article warns of the risks of consumption without expert guidance and reinforces the importance of evidence-based nutrition.","link":"https://www.lavozdeasturias.es/amp/noticia/asturias/2026/10/15/cara-cruz-suplementos-nutricionales-ciencia-respalda-difunde-fundamento/00031792078405405896566.htm?utm_campaign=amp","categoria":"SCIENCE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"North Korea tests new ultra-fast torpedo with AI integration","resumo":"North Korea has conducted tests on a new model of ultra-fast torpedo equipped with artificial intelligence algorithms for navigation and target identification.\nThe incorporation of autonomous technology into long-range weaponry generates strong geopolitical and military apprehension in East Asia, especially for Japan and its neighbors.\nThe event highlights the rapid militarization of advanced artificial intelligence solutions in strategic conflict scenarios.","link":"https://news.yahoo.co.jp/articles/c34385a6300586ec722f14735b415372ac89acd7","categoria":"MILITARY TECHNOLOGY","lang":"en"},{"fonte":"中新经纬","pais":"China","titulo":"Canton Fair Observation: China's embodied intelligence advances from technical display to real-world scenario implementation","resumo":"The Canton Fair highlighted the transition of embodied intelligence in China, which now focuses on direct commercial application rather than just prototypes. This shift demonstrates the maturity of the country's robotics and AI ecosystem. The commercial impact accelerates the adoption of these technologies in everyday industrial and service settings.","link":"https://www.jwview.com/jingwei/html/10-18/693006.shtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Investing.com India","pais":"India","titulo":"Marvell Technology Inc Form 4 filed for October 18","resumo":"The financial document details recent movements and transactions by major shareholders of Marvell Technology. The disclosure complies with capital market regulatory requirements and provides transparency to investors. Moves of this nature help monitor internal confidence in the company and its performance.","link":"https://in.investing.com/news/stock-market-news/form-4-marvell-technology-inc-for-18-october-93CH-5638895","categoria":"MARKETS","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Environmental DNA technology enables monitoring of endangered wildlife","resumo":"Researchers have developed an innovative technique capable of collecting and analyzing DNA traces present in the air to detect wild fauna. This non-invasive method makes it possible to monitor endangered species more efficiently and without disturbing natural habitats. The tool opens new horizons for global biodiversity conservation through biotechnology.","link":"https://sapo.pt/artigo/tecnologia-de-adn-transportado-pelo-ar-permite-a-monitorizacao-de-animais-selvagens-em-vias-de-extincao-6ad361b8ded6b2a5e31a8d65","categoria":"SCIENCE","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Ministry of Justice asks ANPD to investigate whether Meta breached the Internet Civil Rights Framework","resumo":"The Ministry of Justice has called upon the National Data Protection Authority to investigate potential violations of the Internet Civil Rights Framework by Meta. The probe examines the handling of personal data belonging to Brazilian users and transparency in content targeting across its platforms. Should irregularities be found, the tech company could face administrative sanctions and severe fines within the country. The proceedings highlight the tightening of government oversight regarding major multinationals' compliance with digital legislation.","link":"https://g1.globo.com/politica/noticia/2026/10/17/ministerio-da-justica-pede-que-anpd-investigue-se-meta-descumpriu-marco-civil-da-internet.ghtml","categoria":"REGULATION","lang":"en"},{"fonte":"RTVE.es","pais":"Spain","titulo":"Crossing Wires – Caring technology, AI plush toys in quarantine, and the Fermi paradox","resumo":"The convergence of artificial intelligence and emotional support takes center stage with smart toys designed to monitor children's health. Simultaneously, the debate addresses how new technological systems support care in isolation and reignite discussions surrounding the Fermi paradox. The article reflects on the everyday role of artificial intelligence and technology's impact on our view of the universe.","link":"https://www.rtve.es/play/audios/cruce-de-cables/cruce-cables-tecnologia-cuida-peluches-ia-cuarentena-paradoja-fermi/17267702/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Forbes JAPAN","pais":"Japan","titulo":"Brain drain quietly advances: Sustained investment and intellectual freedom are keys to retaining scientists","resumo":"The silent exodus of top-tier researchers and scientists has alarmed academics and policymakers. Retaining these essential talents requires predictable, long-term funding, alongside the guarantee of an environment fostering creative and intellectual freedom. Without structural reforms to research incentives, the country's technological innovation ecosystem risks stagnation.","link":"https://forbesjapan.com/articles/detail/104944","categoria":"SCIENCE","lang":"en"},{"fonte":"新浪网","pais":"China","titulo":"Country plans to restrict export of 40 technologies, including AI and photovoltaics, signaling three strategic directions","resumo":"The Chinese government is considering imposing export restrictions on approximately 40 critical technologies, spanning artificial intelligence and solar energy. The measure aims to safeguard national leadership in high-innovation sectors and economic security. This move redefines the geopolitical dynamics of the global advanced technology trade.","link":"https://k.sina.com.cn/article_7879996919_1d5af35f702002b94i.html","categoria":"REGULATION","lang":"en"},{"fonte":"Diário de Notícias","pais":"Portugal","titulo":"Portuguese company C-MORE develops anti-counterfeit AI agent for supplier auditing","resumo":"Portuguese startup C-MORE has created an innovative artificial intelligence agent focused on eliminating hallucinations to audit supply chains. The technology ensures greater security and reliability in compliance analysis for corporate suppliers. This breakthrough strengthens Portugal's position in developing advanced AI solutions for the enterprise market.","link":"https://www.dn.pt/economia/portuguesa-c-more-cria-agente-de-ia-prova-de-alucinaes-para-auditar-fornecedores","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
