@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-w6eHCH8f/K1HmOHbAwOrXJZo'; script-src 'nonce-w6eHCH8f/K1HmOHbAwOrXJZo'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="w6eHCH8f/K1HmOHbAwOrXJZo">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">20/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="w6eHCH8f/K1HmOHbAwOrXJZo">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Brasil de Fato","pais":"Brasil","titulo":"Brasil precisa levar a sério o debate sobre soberania digital, afirma professor da USP","resumo":"Especialistas alertam para a urgência de o Brasil consolidar sua soberania digital frente ao domínio de empresas estrangeiras.\nA dependência tecnológica compromete a segurança de dados nacionais e limita o desenvolvimento de soluções próprias.\nO debate exige políticas públicas eficientes para incentivar a infraestrutura local e proteger o ecossistema brasileiro.","link":"https://www.brasildefato.com.br/2026/10/19/brasil-precisa-levar-a-serio-o-debate-sobre-soberania-digital-afirma-professor-da-usp/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Towards Data Science","pais":"Estados Unidos","titulo":"Bem-vindo ao Google Gemini 4 Argon","resumo":"A Google anunciou o lançamento do Gemini 4 Argon, seu mais recente modelo de inteligência artificial focado em alta performance e processamento multimodal.\nA nova versão traz avanços expressivos na compreensão de contextos extensos, geração de código e raciocínio lógico complexo.\nCom essa atualização, a empresa busca consolidar sua liderança no ecossistema global de IA, oferecendo soluções mais ágeis para desenvolvedores.","link":"https://towardsdatascience.com/welcome-to-google-gemini-4-argon/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Euronews.com","pais":"França","titulo":"Modelo de IA analisa DNA para identificar pessoas com maior risco de AVC","resumo":"Pesquisadores desenvolveram um modelo avançado de inteligência artificial capaz de analisar o DNA humano para identificar predisposições genéticas ao acidente vascular cerebral. A ferramenta cruza milhões de dados genômicos para calcular a probabilidade do evento antes que os primeiros sintomas se manifestem. Essa inovação promete transformar a medicina preventiva, permitindo intervenções precoces e personalizadas para pacientes de alto risco. O avanço consolida o papel essencial da tecnologia no diagnóstico preditivo e na otimização de tratamentos.","link":"https://www.euronews.com/2026/10/20/researchers-use-chatgpt-style-technology-to-predict-stroke-risk-from-a-persons-dna","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Astros de IA em Hollywood: a tecnologia está pronta para rivalizar com estrelas de cinema reais?","resumo":"O avanço das ferramentas de inteligência artificial está transformando a indústria cinematográfica ao permitir a criação de atores virtuais fidedignos.\nA tecnologia levanta intensos debates éticos, contratuais e criativos sobre o futuro da atuação e o impacto direto no trabalho de atores humanos.\nEmbora ofereça redução de custos e novas possibilidades narrativas, especialistas questionam se a IA conseguirá reproduzir a essência da expressividade humana.","link":"https://www.theguardian.com/film/2026/oct/20/ai-actors-val-kilmer-as-deep-as-the-grave-tilly-norwood","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"National Geographic España","pais":"Espanha","titulo":"A ficção científica vira realidade: reverter danos nos pulmões e no coração está a um passo","resumo":"O avanço recente na medicina regenerativa aproxima a ciência de reverter lesões graves em órgãos vitais como o coração e os pulmões.\nPesquisadores estão desenvolvendo terapias inovadoras que estimulam a autorregeneração celular em tecidos anteriormente considerados irreparáveis.\nEssa descoberta pode transformar o tratamento de doenças crônicas e insuficiências cardíacas e respiratórias em todo o mundo.\nA tecnologia promete revolucionar a medicina moderna e aumentar drasticamente a expectativa e qualidade de vida dos pacientes.","link":"https://www.nationalgeographic.com.es/exclusivo-suscriptores/revertir-dano-pulmones-y-corazon-esta-a-paso_29676","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BILD","pais":"Alemanha","titulo":"Cúpula Invest in Germany: Merz reúne-se com líderes empresariais após acordo com a Nvidia","resumo":"O líder político Friedrich Merz reuniu-se com dezenas de representantes do setor produtivo durante a cúpula Invest in Germany.\nO encontro ocorreu logo após o anúncio de uma parceria estratégica relevante entre o país e a gigante de tecnologia Nvidia.\nO objetivo principal foi discutir estratégias para atrair mais investimentos privados e impulsionar a inovação digital na Alemanha.\nA iniciativa busca fortalecer a competitividade do mercado alemão diante dos avanços globais em inteligência artificial.","link":"https://www.bild.de/politik/inland/invest-in-germany-summit-merz-trifft-nach-nvidia-deal-etliche-wirtschaftsvertreter-6ad6564f51e5094f7a572296","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Mindener Tageblatt","pais":"Japão","titulo":"Rover 'Idefix' voa para a lua de Marte em missão espacial japonesa","resumo":"A Agência de Exploração Aeroespacial do Japão (JAXA) deu início à ambiciosa missão MMX, que visa explorar as luas de Marte, Fobos e Deimos.\nO projeto conta com o rover europeu Idefix, desenvolvido para pousar na superfície de Fobos e realizar análises inéditas do solo.\nA iniciativa busca coletar e trazer amostras de volta à Terra, ajudando a desvendar a origem do sistema solar e das luas martianas.\nEsta cooperação internacional reforça a liderança do Japão no avanço da tecnologia espacial e na robótica de exploração profunda.","link":"https://www.mt.de/weltnews/wissenschaft/Idefix-fliegt-zu-Marsmond-Japanische-Mission-gestartet-24444416.html","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"South China Morning Post","pais":"China","titulo":"Novo Microscópio Eletrônico de 0,1 Nanômetro da China Está Pronto para Desafiar EUA e Japão","resumo":"Cientistas chineses desenvolveram um novo microscópio eletrônico de transmissão com resolução de 0,1 nanômetro, uma marca histórica para o país.\nA conquista posiciona a China na vanguarda da caracterização de materiais avançados, desafiando a hegemonia de fabricantes americanos e japoneses.\nO avanço reduz significativamente a dependência externa por equipamentos de altíssima precisão em pesquisas científicas e na indústria de semicondutores.\nA novidade reforça o empenho contínuo do governo em alcançar a autossuficiência tecnológica em setores estratégicos e de alta precisão.","link":"https://www.scmp.com/news/china/science/article/3371401/chinas-new-01-nanometre-electron-microscope-ready-challenge-us-and-japan","categoria":"CIÊNCIA E TECNOLOGIA","lang":"pt"},{"fonte":"Hindustan Times","pais":"Índia","titulo":"Marco Rubio chega à Índia hoje com comércio, segurança e tecnologia na pauta","resumo":"O representante norte-americano desembarca na Índia para uma série de reuniões de alto nível com autoridades locais.\nAs discussões centram-se na expansão de parcerias comerciais estratégicas e no fortalecimento da cooperação em segurança regional.\nO avanço no desenvolvimento tecnológico conjunto e a integração de cadeias de suprimentos também estão no foco do encontro.\nA visita reforça a aliança geopolítica entre as duas nações em um momento de crescentes transformações globais.","link":"https://www.hindustantimes.com/india-news/india-us-seek-deeper-ties-as-marco-rubio-arrives-trade-security-and-technology-on-agenda-101792463620076.html","categoria":"DIPLOMACIA","lang":"pt"},{"fonte":"Euronews","pais":"Portugal","titulo":"Especialistas usam tecnologia baseada em ChatGPT para prever risco de AVC através do DNA","resumo":"Pesquisadores aplicaram modelos de linguagem semelhantes ao ChatGPT para analisar códigos genéticos e antecipar o risco de acidentes vasculares cerebrais. A inovação promete revolucionar a medicina preventiva ao cruzar grandes volumes de dados biológicos complexos com alta precisão. Essa abordagem pioneira abre portas para diagnósticos precoces mais eficazes e tratamentos personalizados na área da saúde.","link":"https://pt.euronews.com/2026/10/20/especialistas-usam-tecnologia-tipo-chatgpt-para-prever-risco-de-avc-a-partir-do-adn","categoria":"SAÚDE E TECNOLOGIA","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Estudo do Observatório Nacional explora asteroides binários e defesa planetária","resumo":"O Observatório Nacional destacou pesquisas inovadoras sobre a dinâmica de asteroides binários no sistema solar.\nA análise detalhada dessas formações rochosas é fundamental para aprimorar estratégias de defesa planetária.\nO trabalho reforça o papel relevante da ciência brasileira no cenário internacional de astronomia e exploração espacial.","link":"https://www.gov.br/observatorio/pt-br/assuntos/noticias/ciencia-no-radio-destaca-estudo-do-on-sobre-asteroides-binarios-e-defesa-planetaria","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Medical Xpress","pais":"Estados Unidos","titulo":"Tecnologia 3D interativa revela tumores ocultos durante cirurgias","resumo":"Uma inovadora tecnologia visual em 3D está permitindo que cirurgiões identifiquem tumores anteriormente ocultos em tempo real durante intervenções operatórias.\nO sistema proporciona maior precisão nos cortes, diminuindo riscos de sequelas e otimizando o tempo de procedimento no centro cirúrgico.\nA novidade promete transformar a oncologia ao unir recursos digitais avançados diretamente à prática médica.","link":"https://medicalxpress.com/news/2026-10-interactive-3d-technology-reveals-hidden.html","categoria":"MEDICINA","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Artrose: cientistas descobrem nova origem para a doença além do desgaste articular","resumo":"Durante décadas, acreditou-se que a artrose fosse provocada exclusivamente pelo desgaste mecânico das articulações ao longo dos anos. No entanto, novas descobertas científicas revelaram que mecanismos biológicos e inflamatórios mais complexos desempenham um papel central na doença. Essa mudança fundamental de paradigma abre caminho para o desenvolvimento de terapias inovadoras focadas nas causas profundas. A novidade promete revolucionar a qualidade de vida de milhões de pessoas que sofrem com dores articulares crônicas no mundo todo.","link":"https://www.science-et-vie.com/corps-et-sante/arthrose-on-pensait-que-lorigine-etait-lusure-de-larticulation-les-chercheurs-en-decouvrent-une-autre-completement-differente-262149.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Óculos inteligentes com IA devolvem a independência a morador de Mablethorpe com deficiência visual","resumo":"Um morador da cidade de Mablethorpe com deficiência visual recuperou parte de sua autonomia no dia a dia graças ao uso de óculos inteligentes equipados com IA.\nO dispositivo consegue descrever o ambiente, identificar objetos e ler textos em tempo real diretamente para o usuário através de áudio.\nEssa inovação destaca o potencial da tecnologia assistiva para transformar vidas, promovendo maior mobilidade e inclusão social.","link":"https://www.bbc.com/news/articles/cw8dzed0vq8eo","categoria":"TECNOLOGIA ASSISTIVA","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"A capa de invisibilidade de Harry Potter cada vez mais próxima: criam material capaz de se camuflar em segundos","resumo":"Cientistas criaram um novo material inteligente capaz de adaptar sua superfície e se camuflar no ambiente em questão de segundos.\nA inovação simula as propriedades de camuflagem de organismos naturais para manipular a reflexão da luz e sinais térmicos.\nO avanço abre portas para aplicações revolucionárias no setor militar, na indústria têxtil e no desenvolvimento de novas tecnologias ópticas.\nCom esse avanço, a criação de dispositivos funcionais de invisibilidade deixa de ser apenas ficção e se torna uma possibilidade real.","link":"https://www.eldebate.com/ciencia/20261020/capa-invisibilidad-harry-potter-cada-vez-cerca-crean-material-capaz-camuflarse-segundos_471314.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"n-tv.de","pais":"Alemanha","titulo":"Tecnologia encontra a indústria: Governo alemão colabora com a Nvidia na criação de robótica com IA","resumo":"O governo federal da Alemanha firmou uma cooperação estratégica com a Nvidia para impulsionar a robótica baseada em IA.\nA iniciativa visa integrar soluções tecnológicas avançadas diretamente no setor fabril e de manufatura do país.\nA parceria busca acelerar a automação industrial e garantir maior eficiência na produção nacional.\nCom essa ação, a Alemanha pretende se consolidar como líder mundial na aplicação de inteligência artificial na indústria.","link":"https://www.n-tv.de/wirtschaft/Bund-kooperiert-mit-Nvidia-bei-Entwicklung-von-KI-Robotik-id31435883.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"株式会社Preferred Networks","pais":"Japão","titulo":"PFN e Tenstorrent são selecionadas pela NEDO para projetar processadores xPU com tecnologia optoeletrônica","resumo":"A startup japonesa Preferred Networks e a norte-americana Tenstorrent foram escolhidas pela organização governamental NEDO para desenvolver chips xPU de próxima geração.\nO projeto visa integrar a tecnologia de fusão optoeletrônica, permitindo a transmissão de dados por luz diretamente nos semicondutores.\nA inovação promete reduzir drasticamente o consumo de energia e elevar a eficiência do processamento de dados em inteligência artificial.\nA parceria posiciona o Japão na vanguarda da criação de infraestrutura de hardware sustentável para supercomputação.","link":"https://www.preferred.jp/ja/news/pr20261020","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"科学网—新闻","pais":"China","titulo":"Agentes de Inteligência Artificial Concluem Testes de Laboratório Fechado de Forma Autônoma","resumo":"Pesquisadores chineses demonstraram o uso bem-sucedido de agentes de IA para conduzir autonomamente todo o ciclo de testes em laboratório biológico.\nO sistema planejou experimentos, operou equipamentos e analisou dados sem intervenção humana direta durante as etapas de validação.\nA automação de ponta a ponta promete acelerar de forma drástica a descoberta de novos fármacos e o avanço da pesquisa biotecnológica.\nEste marco estabelece um novo paradigma para a ciência, combinando capacidade analítica digital com execução física automatizada.","link":"https://news.sciencenet.cn/htmlnews/2026/10/573270.shtm","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"India Today","pais":"Índia","titulo":"Índia pede vigilância na transferência de tecnologias para Estados ligados ao terrorismo","resumo":"A Índia fez um apelo à comunidade internacional por maior rigor e monitoramento no controle de transferências tecnológicas sensíveis.\nO governo indiano alertou que inovações avançadas podem ser desviadas para países e atores patrocinadores do terrorismo.\nA iniciativa busca fortalecer acordos multilaterais para conter riscos crescentes à segurança global e à estabilidade regional.\nAutoridades defendem diretrizes mais estritas para proibir o acesso não autorizado a sistemas estratégicos e digitais.","link":"https://www.indiatoday.in/world/story/india-warns-un-sensitive-technology-transfers-wmd-terrorism-threat-ptag-3021124-2026-10-20","categoria":"SEGURANÇA","lang":"pt"},{"fonte":"Plataforma Media","pais":"Portugal","titulo":"Portugal e China retomam cooperação científica após sete anos com foco em financiamento para 2027","resumo":"Após um hiato de sete anos, os governos de Portugal e China restabeleceram acordos bilaterais voltados para o desenvolvimento científico e tecnológico. A parceria prevê novos aportes financeiros e a execução de projetos conjuntos a partir de 2027, fortalecendo laços estratégicos globais. A iniciativa visa impulsionar a inovação e o intercâmbio de conhecimento entre pesquisadores das duas nações.","link":"https://www.plataformamedia.com/2026/10/20/portugal-e-china-retomam-cooperacao-cientifica-apos-sete-anos-financiamento-e-projetos-concretos-ficam-para-2027/","categoria":"CIÊNCIA E DIPLOMACIA","lang":"pt"},{"fonte":"Brasil Mineral","pais":"Brasil","titulo":"Hydro adota tecnologia de eletrólise focando na neutralidade de carbono","resumo":"A gigante do setor de alumínio Hydro está implementando um processo inovador de eletrólise para eliminar emissões na produção.\nA iniciativa busca alinhar a indústria pesada às metas globais de descarbonização e transição energética sustentável.\nA aplicação dessa tecnologia pioneira reforça a busca por processos produtivos mais limpos e eficientes no país.","link":"https://brasilmineral.com.br/noticias/hydro-usa-tecnologia-de-eletrolise-de-olho-nas-emissoes-zero","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Phys.org","pais":"Estados Unidos","titulo":"Nova tecnologia de biofabricação 4D promete avanços na engenharia de tecidos e cicatrização","resumo":"Pesquisadores apresentaram um avanço em biofabricação 4D capaz de criar materiais biológicos que mudam de forma e se adaptam com o tempo.\nA técnica abre horizontes inéditos para a engenharia de tecidos, permitindo regenerar lesões graves e acelerar a cicatrização de feridas complexas.\nO avanço representa um passo importante rumo a tratamentos médicos regenerativos e altamente personalizados.","link":"https://phys.org/news/2026-10-4d-biofabrication-technology-tissue-wound.html","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"TechRadar","pais":"França","titulo":"LG confirma nova tecnologia OLED mais eficiente, mas televisores terão que esperar","resumo":"A LG anunciou o desenvolvimento de uma nova geração de painéis OLED focada em maior eficiência energética e brilho superior. Apesar dos grandes avanços técnicos demonstrados, a comercialização dessa tecnologia em televisores de grande porte ainda deve demorar. O atraso ocorre devido aos altos custos de produção inicial e ao tempo necessário para adequar as linhas de fabricação em massa. A inovação sinaliza o futuro dos displays de alta performance, consolidando a marca na vanguarda do setor.","link":"https://global.techradar.com/fr-fr/computing/monitors/lg-confirme-une-nouvelle-technologie-oled-plus-efficace-mais-les-televiseurs-devront-attendre","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Descoberta em Bristol pode transformar o ensino de ciências para pessoas cegas","resumo":"Pesquisadores da Universidade de Bristol desenvolveram um avanço científico que promete tornar o aprendizado de ciências mais acessível para deficientes visuais.\nA iniciativa utiliza novas tecnologias e métodos táteis para representar dados e estruturas complexas que antes dependiam exclusivamente da visão.\nA inovação tem o potencial de democratizar a educação científica e incentivar a inclusão de mais talentos com deficiência visual na pesquisa.","link":"https://www.bbc.co.uk/news/articles/cm3697j58l91o","categoria":"CIÊNCIA E INOVAÇÃO","lang":"pt"},{"fonte":"Atlántico","pais":"Espanha","titulo":"A tecnologia quântica ameaça a integridade das chaves privadas","resumo":"O avanço da computação quântica coloca em risco a segurança dos sistemas de criptografia assimétrica tradicionais usados atualmente.\nComputadores quânticos de alta capacidade poderão processar e quebrar chaves privadas em uma fração do tempo exigido por supercomputadores comuns.\nEspecialistas alertam para a urgência da transição global rumo à criptografia pós-quântica para proteger dados sensíveis.\nEmpresas e governos precisam reestruturar suas infraestruturas digitais antes que a tecnologia quântica se torne amplamente acessível.","link":"https://www.atlantico.net/sociedad/tecnologia-cuantica-amenaza-integridad-claves_1_20261019-4456629.html","categoria":"CIBERSEGURANÇA","lang":"pt"},{"fonte":"FAZ","pais":"Alemanha","titulo":"China expõe as fragilidades da política industrial europeia","resumo":"A rápida expansão tecnológica e industrial da China colocou em evidência as vulnerabilidades do modelo europeu.\nEspecialistas alertam para a dependência da Europa em relação a insumos estratégicos e tecnologias críticas do mercado asiático.\nA situação exige uma reformulação urgente das políticas industriais e de incentivo ao setor tecnológico no continente.\nO debate reflete a urgência da União Europeia em proteger sua soberania econômica e competitividade global.","link":"https://www.faz.net/aktuell/wirtschaft/china-offenbart-die-schwachstelle-der-europaeischen-industriepolitik-201602468.html","categoria":"POLÍTICA INDUSTRIAL","lang":"pt"},{"fonte":"東京工科大学","pais":"Japão","titulo":"Pesquisadores japoneses desenvolvem inteligência artificial para estimar a espessura de amostras patológicas","resumo":"Uma equipe liderada pela Universidade Tecnológica de Tóquio desenvolveu uma tecnologia de IA capaz de calcular com precisão a espessura de lâminas patológicas.\nA variação na espessura do corte de tecidos é um dos grandes desafios que prejudica a padronização e o desempenho de diagnósticos automatizados.\nCom a nova ferramenta, médicos e sistemas de IA podem obter diagnósticos mais consistentes e confiáveis no combate a doenças como o câncer.\nO avanço melhora a qualidade da medicina digital e impulsiona a integração da tecnologia nos processos laboratoriais.","link":"https://www.teu.ac.jp/press/2026.html?id=265","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"日经中文网","pais":"China","titulo":"Da Encapsulação a Novos Materiais: China Abre Caminho Autônomo na Fusão Optoeletrônica","resumo":"A China está intensificando o desenvolvimento de tecnologias de fusão optoeletrônica como estratégia para superar gargalos na indústria de chips.\nO foco abrange desde novas técnicas de empacotamento até o desenvolvimento de materiais inéditos para transmissão de dados por luz.\nA iniciativa busca contornar sanções internacionais ao criar arquiteturas de processamento mais rápidas e eficientes energeticamente.\nEspecialistas destacam que a rota fotônica pode garantir à China uma posição de liderança na próxima geração da computação.","link":"https://cn.nikkei.com/columnviewpoint/column/64326-2026-10-20-05-00-41.html","categoria":"SEMICONDUTORES","lang":"pt"},{"fonte":"Hindustan Times","pais":"Índia","titulo":"Índia busca vigilância global sobre a transferência de tecnologia de armas sensíveis","resumo":"O governo indiano defendeu a criação de mecanismos internacionais mais rígidos contra a proliferação de armamentos de alta tecnologia.\nEm pronunciamento diplomático, foram destacados os perigos da aquisição de sistemas sensíveis por grupos extremistas.\nA medida visa proteger infraestruturas críticas e evitar que inovações do setor de defesa sejam utilizadas de forma desestabilizadora.\nO país reforçou seu compromisso em liderar debates internacionais sobre ética e controle no uso militar de novas tecnologias.","link":"https://www.hindustantimes.com/world-news/us-news/india-seeks-global-vigilance-regarding-transfer-of-sensitive-weapons-technology-to-terror-linked-actors-101792463967453.html","categoria":"TECNOLOGIA E DEFESA","lang":"pt"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"Do oceano ao hidrogênio: Portugal e China cooperarão em investigação e inovação em cinco áreas","resumo":"Portugal e China firmaram uma nova aliança estratégica que abrange cinco setores fundamentais, incluindo estudos oceânicos e a produção de hidrogênio verde. O acordo visa acelerar a transição energética e o desenvolvimento sustentável por meio da pesquisa científica compartilhada. A cooperação consolida o compromisso de ambos os países com inovações tecnológicas de impacto ambiental positivo.","link":"https://jornaleconomico.sapo.pt/noticias/do-oceano-ao-hidrogenio-portugal-e-china-vao-cooperar-de-perto-na-investigacao-e-inovacao-em-cinco-areas/","categoria":"INOVAÇÃO E SUSTENTABILIDADE","lang":"pt"},{"fonte":"Capital Reset","pais":"Brasil","titulo":"Pressão política ameaça a precisão do balanço científico sobre o clima","resumo":"Cientistas alertam que interferências e pressões políticas estão comprometendo relatórios e análises climáticas globais.\nA manipulação ou supressão de dados afeta diretamente a elaboração de estratégias eficazes de combate ao aquecimento global.\nA preservação da autonomia científica é tida como essencial para embasar decisões socioambientais urgentes.","link":"https://capitalreset.uol.com.br/clima/pressao-politica-ameaca-balanco-cientifico-do-clima/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"C-SPAN","pais":"Estados Unidos","titulo":"Conselheiro de Ciência da Casa Branca debate IA e Inovação","resumo":"O principal conselheiro científico da administração norte-americana apresentou as diretrizes estratégicas para o avanço da inteligência artificial no país.\nO plano visa incentivar a inovação e o empreendedorismo tecnológico ao mesmo tempo em que estabelece parâmetros éticos e de segurança.\nA medida reforça o empenho do governo em manter a competitividade global sem comprometer a confiança pública na tecnologia.","link":"https://www.c-span.org/event/public-affairs-event/white-house-science-adviser-on-ai-innovation/448508","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"INSIGHT EU MONITORING","pais":"França","titulo":"Comissão Europeia investe 3,4 bilhões de euros em 77 projetos de tecnologia sustentável","resumo":"A Comissão Europeia anunciou um investimento massivo para impulsionar o desenvolvimento e implantação de tecnologias limpas em todo o continente. Os recursos serão distribuídos entre dezenas de iniciativas focadas em energia renovável, descarbonização industrial e armazenamento de carbono. O objetivo central é acelerar a transição ecológica e garantir a soberania tecnológica da Europa frente aos desafios climáticos globais. A medida reforça a liderança do bloco em sustentabilidade e apoia a meta de atingir a neutralidade de emissões nos próximos anos.","link":"https://ieu-monitoring.com/editorial/eu-commission-invests-e3-4-billion-in-77-net-zero-technology-projects/1252687?utm_source=ieu-portal","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Inglaterra","titulo":"Reino Unido corre o risco de virar apenas 'cliente' e não desenvolvedor de IA, alerta Conselho de Ciência","resumo":"O Conselho de Ciência e Tecnologia do Reino Unido alertou que o país pode se tornar mero consumidor de inteligência artificial caso não amplie investimentos.\nO relatório enfatiza a necessidade urgente de apoiar a infraestrutura nacional e a pesquisa para competir com potências globais como EUA e China.\nSe medidas não forem tomadas, a dependência de sistemas estrangeiros pode comprometer a soberania tecnológica e a competitividade econômica britânica.","link":"https://news.yahoo.co.jp/articles/48dc204fdb9eda91f9d93b7d3fab1d76a8871526","categoria":"POLÍTICA TECNOLÓGICA","lang":"pt"},{"fonte":"Cinco Días","pais":"Espanha","titulo":"A espanhola Big Sur Ventures lança fundo de 100 milhões para startups de 'deeptech'","resumo":"A gestora espanhola Big Sur Ventures anunciou o lançamento de um novo fundo de capital de risco focado em startups de tecnologia profunda.\nO objetivo é injetar recursos em empresas emergentes que desenvolvem soluções disruptivas em inteligência artificial, biotecnologia e materiais avançados.\nA iniciativa busca fortalecer o ecossistema de inovação da Espanha e apoiar projetos científicos de alto impacto mercadológico.\nCom essa capitalização, espera-se acelerar a expansão internacional de pesquisas acadêmicas convertidas em negócios viáveis.","link":"https://cincodias.elpais.com/companias/2026-10-20/la-espanola-big-sur-ventures-lanza-un-fondo-de-100-millones-para-start-ups-de-tecnologia-deeptech.html","categoria":"INVESTIMENTO","lang":"pt"},{"fonte":"Chemie.de","pais":"Alemanha","titulo":"Startup Variolytics de Stuttgart vence o Prêmio Alemão de Sustentabilidade 2027","resumo":"A startup alemã Variolytics foi prestigiada com o Prêmio Alemão de Sustentabilidade de 2027 por suas soluções tecnológicas.\nA empresa desenvolveu um sistema inovador de análise ambiental focado na otimização de processos e redução de emissões.\nA tecnologia auxilia indústrias a monitorar e controlar o consumo de recursos em tempo real de forma eficiente.\nO reconhecimento destaca o papel essencial das greentechs no ecossistema de inovação e transição ecológica do país.","link":"https://www.chemie.de/news/1190110/stuttgarter-start-up-variolytics-gewinnt-deutschen-nachhaltigkeitspreis-2027.html","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"Tohoku University","pais":"Japão","titulo":"Nova tecnologia combina tomografia de raios-X e simulação para promover a siderurgia de baixo carbono","resumo":"Pesquisadores no Japão desenvolveram um método inovador que une tomografia computadorizada por raios-X e simulação de partículas para prever a resistência do minério de ferro.\nA tecnologia permite estimar com precisão o comportamento mecânico das matérias-primas durante os processos de redução do ferro.\nA inovação é fundamental para otimizar o uso de hidrogênio e reduzir as emissões de dióxido de carbono na fabricação de aço.\nO avanço impulsiona a transição da indústria pesada rumo a processos industriais ecologicamente sustentáveis.","link":"https://www.tohoku.ac.jp/japanese/2026/10/press20261020-02-xct.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"20Minutos","pais":"China","titulo":"China Quer Proteger Sua Tecnologia: Prepara Restrições à IA e Reforça Controle Sobre Drones","resumo":"O governo chinês está preparando novas diretrizes para restringir e monitorar o uso e exportação de tecnologias sensíveis, como IA e drones.\nA medida visa blindar a propriedade intelectual do país e salvaguardar a segurança nacional diante de crescentes tensões geopolíticas.\nAs regras devem impor controles severos sobre a transferência de modelos avançados de inteligência artificial e componentes de aeronaves.\nEssa abordagem reflete a estratégia de Pequim de equilibrar o avanço tecnológico com a proteção rigorosa de seus ativos estratégicos.","link":"https://www.20minutos.es/tecnologia/actualidad/china-restricciones-exportacion-inteligencia-artificial-drones-tecnologia_7050602_0.html","categoria":"REGULAMENTAÇÃO","lang":"pt"},{"fonte":"Sky Sports","pais":"Índia","titulo":"DP World India Championship: Rory McIlroy fica a quatro tacadas da liderança na segunda rodada","resumo":"O golfista norte-irlandês Rory McIlroy segue na disputa do DP World India Championship após um início de altos e baixos.\nCom apenas quatro buracos jogados na segunda rodada, o atleta posiciona-se a quatro tacadas do líder provisório do torneio.\nA competição na Índia reúne grandes nomes do esporte mundial e apresenta condições desafiadoras no campo.\nTorcedores e analistas acompanham de perto a recuperação do jogador em busca das primeiras posições na tabela.","link":"https://www.skysports.com/golf/news/13599990/dp-world-india-championship-rory-mcilroy-four-off-clubhouse-lead-but-through-only-four-holes-of-second-round","categoria":"ESPORTES","lang":"pt"},{"fonte":"Funchal Notícias","pais":"Portugal","titulo":"Conferência ECOS Machico debateu o papel da tecnologia e da inteligência artificial na gestão do território","resumo":"A cidade de Machico sediou uma conferência dedicada a explorar como as ferramentas tecnológicas e a inteligência artificial podem otimizar o planejamento urbano. Especialistas discutiram o uso de dados avançados para monitorar recursos naturais e melhorar a eficiência na administração municipal. O evento destacou a urgência de adotar soluções digitais inteligentes para enfrentar os desafios territoriais modernos.","link":"https://funchalnoticias.net/2026/10/19/conferencia-ecos-machico-debateu-o-papel-da-tecnologia-e-ia-na-gestao-do-territorio/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"USP Bauru","pais":"Brasil","titulo":"FOB-USP sediará centro de ciência, inovação e cuidados fonoaudiológicos no SUS","resumo":"A Faculdade de Odontologia de Bauru da USP abrigará um novo centro voltado à pesquisa e assistência fonoaudiológica.\nO projeto visa integrar inovação científica e tecnologia diagnóstica ao sistema público de saúde.\nA iniciativa promete impactar positivamente o atendimento a milhares de pacientes no SUS com tratamentos modernos.","link":"https://www.bauru.usp.br/?p=23490","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"A pegada humana no ciclo da água da Terra","resumo":"Um estudo detalhou como as atividades humanas alteraram drasticamente o ciclo global da água e a distribuição dos recursos hídricos do planeta.\nA pesquisa analisa os impactos combinados do crescimento urbano, agricultura intensiva e mudanças climáticas no fluxo de rios e reservatórios.\nCompreender essas transformações é vital para que governos elaborem políticas eficazes no combate à escassez hídrica global.","link":"https://science.nasa.gov/earth/earth-observatory/the-human-fingerprint-on-earths-water-cycle/","categoria":"MEIO AMBIENTE","lang":"pt"},{"fonte":"The Media Leader","pais":"França","titulo":"Science \u0026 Vie e Bpifrance apostam em vídeos para impulsionar a deeptech na saúde","resumo":"Uma parceria inédita entre a publicação científica Science \u0026 Vie e o banco Bpifrance visa destacar inovações em saúde digital e deeptech. Por meio de conteúdos em vídeo, a iniciativa busca dar visibilidade a startups que desenvolvem soluções tecnológicas disruptivas no setor médico. O projeto quer aproximar investidores, pesquisadores e o público geral para acelerar a adoção de tecnologias emergentes. Essa estratégia reforça a importância da comunicação para atrair recursos e promover avanços científicos transformadores na medicina.","link":"https://fr.themedialeader.com/science-vie-et-bpifrance-misent-sur-la-deeptech-sante-en-video/","categoria":"HEALTH TECH","lang":"pt"},{"fonte":"Kidderminster Shuttle","pais":"Inglaterra","titulo":"Especialistas em audição de Kidderminster adotam nova tecnologia para ajudar moradores","resumo":"Especialistas em saúde auditiva na cidade de Kidderminster estão implementando equipamentos tecnológicos de ponta para otimizar tratamentos locais.\nAs novas ferramentas permitem exames mais precisos e personalizados para pessoas com diferentes graus de perda auditiva na comunidade.\nA iniciativa busca melhorar significativamente a qualidade de vida dos residentes, oferecendo soluções modernas e adaptadas a cada paciente.","link":"https://www.kidderminstershuttle.co.uk/news/26651014.specsavers-kidderminster-offers-new-hearing-technology/","categoria":"SAÚDE E TECNOLOGIA","lang":"pt"},{"fonte":"El Periódico","pais":"Espanha","titulo":"Torres (BBVA) destaca o potencial da inteligência artificial para impulsionar a transformação das empresas e da economia","resumo":"O presidente do grupo bancário BBVA destacou a inteligência artificial como o principal motor da transformação econômica dos próximos anos.\nA integração da IA permite otimizar processos operacionais, personalizar serviços financeiros e aumentar drasticamente a produtividade.\nNo entanto, o executivo reforçou a necessidade de diretrizes éticas e regulação responsável para mitigar riscos associados.\nA adoção em larga escala da tecnologia será determinante para a competitividade global das empresas no cenário moderno.","link":"https://www.elperiodico.com/es/economia/20261019/torres-bbva-destaca-potencial-inteligencia-135517603","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"STERN.de","pais":"Alemanha","titulo":"Ministra Bär promove a Alemanha como polo de tecnologia global","resumo":"A ministra Dorothee Bär fez um apelo público promovendo a Alemanha como um ambiente ideal para empresas de tecnologia.\nDurante sua apresentação, destacou a necessidade de desburocratizar processos para atrair novos talentos e investidores globais.\nO governo busca fortalecer a infraestrutura digital e criar um ecossistema mais favorável para startups de inovação.\nA medida visa garantir que o país mantenha sua posição de destaque no desenvolvimento de tecnologias emergentes.","link":"https://www.stern.de/news/ministerin-baer-wirbt-fuer-deutschland-als-technologie-standort-38422266.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"客观日本","pais":"Japão","titulo":"Universidade de Ciência de Tóquio desenvolve tecnologia eficiente para recuperar magnésio do efluente de dessalinização","resumo":"Cientistas da Universidade de Ciência de Tóquio criaram um processo avançado para extrair magnésio de alta pureza a partir da salmoura gerada na dessalinização da água do mar.\nA técnica reduz o impacto ambiental do descarte de efluentes concentrados, transformando um resíduo poluente em um recurso valioso.\nO magnésio recuperado pode ser utilizado na fabricação de baterias, ligas leves para a indústria automotiva e produtos farmacêuticos.\nO método representa um avanço crucial para a economia circular e a gestão sustentável de recursos minerais escassos.","link":"https://www.keguanjp.com/kgjp_keji/kgjp_kj_sea/pt20261020000012.html","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"西藏自治区科学技术厅","pais":"China","titulo":"China Publica Plano de Ação Específico para a Iniciativa 'IA + Software'","resumo":"As autoridades chinesas lançaram o plano de implementação da ação especial voltada para a integração entre Inteligência Artificial e software.\nO documento estabelece diretrizes estratégicas para acelerar a adoção de modelos de linguagem e ferramentas inteligentes na indústria de software.\nA iniciativa visa modernizar a infraestrutura digital do país, impulsionar a produtividade corporativa e criar um ecossistema autônomo.\nCom o plano, o governo busca consolidar a liderança nacional na transformação digital industrial e na autonomia de sistemas cruciais.","link":"https://sti.xizang.gov.cn/xwdt/kjdt/202610/t20261020_563248.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Sky Sports","pais":"Índia","titulo":"DP World India Championship: Tempestades atrasam primeira rodada com Rory McIlroy perto dos líderes","resumo":"A rodada de abertura do DP World India Championship sofreu sérias interrupções devido a fortes trovoadas e raios no local.\nApesar das adversidades climáticas e do atraso na programação, Rory McIlroy manteve um bom ritmo no campo.\nO golfista encerrou o dia inicial a apenas quatro tacadas da liderança do campeonato.\nOs organizadores ajustaram os horários das partidas subsequentes para compensar o tempo perdido durante o mau tempo.","link":"https://www.skysports.com/golf/news/13599506/dp-world-india-championship-rory-mcilroy-four-off-clubhouse-lead-after-thunder-and-lightning-delays-in-first-round","categoria":"ESPORTES","lang":"pt"},{"fonte":"guimaraesvisivel.pt","pais":"Portugal","titulo":"Novo centro de diagnóstico e tratamento posiciona Guimarães como polo de ciência e inovação em saúde","resumo":"A cidade de Guimarães ganhou uma nova estrutura médica voltada para diagnósticos avançados e tratamentos de ponta, impulsionando a economia local. O centro foi concebido para atrair talentos e fomentar pesquisas científicas aplicadas ao setor da saúde e bem-estar. Com essa inauguração, a região reforça seu papel de destaque nacional no desenvolvimento de tecnologias médicas inovadoras.","link":"https://www.guimaraesvisivel.pt/noticia-75/novo-centro-de-diagnostico-e-tratamento-projeta-guimaraes-como-territorio-de-ciencia-e-inovacao-na-saude","categoria":"SAÚDE","lang":"pt"},{"fonte":"Brasil de Fato","pais":"Brazil","titulo":"Brazil needs to take the debate on digital sovereignty seriously, says USP professor","resumo":"Experts warn of the urgency for Brazil to consolidate its digital sovereignty in the face of foreign corporate dominance.\nTechnological dependence compromises national data security and limits the development of domestic solutions.\nThe debate demands efficient public policies to encourage local infrastructure and protect the Brazilian ecosystem.","link":"https://www.brasildefato.com.br/2026/10/19/brasil-precisa-levar-a-serio-o-debate-sobre-soberania-digital-afirma-professor-da-usp/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Towards Data Science","pais":"United States","titulo":"Welcome to Google Gemini 4 Argon","resumo":"Google has announced the launch of Gemini 4 Argon, its latest artificial intelligence model focused on high performance and multimodal processing.\nThe new version brings significant advancements in long-context comprehension, code generation, and complex logical reasoning.\nWith this update, the company aims to solidify its leadership in the global AI ecosystem, offering more agile solutions for developers.","link":"https://towardsdatascience.com/welcome-to-google-gemini-4-argon/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Euronews.com","pais":"France","titulo":"AI model analyzes DNA to identify individuals at higher risk of stroke","resumo":"Researchers have developed an advanced artificial intelligence model capable of analyzing human DNA to identify genetic predispositions to stroke. The tool cross-references millions of genomic data points to calculate the probability of the event before the first symptoms manifest. This innovation promises to transform preventive medicine, enabling early and personalized interventions for high-risk patients. The breakthrough consolidates the essential role of technology in predictive diagnosis and treatment optimization.","link":"https://www.euronews.com/2026/10/20/researchers-use-chatgpt-style-technology-to-predict-stroke-risk-from-a-persons-dna","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"AI stars in Hollywood: Is technology ready to rival real movie stars?","resumo":"The advancement of artificial intelligence tools is transforming the film industry by enabling the creation of faithful virtual actors.\nThe technology raises intense ethical, contractual, and creative debates about the future of acting and the direct impact on human actors' jobs.\nWhile offering cost reduction and new narrative possibilities, experts question whether AI will be able to replicate the essence of human expressiveness.","link":"https://www.theguardian.com/film/2026/oct/20/ai-actors-val-kilmer-as-deep-as-the-grave-tilly-norwood","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"National Geographic España","pais":"Spain","titulo":"Science fiction becomes reality: Reversing lung and heart damage is one step closer","resumo":"Recent progress in regenerative medicine brings science closer to reversing severe injuries in vital organs such as the heart and lungs.\nResearchers are developing innovative therapies that stimulate cellular self-regeneration in tissues previously considered irreparable.\nThis discovery could transform the treatment of chronic diseases, as well as heart and respiratory failures worldwide.\nThe technology promises to revolutionize modern medicine and drastically increase patients' life expectancy and quality of life.","link":"https://www.nationalgeographic.com.es/exclusivo-suscriptores/revertir-dano-pulmones-y-corazon-esta-a-paso_29676","categoria":"SCIENCE","lang":"en"},{"fonte":"BILD","pais":"Germany","titulo":"Invest in Germany Summit: Merz meets with business leaders following Nvidia deal","resumo":"Political leader Friedrich Merz met with dozens of representatives from the productive sector during the Invest in Germany summit.\nThe meeting took place shortly after the announcement of a significant strategic partnership between the country and tech giant Nvidia.\nThe main objective was to discuss strategies to attract more private investment and drive digital innovation in Germany.\nThe initiative seeks to strengthen the competitiveness of the German market in the face of global advancements in artificial intelligence.","link":"https://www.bild.de/politik/inland/invest-in-germany-summit-merz-trifft-nach-nvidia-deal-etliche-wirtschaftsvertreter-6ad6564f51e5094f7a572296","categoria":"BUSINESS","lang":"en"},{"fonte":"Mindener Tageblatt","pais":"Japan","titulo":"'Idefix' rover flies to Martian moon in Japanese space mission","resumo":"The Japan Aerospace Exploration Agency (JAXA) has launched the ambitious MMX mission, aimed at exploring the moons of Mars, Phobos and Deimos.\nThe project features the European rover Idefix, developed to land on the surface of Phobos and conduct unprecedented soil analyses.\nThe initiative aims to collect and return samples to Earth, helping to unravel the origin of the solar system and the Martian moons.\nThis international cooperation reinforces Japan's leadership in the advancement of space technology and deep-space exploration robotics.","link":"https://www.mt.de/weltnews/wissenschaft/Idefix-fliegt-zu-Marsmond-Japanische-Mission-gestartet-24444416.html","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"South China Morning Post","pais":"China","titulo":"China's new 0.1-nanometer electron microscope ready to challenge US and Japan","resumo":"Chinese scientists have developed a new transmission electron microscope with a resolution of 0.1 nanometers, a historic milestone for the country.\nThe achievement positions China at the forefront of advanced materials characterization, challenging the hegemony of American and Japanese manufacturers.\nThe breakthrough significantly reduces external dependence on ultra-high-precision equipment in scientific research and the semiconductor industry.\nThe novelty reinforces the government's ongoing commitment to achieving technological self-sufficiency in strategic and high-precision sectors.","link":"https://www.scmp.com/news/china/science/article/3371401/chinas-new-01-nanometre-electron-microscope-ready-challenge-us-and-japan","categoria":"SCIENCE AND TECHNOLOGY","lang":"en"},{"fonte":"Hindustan Times","pais":"India","titulo":"Marco Rubio arrives in India today with trade, security, and technology on the agenda","resumo":"The US representative has landed in India for a series of high-level meetings with local authorities.\nDiscussions center on expanding strategic trade partnerships and strengthening regional security cooperation.\nProgress in joint technological development and the integration of supply chains are also the focus of the meeting.\nThe visit reinforces the geopolitical alliance between the two nations at a time of growing global transformations.","link":"https://www.hindustantimes.com/india-news/india-us-seek-deeper-ties-as-marco-rubio-arrives-trade-security-and-technology-on-agenda-101792463620076.html","categoria":"DIPLOMACY","lang":"en"},{"fonte":"Euronews","pais":"Portugal","titulo":"Experts use ChatGPT-based technology to predict stroke risk through DNA","resumo":"Researchers have applied language models similar to ChatGPT to analyze genetic codes and anticipate the risk of strokes.\nThe innovation promises to revolutionize preventive medicine by cross-referencing large volumes of complex biological data with high precision.\nThis pioneering approach opens doors for more effective early diagnoses and personalized treatments in healthcare.","link":"https://pt.euronews.com/2026/10/20/especialistas-usam-tecnologia-tipo-chatgpt-para-prever-risco-de-avc-a-partir-do-adn","categoria":"HEALTH AND TECHNOLOGY","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"National Observatory study explores binary asteroids and planetary defense","resumo":"The National Observatory highlighted innovative research on the dynamics of binary asteroids in the solar system.\nThe detailed analysis of these rocky formations is fundamental to improving planetary defense strategies.\nThe work reinforces the relevant role of Brazilian science on the international scene of astronomy and space exploration.","link":"https://www.gov.br/observatorio/pt-br/assuntos/noticias/ciencia-no-radio-destaca-estudo-do-on-sobre-asteroides-binarios-e-defesa-planetaria","categoria":"SCIENCE","lang":"en"},{"fonte":"Medical Xpress","pais":"United States","titulo":"Interactive 3D technology reveals hidden tumors during surgeries","resumo":"An innovative 3D visual technology is enabling surgeons to identify previously hidden tumors in real time during surgical interventions.\nThe system provides greater precision in incisions, reducing the risk of complications and optimizing procedure time in the operating room.\nThe novelty promises to transform oncology by integrating advanced digital resources directly into medical practice.","link":"https://medicalxpress.com/news/2026-10-interactive-3d-technology-reveals-hidden.html","categoria":"MEDICINE","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"Osteoarthritis: Scientists discover new origin for the disease beyond joint wear and tear","resumo":"For decades, osteoarthritis was believed to be caused exclusively by the mechanical wear and tear of joints over the years. However, new scientific discoveries have revealed that more complex biological and inflammatory mechanisms play a central role in the disease. This fundamental paradigm shift paves the way for the development of innovative therapies focused on root causes. The breakthrough promises to revolutionize the quality of life for millions of people suffering from chronic joint pain worldwide.","link":"https://www.science-et-vie.com/corps-et-sante/arthrose-on-pensait-que-lorigine-etait-lusure-de-larticulation-les-chercheurs-en-decouvrent-une-autre-completement-differente-262149.html","categoria":"SCIENCE","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"AI-powered smart glasses restore independence to visually impaired Mablethorpe resident","resumo":"A visually impaired resident of Mablethorpe has regained part of their daily autonomy thanks to the use of AI-equipped smart glasses.\nThe device is able to describe the environment, identify objects, and read texts in real time directly to the user through audio.\nThis innovation highlights the potential of assistive technology to transform lives, promoting greater mobility and social inclusion.","link":"https://www.bbc.com/news/articles/cw8dzed0vq8eo","categoria":"ASSISTIVE TECHNOLOGY","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"Harry Potter's invisibility cloak gets closer: Material capable of camouflaging in seconds created","resumo":"Scientists have created a new smart material capable of adapting its surface and camouflaging into the environment in a matter of seconds.\nThe innovation simulates the camouflage properties of natural organisms to manipulate light reflection and thermal signals.\nThe breakthrough opens doors for revolutionary applications in the military sector, the textile industry, and the development of new optical technologies.\nWith this advance, the creation of functional invisibility devices is no longer just fiction and becomes a real possibility.","link":"https://www.eldebate.com/ciencia/20261020/capa-invisibilidad-harry-potter-cada-vez-cerca-crean-material-capaz-camuflarse-segundos_471314.html","categoria":"INNOVATION","lang":"en"},{"fonte":"n-tv.de","pais":"Germany","titulo":"Tech Meets Industry: German Government Collaborates with Nvidia on AI Robotics","resumo":"The German federal government has established a strategic partnership with Nvidia to boost AI-driven robotics.\nThe initiative aims to integrate advanced technological solutions directly into the country's manufacturing and factory sectors.\nThe partnership seeks to accelerate industrial automation and ensure greater efficiency in national production.\nThrough this action, Germany intends to establish itself as a global leader in the application of artificial intelligence in industry.","link":"https://www.n-tv.de/wirtschaft/Bund-kooperiert-mit-Nvidia-bei-Entwicklung-von-KI-Robotik-id31435883.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"株式会社Preferred Networks","pais":"Japan","titulo":"PFN and Tenstorrent Selected by NEDO to Design xPU Processors with Optoelectronic Technology","resumo":"Japanese startup Preferred Networks and US-based Tenstorrent have been chosen by government organization NEDO to develop next-generation xPU chips.\nThe project aims to integrate optoelectronic fusion technology, allowing data transmission via light directly within semiconductors.\nThe innovation promises to drastically reduce energy consumption and raise the efficiency of data processing in artificial intelligence.\nThe partnership positions Japan at the forefront of creating sustainable hardware infrastructure for supercomputing.","link":"https://www.preferred.jp/ja/news/pr20261020","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"科学网—新闻","pais":"China","titulo":"Artificial Intelligence Agents Autonomously Complete Closed Lab Tests","resumo":"Chinese researchers have demonstrated the successful use of AI agents to autonomously conduct the entire testing cycle in a biological laboratory.\nThe system planned experiments, operated equipment, and analyzed data without direct human intervention during the validation stages.\nEnd-to-end automation promises to drastically accelerate the discovery of new drugs and the advancement of biotechnological research.\nThis milestone establishes a new paradigm for science, combining digital analytical capability with automated physical execution.","link":"https://news.sciencenet.cn/htmlnews/2026/10/573270.shtm","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"India Today","pais":"India","titulo":"India Calls for Vigilance in Technology Transfers to States Linked to Terrorism","resumo":"India has appealed to the international community for greater rigor and monitoring in controlling sensitive technology transfers.\nThe Indian government warned that advanced innovations could be diverted to countries and actors sponsoring terrorism.\nThe initiative seeks to strengthen multilateral agreements to curb growing risks to global security and regional stability.\nOfficials advocate for stricter guidelines to prohibit unauthorized access to strategic and digital systems.","link":"https://www.indiatoday.in/world/story/india-warns-un-sensitive-technology-transfers-wmd-terrorism-threat-ptag-3021124-2026-10-20","categoria":"SECURITY","lang":"en"},{"fonte":"Plataforma Media","pais":"Portugal","titulo":"Portugal and China Resume Scientific Cooperation After Seven Years with Focus on 2027 Funding","resumo":"After a seven-year hiatus, the governments of Portugal and China have reestablished bilateral agreements aimed at scientific and technological development. The partnership provides for new financial contributions and the execution of joint projects starting in 2027, strengthening global strategic ties. The initiative aims to boost innovation and knowledge exchange between researchers from both nations.","link":"https://www.plataformamedia.com/2026/10/20/portugal-e-china-retomam-cooperacao-cientifica-apos-sete-anos-financiamento-e-projetos-concretos-ficam-para-2027/","categoria":"SCIENCE AND DIPLOMACY","lang":"en"},{"fonte":"Brasil Mineral","pais":"Brazil","titulo":"Hydro Adopts Electrolysis Technology Focusing on Carbon Neutrality","resumo":"Aluminum sector giant Hydro is implementing an innovative electrolysis process to eliminate emissions in production.\nThe initiative seeks to align heavy industry with global decarbonization goals and the sustainable energy transition.\nThe application of this pioneering technology reinforces the pursuit of cleaner and more efficient production processes in the country.","link":"https://brasilmineral.com.br/noticias/hydro-usa-tecnologia-de-eletrolise-de-olho-nas-emissoes-zero","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Phys.org","pais":"United States","titulo":"New 4D Biofabrication Technology Promises Breakthroughs in Tissue Engineering and Healing","resumo":"Researchers have unveiled a breakthrough in 4D biofabrication capable of creating biological materials that change shape and adapt over time.\nThe technique opens unprecedented horizons for tissue engineering, allowing the regeneration of severe injuries and accelerating the healing of complex wounds.\nThe breakthrough represents an important step toward regenerative and highly personalized medical treatments.","link":"https://phys.org/news/2026-10-4d-biofabrication-technology-tissue-wound.html","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"TechRadar","pais":"France","titulo":"LG Confirms More Efficient New OLED Technology, But TVs Will Have to Wait","resumo":"LG has announced the development of a new generation of OLED panels focused on higher energy efficiency and superior brightness. Despite the major technical advances demonstrated, the commercialization of this technology in large-screen televisions is still expected to take time. The delay is due to high initial production costs and the time needed to adapt mass manufacturing lines. The innovation signals the future of high-performance displays, consolidating the brand at the forefront of the sector.","link":"https://global.techradar.com/fr-fr/computing/monitors/lg-confirme-une-nouvelle-technologie-oled-plus-efficace-mais-les-televiseurs-devront-attendre","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"BBC","pais":"United Kingdom","titulo":"Bristol Discovery Could Transform Science Education for Blind People","resumo":"Researchers at the University of Bristol have developed a scientific breakthrough that promises to make science learning more accessible for the visually impaired.\nThe initiative uses new technologies and tactile methods to represent complex data and structures that previously relied exclusively on vision.\nThe innovation has the potential to democratize science education and encourage the inclusion of more visually impaired talent in research.","link":"https://www.bbc.co.uk/news/articles/cm3697j58l91o","categoria":"SCIENCE AND INNOVATION","lang":"en"},{"fonte":"Atlántico","pais":"Spain","titulo":"Quantum Technology Threatens the Integrity of Private Keys","resumo":"The advancement of quantum computing poses a risk to the security of traditional asymmetric cryptography systems currently in use.\nHigh-capacity quantum computers will be able to process and break private keys in a fraction of the time required by ordinary supercomputers.\nExperts warn of the urgency of the global transition toward post-quantum cryptography to protect sensitive data.\nCompanies and governments need to restructure their digital infrastructures before quantum technology becomes widely accessible.","link":"https://www.atlantico.net/sociedad/tecnologia-cuantica-amenaza-integridad-claves_1_20261019-4456629.html","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"FAZ","pais":"Germany","titulo":"China Exposes the Fragilities of European Industrial Policy","resumo":"China's rapid technological and industrial expansion has highlighted the vulnerabilities of the European model.\nExperts warn of Europe's dependence on strategic inputs and critical technologies from the Asian market.\nThe situation demands an urgent overhaul of industrial policies and incentives for the technology sector on the continent.\nThe debate reflects the European Union's urgency in protecting its economic sovereignty and global competitiveness.","link":"https://www.faz.net/aktuell/wirtschaft/china-offenbart-die-schwachstelle-der-europaeischen-industriepolitik-201602468.html","categoria":"INDUSTRIAL POLICY","lang":"en"},{"fonte":"東京工科大学","pais":"Japan","titulo":"Japanese Researchers Develop Artificial Intelligence to Estimate Pathology Sample Thickness","resumo":"A team led by the Tokyo University of Technology has developed AI technology capable of accurately calculating the thickness of pathological slides.\nVariation in tissue section thickness is one of the major challenges hindering the standardization and performance of automated diagnoses.\nWith the new tool, doctors and AI systems can obtain more consistent and reliable diagnoses in combating diseases like cancer.\nThe advancement improves the quality of digital medicine and drives the integration of technology into laboratory processes.","link":"https://www.teu.ac.jp/press/2026.html?id=265","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"日经中文网","pais":"China","titulo":"From Packaging to New Materials: China Forges Autonomous Path in Optoelectronic Fusion","resumo":"China is intensifying the development of optoelectronic fusion technologies as a strategy to overcome bottlenecks in the chip industry.\nThe focus ranges from new packaging techniques to the development of unprecedented materials for data transmission via light.\nThe initiative seeks to bypass international sanctions by creating faster and more energy-efficient processing architectures.\nExperts highlight that the photonic route could secure China a leading position in the next generation of computing.","link":"https://cn.nikkei.com/columnviewpoint/column/64326-2026-10-20-05-00-41.html","categoria":"SEMICONDUCTORS","lang":"en"},{"fonte":"Hindustan Times","pais":"India","titulo":"India Seeks Global Vigilance on Sensitive Weapons Technology Transfers","resumo":"The Indian government has advocated for the creation of stricter international mechanisms against the proliferation of high-tech weaponry.\nIn a diplomatic statement, the dangers of the acquisition of sensitive systems by extremist groups were highlighted.\nThe measure aims to protect critical infrastructure and prevent defense sector innovations from being used in a destabilizing manner.\nThe country reinforced its commitment to leading international debates on ethics and control in the military use of new technologies.","link":"https://www.hindustantimes.com/world-news/us-news/india-seeks-global-vigilance-regarding-transfer-of-sensitive-weapons-technology-to-terror-linked-actors-101792463967453.html","categoria":"TECHNOLOGY AND DEFENSE","lang":"en"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"From Ocean to Hydrogen: Portugal and China to Cooperate on Research and Innovation in Five Areas","resumo":"Portugal and China have signed a new strategic alliance covering five fundamental sectors, including ocean studies and green hydrogen production. The agreement aims to accelerate the energy transition and sustainable development through shared scientific research. The cooperation consolidates both countries' commitment to technological innovations with positive environmental impacts.","link":"https://jornaleconomico.sapo.pt/noticias/do-oceano-ao-hidrogenio-portugal-e-china-vao-cooperar-de-perto-na-investigacao-e-inovacao-em-cinco-areas/","categoria":"INNOVATION AND SUSTAINABILITY","lang":"en"},{"fonte":"Capital Reset","pais":"Brazil","titulo":"Political pressure threatens the accuracy of the scientific climate balance","resumo":"Scientists warn that interference and political pressure are compromising global climate reports and analyses.\nThe manipulation or suppression of data directly affects the development of effective strategies to combat global warming.\nThe preservation of scientific autonomy is considered essential to support urgent socio-environmental decisions.","link":"https://capitalreset.uol.com.br/clima/pressao-politica-ameaca-balanco-cientifico-do-clima/","categoria":"SCIENCE","lang":"en"},{"fonte":"C-SPAN","pais":"United States","titulo":"White House Science Advisor Discusses AI and Innovation","resumo":"The U.S. administration's top science advisor outlined strategic guidelines for advancing artificial intelligence in the country.\nThe plan aims to foster innovation and technological entrepreneurship while establishing safety and ethical parameters.\nThe move reinforces the government's commitment to maintaining global competitiveness without compromising public trust in technology.","link":"https://www.c-span.org/event/public-affairs-event/white-house-science-adviser-on-ai-innovation/448508","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"INSIGHT EU MONITORING","pais":"France","titulo":"European Commission Invests €3.4 Billion in 77 Sustainable Technology Projects","resumo":"The European Commission has announced a massive investment to boost the development and deployment of clean technologies across the continent. The funds will be distributed among dozens of initiatives focused on renewable energy, industrial decarbonization, and carbon storage. The core objective is to accelerate the green transition and ensure Europe's technological sovereignty amid global climate challenges. The move reinforces the bloc's leadership in sustainability and supports the goal of achieving net-zero emissions in the coming years.","link":"https://ieu-monitoring.com/editorial/eu-commission-invests-e3-4-billion-in-77-net-zero-technology-projects/1252687?utm_source=ieu-portal","categoria":"INNOVATION","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"United Kingdom","titulo":"UK risks becoming an AI 'client' rather than a developer, Science Council warns","resumo":"The UK Science and Technology Council has warned that the country could become a mere consumer of artificial intelligence unless it increases investments.\nThe report emphasizes the urgent need to support national infrastructure and research to compete with global powers like the US and China.\nIf measures are not taken, dependence on foreign systems could compromise British technological sovereignty and economic competitiveness.","link":"https://news.yahoo.co.jp/articles/48dc204fdb9eda91f9d93b7d3fab1d76a8871526","categoria":"TECH POLICY","lang":"en"},{"fonte":"Cinco Días","pais":"Spain","titulo":"Spain's Big Sur Ventures Launches €100 Million Fund for Deep Tech Startups","resumo":"Spanish venture capital firm Big Sur Ventures has announced the launch of a new fund focused on deep tech startups.\nThe goal is to inject resources into emerging companies developing disruptive solutions in artificial intelligence, biotechnology, and advanced materials.\nThe initiative seeks to strengthen Spain's innovation ecosystem and support scientific projects with high market impact.\nWith this capital injection, the international expansion of academic research converted into viable businesses is expected to accelerate.","link":"https://cincodias.elpais.com/companias/2026-10-20/la-espanola-big-sur-ventures-lanza-un-fondo-de-100-millones-para-start-ups-de-tecnologia-deeptech.html","categoria":"INVESTMENT","lang":"en"},{"fonte":"Chemie.de","pais":"Germany","titulo":"Stuttgart-based Startup Variolytics Wins the 2027 German Sustainability Award","resumo":"German startup Variolytics has been awarded the 2027 German Sustainability Award for its technological solutions.\nThe company has developed an innovative environmental analysis system focused on process optimization and emission reduction.\nThe technology helps industries monitor and control resource consumption in real time efficiently.\nThe recognition highlights the essential role of greentechs in the country's innovation ecosystem and ecological transition.","link":"https://www.chemie.de/news/1190110/stuttgarter-start-up-variolytics-gewinnt-deutschen-nachhaltigkeitspreis-2027.html","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"Tohoku University","pais":"Japan","titulo":"New Technology Combines X-Ray Tomography and Simulation to Promote Low-Carbon Steelmaking","resumo":"Researchers in Japan have developed an innovative method combining X-ray computed tomography and particle simulation to predict iron ore strength.\nThe technology accurately estimates the mechanical behavior of raw materials during iron reduction processes.\nThe innovation is essential to optimize hydrogen use and reduce carbon dioxide emissions in steel manufacturing.\nThe breakthrough drives the heavy industry's transition toward environmentally sustainable industrial processes.","link":"https://www.tohoku.ac.jp/japanese/2026/10/press20261020-02-xct.html","categoria":"SCIENCE","lang":"en"},{"fonte":"20Minutos","pais":"China","titulo":"China Seeks to Protect Its Technology: Prepares AI Restrictions and Strengthens Drone Control","resumo":"The Chinese government is preparing new guidelines to restrict and monitor the use and export of sensitive technologies, such as AI and drones.\nThe measure aims to shield the country's intellectual property and safeguard national security amid rising geopolitical tensions.\nThe rules are expected to impose strict controls on the transfer of advanced artificial intelligence models and aircraft components.\nThis approach reflects Beijing's strategy to balance technological advancement with the rigorous protection of its strategic assets.","link":"https://www.20minutos.es/tecnologia/actualidad/china-restricciones-exportacion-inteligencia-artificial-drones-tecnologia_7050602_0.html","categoria":"REGULATION","lang":"en"},{"fonte":"Sky Sports","pais":"India","titulo":"DP World India Championship: Rory McIlroy Four Shots Off the Lead in the Second Round","resumo":"Northern Irish golfer Rory McIlroy remains in contention at the DP World India Championship after an up-and-down start.\nWith only four holes played in the second round, the athlete sits four shots behind the provisional tournament leader.\nThe competition in India brings together big names in world sport and features challenging course conditions.\nFans and analysts are closely monitoring the player's recovery as he pushes for the top spots on the leaderboard.","link":"https://www.skysports.com/golf/news/13599990/dp-world-india-championship-rory-mcilroy-four-off-clubhouse-lead-but-through-only-four-holes-of-second-round","categoria":"SPORTS","lang":"en"},{"fonte":"Funchal Notícias","pais":"Portugal","titulo":"ECOS Machico Conference Discusses the Role of Technology and Artificial Intelligence in Territorial Management","resumo":"The city of Machico hosted a conference dedicated to exploring how technological tools and artificial intelligence can optimize urban planning. Experts discussed the use of advanced data to monitor natural resources and improve administrative efficiency in municipal management. The event highlighted the urgency of adopting smart digital solutions to face modern territorial challenges.","link":"https://funchalnoticias.net/2026/10/19/conferencia-ecos-machico-debateu-o-papel-da-tecnologia-e-ia-na-gestao-do-territorio/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"USP Bauru","pais":"Brazil","titulo":"FOB-USP to Host Center for Science, Innovation, and Speech-Language Pathology Care in the SUS","resumo":"USP's Bauru School of Dentistry will house a new center focused on speech-language pathology research and care.\nThe project aims to integrate scientific innovation and diagnostic technology into the public healthcare system.\nThe initiative promises to positively impact the care of thousands of patients in the SUS with modern treatments.","link":"https://www.bauru.usp.br/?p=23490","categoria":"SCIENCE","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"The Human Footprint on Earth's Water Cycle","resumo":"A study detailed how human activities have drastically altered the global water cycle and the distribution of the planet's water resources.\nThe research analyzes the combined impacts of urban growth, intensive agriculture, and climate change on river and reservoir flows.\nUnderstanding these transformations is vital for governments to design effective policies to combat global water scarcity.","link":"https://science.nasa.gov/earth/earth-observatory/the-human-fingerprint-on-earths-water-cycle/","categoria":"ENVIRONMENT","lang":"en"},{"fonte":"The Media Leader","pais":"France","titulo":"Science \u0026 Vie and Bpifrance Bet on Video to Boost Health Deep Tech","resumo":"An unprecedented partnership between scientific publication Science \u0026 Vie and the bank Bpifrance aims to highlight innovations in digital health and deep tech. Through video content, the initiative seeks to give visibility to startups developing disruptive technological solutions in the medical sector. The project aims to bring investors, researchers, and the general public closer together to accelerate the adoption of emerging technologies. This strategy reinforces the importance of communication in attracting resources and promoting transformative scientific advances in medicine.","link":"https://fr.themedialeader.com/science-vie-et-bpifrance-misent-sur-la-deeptech-sante-en-video/","categoria":"HEALTH TECH","lang":"en"},{"fonte":"Kidderminster Shuttle","pais":"United Kingdom","titulo":"Kidderminster Hearing Experts Adopt New Technology to Help Residents","resumo":"Hearing health specialists in the city of Kidderminster are implementing cutting-edge technological equipment to optimize local treatments.\nThe new tools allow for more precise and personalized exams for people with varying degrees of hearing loss in the community.\nThe initiative seeks to significantly improve residents' quality of life by offering modern solutions tailored to each patient.","link":"https://www.kidderminstershuttle.co.uk/news/26651014.specsavers-kidderminster-offers-new-hearing-technology/","categoria":"HEALTH \u0026 TECHNOLOGY","lang":"en"},{"fonte":"El Periódico","pais":"Spain","titulo":"Torres (BBVA) Highlights Potential of Artificial Intelligence to Drive Business and Economic Transformation","resumo":"The chairman of the BBVA banking group highlighted artificial intelligence as the main driver of economic transformation in the coming years.\nThe integration of AI makes it possible to optimize operational processes, personalize financial services, and drastically increase productivity.\nHowever, the executive reinforced the need for ethical guidelines and responsible regulation to mitigate associated risks.\nThe large-scale adoption of the technology will be decisive for the global competitiveness of companies in the modern landscape.","link":"https://www.elperiodico.com/es/economia/20261019/torres-bbva-destaca-potencial-inteligencia-135517603","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"STERN.de","pais":"Germany","titulo":"Minister Bär promotes Germany as a global technology hub","resumo":"Minister Dorothee Bär made a public appeal promoting Germany as an ideal environment for tech companies.\nDuring her presentation, she highlighted the need to cut red tape to attract new talent and global investors.\nThe government seeks to strengthen digital infrastructure and create a more favorable ecosystem for innovation startups.\nThe measure aims to ensure the country maintains its prominent position in the development of emerging technologies.","link":"https://www.stern.de/news/ministerin-baer-wirbt-fuer-deutschland-als-technologie-standort-38422266.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"客观日本","pais":"Japan","titulo":"Tokyo University of Science develops efficient technology to recover magnesium from desalination wastewater","resumo":"Scientists at the Tokyo University of Science have created an advanced process to extract high-purity magnesium from the brine generated during seawater desalination.\nThe technique reduces the environmental impact of disposing of concentrated effluent, turning a polluting waste into a valuable resource.\nThe recovered magnesium can be used in the manufacturing of batteries, lightweight alloys for the automotive industry, and pharmaceuticals.\nThe method represents a crucial breakthrough for the circular economy and the sustainable management of scarce mineral resources.","link":"https://www.keguanjp.com/kgjp_keji/kgjp_kj_sea/pt20261020000012.html","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"西藏自治区科学技术厅","pais":"China","titulo":"China publishes specific action plan for the 'AI + Software' Initiative","resumo":"Chinese authorities have launched the implementation plan for the special action focused on the integration between Artificial Intelligence and software.\nThe document establishes strategic guidelines to accelerate the adoption of language models and smart tools in the software industry.\nThe initiative aims to modernize the country's digital infrastructure, boost corporate productivity, and create an autonomous ecosystem.\nWith the plan, the government seeks to consolidate national leadership in industrial digital transformation and the autonomy of crucial systems.","link":"https://sti.xizang.gov.cn/xwdt/kjdt/202610/t20261020_563248.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Sky Sports","pais":"India","titulo":"DP World India Championship: Thunderstorms delay first round with Rory McIlroy near the leaders","resumo":"The opening round of the DP World India Championship suffered serious disruptions due to severe thunderstorms and lightning at the venue.\nDespite the weather adversity and the schedule delay, Rory McIlroy maintained a good pace on the course.\nThe golfer finished the opening day just four shots off the championship lead.\nOrganizers adjusted the tee times for subsequent rounds to make up for the time lost during the bad weather.","link":"https://www.skysports.com/golf/news/13599506/dp-world-india-championship-rory-mcilroy-four-off-clubhouse-lead-after-thunder-and-lightning-delays-in-first-round","categoria":"SPORTS","lang":"en"},{"fonte":"guimaraesvisivel.pt","pais":"Portugal","titulo":"New diagnostic and treatment center positions Guimarães as a health science and innovation hub","resumo":"The city of Guimarães has gained a new medical facility focused on advanced diagnostics and cutting-edge treatments, boosting the local economy. The center was designed to attract talent and foster scientific research applied to the health and wellness sector. With this inauguration, the region reinforces its prominent national role in the development of innovative medical technologies.","link":"https://www.guimaraesvisivel.pt/noticia-75/novo-centro-de-diagnostico-e-tratamento-projeta-guimaraes-como-territorio-de-ciencia-e-inovacao-na-saude","categoria":"HEALTH","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
