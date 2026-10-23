@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-IClOdkOiQZ+b95SSEr3JWPeG'; script-src 'nonce-IClOdkOiQZ+b95SSEr3JWPeG'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="IClOdkOiQZ+b95SSEr3JWPeG">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">23/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="IClOdkOiQZ+b95SSEr3JWPeG">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"G1","pais":"Brasil","titulo":"Falhas no PHP levam tribunais no Brasil e Anatel a suspender sistemas; governo emite alerta","resumo":"Brechas críticas de segurança identificadas na linguagem de programação PHP levaram órgãos governamentais, tribunais e a Anatel a paralisar seus sistemas preventivamente no Brasil.\nO Governo Federal emitiu um alerta urgente para a aplicação imediata de correções de software.\nA vulnerabilidade expõe dados sensíveis e destaca a necessidade contínua de atualização na infraestrutura tecnológica do setor público.","link":"https://g1.globo.com/tecnologia/noticia/2026/10/22/falhas-no-php-levam-tribunais-no-brasil-e-anatel-a-suspender-sistemas-governo-emite-alerta.ghtml","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"Ledge.ai","pais":"Estados Unidos","titulo":"Anthropic revela redução de vagas juniores e prevê o futuro do emprego com IA","resumo":"A startup de inteligência artificial Anthropic divulgou dados mostrando uma queda drástica no percentual de contratações para cargos técnicos juniores, que caiu de 27% para apenas 9%.\nA mudança reflete o avanço acelerado do uso de modelos de linguagem na automação de tarefas iniciais de programação e análise de dados.\nAlém de revelar seus dados internos, a empresa compartilhou previsões sobre o impacto contínuo do avanço da IA no mercado de trabalho global.","link":"https://ledge.ai/articles/anthropic_employment_ai_expectations_gap","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Separadores de vapor de 95 toneladas: a primeira usina nuclear do mundo resfriada a chumbo está em construção","resumo":"A construção da primeira usina nuclear do mundo resfriada por chumbo líquido avançou com a instalação de separadores de vapor massivos de 95 toneladas. Essa tecnologia inovadora de reator de quarta geração busca oferecer maior eficiência energética e padrões de segurança passiva significativamente elevados. O projeto representa um marco histórico para a engenharia nuclear mundial, abrindo caminho para novas soluções de energia sustentável.","link":"https://www.science-et-vie.com/mise-en-avant/des-separateurs-de-vapeur-de-95-tonnes-chacun-la-premiere-centrale-nucleaire-au-monde-refroidie-au-plomb-est-actuellement-en-construction-262930.html","categoria":"ENERGIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Não deixem a IA nas mãos de 'tech bros' e oligarcas, diz ministro da IA do Reino Unido","resumo":"O ministro da Inteligência Artificial do Reino Unido alertou que o desenvolvimento e a governança da IA não devem ser centralizados por bilionários do setor tecnológico.\nA declaração reforça o empenho do governo britânico em garantir uma regulamentação inclusiva, focada na ética e no benefício público global.\nEssa postura busca assegurar que os avanços tecnológicos promovam o bem social sem concentrar excessivamente o poder em poucas corporações.","link":"https://www.bbc.com/news/articles/ck7vp8g38y7vo","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"La Región","pais":"Espanha","titulo":"Ciência descobre na água de As Burgas enzimas que podem melhorar o leite","resumo":"Pesquisadores identificaram na água termal de As Burgas, em Ourense, enzimas com propriedades capazes de otimizar processos na indústria de laticínios.\nA descoberta promete melhorar a eficiência na transformação de derivados do leite, valorizando a biodiversidade biológica local.\nA aplicação dessas biomoléculas abre caminho para inovações sustentáveis no setor de biotecnologia alimentar da Espanha.","link":"https://www.laregion.es/ourense/ciencia-descubre-agua-as-burgas_1_20261023-4462823.html","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"PresseBox","pais":"Alemanha","titulo":"Mitigando riscos internos: por que as empresas precisam combinar tecnologia e controle humano","resumo":"A crescente ameaça de riscos internos nas empresas exige uma abordagem equilibrada entre soluções tecnológicas avançadas e vigilância humana.\nO uso isolado de ferramentas automatizadas pode gerar falsos positivos ou violar regulamentações de privacidade, enquanto a supervisão humana garante contextualização adequada.\nPara proteger dados sensíveis e infraestruturas críticas, as organizações devem implementar estratégias integradas de governança e segurança cibernética.","link":"https://www.pressebox.de/pressemitteilung/validato-ag/insider-risiken-eindmmen-warum-unternehmen-in-sterreich-technologie-und-menschliche-kontrolle-kombinieren-mssen/boxid/1314522","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Novo Nintendo Switch 2 Lite pode se beneficiar de tecnologia de economia de energia da Samsung","resumo":"A nova tecnologia de semicondutores da Samsung promete trazer avanços significativos no consumo de energia e miniaturização.\nEssas inovações podem favorecer diretamente a viabilização de uma versão portátil menor do sucessor do console da Nintendo.\nEspecialistas destacam que a eficiência energética aprimorada permitirá dispositivos mais finos e com maior autonomia de bateria.","link":"https://news.yahoo.co.jp/expert/articles/16c4a6f7182a2e7e08ef22fe34bed99491bb96da","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"中国科学院","pais":"China","titulo":"China Conclui a Primeira Infraestrutura Científica Integrada do Mundo para Animais de Modelo em Grande Escala","resumo":"A China concluiu a construção da primeira infraestrutura científica do mundo dedicada ao estudo integrado de animais de modelo em grande escala.\nO complexo promete acelerar pesquisas biomédicas avançadas, oferecendo suporte crucial para a descoberta de medicamentos e terapias genéticas.\nO projeto consolida o país como uma liderança global em instalações científicas de ponta para as ciências da vida.","link":"https://www.cas.cn/cm/202610/t20261023_5122757.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"NDTV","pais":"Índia","titulo":"'Comércio, tecnologia e rotas marítimas estão sendo usados como armas', diz PM Modi na Cúpula NDTV World","resumo":"Durante a Cúpula NDTV World, o Primeiro-Ministro indiano Narendra Modi alertou que o comércio, a tecnologia e as rotas marítimas estão sendo instrumentalizados na nova ordem global.\nO líder indiano ressaltou a urgência de proteger infraestruturas críticas e garantir a segurança das cadeias globais de suprimento e inovação.\nA declaração reafirma a posição da Índia em defender a cooperação internacional pacífica frente às crescentes disputas e restrições tecnológicas geopolíticas.","link":"https://www.ndtv.com/world-news/pm-modi-at-ndtv-world-summit-on-changing-world-order-trade-technology-sea-routes-being-weaponised-12221724","categoria":"GEOPOLÍTICA","lang":"pt"},{"fonte":"SÁBADO","pais":"Portugal","titulo":"Há uma nova vacina contra o câncer mais agressivo do cérebro","resumo":"Pesquisadores desenvolveram uma nova vacina promissora focada no combate ao glioblastoma, o tipo mais agressivo de câncer cerebral.\nO tratamento inovador visa estimular o sistema imunológico a reconhecer e destruir com precisão as células tumorais.\nOs testes clínicos iniciais demonstraram resultados animadores, trazendo esperança para o avanço da medicina oncológica.","link":"https://www.sabado.pt/ciencia---saude/detalhe/ha-uma-nova-vacina-contra-o-cancro-mais-agressivo-do-cerebro","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"VEJA","pais":"Brasil","titulo":"Plano da Meta para financiar expansão em IA abala ações de tecnologia","resumo":"A Meta anunciou um expressivo aumento nos investimentos voltados ao desenvolvimento de inteligência artificial, gerando apreensão entre investidores do setor de tecnologia.\nA perspectiva de altos custos operacionais no curto prazo pressionou as ações da empresa e impactou o mercado financeiro global.\nA estratégia reflete a corrida acirrada das Big Techs para dominar a infraestrutura de IA no cenário internacional.","link":"https://veja.abril.com.br/economia/plano-da-meta-para-financiar-expansao-em-ia-abala-acoes-de-tecnologia/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"UC Davis College of Engineering","pais":"Estados Unidos","titulo":"Estudante da UC Davis vence prêmio internacional com tecnologia agrícola movida a IA","resumo":"Um estudante de engenharia da Universidade da Califórnia em Davis foi contemplado com um prestigiado prêmio internacional por desenvolver uma solução de colheita baseada em inteligência artificial.\nA inovação utiliza sensores avançados e algoritmos de aprendizado de máquina para otimizar o processo de coleta e reduzir desperdícios no campo.\nA conquista destaca o potencial crescente do uso de tecnologias emergentes para resolver desafios críticos na agricultura global.","link":"https://engineering.ucdavis.edu/news/uc-davis-engineering-student-wins-international-prize-ai-powered-harvest-technology","categoria":"AGROTECNOLOGIA","lang":"pt"},{"fonte":"JeuxVideo.com","pais":"França","titulo":"Sony está preparando uma tecnologia revolucionária para os jogos do PS6: o que já sabemos","resumo":"A Sony está desenvolvendo soluções tecnológicas inovadoras voltadas para a próxima geração do PlayStation, visando redefinir o processamento gráfico e o desempenho dos jogos. Registros e vazamentos recentes indicam foco em arquiteturas avançadas de renderização e integração profunda de inteligência artificial. Essas novidades prometem transformar a experiência dos jogadores no futuro PS6, posicionando a empresa na vanguarda da indústria de games.","link":"https://www.jeuxvideo.com/news/2109926/oui-sony-prepare-bien-une-technologie-revolutionnaire-pour-les-jeux-ps6-ce-qu-on-sait-deja.htm","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"国立研究開発法人科学技術振興機構","pais":"Inglaterra","titulo":"Presidente de comissão do Reino Unido celebra criação do Centro Nacional de Defesa da Informação","resumo":"O presidente de comissão da Câmara dos Comuns do Reino Unido apoiou a criação do Centro Nacional de Defesa da Informação anunciada pelo Primeiro-Ministro.\nA nova instituição visa fortalecer a infraestrutura nacional contra campanhas de desinformação e combater ameaças cibernéticas direcionadas ao país.\nA iniciativa reforça o compromisso em proteger a soberania da informação e assegurar a estabilidade das instituições democráticas britânicas.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261023-05.html","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"TradingView","pais":"Espanha","titulo":"Bitcoin Core altera política de segurança enquanto IA facilita detecção de falhas","resumo":"O projeto Bitcoin Core reformulou suas diretrizes de segurança devido ao avanço do uso de inteligência artificial na detecção automatizada de falhas no código.\nCom novas ferramentas capazes de expor vulnerabilidades em ritmo acelerado, os desenvolvedores adaptaram os protocolos para mitigar riscos de exploração.\nA medida reforça como a inteligência artificial está transformando o cenário da cibersegurança e exigindo respostas ágeis.","link":"https://es.tradingview.com/news/cointelegraph:ec9fea7fa09cd:0/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"国立研究開発法人科学技術振興機構","pais":"Alemanha","titulo":"Instituto Max Planck de Informática e Escola de Engenharia de Stanford criam centro conjunto de pesquisa em IA","resumo":"O Instituto Max Planck de Informática, na Alemanha, uniu forças com a Escola de Engenharia da Universidade de Stanford para fundar um centro avançado de pesquisa em inteligência artificial.\nA colaboração internacional visa impulsionar avanços fundamentais em aprendizado de máquina, visão computacional e gráficos por computador.\nEssa parceria estratégica fortalece a posição da Alemanha no cenário global de inovação tecnológica, promovendo a troca de talentos e o desenvolvimento de soluções científicas de ponta.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261023-06.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"NEC","pais":"Japão","titulo":"NEC desenvolve IA com modelo de linguagem visual para detectar sinais precoces de desastres em tempo real","resumo":"A NEC anunciou o desenvolvimento de uma tecnologia de inteligência artificial baseada em modelos de linguagem visual (VLM).\nO sistema analisa imagens de câmeras ao vivo para identificar alterações ambientais e sinais precoces de desastres naturais.\nA inovação promete transformar a gestão de emergências urbanas ao acelerar o tempo de resposta das autoridades de segurança.","link":"https://www.nec.com/en/press/202610/global_20261023_02.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"中国科学院","pais":"China","titulo":"Instalação de Laser de Elétrons Livres de Raios X Duro da China Alcança Primeira Emissão de Luz","resumo":"A grande instalação de laser de elétrons livres de raios X duro da China alcançou com sucesso a sua primeira emissão de luz, marcando um avanço histórico para a física no país.\nA tecnologia permite a observação de processos atômicos e moleculares em tempo real com precisão sem precedentes.\nO feito impulsionará pesquisas estratégicas em materiais avançados, química de ponta e biologia estrutural.","link":"https://www.cas.cn/cm/202610/t20261023_5122755.shtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ThePrint","pais":"Índia","titulo":"Índia e Polônia não têm 'conflitos de interesse', afirma PM Tusk ao impulsionar laços em defesa e setor espacial","resumo":"O primeiro-ministro polonês Donald Tusk afirmou que Índia e Polônia não possuem conflitos de interesse, estabelecendo uma base sólida para uma cooperação estratégica expandida.\nAmbas as nações estão avançando em acordos para fortalecer parcerias tecnológicas nas áreas de defesa e exploração espacial.\nEsse alinhamento visa impulsionar a inovação científica e industrial conjunta, fortalecendo a soberania tecnológica e a capacidade de pesquisa de ambos os países.","link":"https://theprint.in/diplomacy/india-poland-have-no-conflicts-of-interest-pm-tusk-says-as-both-sides-push-defence-space-ties/3078713/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Anthropic torna o Claude mais rápido e mais barato","resumo":"A Anthropic anunciou atualizações significativas na sua família de modelos de inteligência artificial Claude.\nA nova versão oferece um processamento de dados consideravelmente mais veloz por uma fração do custo anterior.\nA medida visa tornar a tecnologia mais acessível para desenvolvedores e empresas expandirem suas aplicações.","link":"https://sapo.pt/artigo/anthropic-torna-o-claude-mais-rapido-e-mais-barato-6ada97a673157f986634de53","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"TradingView","pais":"Brasil","titulo":"Bitcoin Core altera política de segurança enquanto IA facilita a descoberta de bugs","resumo":"Os desenvolvedores do Bitcoin Core modificaram a política de divulgação de vulnerabilidades após o aumento do uso de inteligência artificial na identificação de falhas de código.\nA automação impulsionada por IA tornou a descoberta de bugs mais rápida, exigindo respostas mais ágeis da comunidade de segurança.\nA medida visa proteger a rede descentralizada contra explorações maliciosas antes que correções definitivas sejam implementadas.","link":"https://br.tradingview.com/news/cointelegraph:71388a67fbc81:0/","categoria":"CRIPTOMOEDAS","lang":"pt"},{"fonte":"Stanford Doerr School of Sustainability","pais":"Estados Unidos","titulo":"A ciência por trás do 'Super El Niño' e seus impactos globais","resumo":"Cientistas detalham os mecanismos meteorológicos que transformam um El Niño comum em um evento de escala extraordinária, conhecido como 'Super El Niño'.\nO fenômeno é impulsionado pelo aquecimento anormal das águas do Oceano Pacífico equatorial, alterando drasticamente os padrões de precipitação e temperatura no planeta.\nA análise científica reforça a importância do monitoramento contínuo para prever desastres naturais e mitigar os efeitos das mudanças climáticas.","link":"https://sustainability.stanford.edu/news/the-science-behind-the-super-el-nino/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"We are Tech","pais":"França","titulo":"Tecnologia: Uber disponibiliza ChatGPT para seus 30.000 funcionários","resumo":"A Uber iniciou a implementação do ChatGPT da OpenAI para toda a sua equipe global de cerca de 30 mil colaboradores corporativos. O objetivo principal é otimizar fluxos de trabalho internos, acelerar a análise de dados e aumentar a produtividade em diversos setores da empresa. A iniciativa reflete uma tendência crescente de grandes corporações adotarem ferramentas de IA generativa em escala massiva para transformar suas operações cotidianas.","link":"https://www.wearetech.africa/fr/fils/breves/breves-simple/technologie-uber-deploie-chatgpt-aupres-de-ses-30-000-salaries","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"国立研究開発法人科学技術振興機構","pais":"Inglaterra","titulo":"Primeiro-Ministro do Reino Unido e Secretário-Geral da NATO realizam reunião em centro espacial","resumo":"O Primeiro-Ministro britânico e o Secretário-Geral da NATO reuniram-se nas instalações de pesquisa espacial da UK Research and Innovation.\nO encontro destaca a crescente importância estratégica do setor espacial para a segurança internacional e a cooperação militar entre os aliados.\nO evento ressalta o papel de destaque do Reino Unido no desenvolvimento de tecnologias espaciais aplicadas à defesa e à inovação científica.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261023-02.html","categoria":"TECNOLOGIA ESPACIAL","lang":"pt"},{"fonte":"Infodefensa","pais":"Espanha","titulo":"Marinha espanhola avaliará tecnologia de vigilância marítima com IA da Marine Instruments","resumo":"A Armada Espanhola iniciou os testes de uma nova solução de vigilância marítima baseada em inteligência artificial, desenvolvida pela empresa nacional Marine Instruments.\nA tecnologia visa aprimorar o monitoramento estratégico de águas territoriais e identificar anomalias em tempo real com elevada precisão.\nA parceria fortalece a soberania tecnológica do país e impulsiona a aplicação de IA no setor de defesa marítima.","link":"https://www.infodefensa.com/texto-diario/mostrar/6061916/armada-evaluara-tecnologia-vigilancia-maritima-ia-espanola-marine-instruments","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"国立研究開発法人科学技術振興機構","pais":"Alemanha","titulo":"Governo alemão e grupo estratégico reconhecem a IA industrial como uma grande oportunidade para o país","resumo":"Um grupo de estratégia do governo federal alemão destacou o papel transformador da inteligência artificial aplicada ao setor industrial do país.\nO relatório enfatiza que a automação inteligente e a integração da IA na manufatura avançada oferecem oportunidades cruciais para manter a competitividade global da Alemanha.\nA iniciativa recomenda investimentos prioritários em infraestrutura digital, qualificação profissional e estruturas regulatórias favoráveis para acelerar essa transição.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261023-01.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"福井新聞社","pais":"Japão","titulo":"PFN e Tenstorrent são selecionadas para projeto governamental de xPU com integração fotônica-eletrônica","resumo":"As empresas Preferred Networks e Tenstorrent foram selecionadas pela organização NEDO para liderar o desenvolvimento de processadores xPU.\nA iniciativa foca na fusão entre tecnologia fotônica e eletrônica para criar chips de altíssimo desempenho voltados à inteligência artificial.\nA parceria busca superar as limitações atuais de consumo de energia e velocidade no processamento de grandes volumes de dados.","link":"https://www.fukuishimbun.co.jp/articles/-/2729475","categoria":"HARDWARE","lang":"pt"},{"fonte":"北京新闻","pais":"China","titulo":"Metrô de Pequim e Hong Kong Inova ao Aplicar IA Acústica para Diagnosticar Danos em Trilhos","resumo":"O Metrô de Pequim e Hong Kong implementou de forma pioneira no país um sistema baseado em inteligência artificial acústica para monitorar e diagnosticar danos estruturais em trilhos.\nA solução analisa os padrões de som emitidos pela passagem dos trens para detectar microfissuras e desgastes imperceptíveis a olho nu.\nEssa inovação aumenta significativamente a segurança operacional e reduz drasticamente os custos e tempos de manutenção preventiva.","link":"http://www.bj.chinanews.com.cn/news/2026/1023/103811.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Portugal Têxtil","pais":"Portugal","titulo":"Empa cria tecnologia para tratar feridas com ativação por luz","resumo":"Cientistas do instituto Empa desenvolveram um material inovador capaz de acelerar a cicatrização de feridas complexas.\nO sistema utiliza luz para ativar compostos terapêuticos específicos diretamente no local afetado da pele.\nEssa tecnologia promete reduzir infecções bacterianas e otimizar os tratamentos médicos em ambiente hospitalar.","link":"https://portugaltextil.com/empa-cria-tecnologia-para-tratar-feridas-com-ativacao-da-luz/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Goiás receberá novos medicamentos de alta tecnologia para tratamento do câncer","resumo":"O estado de Goiás passará a oferecer tratamentos oncologicos avançados baseados em medicamentos de alta tecnologia no sistema de saúde pública.\nA iniciativa busca ampliar o acesso de pacientes a terapias genéticas e imunológicas mais precisas, reduzindo efeitos colaterais severos.\nA medida representa um avanço significativo no combate ao câncer no Brasil, elevando os padrões de cuidados médicos regionais.","link":"https://g1.globo.com/google/amp/go/goias/videos-ja-2-edicao/video/goias-vai-receber-novos-medicamentos-de-alta-tecnologia-para-tratamento-do-cancer-15114550.ghtml","categoria":"SAÚDE E CIÊNCIA","lang":"pt"},{"fonte":"Forbes","pais":"Estados Unidos","titulo":"As 10 principais tendências estratégicas de tecnologia da Gartner para 2027","resumo":"A consultoria Gartner apresentou seu relatório com as dez tendências tecnológicas que devem moldar o ambiente corporativo e a inovação até o ano de 2027.\nO levantamento destaca o papel central da inteligência artificial autônoma, da computação quântica e da sustentabilidade digital na transformação dos negócios.\nA análise serve como um guia estratégico para líderes e empresas que buscam manter a competitividade em um mercado em rápida evolução.","link":"https://www.forbes.com/sites/peterhigh/2026/10/22/gartners-top-10-strategic-technology-trends-for-2027/","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"国立研究開発法人科学技術振興機構","pais":"França","titulo":"CNRS e IRD lançam o programa 'TRANSFORM' para estudar a habitabilidade da Terra","resumo":"Os organismos públicos de pesquisa franceses CNRS e IRD anunciaram o lançamento do programa científico internacional denominado TRANSFORM. A iniciativa reúne especialistas globais para investigar as dinâmicas socioambientais e a capacidade do planeta Terra de sustentar a vida humana diante das mudanças climáticas. O projeto visa fornecer dados críticos para subsidiar políticas públicas e estratégias globais de preservação do meio ambiente.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261023-07.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Science Daily","pais":"Inglaterra","titulo":"Cientistas de Cambridge criam chip de US$ 10 que transforma relógios em laboratórios médicos","resumo":"Pesquisadores da Universidade de Cambridge desenvolveram um microchip de baixo custo capaz de realizar análises laboratoriais diretamente no pulso do usuário.\nA inovação promete revolucionar o monitoramento contínuo da saúde ao permitir diagnósticos rápidos e acessíveis por meio de dispositivos vestíveis.\nEsse avanço tem o potencial de democratizar a medicina preventiva e reduzir drasticamente a pressão sobre os sistemas de saúde globais.","link":"https://www.sciencedaily.com/releases/2026/10/261022081312.htm","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Investing.com España","pais":"Espanha","titulo":"EUA propõem regras mais rígidas para investimentos em tecnologia chinesa","resumo":"O governo dos Estados Unidos apresentou propostas de regras mais rigorosas para restringir investimentos norte-americanos no setor de tecnologia avançada da China.\nAs novas medidas focam em áreas estratégicas cruciais, tais como inteligência artificial, computação quântica e semicondutores de última geração.\nA iniciativa intensifica a disputa geopolítica global e pode recalibrar os fluxos internacionais de capital financeiro.","link":"https://es.investing.com/news/stock-market-news/eeuu-propone-normas-mas-estrictas-para-inversiones-en-tecnologia-china-93CH-3887010","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"ビジネス+IT","pais":"Japão","titulo":"NTT cria tecnologia 'AI-Ready' para detectar até 80% das inconsistências no design de software","resumo":"A NTT desenvolveu uma tecnologia capaz de converter sistemas de software tradicionais em infraestruturas prontas para IA (\"AI-Ready\").\nO novo método elevou a taxa de detecção de inconsistências em documentos de especificação técnica de 27% para 80%.\nA solução representa um avanço significativo para a modernização de sistemas legados e otimização do desenvolvimento corporativo.","link":"https://www.sbbit.jp/article/cont1/187714","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"观点网","pais":"China","titulo":"EUA Planejam Restringir Investimentos em Empresas de Biotecnologia da China","resumo":"Os Estados Unidos anunciaram intenções de impor novas restrições ao investimento de capital norte-americano em empresas de biotecnologia sediadas na China.\nA medida causou impacto imediato no mercado financeiro, levando a uma queda acentuada nas ações de grandes multinacionais do setor, como a GenScript Biotech.\nO movimento reflete o aumento do escrutínio geopolítico sobre tecnologias críticas e estratégicas de saúde e ciência.","link":"https://www.guandian.cn/article/20261023/617152.html","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"RTP Açores","pais":"Portugal","titulo":"Hospital da Horta adota tecnologia de ponta no diagnóstico do câncer de próstata","resumo":"O Hospital da Horta reforçou sua capacidade médica ao adquirir um equipamento avançado para exames de próstata.\nA nova ferramenta proporciona maior precisão na detecção precoce de lesões malignas com menor invasividade.\nO avanço tecnológico melhora de forma direta o atendimento prestado aos pacientes na região açoriana.","link":"https://acores.rtp.pt/radio/hospital-da-horta-com-tecnologia-de-ponta-no-diagnostico-do-cancro-da-prostata/","categoria":"SAÚDE","lang":"pt"},{"fonte":"Agrolink","pais":"Brasil","titulo":"Tecnologia promete mais precisão na adubação do cultivo de café","resumo":"Novas soluções tecnológicas aplicadas ao campo prometem otimizar o processo de adubação nas lavouras de café brasileiras.\nUtilizando sensores avançados e análise de dados de solo, a inovação garante a aplicação exata de nutrientes, reduzindo desperdícios e custos operacionais.\nA técnica fortalece a sustentabilidade do setor cafeeiro nacional e eleva os níveis de produtividade do agronegócio.","link":"https://www.agrolink.com.br/noticias/tecnologia-promete-mais-precisao-na-adubacao-do-cafe_520103.html","categoria":"AGROTECNOLOGIA","lang":"pt"},{"fonte":"UOL","pais":"Estados Unidos","titulo":"Sylvester Stallone defende o uso de IA no cinema e sugere rejuvenescer Rambo","resumo":"O veterano ator e diretor Sylvester Stallone manifestou publicamente seu apoio ao uso de ferramentas de inteligência artificial na indústria cinematográfica.\nStallone revelou inclusive o interesse em utilizar a tecnologia para rejuvenescer digitalmente seu icônico personagem Rambo em futuras produções.\nO posicionamento do astro traz novo fôlego ao debate sobre os limites éticos, criativos e trabalhistas da automação visual no entretenimento moderno.","link":"https://f5.folha.uol.com.br/celebridades/2026/10/sylvester-stallone-defende-uso-de-ia-no-cinema-e-ja-propos-rejuvenescer-rambo-com-a-tecnologia.shtml","categoria":"ENTRETENIMENTO","lang":"pt"},{"fonte":"Ouest-France","pais":"França","titulo":"Em recuperação judicial, a medtech francesa VitaDX busca comprador para sua tecnologia de detecção de câncer","resumo":"A startup de tecnologia médica VitaDX, sediada em Rennes, busca um comprador após entrar em processo de recuperação judicial. A empresa desenvolveu um software inovador baseado em inteligência artificial que auxilia no diagnóstico precoce do câncer de bexiga a partir de análises citológicas. A venda da tecnologia é vista como crucial para dar continuidade às pesquisas e permitir que o recurso alcance os sistemas de saúde.","link":"https://agence-api.ouest-france.fr/sante/biotechnologie-et-laboratoire/en-redressement-la-medtech-rennaise-vitadx-cherche-un-repreneur-pour-sa-technologie-de-depistage-du-cancer-5fbaab5e-cdf2-11f1-bf87-17eca79cb13c","categoria":"MEDTECH","lang":"pt"},{"fonte":"epo.org","pais":"Inglaterra","titulo":"O desafio da transferência de tecnologia na Europa: transformando pesquisas em sucessos de mercado","resumo":"Um novo estudo analisa os obstáculos enfrentados por instituições europeias e britânicas para converter descobertas científicas em produtos comerciais.\nA lentidão na transferência de tecnologia prejudica a competitividade do ecossistema de inovação europeu em relação aos mercados norte-americano e asiático.\nFortalecer a ponte entre laboratórios acadêmicos e o setor privado é considerado fundamental para sustentar o crescimento econômico da região.","link":"https://www.epo.org/en/news-events/events/europes-technology-transfer-challenge-turning-research-market-success","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"El Estrecho Digital","pais":"Espanha","titulo":"III Jornada de Economia Azul aborda inovação e sustentabilidade em Santander","resumo":"A cidade de Santander sediou a terceira edição da Jornada de Economia Azul, reunindo especialistas para debater o desenvolvimento sustentável dos recursos marinhos.\nO evento destacou estratégias para alinhar a conservação ambiental ao avanço tecnológico e ao crescimento econômico das zonas costeiras espanholas.\nA iniciativa reforça a importância dos oceanos na transição ecológica e na inovação científica do país.","link":"https://www.elestrechodigital.com/agenda/iii-jornada-de-economia-azul-2026","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"ビジネスネットワーク","pais":"Japão","titulo":"NTT Docomo utiliza tecnologia tátil 'FEEL TECH' para simular condução e manutenção de trens","resumo":"A NTT Docomo implementou sua tecnologia de transmissão hática \"FEEL TECH\" em um simulador de operação de locomotivas elétricas.\nA ferramenta permite que operadores sintam vibrações, resistências e texturas reais ao manusear controles e realizar manutenções.\nO projeto demonstra o potencial do feedback tátil para o treinamento industrial imersivo e aperfeiçoamento profissional à distância.","link":"https://businessnetwork.jp/article/38089/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"新华网客户端","pais":"China","titulo":"Feiba Tech Lança Plataforma de Chassi Inteligente para Veículos Comerciais","resumo":"A empresa chinesa Feiba Tech apresentou oficialmente sua nova plataforma de chassi inteligente voltada para a mobilidade e otimização de veículos comerciais.\nA tecnologia utiliza controle digital centralizado e inteligência embarcada para adaptar o veículo a cenários específicos de uso, aumentando a eficiência logística.\nA inovação busca acelerar a transição da indústria de transportes rumo à automação e personalização avançada.","link":"https://app.xinhuanet.com/news/article.html?articleId=202610239a94e4846b064737b8e2537b70473f41","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"SIC Notícias","pais":"Portugal","titulo":"IA no Portugal Digital Summit: como a tecnologia está transformando o mercado de trabalho","resumo":"Durante o Portugal Digital Summit, especialistas debateram o impacto crescente da inteligência artificial nas profissões.\nAs discussões destacaram a necessidade urgente de requalificação profissional para acompanhar o ritmo da inovação.\nO evento enfatizou a oportunidade de automação responsável para impulsionar a produtividade no ecossistema lusitano.","link":"https://sicnoticias.pt/especiais/inteligencia-artificial/2026-10-22-video-ia-no-portugal-digital-summit-como-a-tecnologia-esta-a-transformar-o-mercado-de-trabalho-4aee4418","categoria":"EVENTOS","lang":"pt"},{"fonte":"Finanças, Câmbio e Investimentos","pais":"Brasil","titulo":"EUA propõem regras mais rígidas para investimentos em tecnologia chinesa","resumo":"O governo dos Estados Unidos apresentou uma proposta de regulamentação para restringir investimentos norte-americanos em setores tecnológicos estratégicos na China.\nA medida visa conter o avanço chinês em áreas como inteligência artificial, semicondutores e computação quântica por motivos de segurança nacional.\nAs limitações devem impactar diretamente fundos globais de venture capital e redefinir parcerias comerciais internacionais.","link":"https://br.investing.com/news/stock-market-news/eua-propoem-regras-mais-rigidas-para-investimentos-em-tecnologia-chinesa-93CH-2100584","categoria":"GEOPOLÍTICA","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"Telescópio Espacial Roman da NASA entra na fase final de comissionamento","resumo":"O Telescópio Espacial Nancy Grace Roman, da NASA, alcançou uma etapa decisiva ao entrar em sua fase final de testes e comissionamento antes do lançamento.\nProjetado para ter um campo de visão cem vezes maior que o do Telescópio Hubble, o observatório investigará mistérios da energia escura e exoplanetas.\nA missão promete revolucionar nossa compreensão da estrutura e expansão do universo nas próximas décadas.","link":"https://science.nasa.gov/blogs/roman/2026/10/22/nasas-roman-space-telescope-enters-final-commissioning-phase/","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"Le Parisien","pais":"França","titulo":"Cansado de brigas sobre o tempo de tela do seu filho? Esta mãe criou um aplicativo que vai facilitar sua vida","resumo":"Diante dos constantes conflitos familiares decorrentes do uso excessivo de smartphones por adolescentes, uma mãe francesa desenvolveu um aplicativo inovador. A ferramenta propõe uma abordagem educativa e negociada para o gerenciamento de tempo de tela, em vez de um simples bloqueio autoritário. A solução tem ganhado destaque entre pais que buscam promover um equilíbrio saudável no consumo digital dos jovens.","link":"https://www.leparisien.fr/pyrenees-orientales-66/marre-des-conflits-autour-du-temps-decran-de-votre-ado-cette-mere-de-famille-a-invente-une-appli-qui-va-vous-faciliter-la-vie-22-10-2026-ZBONXXZ4GJGXJPXQE35ZQWBIPE.php","categoria":"APLICATIVOS","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"PHP: O que é e por que desencadeou um alerta global de segurança cibernética?","resumo":"A descoberta de vulnerabilidades críticas na linguagem de programação PHP mobilizou especialistas de cibersegurança em todo o mundo.\nAmplamente utilizado no desenvolvimento web, qualquer falha no PHP expõe milhões de sites e sistemas corporativos a riscos imediatos de invasão.\nO incidente reacendeu o debate sobre a importância do suporte contínuo e da atualização preventiva em infraestruturas digitais essenciais.","link":"https://www.bbc.com/news/articles/c3qjnwye0ep5o","categoria":"CIBERSEGURANÇA","lang":"pt"},{"fonte":"RTVE.es","pais":"Espanha","titulo":"A ciência por trás de 'A Noite Estrelada': física explica as pinceladas de Van Gogh","resumo":"Um estudo científico revelou que os espirais presentes na obra 'A Noite Estrelada', de Vincent van Gogh, obedecem com precisão às leis da física de fluidos turbulentos.\nPesquisadores analisaram as variações de luminosidade na pintura e identificaram padrões matemáticos complexos de transferência de energia.\nA descoberta demonstra como a intuição artística do pintor capturou fenômenos naturais surpreendentemente precisos.","link":"https://www.rtve.es/noticias/20261022/van-gogh-cielo-noche-estrellada-ciencia-obra-iconica/17277862.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"G1","pais":"Brazil","titulo":"PHP Flaws Lead Courts and Anatel to Suspend Systems in Brazil; Government Issues Alert","resumo":"Critical security vulnerabilities identified in the PHP programming language have prompted government agencies, courts, and Anatel to shut down their systems preventively in Brazil. The Federal Government has issued an urgent alert for the immediate application of software patches. The flaw exposes sensitive data and highlights the ongoing need to update the technology infrastructure of the public sector.","link":"https://g1.globo.com/tecnologia/noticia/2026/10/22/falhas-no-php-levam-tribunais-no-brasil-e-anatel-a-suspender-sistemas-governo-emite-alerta.ghtml","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"Ledge.ai","pais":"United States","titulo":"Anthropic Reveals Reduction in Junior Positions and Forecasts the Future of AI Employment","resumo":"Artificial intelligence startup Anthropic has released data showing a drastic drop in the percentage of hiring for junior technical roles, falling from 27% to just 9%. The shift reflects the accelerated advancement of language models in automating entry-level programming and data analysis tasks. In addition to disclosing its internal data, the company shared predictions on the continuous impact of AI advancements on the global labor market.","link":"https://ledge.ai/articles/anthropic_employment_ai_expectations_gap","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"95-Ton Steam Separators: The World's First Lead-Cooled Nuclear Power Plant Under Construction","resumo":"Construction of the world's first liquid lead-cooled nuclear power plant has advanced with the installation of massive 95-ton steam separators. This innovative fourth-generation reactor technology aims to deliver greater energy efficiency and significantly elevated passive safety standards. The project represents a historic milestone for global nuclear engineering, paving the way for new sustainable energy solutions.","link":"https://www.science-et-vie.com/mise-en-avant/des-separateurs-de-vapeur-de-95-tonnes-chacun-la-premiere-centrale-nucleaire-au-monde-refroidie-au-plomb-est-actuellement-en-construction-262930.html","categoria":"ENERGY","lang":"en"},{"fonte":"BBC","pais":"United Kingdom","titulo":"Don't Leave AI in the Hands of 'Tech Bros' and Oligarchs, Says UK AI Minister","resumo":"The UK Minister for Artificial Intelligence has warned that AI development and governance must not be centralized by tech billionaires. The statement reinforces the British government's commitment to ensuring inclusive regulation focused on ethics and global public benefit. This stance seeks to ensure that technological advancements promote social good without overly concentrating power in the hands of a few corporations.","link":"https://www.bbc.com/news/articles/ck7vp8g38y7vo","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"La Región","pais":"Spain","titulo":"Science Discovers Enzymes in As Burgas Water That Can Improve Milk","resumo":"Researchers have identified enzymes in the thermal waters of As Burgas in Ourense with properties capable of optimizing processes in the dairy industry. The discovery promises to improve efficiency in the processing of dairy derivatives, highlighting local biological biodiversity. The application of these biomolecules paves the way for sustainable innovations in Spain's food biotechnology sector.","link":"https://www.laregion.es/ourense/ciencia-descubre-agua-as-burgas_1_20261023-4462823.html","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"PresseBox","pais":"Germany","titulo":"Mitigating Insider Risks: Why Companies Must Combine Technology and Human Oversight","resumo":"The growing threat of insider risks in companies demands a balanced approach between advanced technological solutions and human surveillance. The isolated use of automated tools can generate false positives or violate privacy regulations, whereas human supervision ensures proper contextualization. To protect sensitive data and critical infrastructure, organizations must implement integrated cybersecurity and governance strategies.","link":"https://www.pressebox.de/pressemitteilung/validato-ag/insider-risiken-eindmmen-warum-unternehmen-in-sterreich-technologie-und-menschliche-kontrolle-kombinieren-mssen/boxid/1314522","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"New Nintendo Switch 2 Lite Could Benefit from Samsung's Energy-Saving Technology","resumo":"Samsung's new semiconductor technology promises to bring significant advancements in power consumption and miniaturization. These innovations could directly favor the feasibility of a smaller portable version of Nintendo's console successor. Experts highlight that enhanced energy efficiency will allow for thinner devices with longer battery life.","link":"https://news.yahoo.co.jp/expert/articles/16c4a6f7182a2e7e08ef22fe34bed99491bb96da","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"中国科学院","pais":"China","titulo":"China Completes the World's First Integrated Scientific Infrastructure for Large-Scale Model Animals","resumo":"China has completed the construction of the world's first scientific infrastructure dedicated to the integrated study of large-scale model animals. The complex promises to accelerate advanced biomedical research, offering crucial support for drug discovery and gene therapies. The project solidifies the country as a global leader in cutting-edge scientific facilities for the life sciences.","link":"https://www.cas.cn/cm/202610/t20261023_5122757.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"NDTV","pais":"India","titulo":"'Trade, Technology, and Sea Routes Being Weaponized,' Says PM Modi at NDTV World Summit","resumo":"During the NDTV World Summit, Indian Prime Minister Narendra Modi warned that trade, technology, and sea routes are being weaponized in the new global order. The Indian leader stressed the urgency of protecting critical infrastructure and ensuring the security of global supply and innovation chains. The statement reaffirms India's position in defending peaceful international cooperation in the face of growing geopolitical disputes and technological restrictions.","link":"https://www.ndtv.com/world-news/pm-modi-at-ndtv-world-summit-on-changing-world-order-trade-technology-sea-routes-being-weaponised-12221724","categoria":"GEOPOLITICS","lang":"en"},{"fonte":"SÁBADO","pais":"Portugal","titulo":"There Is a New Vaccine Against the Most Aggressive Brain Cancer","resumo":"Researchers have developed a promising new vaccine focused on combating glioblastoma, the most aggressive type of brain cancer. The innovative treatment aims to stimulate the immune system to accurately recognize and destroy tumor cells. Initial clinical trials have shown encouraging results, bringing hope for the advancement of oncological medicine.","link":"https://www.sabado.pt/ciencia---saude/detalhe/ha-uma-nova-vacina-contra-o-cancro-mais-agressivo-do-cerebro","categoria":"SCIENCE","lang":"en"},{"fonte":"VEJA","pais":"Brazil","titulo":"Meta's Plan to Fund AI Expansion Shakes Tech Stocks","resumo":"Meta has announced a significant increase in investments aimed at artificial intelligence development, causing apprehension among technology investors. The prospect of high short-term operating costs pressured the company's shares and impacted the global financial market. The strategy reflects Big Tech's fierce race to dominate AI infrastructure on the international stage.","link":"https://veja.abril.com.br/economia/plano-da-meta-para-financiar-expansao-em-ia-abala-acoes-de-tecnologia/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"UC Davis College of Engineering","pais":"United States","titulo":"UC Davis Student Wins International Prize with AI-Powered Agricultural Technology","resumo":"An engineering student at the University of California, Davis, has been awarded a prestigious international prize for developing an artificial intelligence-based harvesting solution. The innovation uses advanced sensors and machine learning algorithms to optimize the collection process and reduce waste in the field. The achievement highlights the growing potential of using emerging technologies to solve critical challenges in global agriculture.","link":"https://engineering.ucdavis.edu/news/uc-davis-engineering-student-wins-international-prize-ai-powered-harvest-technology","categoria":"AGRITECH","lang":"en"},{"fonte":"JeuxVideo.com","pais":"France","titulo":"Sony Is Preparing Revolutionary Technology for PS6 Games: What We Know So Far","resumo":"Sony is developing innovative technological solutions for the next generation of PlayStation, aiming to redefine graphic processing and gaming performance. Recent filings and leaks indicate a focus on advanced rendering architectures and deep artificial intelligence integration. These new developments promise to transform the player experience on the future PS6, positioning the company at the forefront of the gaming industry.","link":"https://www.jeuxvideo.com/news/2109926/oui-sony-prepare-bien-une-technologie-revolutionnaire-pour-les-jeux-ps6-ce-qu-on-sait-deja.htm","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"国立研究開発法人科学技術振興機構","pais":"United Kingdom","titulo":"UK Committee Chair Welcomes Creation of the National Information Security Center","resumo":"The Chair of a UK House of Commons committee has backed the creation of the National Information Security Center announced by the Prime Minister. The new institution aims to strengthen national infrastructure against disinformation campaigns and combat cyber threats directed at the country. The initiative reinforces the commitment to protecting information sovereignty and ensuring the stability of British democratic institutions.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261023-05.html","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"TradingView","pais":"Spain","titulo":"Bitcoin Core Alters Security Policy as AI Facilitates Bug Detection","resumo":"The Bitcoin Core project has overhauled its security guidelines due to the advancement of artificial intelligence in automated bug detection within code. With new tools capable of exposing vulnerabilities at an accelerated pace, developers have adapted protocols to mitigate exploitation risks. The measure reinforces how artificial intelligence is transforming the cybersecurity landscape and demanding agile responses.","link":"https://es.tradingview.com/news/cointelegraph:ec9fea7fa09cd:0/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"国立研究開発法人科学技術振興機構","pais":"Germany","titulo":"Max Planck Institute for Informatics and Stanford School of Engineering Establish Joint AI Research Center","resumo":"The Max Planck Institute for Informatics in Germany has joined forces with the Stanford University School of Engineering to establish an advanced artificial intelligence research center.\nThe international collaboration aims to drive fundamental breakthroughs in machine learning, computer vision, and computer graphics.\nThis strategic partnership strengthens Germany's position in the global technological innovation landscape by promoting talent exchange and the development of cutting-edge scientific solutions.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261023-06.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"NEC","pais":"Japan","titulo":"NEC Develops Visual Language Model AI to Detect Early Signs of Disasters in Real Time","resumo":"NEC has announced the development of an artificial intelligence technology based on visual language models (VLMs).\nThe system analyzes live camera feeds to identify environmental changes and early warning signs of natural disasters.\nThe innovation promises to transform urban emergency management by accelerating security authorities' response times.","link":"https://www.nec.com/en/press/202610/global_20261023_02.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"中国科学院","pais":"China","titulo":"China's Hard X-ray Free-Electron Laser Facility Achieves First Light","resumo":"China's major hard X-ray free-electron laser facility has successfully achieved its first light emission, marking a historic breakthrough for physics in the country.\nThe technology enables the observation of atomic and molecular processes in real time with unprecedented precision.\nThe achievement will drive strategic research in advanced materials, cutting-edge chemistry, and structural biology.","link":"https://www.cas.cn/cm/202610/t20261023_5122755.shtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ThePrint","pais":"India","titulo":"India and Poland Have 'No Conflicts of Interest,' PM Tusk Says as Both Sides Push Defense and Space Ties","resumo":"Polish Prime Minister Donald Tusk stated that India and Poland have no conflicts of interest, establishing a solid foundation for expanded strategic cooperation.\nBoth nations are moving forward with agreements to strengthen technological partnerships in the areas of defense and space exploration.\nThis alignment aims to drive joint scientific and industrial innovation, reinforcing both countries' technological sovereignty and research capabilities.","link":"https://theprint.in/diplomacy/india-poland-have-no-conflicts-of-interest-pm-tusk-says-as-both-sides-push-defence-space-ties/3078713/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Anthropic Makes Claude Faster and Cheaper","resumo":"Anthropic has announced significant updates to its family of Claude artificial intelligence models.\nThe new version offers considerably faster data processing at a fraction of the previous cost.\nThe move aims to make the technology more accessible for developers and enterprises to scale their applications.","link":"https://sapo.pt/artigo/anthropic-torna-o-claude-mais-rapido-e-mais-barato-6ada97a673157f986634de53","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"TradingView","pais":"Brazil","titulo":"Bitcoin Core Alters Security Policy as AI Facilitates Bug Discovery","resumo":"Bitcoin Core developers have modified their vulnerability disclosure policy following the increased use of artificial intelligence in identifying code flaws.\nAI-driven automation has made bug discovery faster, requiring more agile responses from the security community.\nThe measure aims to protect the decentralized network against malicious exploits before definitive patches are implemented.","link":"https://br.tradingview.com/news/cointelegraph:71388a67fbc81:0/","categoria":"CRYPTOCURRENCIES","lang":"en"},{"fonte":"Stanford Doerr School of Sustainability","pais":"United States","titulo":"The Science Behind the 'Super El Niño' and Its Global Impacts","resumo":"Scientists detail the meteorological mechanisms that transform a standard El Niño into an extraordinary-scale event known as a 'Super El Niño.'\nThe phenomenon is driven by the abnormal warming of waters in the equatorial Pacific Ocean, drastically altering precipitation and temperature patterns across the planet.\nScientific analysis reinforces the importance of continuous monitoring to predict natural disasters and mitigate the effects of climate change.","link":"https://sustainability.stanford.edu/news/the-science-behind-the-super-el-nino/","categoria":"SCIENCE","lang":"en"},{"fonte":"We are Tech","pais":"France","titulo":"Technology: Uber Rolls Out ChatGPT to Its 30,000 Employees","resumo":"Uber has begun implementing OpenAI's ChatGPT for its entire global team of approximately 30,000 corporate employees. The main objective is to optimize internal workflows, accelerate data analysis, and boost productivity across various sectors of the company. The initiative reflects a growing trend of major corporations adopting generative AI tools on a massive scale to transform their daily operations.","link":"https://www.wearetech.africa/fr/fils/breves/breves-simple/technologie-uber-deploie-chatgpt-aupres-de-ses-30-000-salaries","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"国立研究開発法人科学技術振興機構","pais":"United Kingdom","titulo":"UK Prime Minister and NATO Secretary-General Hold Meeting at Space Center","resumo":"The British Prime Minister and the NATO Secretary-General met at the UK Research and Innovation space research facilities.\nThe meeting highlights the growing strategic importance of the space sector for international security and military cooperation among allies.\nThe event underscores the UK's prominent role in developing space technologies applied to defense and scientific innovation.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261023-02.html","categoria":"SPACE TECHNOLOGY","lang":"en"},{"fonte":"Infodefensa","pais":"Spain","titulo":"Spanish Navy to Evaluate Marine Instruments' AI Maritime Surveillance Technology","resumo":"The Spanish Armada has begun testing a new artificial intelligence-based maritime surveillance solution developed by the domestic company Marine Instruments.\nThe technology aims to enhance the strategic monitoring of territorial waters and identify anomalies in real time with high precision.\nThe partnership strengthens the country's technological sovereignty and boosts the application of AI in the maritime defense sector.","link":"https://www.infodefensa.com/texto-diario/mostrar/6061916/armada-evaluara-tecnologia-vigilancia-maritima-ia-espanola-marine-instruments","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"国立研究開発法人科学技術振興機構","pais":"Germany","titulo":"German Government and Strategy Group Recognize Industrial AI as a Major Opportunity for the Country","resumo":"A German federal government strategy group has highlighted the transformative role of artificial intelligence applied to the country's industrial sector.\nThe report emphasizes that smart automation and the integration of AI into advanced manufacturing offer crucial opportunities to maintain Germany's global competitiveness.\nThe initiative recommends priority investments in digital infrastructure, workforce training, and favorable regulatory frameworks to accelerate this transition.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261023-01.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"福井新聞社","pais":"Japan","titulo":"PFN and Tenstorrent Selected for Government xPU Project with Photonic-Electronic Integration","resumo":"Preferred Networks and Tenstorrent have been selected by the NEDO organization to lead the development of xPU processors.\nThe initiative focuses on merging photonic and electronic technology to create ultra-high-performance chips geared toward artificial intelligence.\nThe partnership seeks to overcome current limitations in energy consumption and processing speed for large volumes of data.","link":"https://www.fukuishimbun.co.jp/articles/-/2729475","categoria":"HARDWARE","lang":"en"},{"fonte":"北京新闻","pais":"China","titulo":"Beijing and Hong Kong Subways Innovate by Applying Acoustic AI to Diagnose Rail Damage","resumo":"The Beijing and Hong Kong subways have pioneered the implementation of an acoustic artificial intelligence-based system to monitor and diagnose structural damage to rails.\nThe solution analyzes sound patterns emitted by passing trains to detect micro-fissures and wear invisible to the naked eye.\nThis innovation significantly increases operational safety and drastically reduces the costs and times of preventive maintenance.","link":"http://www.bj.chinanews.com.cn/news/2026/1023/103811.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Portugal Têxtil","pais":"Portugal","titulo":"Empa Creates Light-Activated Wound Treatment Technology","resumo":"Scientists at the Empa institute have developed an innovative material capable of accelerating the healing of complex wounds.\nThe system uses light to activate specific therapeutic compounds directly at the affected area of the skin.\nThis technology promises to reduce bacterial infections and optimize medical treatments in hospital environments.","link":"https://portugaltextil.com/empa-cria-tecnologia-para-tratar-feridas-com-ativacao-da-luz/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Goiás to Receive New High-Tech Cancer Treatment Medications","resumo":"The state of Goiás will begin offering advanced oncological treatments based on high-tech medications within the public health system.\nThe initiative seeks to expand patients' access to more precise gene and immunological therapies, reducing severe side effects.\nThe measure represents a significant advancement in the fight against cancer in Brazil, raising regional medical care standards.","link":"https://g1.globo.com/google/amp/go/goias/videos-ja-2-edicao/video/goias-vai-receber-novos-medicamentos-de-alta-tecnologia-para-tratamento-do-cancer-15114550.ghtml","categoria":"HEALTH AND SCIENCE","lang":"en"},{"fonte":"Forbes","pais":"United States","titulo":"Gartner's Top 10 Strategic Technology Trends for 2027","resumo":"Gartner has released its report detailing the top ten technology trends expected to shape the corporate landscape and drive innovation through 2027.\nThe survey highlights the central role of autonomous artificial intelligence, quantum computing, and digital sustainability in business transformation.\nThe analysis serves as a strategic roadmap for leaders and companies aiming to maintain competitiveness in a rapidly evolving market.","link":"https://www.forbes.com/sites/peterhigh/2026/10/22/gartners-top-10-strategic-technology-trends-for-2027/","categoria":"TRENDS","lang":"en"},{"fonte":"国立研究開発法人科学技術振興機構","pais":"France","titulo":"CNRS and IRD Launch 'TRANSFORM' Program to Study Earth's Habitability","resumo":"French public research organizations CNRS and IRD have announced the launch of a new international scientific program called TRANSFORM. The initiative brings together global experts to investigate socio-environmental dynamics and planet Earth's capacity to sustain human life amid climate change. The project aims to provide critical data to support public policies and global environmental preservation strategies.","link":"https://www.jst.go.jp/crds/kaigaikiji/20261023-07.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Science Daily","pais":"United Kingdom","titulo":"Cambridge Scientists Create $10 Chip That Turns Watches Into Medical Labs","resumo":"Researchers at the University of Cambridge have developed a low-cost microchip capable of performing laboratory analyses directly on the user's wrist.\nThe innovation promises to revolutionize continuous health monitoring by enabling rapid and affordable diagnostics through wearable devices.\nThis breakthrough has the potential to democratize preventive medicine and drastically reduce the strain on global healthcare systems.","link":"https://www.sciencedaily.com/releases/2026/10/261022081312.htm","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Investing.com España","pais":"Spain","titulo":"US Proposes Stricter Rules on Investments in Chinese Technology","resumo":"The United States government has unveiled proposed rules to place stricter limits on U.S. investments in China's advanced technology sector.\nThe new measures target critical strategic areas such as artificial intelligence, quantum computing, and next-generation semiconductors.\nThis initiative intensifies global geopolitical tensions and could recalibrate international capital flows.","link":"https://es.investing.com/news/stock-market-news/eeuu-propone-normas-mas-estrictas-para-inversiones-en-tecnologia-china-93CH-3887010","categoria":"BUSINESS","lang":"en"},{"fonte":"ビジネス+IT","pais":"Japan","titulo":"NTT Creates 'AI-Ready' Technology to Detect Up to 80% of Software Design Inconsistencies","resumo":"NTT has developed a technology capable of converting traditional software systems into AI-ready infrastructures.\nThe new method raised the detection rate of inconsistencies in technical specification documents from 27% to 80%.\nThe solution represents a significant step forward for modernizing legacy systems and optimizing corporate software development.","link":"https://www.sbbit.jp/article/cont1/187714","categoria":"INNOVATION","lang":"en"},{"fonte":"观点网","pais":"China","titulo":"US Plans to Restrict Investments in Chinese Biotechnology Companies","resumo":"The United States has announced its intention to impose new restrictions on U.S. capital investments in biotech companies headquartered in China.\nThe move had an immediate impact on financial markets, triggering a sharp drop in shares of major industry multinationals like GenScript Biotech.\nThis development reflects growing geopolitical scrutiny over critical and strategic health and science technologies.","link":"https://www.guandian.cn/article/20261023/617152.html","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"RTP Açores","pais":"Portugal","titulo":"Horta Hospital Adopts Cutting-Edge Technology for Prostate Cancer Diagnosis","resumo":"Hospital da Horta has enhanced its medical capabilities by acquiring advanced equipment for prostate exams.\nThe new tool provides greater precision in the early detection of malignant lesions while being less invasive.\nThis technological advancement directly improves the quality of care provided to patients in the Azores region.","link":"https://acores.rtp.pt/radio/hospital-da-horta-com-tecnologia-de-ponta-no-diagnostico-do-cancro-da-prostata/","categoria":"HEALTH","lang":"en"},{"fonte":"Agrolink","pais":"Brazil","titulo":"Technology Promises Greater Precision in Coffee Crop Fertilization","resumo":"New technological solutions applied to agriculture promise to optimize the fertilization process in Brazilian coffee plantations.\nUsing advanced sensors and soil data analytics, the innovation ensures the precise application of nutrients, reducing waste and operational costs.\nThis technique strengthens the sustainability of the national coffee sector and boosts agribusiness productivity levels.","link":"https://www.agrolink.com.br/noticias/tecnologia-promete-mais-precisao-na-adubacao-do-cafe_520103.html","categoria":"AGRITECH","lang":"en"},{"fonte":"UOL","pais":"United States","titulo":"Sylvester Stallone Defends the Use of AI in Cinema and Suggests De-aging Rambo","resumo":"Veteran actor and director Sylvester Stallone has publicly voiced his support for the use of artificial intelligence tools in the film industry.\nStallone even revealed an interest in using the technology to digitally de-age his iconic character Rambo in future productions.\nThe star's stance adds fresh momentum to the debate surrounding the ethical, creative, and labor boundaries of visual automation in modern entertainment.","link":"https://f5.folha.uol.com.br/celebridades/2026/10/sylvester-stallone-defende-uso-de-ia-no-cinema-e-ja-propos-rejuvenescer-rambo-com-a-tecnologia.shtml","categoria":"ENTERTAINMENT","lang":"en"},{"fonte":"Ouest-France","pais":"France","titulo":"Under Judicial Reorganization, French Medtech VitaDX Seeks Buyer for Cancer Detection Tech","resumo":"Rennes-based medical technology startup VitaDX is seeking a buyer after entering judicial reorganization proceedings. The company has developed innovative AI-based software that aids in the early diagnosis of bladder cancer through cytological analysis. The sale of the technology is seen as crucial to keeping research alive and enabling the tool to reach healthcare systems.","link":"https://agence-api.ouest-france.fr/sante/biotechnologie-et-laboratoire/en-redressement-la-medtech-rennaise-vitadx-cherche-un-repreneur-pour-sa-technologie-de-depistage-du-cancer-5fbaab5e-cdf2-11f1-bf87-17eca79cb13c","categoria":"MEDTECH","lang":"en"},{"fonte":"epo.org","pais":"United Kingdom","titulo":"Europe's Technology Transfer Challenge: Turning Research into Market Success","resumo":"A new study analyzes the hurdles faced by European and British institutions in converting scientific discoveries into commercial products.\nSlow technology transfer hurts the competitiveness of Europe's innovation ecosystem compared to the North American and Asian markets.\nStrengthening the bridge between academic laboratories and the private sector is considered essential to sustaining the region's economic growth.","link":"https://www.epo.org/en/news-events/events/europes-technology-transfer-challenge-turning-research-market-success","categoria":"INNOVATION","lang":"en"},{"fonte":"El Estrecho Digital","pais":"Spain","titulo":"3rd Blue Economy Conference Addresses Innovation and Sustainability in Santander","resumo":"The city of Santander hosted the third edition of the Blue Economy Conference, bringing together experts to discuss the sustainable development of marine resources.\nThe event highlighted strategies to align environmental conservation with technological advancement and economic growth in Spain's coastal areas.\nThe initiative reinforces the importance of the oceans in the country's ecological transition and scientific innovation.","link":"https://www.elestrechodigital.com/agenda/iii-jornada-de-economia-azul-2026","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"ビジネスネットワーク","pais":"Japan","titulo":"NTT Docomo Uses 'FEEL TECH' Haptic Technology to Simulate Train Driving and Maintenance","resumo":"NTT Docomo has implemented its \"FEEL TECH\" haptic transmission technology in an electric locomotive operation simulator.\nThe tool allows operators to feel real vibrations, resistances, and textures when handling controls and performing maintenance work.\nThe project demonstrates the potential of haptic feedback for immersive industrial training and remote professional skill enhancement.","link":"https://businessnetwork.jp/article/38089/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"新华网客户端","pais":"China","titulo":"Feiba Tech Launches Intelligent Chassis Platform for Commercial Vehicles","resumo":"Chinese company Feiba Tech officially unveiled its new intelligent chassis platform aimed at commercial vehicle mobility and optimization.\nThe technology utilizes centralized digital control and embedded intelligence to adapt the vehicle to specific use cases, boosting logistical efficiency.\nThe innovation seeks to accelerate the transportation industry's transition toward automation and advanced personalization.","link":"https://app.xinhuanet.com/news/article.html?articleId=202610239a94e4846b064737b8e2537b70473f41","categoria":"INNOVATION","lang":"en"},{"fonte":"SIC Notícias","pais":"Portugal","titulo":"AI at the Portugal Digital Summit: How Technology Is Transforming the Job Market","resumo":"During the Portugal Digital Summit, experts discussed the growing impact of artificial intelligence on various professions.\nThe discussions highlighted the urgent need for workforce upskilling to keep pace with the speed of innovation.\nThe event emphasized the opportunity for responsible automation to drive productivity within the Portuguese ecosystem.","link":"https://sicnoticias.pt/especiais/inteligencia-artificial/2026-10-22-video-ia-no-portugal-digital-summit-como-a-tecnologia-esta-a-transformar-o-mercado-de-trabalho-4aee4418","categoria":"EVENTS","lang":"en"},{"fonte":"Finanças, Câmbio e Investimentos","pais":"United States","titulo":"US Proposes Stricter Rules for Investments in Chinese Technology","resumo":"The United States government has introduced a regulatory proposal to restrict American investments in strategic technological sectors in China. The measure aims to curb China's advancement in areas such as artificial intelligence, semiconductors, and quantum computing for national security reasons. The limitations are expected to directly impact global venture capital funds and redefine international trade partnerships.","link":"https://br.investing.com/news/stock-market-news/eua-propoem-regras-mais-rigidas-para-investimentos-em-tecnologia-chinesa-93CH-2100584","categoria":"GEOPOLITICS","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"NASA's Roman Space Telescope Enters Final Commissioning Phase","resumo":"NASA's Nancy Grace Roman Space Telescope has reached a decisive milestone by entering its final testing and commissioning phase prior to launch. Designed to have a field of view one hundred times larger than that of the Hubble Space Telescope, the observatory will investigate mysteries of dark energy and exoplanets. The mission promises to revolutionize our understanding of the structure and expansion of the universe in the coming decades.","link":"https://science.nasa.gov/blogs/roman/2026/10/22/nasas-roman-space-telescope-enters-final-commissioning-phase/","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"Le Parisien","pais":"France","titulo":"Tired of Fights Over Your Teen's Screen Time? This Mother Created an App to Make Your Life Easier","resumo":"Facing constant family conflicts arising from adolescents' excessive smartphone use, a French mother has developed an innovative app. The tool proposes an educational and negotiated approach to screen time management, rather than simple authoritarian blocking. The solution has gained prominence among parents seeking to promote a healthy balance in young people's digital consumption.","link":"https://www.leparisien.fr/pyrenees-orientales-66/marre-des-conflits-autour-du-temps-decran-de-votre-ado-cette-mere-de-famille-a-invente-une-appli-qui-va-vous-faciliter-la-vie-22-10-2026-ZBONXXZ4GJGXJPXQE35ZQWBIPE.php","categoria":"APPS","lang":"en"},{"fonte":"BBC","pais":"United Kingdom","titulo":"PHP: What It Is and Why It Triggered a Global Cybersecurity Alert","resumo":"The discovery of critical vulnerabilities in the PHP programming language has mobilized cybersecurity experts worldwide. Widely used in web development, any flaw in PHP exposes millions of websites and corporate systems to immediate risks of intrusion. The incident has reignited the debate on the importance of ongoing support and preventive updates in essential digital infrastructure.","link":"https://www.bbc.com/news/articles/c3qjnwye0ep5o","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"RTVE.es","pais":"Spain","titulo":"The Science Behind 'The Starry Night': Physics Explains Van Gogh's Brushstrokes","resumo":"A scientific study has revealed that the swirls present in Vincent van Gogh's masterpiece 'The Starry Night' precisely obey the laws of turbulent fluid dynamics. Researchers analyzed the luminosity variations in the painting and identified complex mathematical patterns of energy transfer. The discovery demonstrates how the painter's artistic intuition captured surprisingly accurate natural phenomena.","link":"https://www.rtve.es/noticias/20261022/van-gogh-cielo-noche-estrellada-ciencia-obra-iconica/17277862.shtml","categoria":"SCIENCE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
