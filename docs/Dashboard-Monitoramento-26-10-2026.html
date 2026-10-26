@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-Kwzp1k5pnPE61i0w9dIL2xoa'; script-src 'nonce-Kwzp1k5pnPE61i0w9dIL2xoa'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="Kwzp1k5pnPE61i0w9dIL2xoa">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">26/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="Kwzp1k5pnPE61i0w9dIL2xoa">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Balada IN","pais":"Brasil","titulo":"Corrida da IA deve elevar investimentos globais em data centers a US$ 2,1 trilhões até 2028","resumo":"O rápido avanço da inteligência artificial está gerando uma demanda sem precedentes por infraestrutura digital em todo o mundo. Especialistas projetam que os aportes financeiros em data centers alcancem cifras recordes nos próximos anos para suportar a carga computacional. Esse movimento impacta diretamente o setor tecnológico global e acelera a inovação em hardwares e redes de conexão.","link":"https://www.portalin.com.br/business/corrida-da-ia-deve-elevar-investimentos-globais-em-data-centers-a-us-21-trilhoes-ate-2028/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Qué.es","pais":"Estados Unidos","titulo":"Economista estima em 1 bilhão o impacto de GTA VI na economia dos EUA","resumo":"O lançamento do aguardado jogo GTA VI promete movimentar de forma massiva a economia norte-americana.\nEspecialistas calculam impactos bilionários no setor de entretenimento e tecnologia.\nO fenômeno cultural reforça o peso da indústria de games no ecossistema financeiro global.","link":"https://www.que.es/2026/10/26/gta-vi-economia-1000-millones/","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Arqueólogos franceses descobrem um vaso com mais de 40.000 moedas romanas com mais de 1.800 anos","resumo":"Uma descoberta arqueológica impressionante na França revelou um grande recipiente de cerâmica contendo dezenas de milhares de moedas romanas antigas.\nO achado fornece valiosas informações históricas e econômicas sobre o período do Império Romano na região europeia.\nEspecialistas agora trabalham na catalogação e preservação meticulosa de todo o tesouro recém-descoberto.","link":"https://www.science-et-vie.com/science-et-culture/des-archeologues-francais-ont-decouvert-un-bocal-rempli-de-plus-de-40-000-pieces-de-monnaie-romaines-vieux-de-1-800-ans-259147.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Retail Technology Innovation Hub","pais":"Inglaterra","titulo":"Carrefour Bélgica impulsiona conceito autônomo impulsionado por IA BuyBye com marco de 12 lojas","resumo":"O Carrefour na Bélgica atingiu a marca impressionante de doze unidades operando com o conceito autônomo BuyBye.\nA tecnologia baseada em inteligência artificial visa otimizar a experiência de compra dos consumidores locais.\nEssa expansão reflete a tendência crescente de automação no setor varejista europeu e globalmente.","link":"https://www.retailtechinnovationhub.com/home/2026/10/26/carrefour-belgium-boosts-ai-driven-autonomous-buybye-concept-with-12-stores","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Economista","pais":"Espanha","titulo":"A dependência de Wall Street em relação à IA: a tecnologia abrange quase 40% do peso do S\u0026P 500","resumo":"O mercado financeiro americano demonstra uma concentração histórica em empresas ligadas à inteligência artificial. Essa forte dependência gera debates profundos sobre a estabilidade econômica global a longo prazo. Especialistas alertam para os riscos sistêmicos caso essas expectativas de crescimento tecnológico não se concretizem rapidamente.","link":"https://www.eleconomista.es/mercados-cotizaciones/noticias/14023238/10/26/la-dependencia-de-wall-street-a-la-ia-la-tecnologia-acapara-casi-el-40-del-peso-del-sp-500.html","categoria":"ECONOMIA IA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Deutsche Bahn - Trens S-Bahn ainda mais pontuais atrasados - Economia - SZ.de","resumo":"A pontualidade dos trens S-Bahn na Alemanha voltou a piorar significativamente, gerando frustração entre os passageiros diários e desafiando a gestão da empresa ferroviária. O impacto dessa queda na qualidade do serviço afeta diretamente a mobilidade urbana e a produtividade nas principais regiões metropolitanas do país. Especialistas apontam gargalos na infraestrutura e falta de manutenção como as principais causas para este cenário persistente.","link":"https://www.sueddeutsche.de/wirtschaft/deutsche-bahn-s-bahnen-nochmals-unpuenktlicher-unterwegs-dpa.urn-newsml-dpa-com-20090101-261026-930-893019","categoria":"TRANSPORTE","lang":"pt"},{"fonte":"ビジネスネットワーク","pais":"Japão","titulo":"NTT desenvolve nova tecnologia de IA de diálogo por voz com ritmo próximo ao humano","resumo":"A gigante japonesa NTT desenvolveu uma nova tecnologia de inteligência artificial focada em interações por voz. O sistema consegue manter um ritmo de conversação e respostas altamente natural, aproximando-se da fluidez humana. Essa inovação promete transformar o atendimento ao cliente e a interação homem-máquina em diversos setores.","link":"https://businessnetwork.jp/article/38059/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"中国经济网","pais":"China","titulo":"“Sol artificial”: quão longe estamos dessa tecnologia?","resumo":"O avanço na pesquisa de fusão nuclear e projetos de energia limpa conhecidos como sóis artificiais ganha destaque global. A tecnologia promete revolucionar a matriz energética mundial ao oferecer uma fonte praticamente inesgotável. Especialistas discutem os desafios de engenharia e o impacto econômico a longo prazo dessa inovação.","link":"http://www.ce.cn/xwzx/gnsz/gdxw/202610/t20261026_3271627.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ThePrint","pais":"Índia","titulo":"L\u0026T Technology Services e Nokia estabelecem colaboração em engenharia","resumo":"A L\u0026T Technology Services firmou uma parceria estratégica com a Nokia para impulsionar projetos avançados de engenharia. A colaboração visa unir expertises tecnológicas para acelerar o desenvolvimento de soluções inovadoras no setor. Essa união fortalece a competitividade de ambas as empresas no mercado global de tecnologia e telecomunicações.","link":"https://theprint.in/ani-press-releases/lt-technology-services-and-nokia-forge-engineering-collaboration/3081468/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"EUA querem deixar de comprar cães militares da Europa e criar próprios animais com tecnologia de guerra","resumo":"Os Estados Unidos planejam interromper a aquisição de cães militares de países europeus, buscando desenvolver a própria criação com foco em inovação e tecnologia de guerra avançada. A medida visa garantir maior controle sobre o treinamento e as capacidades operacionais dos animais utilizados em missões estratégicas. Essa mudança pode impactar diretamente os fornecedores europeus tradicionais que abastecem o setor de defesa norte-americano há décadas.","link":"https://jornaleconomico.sapo.pt/noticias/eua-querem-deixar-de-comprar-caes-militares-a-europa-e-criar-os-seus-proprios-caes-com-tecnologia-de-guerra/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Agência Minas","pais":"Brasil","titulo":"Funed promove Semana Nacional de Ciência e Tecnologia","resumo":"A Fundação Ezequiel Dias realizou mais uma edição voltada para a popularização do conhecimento científico e tecnológico no país. O evento reuniu pesquisadores, estudantes e a comunidade para debater inovações na área da saúde e biotecnologia. A iniciativa reforça a importância de aproximar a sociedade dos avanços acadêmicos e científicos nacionais.","link":"https://www.agenciaminas.mg.gov.br/evento/funed-promove-semana-nacional-de-ciencia-e-tecnologia","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"KSNV","pais":"Estados Unidos","titulo":"Mais de 300 estudantes aprendem ciência e tecnologia no CCSD Family STEM Day","resumo":"Um evento educacional recente reuniu centenas de jovens para explorar o universo das ciências e tecnologias.\nA iniciativa busca engajar estudantes em áreas fundamentais para o futuro do mercado de trabalho.\nAtividades práticas e interativas estimularam o interesse pela inovação desde a base escolar.","link":"https://news3lv.com/news/local/over-300-students-learn-science-and-technology-at-ccsd-family-stem-day-engineering-math-magnet-school","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"Sciences Po","pais":"França","titulo":"Ciência aberta: A pesquisa eleitoral de 2022 do CEVIPOF é publicada pelo CDSP","resumo":"A divulgação pública dos dados da pesquisa eleitoral francesa de 2022 marca um avanço significativo para a ciência aberta e transparência acadêmica.\nPesquisadores e o público agora têm acesso facilitado a conjuntos de dados detalhados sobre o comportamento dos eleitores no país.\nEssa iniciativa promove uma análise aprofundada dos movimentos políticos recentes e fortalece a colaboração científica na área de ciências sociais.","link":"https://www.sciencespo.fr/cdsp/fr/actualites/science-ouverte-l-enquete-electorale-2022-du-cevipof-publiee-par-le-cdsp/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Da agricultura à 'agricultecnologia': Como a tecnologia está transformando a agricultura","resumo":"Inovações tecnológicas estão revolucionando o setor agrícola tradicional ao redor do mundo, trazendo mais eficiência operacional.\nFerramentas avançadas ajudam produtores a otimizar colheitas, monitorar safras e reduzir o impacto ambiental significativamente.\nA transformação digital no campo garante maior sustentabilidade e segurança alimentar para as futuras gerações.","link":"https://www.bbc.com/news/articles/cw80zk9k51j1o","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"La Voz de Galicia","pais":"Espanha","titulo":"A ciência urge a substituição da borracha reciclada em parques infantis","resumo":"Pesquisadores científicos alertam sobre os potenciais riscos à saúde associados ao uso de borracha reciclada em áreas recreativas infantis. O material, amplamente utilizado no país, tem sido questionado devido à presença de substâncias nocivas. Especialistas recomendam a transição urgente para alternativas mais seguras e ecologicamente sustentáveis na infraestrutura urbana.","link":"https://www.lavozdegalicia.es/noticia/sociedad/2026/10/25/ciencia-urge-sustituir-caucho-reciclado-parques-infantiles/0003_202610G25P33991.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Peixe - Ministros da UE discutem cotas de pesca no Mar Báltico e política agrícola - Política - SZ.de","resumo":"Ministros da União Europeia se reuniram para debater e definir as novas cotas de captura de peixes no Mar Báltico, além de pautas centrais da política agrícola comum. As decisões tomadas têm peso direto sobre a sustentabilidade ambiental dos estoques marinhos e sobre a economia dos pescadores que atuam na região norte da Europa. O equilíbrio entre a conservação ecológica e a subsistência do setor primário continua sendo o maior desafio das negociações.","link":"https://www.sueddeutsche.de/politik/fisch-eu-minister-beraten-ueber-ostseefangmengen-und-agrarpolitik-dpa.urn-newsml-dpa-com-20090101-261026-930-892996","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"iQPS, Inc.","pais":"Japão","titulo":"Início de pesquisa conjunta sobre detecção de danos por incêndio usando pequenos satélites SAR","resumo":"O governo japonês iniciou um projeto conjunto para utilizar pequenos satélites de radar de abertura sintética na detecção rápida de danos causados por incêndios. A tecnologia visa otimizar a resposta a desastres naturais e emergenciais no país. Com imagens mais precisas, as autoridades poderão agir com maior agilidade na mitigação de riscos.","link":"https://i-qps.net/news/4129/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"WirtschaftsWoche","pais":"China","titulo":"E-Fuels: Como a China também quer inundar o mundo com combustíveis verdes","resumo":"A China avança significativamente no desenvolvimento e produção em larga escala de combustíveis sintéticos e ecológicos. A estratégia visa não apenas o mercado interno, mas a exportação global de alternativas sustentáveis aos combustíveis fósseis. O movimento redefine a geopolítica da transição energética e o papel industrial do país.","link":"https://www.wiwo.de/technologie/wirtschaft-von-oben/e-fuels-so-will-china-die-welt-auch-mit-gruenen-kraftstoffen-fluten/100263882.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The420.in","pais":"Índia","titulo":"Dia 26 | Lei de Tecnologia da Informação: A base jurídica na luta da Índia contra o cibercrime","resumo":"A legislação de Tecnologia da Informação desempenha um papel fundamental no combate aos crimes cibernéticos em solo indiano. A norma fornece o arcabouço legal necessário para que autoridades investiguem e punam infrações digitais. O foco na segurança cibernética torna-se cada vez mais urgente diante da crescente digitalização e das ameaças virtuais.","link":"https://the420.in/information-technology-act-2000-cybercrime-laws-investigators/","categoria":"SEGURANÇA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Lucros da Tesla caem 29%","resumo":"A montadora de veículos elétricos Tesla registrou uma queda acentuada de 29% em seus lucros trimestrais, refletindo os desafios do mercado global. A retração ocorre em meio a uma competição cada vez mais acirrada no setor automotivo e a ajustes de preços realizados pela companhia. Analistas avaliam que o cenário exige novas inovações tecnológicas e estratégias comerciais para recuperar margens.","link":"https://sapo.pt/artigo/lucros-da-tesla-caem-29-6ade998d6c1c029df5543728","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Memes: Lula é reeleito após virada inédita apoiadores inundam a web com brincadeiras e celebração do 'tetra'","resumo":"A reeleição presidencial movimentou intensamente as redes sociais com a criação de diversos conteúdos humorísticos e comemorativos por parte dos eleitores. O fenômeno demonstra como a cultura digital e os memes se tornaram centrais na expressão política moderna. Esse engajamento virtual reflete a polarização e a forte participação popular nas plataformas online.","link":"https://g1.globo.com/tecnologia/noticia/2026/10/25/memes-lula-e-reeleito-apos-virada-inedita-apoiadores-inundam-a-web-com-comemoracao-do-tetra.ghtml","categoria":"TRENDING TOPICS","lang":"pt"},{"fonte":"Science Daily","pais":"Estados Unidos","titulo":"Cientistas superam obstáculo oculto para computadores quânticos mais potentes","resumo":"Pesquisadores anunciaram um avanço significativo na estabilidade de sistemas de computação quântica.\nA descoberta resolve gargalos técnicos que limitavam o desempenho de processadores avançados.\nEssa evolução aproxima a tecnologia de aplicações práticas em larga escala na indústria.","link":"https://www.sciencedaily.com/releases/2026/10/261024222024.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Notebookcheck.fr","pais":"França","titulo":"CEO da Epic, Tim Sweeney, critica a política 'odiosa' da Steam sobre divulgação do uso de IA e diz que menções funcionam como 'declaração política'","resumo":"O executivo da Epic Games expressou forte insatisfação com as diretrizes impostas pela plataforma concorrente Steam em relação à inteligência artificial.\nSweeney argumenta que a obrigatoriedade de rótulos sobre IA vai além da transparência técnica e funciona como um posicionamento político.\nA discussão acende o debate na indústria de jogos sobre como as grandes vitrines digitais devem regular e tratar novas tecnologias criativas.","link":"https://www.notebookcheck.biz/Le-PDG-d-Epic-Tim-Sweeney-fustige-la-politique-odieuse-de-Steam-sur-la-divulgation-de-l-utilisation-de-l-IA-affirmant-que-les-mentions-font-aussi-office-de-declaration-politique.1433755.0.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Empresas de tecnologia devem pagar os criadores cujo trabalho elas utilizam","resumo":"O debate sobre direitos autorais ganha força com a expansão acelerada de ferramentas baseadas em inteligência artificial.\nEspecialistas e criadores argumentam que plataformas de tecnologia precisam remunerar adequadamente os donos dos conteúdos originais.\nA medida busca garantir justiça econômica e ética na era digital e no desenvolvimento de novos algoritmos.","link":"https://www.theguardian.com/technology/2026/oct/25/tech-firms-should-pay-the-creators-whose-work-they-use","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Obrero","pais":"Espanha","titulo":"A astrofísica Eva Villaver e o cozinheiro Borja Marrero inauguram a IV edição da ÍNSULA, a feira de ciência de Las Palmas de Gran Canaria","resumo":"O evento anual em Las Palmas de Gran Canaria destaca a intersecção entre o conhecimento científico e a gastronomia sustentável. A astrofísica Eva Villaver e o chef Borja Marrero lideram as discussões sobre inovação e o futuro dos recursos locais. A iniciativa busca aproximar a ciência do público geral através de experiências culturais e educativas.","link":"https://elobrero.es/mas/cafe-society/699-la-astrofisica-eva-villaver-y-el-cocinero-borja-marrero-inauguran-la-iv-edicion-de-insula-la-feria-de-ciencia-de-las-palmas-de-gran-canaria.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"99,99 euros - Deutsche Bahn volta a vender bilhete familiar a partir de hoje - Economia - SZ.de","resumo":"A Deutsche Bahn relançou no mercado o seu popular bilhete familiar pelo valor promocional de 99,99 euros, voltando a atrair famílias em viagens de longa distância. A iniciativa busca incentivar o uso do transporte ferroviário e aliviar o orçamento dos cidadãos diante da inflação e dos altos custos de vida. A medida foi amplamente bem recebida por consumidores que planejam viagens durante os períodos de férias e feriados.","link":"https://www.sueddeutsche.de/wirtschaft/99-99-euro-bahn-verkauft-familienticket-ab-heute-wieder-dpa.urn-newsml-dpa-com-20090101-261026-930-892950","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Vulnerabilidade 'HTTP2Shell' em tecnologias do Google exige resposta urgente no Japão","resumo":"Uma nova falha de segurança crítica identificada em tecnologias amplamente utilizadas gerou alertas entre especialistas em TI japoneses. A vulnerabilidade afeta sistemas corporativos e exige patches imediatos para evitar invasões. Especialistas reforçam a necessidade de auditorias constantes na infraestrutura web das empresas.","link":"https://news.yahoo.co.jp/articles/1401522624acefe7c50bea48f1796f5763d0f06d","categoria":"SEGURANÇA","lang":"pt"},{"fonte":"Saur Energy","pais":"China","titulo":"Restrições tecnológicas solares da China: um alerta global que pode encarecer a transição energética","resumo":"Novas barreiras e controles sobre exportações de tecnologias solares chinesas geram preocupações em mercados internacionais. A medida pode elevar os custos globais para a instalação de infraestrutura fotovoltaica e desacelerar metas climáticas. Especialistas apontam a vulnerabilidade das cadeias de suprimentos renováveis diante de disputas comerciais.","link":"https://www.saurenergy.com/solar-energy-blog/chinas-solar-technology-curbs-a-global-warning-that-could-make-the-energy-transition-more-expensive-12751766","categoria":"ENERGIA","lang":"pt"},{"fonte":"The Economic Times","pais":"Índia","titulo":"L\u0026T Technology Services assina acordo de cinco anos com a Nokia para suporte de P\u0026D na Índia","resumo":"A L\u0026T Technology Services fechou um contrato de longo prazo com a Nokia para fornecer serviços de Pesquisa e Desenvolvimento na Índia. O acordo de cinco anos consolida o país como um polo estratégico para inovações tecnológicas e engenharia de ponta. A iniciativa promete gerar novos empregos altamente qualificados e impulsionar o ecossistema tecnológico local.","link":"https://m.economictimes.com/industry/telecom/telecom-news/lt-technology-services-signs-five-year-deal-with-nokia-for-rd-support-in-india/articleshow/135202158.cms","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"Portuguesa vai presidir sociedade científica da educação em engenharia e tecnologia","resumo":"Uma acadêmica portuguesa assumirá a presidência de uma importante sociedade científica dedicada à educação em engenharia e tecnologia. A nomeação destaca o reconhecimento internacional da investigação e do ensino desenvolvidos em Portugal nessas áreas fundamentais. Espera-se que a gestão impulsione novas diretrizes pedagógicas e cooperações globais no setor.","link":"https://jornaleconomico.sapo.pt/noticias/portuguesa-vai-presidir-a-sociedade-cientifica-da-educacao-em-engenharia-e-tecnologia/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Finanças, Câmbio e Investimentos","pais":"Brasil","titulo":"Futuros dos EUA sobem após perdas em tecnologia; Fed e resultados em foco","resumo":"Os mercados futuros americanos registraram recuperação impulsionados pelo desempenho do setor de tecnologia após sessões de baixa. Investidores mantêm o foco nas decisões do Federal Reserve e na divulgação de balanços corporativos relevantes. O cenário internacional segue ditando o ritmo dos negócios globais e influenciando bolsas ao redor do mundo.","link":"https://br.investing.com/news/stock-market-news/futuros-dos-eua-sobem-apos-perdas-em-tecnologia-fed-e-resultados-em-foco-2101971","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Popular Science","pais":"Estados Unidos","titulo":"6 imagens estelares do universo primitivo","resumo":"Novas capturas astronômicas revelam detalhes impressionantes sobre as origens do cosmos.\nAs imagens fornecem dados cruciais para astrofísicos estudarem a formação das primeiras galáxias.\nO avanço tecnológico dos telescópios continua expandindo nossa compreensão do universo.","link":"https://www.popsci.com/science/images-of-early-universe/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"L'Yonne Républicaine","pais":"França","titulo":"‘Uma falha inaceitável’: comunicado do AJA após o ‘mau funcionamento da tecnologia da linha de gol’ contra o Le Mans","resumo":"O clube de futebol francês expressou profunda indignação após um erro crítico no sistema automatizado de validação de gols durante uma partida.\nA falha na tecnologia da linha de gol gerou intensos debates sobre a confiabilidade e os limites dos sistemas eletrônicos no esporte.\nA diretoria exigiu explicações imediatas dos órgãos competentes para evitar novos prejuízos à integridade das competições.","link":"https://www.lyonne.fr/auxerre-89000/sports/une-defaillance-inacceptable-le-communique-de-laja-apres-dysfonctionnement-de-la-goal-line-technologie-face-au-mans_15069485/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Idealista","pais":"Espanha","titulo":"'Apocalipse IA': o setor aposta em escritórios 'prime' frente ao temor de que a tecnologia os esvazie","resumo":"O avanço acelerado do trabalho remoto e da inteligência artificial transforma drasticamente o mercado imobiliário corporativo. Empresas e investidores estão priorizando edifícios de alto padrão, conhecidos como 'prime', para atrair talentos presenciais. A estratégia busca mitigar o impacto de previsões pessimistas sobre a ocupação de espaços comerciais.","link":"https://www.idealista.com/news/inmobiliario/vivienda/2026/10/26/920417-apocalipsis-ia-el-sector-apuesta-por-las-oficinas-prime-frente-al-temor-a-que-la?amp","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Movimento estudantil triunfa - Sérvia caminha para mudança de poder após eleições parlamentares - Política - SZ.de","resumo":"A Sérvia enfrenta um momento histórico de transição política após resultados eleitorais impulsionados fortemente pela mobilização do movimento estudantil. A virada eleitoral sinaliza uma insatisfação profunda com o governo vigente e um desejo renovado por reformas democráticas e aproximação com os padrões europeus. Esse novo panorama geopolítico nos arredores da Europa é acompanhado de perto por líderes internacionais e analistas.","link":"https://www.sueddeutsche.de/politik/studentenbewegung-triumphiert-serbien-steht-nach-parlamentswahl-vor-einem-machtwechsel-dpa.urn-newsml-dpa-com-20090101-261026-930-892890","categoria":"POLÍTICA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Red Dot Pay de Hong Kong adquire a exchange de criptomoedas japonesa BTCBOX","resumo":"A empresa de pagamentos Red Dot Pay, sediada em Hong Kong, concretizou a aquisição da corretora de criptomoedas japonesa BTCBOX. A movimentação reflete o interesse estrangeiro no mercado regulado de ativos digitais do Japão. A transação deve expandir os serviços financeiros e fortalecer pontes entre os mercados asiáticos.","link":"https://news.yahoo.co.jp/articles/bc2bf969546c79bafb251b45f3213baa88f38053","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"South China Morning Post","pais":"China","titulo":"Exoesqueletos, alguém? A China exibe tecnologia de ponta em feira anual","resumo":"A China apresentou robôs assistivos e exoesqueletos avançados em sua principal feira comercial e tecnológica. As inovações são projetadas para aplicações industriais, médicas e de reabilitação física, aumentando a produtividade e a segurança. A demonstração reforça a liderança do país na robótica aplicada e fabricação inteligente.","link":"https://www.scmp.com/economy/china-economy/article/3371954/exoskeletons-anyone-china-showcases-next-gen-technology-annual-trade-fair","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Rising Kashmir","pais":"Índia","titulo":"Exame JKSET/LASET realizado no GGM Science College, em Jammu","resumo":"O GGM Science College, localizado em Jammu, sediou com sucesso a realização do importante exame acadêmico JKSET/LASET. O evento atraiu inúmeros candidatos que buscam qualificação e avanço em suas carreiras na área de ensino superior e pesquisa. A realização de exames dessa magnitude reforça o compromisso institucional com a excelência educacional na região.","link":"https://risingkashmir.com/jammu/jksetlaset-exam-conducted-at-ggm-science-college-jammu-12751625","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"The Portugal News","pais":"Portugal","titulo":"Portugal celebrará a ciência em Coimbra","resumo":"A cidade de Coimbra foi escolhida para sediar as grandes celebrações nacionais dedicadas ao avanço científico e tecnológico em Portugal. O evento reunirá pesquisadores, acadêmicos e entusiastas para debater descobertas recentes e o futuro da inovação no país. A iniciativa busca aproximar a comunidade científica da sociedade e promover o desenvolvimento do conhecimento.","link":"https://www.theportugalnews.com/br/noticias/2026-10-25/portugal-para-celebrar-a-ciencia-em-coimbra/1106011","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"General Janones: o comandante do 'Exército do Lula' que liderou estratégia digital por trás de virada histórica","resumo":"A campanha eleitoral evidenciou o poder das estratégias digitais na mobilização de eleitores e na reversão de cenários políticos complexos. O uso intensivo de redes sociais e táticas de comunicação em massa tornou-se objeto de estudo sobre campanhas modernas. O impacto dessas ferramentas redefine a forma como candidatos dialogam diretamente com as massas.","link":"https://oglobo.globo.com/politica/eleicoes-2026/noticia/2026/10/25/janones-o-general-de-exercito-do-lula-que-comandou-estrategia-digital-por-tras-de-virada-historica.ghtml","categoria":"TRENDING TOPICS","lang":"pt"},{"fonte":"Aviation Week","pais":"Estados Unidos","titulo":"A Semana em Tecnologia, 26 a 30 de outubro de 2026","resumo":"O panorama semanal destacou as principais inovações e debates no setor tecnológico.\nEmpresas e especialistas discutiram os rumos da inteligência artificial e da transformação digital.\nO período foi marcado por anúncios importantes e novas tendências de mercado.","link":"https://aviationweek.com/aerospace/emerging-technologies/week-technology-oct-26-30-2026","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Bourse Inside","pais":"França","titulo":"Inteligência artificial: a tecnologia que você usa todos os dias tornou-se a nova arma em golpes de criptomoedas","resumo":"Crimiosos cibernéticos estão adotando ferramentas avançadas de inteligência artificial do cotidiano para aplicar golpes sofisticados envolvendo criptoativos.\nAs novas táticas enganam vítimas com facilidade impressionante, simulando interações legítimas e clonando identidades digitais.\nEspecialistas em segurança alertam sobre a urgência de regulamentações mais rígidas e maior conscientização dos usuários na internet.","link":"https://bourseinside.fr/crypto/intelligence-artificielle-la-technologie-que-vous-utilisez-chaque-jour-est-devenue-la-nouvelle-arme-des-arnaques-crypto/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Qué.es","pais":"Espanha","titulo":"Dormir em dois blocos: a ciência explica o sono bifásico e por que acordar de madrugada não é ruim","resumo":"Estudos recentes da área da saúde revisitam o conceito histórico do sono bifásico, comum em épocas passadas. A ciência demonstra que acordar no meio da noite pode ser um processo natural e não necessariamente um distúrbio. Compreender esse ritmo biológico ajuda a reduzir a ansiedade de pessoas que experimentam despertares noturnos.","link":"https://www.que.es/2026/10/25/sueno-bifasico-dormir-dos-bloques/","categoria":"SAÚDE","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Eleição presidencial - Seções eleitorais do Brasil fecham após turno estendido - Política - SZ.de","resumo":"As urnas foram oficialmente fechadas no Brasil após o término de um processo eleitoral presidencial com votação estendida em diversas regiões. O pleito mobilizou milhões de eleitores em um dos momentos políticos mais polarizados e cruciais da história recente do país sul-americano. O resultado dessas eleições redefine os rumos econômicos e sociais do Brasil, com forte repercussão internacional e diplomática na Alemanha.","link":"https://www.sueddeutsche.de/politik/praesidentenwahl-brasiliens-wahllokale-schliessen-nach-verlaengertem-wahlgang-dpa.urn-newsml-dpa-com-20090101-261025-930-888813","categoria":"INTERNACIONAL","lang":"pt"},{"fonte":"Panasonic Newsroom Global","pais":"Japão","titulo":"Tecnologia de comunicação 'Nessum' é aprovada como padrão internacional IEEE 1901-2026","resumo":"A tecnologia de comunicação Nessum, amplamente aplicada no setor de gerenciamento de energia, foi oficialmente reconhecida como norma internacional. Essa aprovação valida a eficiência do protocolo desenvolvido para redes inteligentes e automação. A expectativa é de que sua adoção global seja acelerada nos próximos anos.","link":"https://news.panasonic.com/jp/press/jn261026-1","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Reuters","pais":"China","titulo":"Arábia Saudita pode estar expandindo fábrica de mísseis: análise de imagens de satélite aponta potencial adoção de tecnologia chinesa de combustível sólido","resumo":"Imagens de satélite recentes revelam possíveis expansões em instalações industriais militares na Arábia Saudita. Especialistas analisam a integração de tecnologias chinesas de propulsão a combustível sólido para mísseis de longo alcance. O cenário evidencia a influência tecnológica da China em parcerias estratégicas globais.","link":"https://www.reuters.com/jp/world/us/46LTASXD3VOTVMF3HDTRUCA6O4-2026-10-26/","categoria":"DEFESA","lang":"pt"},{"fonte":"Exchange4Media","pais":"Índia","titulo":"Deven Deshpande assume o cargo de Líder de Marketing Esportivo na PUMA Índia","resumo":"A filial indiana da marca global PUMA anunciou Deven Deshpande como o novo líder de marketing esportivo da empresa. O executivo chega com a missão de expandir a presença da marca e fortalecer conexões estratégicas com atletas e fãs. A movimentação reflete o investimento contínuo da companhia no mercado dinâmico de esportes da Índia.","link":"https://www.exchange4media.com/people-movement-news/deven-deshpande-takes-on-lead-sports-marketing-role-at-puma-india-159472.html","categoria":"MERCADO","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"As Mais Poderosas: Cristina Fonseca ocupa terceira posição em Tecnologia e Telecomunicações","resumo":"A empresária portuguesa Cristina Fonseca destacou-se no cenário nacional ao alcançar a terceira posição no ranking das mulheres mais poderosas na categoria de Tecnologia e Telecomunicações. O reconhecimento coroa sua trajetória de sucesso no ecossistema de startups e no setor de inovação digital. Sua liderança serve de inspiração para novas gerações de empreendedoras no mercado tecnológico.","link":"https://sapo.pt/artigo/as-mais-poderosas-cristina-fonseca-ocupa-a-terceira-posicao-de-tecnologia-e-telecomunicacoes-6ade640173157f9866a5294e","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Evento reúne estados para fortalecer segurança pública por meio da tecnologia","resumo":"Representantes de diferentes regiões brasileiras se encontraram para discutir a implementação de inovações tecnológicas no combate à criminalidade. Foram apresentadas soluções baseadas em inteligência de dados, monitoramento inteligente e integração de sistemas policiais. A modernização dos órgãos de segurança busca trazer mais eficiência e rapidez para as forças estaduais.","link":"https://www.gov.br/mj/pt-br/assuntos/noticias/evento-reune-estados-para-fortalecer-seguranca-publica-por-meio-da-tecnologia","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Al Jazeera","pais":"Estados Unidos","titulo":"'Divisão de oportunidades' da IA pode aprofundar desigualdade global, alerta oficial da ONU","resumo":"Autoridades das Nações Unidas alertam sobre os riscos de disparidades geradas pela inteligência artificial.\nO acesso desigual a ferramentas tecnológicas pode distanciar ainda mais países desenvolvidos e em desenvolvimento.\nO relatório enfatiza a necessidade de regulamentações e cooperação internacional inclusiva.","link":"https://www.aljazeera.com/news/2026/10/25/ais-opportunity-divide-could-deepen-global-inequality-un-official-warns","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Balada IN","pais":"Brazil","titulo":"AI Race Expected to Lift Global Data Center Investments to $2.1 Trillion by 2028","resumo":"The rapid advancement of artificial intelligence is generating unprecedented demand for digital infrastructure worldwide. Experts project that financial investments in data centers will reach record highs in the coming years to support the computational load. This movement directly impacts the global technology sector and accelerates innovation in hardware and connection networks.","link":"https://www.portalin.com.br/business/corrida-da-ia-deve-elevar-investimentos-globais-em-data-centers-a-us-21-trilhoes-ate-2028/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Qué.es","pais":"United States","titulo":"Economist Estimates GTA VI Impact on US Economy at $1 Billion","resumo":"The release of the highly anticipated game GTA VI promises to massively boost the North American economy. Experts estimate billion-dollar impacts on the entertainment and technology sectors. This cultural phenomenon reinforces the weight of the gaming industry in the global financial ecosystem.","link":"https://www.que.es/2026/10/26/gta-vi-economia-1000-millones/","categoria":"TRENDS","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"French Archaeologists Discover Jar with Over 40,000 Roman Coins Dating Back More Than 1,800 Years","resumo":"An impressive archaeological discovery in France has revealed a large ceramic container holding tens of thousands of ancient Roman coins. The find provides valuable historical and economic insights into the Roman Empire period in the European region. Experts are now working on the meticulous cataloging and preservation of the entire newly discovered treasure.","link":"https://www.science-et-vie.com/science-et-culture/des-archeologues-francais-ont-decouvert-un-bocal-rempli-de-plus-de-40-000-pieces-de-monnaie-romaines-vieux-de-1-800-ans-259147.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Retail Technology Innovation Hub","pais":"United Kingdom","titulo":"Carrefour Belgium Boosts AI-Driven BuyBye Autonomous Concept with 12th Store Milestone","resumo":"Carrefour in Belgium has reached the impressive milestone of twelve units operating under the BuyBye autonomous concept. The artificial intelligence-based technology aims to optimize the shopping experience for local consumers. This expansion reflects the growing trend of automation in the European and global retail sector.","link":"https://www.retailtechinnovationhub.com/home/2026/10/26/carrefour-belgium-boosts-ai-driven-autonomous-buybye-concept-with-12-stores","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Economista","pais":"Spain","titulo":"Wall Street's Dependence on AI: Technology Accounts for Nearly 40% of the S\u0026P 500's Weight","resumo":"The American financial market demonstrates a historical concentration in companies linked to artificial intelligence. This heavy reliance sparks deep debates regarding long-term global economic stability. Experts warn of systemic risks should these technological growth expectations fail to materialize rapidly.","link":"https://www.eleconomista.es/mercados-cotizaciones/noticias/14023238/10/26/la-dependencia-de-wall-street-a-la-ia-la-tecnologia-acapara-casi-el-40-del-peso-del-sp-500.html","categoria":"AI ECONOMY","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Deutsche Bahn: S-Bahn Trains Even More Unpunctual - Economy - SZ.de","resumo":"The punctuality of S-Bahn trains in Germany has worsened significantly once again, causing frustration among daily commuters and challenging the railway company's management. The impact of this decline in service quality directly affects urban mobility and productivity in the country's major metropolitan regions. Experts point to infrastructure bottlenecks and a lack of maintenance as the primary causes for this persistent scenario.","link":"https://www.sueddeutsche.de/wirtschaft/deutsche-bahn-s-bahnen-nochmals-unpuenktlicher-unterwegs-dpa.urn-newsml-dpa-com-20090101-261026-930-893019","categoria":"TRANSPORTATION","lang":"en"},{"fonte":"ビジネスネットワーク","pais":"Japan","titulo":"NTT Develops New Voice Dialogue AI Technology with Near-Human Rhythm","resumo":"Japanese giant NTT has developed a new artificial intelligence technology focused on voice interactions. The system is able to maintain a conversation rhythm and responses that are highly natural, closely approaching human fluency. This innovation promises to transform customer service and human-machine interaction across various sectors.","link":"https://businessnetwork.jp/article/38059/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"中国经济网","pais":"China","titulo":"\"Artificial Sun\": How Far Away Are We from This Technology?","resumo":"The advancement of nuclear fusion research and clean energy projects known as artificial suns is gaining global prominence. The technology promises to revolutionize the global energy matrix by offering a practically inexhaustible source. Experts discuss the engineering challenges and the long-term economic impact of this innovation.","link":"http://www.ce.cn/xwzx/gnsz/gdxw/202610/t20261026_3271627.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"ThePrint","pais":"India","titulo":"L\u0026T Technology Services and Nokia Establish Engineering Collaboration","resumo":"L\u0026T Technology Services has forged a strategic partnership with Nokia to drive advanced engineering projects. The collaboration aims to combine technological expertise to accelerate the development of innovative solutions in the sector. This union strengthens the competitiveness of both companies in the global technology and telecommunications market.","link":"https://theprint.in/ani-press-releases/lt-technology-services-and-nokia-forge-engineering-collaboration/3081468/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"US Wants to Stop Buying Military Dogs from Europe and Breed Its Own Using Warfare Technology","resumo":"The United States plans to halt the acquisition of military dogs from European countries, seeking to develop its own breeding focused on innovation and advanced warfare technology. The measure aims to ensure greater control over the training and operational capabilities of the animals used in strategic missions. This shift could directly impact traditional European suppliers who have supplied the North American defense sector for decades.","link":"https://jornaleconomico.sapo.pt/noticias/eua-querem-deixar-de-comprar-caes-militares-a-europa-e-criar-os-seus-proprios-caes-com-tecnologia-de-guerra/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Agência Minas","pais":"Brazil","titulo":"Funed Promotes National Science and Technology Week","resumo":"The Ezequiel Dias Foundation held another edition aimed at popularizing scientific and technological knowledge across the country. The event brought together researchers, students, and the community to discuss innovations in health and biotechnology. The initiative reinforces the importance of bringing society closer to national academic and scientific advancements.","link":"https://www.agenciaminas.mg.gov.br/evento/funed-promove-semana-nacional-de-ciencia-e-tecnologia","categoria":"SCIENCE","lang":"en"},{"fonte":"KSNV","pais":"United States","titulo":"Over 300 Students Learn Science and Technology at CCSD Family STEM Day","resumo":"A recent educational event brought together hundreds of young people to explore the universe of science and technology. The initiative seeks to engage students in fields crucial to the future of the job market. Practical and interactive activities stimulated interest in innovation starting from the school level.","link":"https://news3lv.com/news/local/over-300-students-learn-science-and-technology-at-ccsd-family-stem-day-engineering-math-magnet-school","categoria":"EDUCATION","lang":"en"},{"fonte":"Sciences Po","pais":"France","titulo":"Open Science: CEVIPOF's 2022 Electoral Survey Published by CDSP","resumo":"The public release of data from the 2022 French electoral survey marks a significant step forward for open science and academic transparency. Researchers and the public now have easier access to detailed datasets on voter behavior in the country. This initiative promotes in-depth analysis of recent political movements and strengthens scientific collaboration in the social sciences.","link":"https://www.sciencespo.fr/cdsp/fr/actualites/science-ouverte-l-enquete-electorale-2022-du-cevipof-publiee-par-le-cdsp/","categoria":"SCIENCE","lang":"en"},{"fonte":"BBC","pais":"United Kingdom","titulo":"From Farming to 'Agtech': How Technology Is Transforming Agriculture","resumo":"Technological innovations are revolutionizing the traditional agricultural sector around the world, bringing greater operational efficiency. Advanced tools help producers optimize harvests, monitor crops, and significantly reduce environmental impact. Digital transformation in the field ensures greater sustainability and food security for future generations.","link":"https://www.bbc.com/news/articles/cw80zk9k51j1o","categoria":"SCIENCE","lang":"en"},{"fonte":"La Voz de Galicia","pais":"Spain","titulo":"Science Urges Replacement of Recycled Rubber in Playgrounds","resumo":"Scientific researchers are warning about potential health risks associated with the use of recycled rubber in children's recreational areas. The material, widely used across the country, has been questioned due to the presence of harmful substances. Experts recommend an urgent transition to safer and more ecologically sustainable alternatives in urban infrastructure.","link":"https://www.lavozdegalicia.es/noticia/sociedad/2026/10/25/ciencia-urge-sustituir-caucho-reciclado-parques-infantiles/0003_202610G25P33991.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Fish: EU ministers discuss Baltic Sea fishing quotas and agricultural policy - Politics - SZ.de","resumo":"European Union ministers met to debate and establish new fish catch quotas in the Baltic Sea, alongside core items of the common agricultural policy. The decisions made have a direct impact on the environmental sustainability of marine stocks and the economy of fishermen operating in northern Europe. Balancing ecological conservation with the subsistence of the primary sector remains the greatest challenge of the negotiations.","link":"https://www.sueddeutsche.de/politik/fisch-eu-minister-beraten-ueber-ostseefangmengen-und-agrarpolitik-dpa.urn-newsml-dpa-com-20090101-261026-930-892996","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"iQPS, Inc.","pais":"Japan","titulo":"Start of Joint Research on Fire Damage Detection Using Small SAR Satellites","resumo":"The Japanese government has launched a joint project to utilize small synthetic aperture radar satellites for the rapid detection of fire damage. The technology aims to optimize emergency and natural disaster response in the country. With more precise imagery, authorities will be able to act with greater agility in risk mitigation.","link":"https://i-qps.net/news/4129/","categoria":"SCIENCE","lang":"en"},{"fonte":"WirtschaftsWoche","pais":"China","titulo":"E-Fuels: How China Also Wants to Flood the World with Green Fuels","resumo":"China is making significant strides in the large-scale development and production of synthetic and ecological fuels. The strategy aims not only at the domestic market, but at the global export of sustainable alternatives to fossil fuels. This move reshapes the geopolitics of the energy transition and the country's industrial role.","link":"https://www.wiwo.de/technologie/wirtschaft-von-oben/e-fuels-so-will-china-die-welt-auch-mit-gruenen-kraftstoffen-fluten/100263882.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The420.in","pais":"India","titulo":"Day 26 | Information Technology Act: The Legal Foundation in India's Fight Against Cybercrime","resumo":"Information Technology legislation plays a fundamental role in combating cybercrimes on Indian soil. The regulation provides the necessary legal framework for authorities to investigate and punish digital infractions. The focus on cybersecurity is becoming increasingly urgent in light of growing digitization and virtual threats.","link":"https://the420.in/information-technology-act-2000-cybercrime-laws-investigators/","categoria":"SECURITY","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Tesla's Profits Drop 29%","resumo":"Electric vehicle manufacturer Tesla reported a sharp 29% drop in its quarterly profits, reflecting the challenges of the global market. The downturn comes amid increasingly fierce competition in the automotive sector and price adjustments made by the company. Analysts assess that the scenario demands new technological innovations and commercial strategies to recover profit margins.","link":"https://sapo.pt/artigo/lucros-da-tesla-caem-29-6ade998d6c1c029df5543728","categoria":"BUSINESS","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Memes: Lula reelected after unprecedented comeback, supporters flood the web with jokes and celebration of 'tetra'","resumo":"The presidential reelection intensely stirred social media with the creation of various humorous and celebratory content by voters. The phenomenon demonstrates how digital culture and memes have become central to modern political expression. This virtual engagement reflects polarization and strong grassroots participation on online platforms.","link":"https://g1.globo.com/tecnologia/noticia/2026/10/25/memes-lula-e-reeleito-apos-virada-inedita-apoiadores-inundam-a-web-com-comemoracao-do-tetra.ghtml","categoria":"TRENDING TOPICS","lang":"en"},{"fonte":"Science Daily","pais":"United States","titulo":"Scientists Overcome Hidden Obstacle for More Powerful Quantum Computers","resumo":"Researchers have announced a significant breakthrough in the stability of quantum computing systems. The discovery resolves technical bottlenecks that limited the performance of advanced processors. This evolution brings the technology closer to large-scale practical applications in industry.","link":"https://www.sciencedaily.com/releases/2026/10/261024222024.htm","categoria":"SCIENCE","lang":"en"},{"fonte":"Notebookcheck.fr","pais":"France","titulo":"Epic CEO Tim Sweeney Slams Steam's 'Hateful' AI Disclosure Policy, Says Mentions Serve as 'Political Statement'","resumo":"The Epic Games executive expressed strong dissatisfaction with the guidelines imposed by competing platform Steam regarding artificial intelligence. Sweeney argues that mandatory AI labeling goes beyond technical transparency and functions as a political stance. The discussion sparks debate within the gaming industry on how major digital storefronts should regulate and treat new creative technologies.","link":"https://www.notebookcheck.biz/Le-PDG-d-Epic-Tim-Sweeney-fustige-la-politique-odieuse-de-Steam-sur-la-divulgation-de-l-utilisation-de-l-IA-affirmant-que-les-mentions-font-aussi-office-de-declaration-politique.1433755.0.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Tech Companies Must Pay Creators Whose Work They Use","resumo":"The debate over copyright gains momentum with the accelerated expansion of tools based on artificial intelligence. Experts and creators argue that technology platforms need to adequately compensate original content owners. The measure seeks to ensure economic and ethical fairness in the digital age and in the development of new algorithms.","link":"https://www.theguardian.com/technology/2026/oct/25/tech-firms-should-pay-the-creators-whose-work-they-use","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Obrero","pais":"Spain","titulo":"Astrophysicist Eva Villaver and Chef Borja Marrero Inaugurate the 4th Edition of ÍNSULA, the Las Palmas de Gran Canaria Science Fair","resumo":"The annual event in Las Palmas de Gran Canaria highlights the intersection between scientific knowledge and sustainable gastronomy. Astrophysicist Eva Villaver and chef Borja Marrero lead discussions on innovation and the future of local resources. The initiative aims to bring science closer to the general public through cultural and educational experiences.","link":"https://elobrero.es/mas/cafe-society/699-la-astrofisica-eva-villaver-y-el-cocinero-borja-marrero-inauguran-la-iv-edicion-de-insula-la-feria-de-ciencia-de-las-palmas-de-gran-canaria.html","categoria":"SCIENCE","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"99.99 euros - Deutsche Bahn is selling family tickets again starting today - Economy - SZ.de","resumo":"Deutsche Bahn has relaunched its popular family ticket on the market for the promotional price of 99.99 euros, once again drawing families for long-distance travel. The initiative seeks to encourage the use of rail transport and ease citizens' budgets amid inflation and high living costs. The measure was widely welcomed by consumers planning trips during vacation periods and holidays.","link":"https://www.sueddeutsche.de/wirtschaft/99-99-euro-bahn-verkauft-familienticket-ab-heute-wieder-dpa.urn-newsml-dpa-com-20090101-261026-930-892950","categoria":"ECONOMY","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"'HTTP2Shell' Vulnerability in Google Technologies Demands Urgent Response in Japan","resumo":"A critical new security flaw identified in widely used technologies has sparked alerts among Japanese IT specialists. The vulnerability affects corporate systems and requires immediate patches to prevent intrusions. Experts reinforce the need for constant audits of companies' web infrastructure.","link":"https://news.yahoo.co.jp/articles/1401522624acefe7c50bea48f1796f5763d0f06d","categoria":"SECURITY","lang":"en"},{"fonte":"Saur Energy","pais":"China","titulo":"China's Solar Technology Restrictions: A Global Warning That Could Make the Energy Transition More Expensive","resumo":"New barriers and controls on Chinese solar technology exports are raising concerns in international markets. The move could drive up global costs for installing photovoltaic infrastructure and slow down climate targets. Experts point to the vulnerability of renewable supply chains in the face of trade disputes.","link":"https://www.saurenergy.com/solar-energy-blog/chinas-solar-technology-curbs-a-global-warning-that-could-make-the-energy-transition-more-expensive-12751766","categoria":"ENERGY","lang":"en"},{"fonte":"The Economic Times","pais":"India","titulo":"L\u0026T Technology Services Signs Five-Year Deal with Nokia for R\u0026D Support in India","resumo":"L\u0026T Technology Services has closed a long-term contract with Nokia to provide Research and Development services in India. The five-year agreement consolidates the country as a strategic hub for technological innovations and cutting-edge engineering. The initiative promises to generate new highly skilled jobs and boost the local tech ecosystem.","link":"https://m.economictimes.com/industry/telecom/telecom-news/lt-technology-services-signs-five-year-deal-with-nokia-for-rd-support-in-india/articleshow/135202158.cms","categoria":"BUSINESS","lang":"en"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"Portuguese Woman to Chair Scientific Society for Engineering and Technology Education","resumo":"A Portuguese academic will assume the presidency of an important scientific society dedicated to engineering and technology education. The appointment highlights international recognition of research and teaching developed in Portugal in these fundamental areas. The leadership is expected to drive new pedagogical guidelines and global cooperation in the sector.","link":"https://jornaleconomico.sapo.pt/noticias/portuguesa-vai-presidir-a-sociedade-cientifica-da-educacao-em-engenharia-e-tecnologia/","categoria":"SCIENCE","lang":"en"},{"fonte":"Finanças, Câmbio e Investimentos","pais":"United States","titulo":"US Futures Rise After Tech Losses; Fed and Earnings in Focus","resumo":"US stock futures staged a recovery, driven by a rebound in the technology sector following recent sell-offs. Investors remain focused on upcoming Federal Reserve decisions and key corporate earnings reports. The international landscape continues to dictate the pace of global markets and influence stock exchanges worldwide.","link":"https://br.investing.com/news/stock-market-news/futuros-dos-eua-sobem-apos-perdas-em-tecnologia-fed-e-resultados-em-foco-2101971","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Popular Science","pais":"United States","titulo":"6 Stellar Images of the Early Universe","resumo":"New astronomical captures reveal striking details about the origins of the cosmos. The images provide crucial data for astrophysicists studying the formation of the first galaxies. The technological advancement of telescopes continues to expand our understanding of the universe.","link":"https://www.popsci.com/science/images-of-early-universe/","categoria":"SCIENCE","lang":"en"},{"fonte":"L'Yonne Républicaine","pais":"France","titulo":"‘An Unacceptable Flaw’: AJA Statement After ‘Goal-Line Technology Malfunction’ Against Le Mans","resumo":"The French football club expressed deep outrage following a critical error in the automated goal validation system during a match. The goal-line technology failure sparked intense debate over the reliability and limits of electronic systems in sports. Club management demanded immediate explanations from the competent authorities to prevent further harm to the integrity of competitions.","link":"https://www.lyonne.fr/auxerre-89000/sports/une-defaillance-inacceptable-le-communique-de-laja-apres-dysfonctionnement-de-la-goal-line-technologie-face-au-mans_15069485/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Idealista","pais":"Spain","titulo":"'AI Apocalypse': The Sector Bets on 'Prime' Offices Amid Fears That Technology Will Empty Them","resumo":"The accelerated advancement of remote work and artificial intelligence is drastically transforming the corporate real estate market. Companies and investors are prioritizing high-end buildings, known as 'prime' offices, to attract in-person talent. The strategy seeks to mitigate the impact of pessimistic forecasts regarding commercial space occupancy.","link":"https://www.idealista.com/news/inmobiliario/vivienda/2026/10/26/920417-apocalipsis-ia-el-sector-apuesta-por-las-oficinas-prime-frente-al-temor-a-que-la?amp","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Student Movement Triumphs – Serbia Heads Toward a Shift in Power Following Parliamentary Elections – Politics – SZ.de","resumo":"Serbia is facing a historic moment of political transition following election results heavily driven by the mobilization of the student movement. The electoral turnaround signals deep dissatisfaction with the current government and a renewed desire for democratic reforms and alignment with European standards. This new geopolitical landscape in Europe's periphery is being closely monitored by international leaders and analysts.","link":"https://www.sueddeutsche.de/politik/studentenbewegung-triumphiert-serbien-steht-nach-parlamentswahl-vor-einem-machtwechsel-dpa.urn-newsml-dpa-com-20090101-261026-930-892890","categoria":"POLITICS","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Hong Kong’s Red Dot Pay Acquires Japanese Crypto Exchange BTCBOX","resumo":"Hong Kong-based payment company Red Dot Pay has completed the acquisition of Japanese cryptocurrency exchange BTCBOX. The move reflects foreign interest in Japan's regulated digital asset market. The transaction is expected to expand financial services and strengthen bridges between Asian markets.","link":"https://news.yahoo.co.jp/articles/bc2bf969546c79bafb251b45f3213baa88f38053","categoria":"BUSINESS","lang":"en"},{"fonte":"South China Morning Post","pais":"China","titulo":"Exoskeletons, Anyone? China Showcases Cutting-Edge Technology at Annual Fair","resumo":"China showcased assistive robots and advanced exoskeletons at its premier trade and technology fair. The innovations are designed for industrial, medical, and physical rehabilitation applications, boosting productivity and safety. The demonstration reinforces the country's leadership in applied robotics and smart manufacturing.","link":"https://www.scmp.com/economy/china-economy/article/3371954/exoskeletons-anyone-china-showcases-next-gen-technology-annual-trade-fair","categoria":"INNOVATION","lang":"en"},{"fonte":"Rising Kashmir","pais":"India","titulo":"JKSET/LASET Exam Conducted at GGM Science College in Jammu","resumo":"GGM Science College, located in Jammu, successfully hosted the administration of the major academic JKSET/LASET examination. The event drew numerous candidates seeking qualification and career advancement in higher education and research. Conducting exams of this magnitude reinforces the institution's commitment to educational excellence in the region.","link":"https://risingkashmir.com/jammu/jksetlaset-exam-conducted-at-ggm-science-college-jammu-12751625","categoria":"EDUCATION","lang":"en"},{"fonte":"The Portugal News","pais":"Portugal","titulo":"Portugal to Celebrate Science in Coimbra","resumo":"The city of Coimbra has been chosen to host the major national celebrations dedicated to scientific and technological advancement in Portugal. The event will bring together researchers, academics, and enthusiasts to discuss recent discoveries and the future of innovation in the country. The initiative aims to bridge the gap between the scientific community and society while promoting knowledge development.","link":"https://www.theportugalnews.com/br/noticias/2026-10-25/portugal-para-celebrar-a-ciencia-em-coimbra/1106011","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"General Janones: The Commander of 'Lula's Army' Who Led the Digital Strategy Behind the Historic Turnaround","resumo":"The electoral campaign highlighted the power of digital strategies in mobilizing voters and reversing complex political scenarios. The intensive use of social media and mass communication tactics has become a subject of study regarding modern campaigns. The impact of these tools redefines how candidates engage directly with the masses.","link":"https://oglobo.globo.com/politica/eleicoes-2026/noticia/2026/10/25/janones-o-general-de-exercito-do-lula-que-comandou-estrategia-digital-por-tras-de-virada-historica.ghtml","categoria":"TRENDING TOPICS","lang":"en"},{"fonte":"Aviation Week","pais":"United States","titulo":"The Week in Technology, October 26–30, 2026","resumo":"The weekly outlook highlighted key innovations and discussions in the tech sector. Companies and experts discussed the trajectory of artificial intelligence and digital transformation. The period was marked by major announcements and emerging market trends.","link":"https://aviationweek.com/aerospace/emerging-technologies/week-technology-oct-26-30-2026","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Bourse Inside","pais":"France","titulo":"Artificial Intelligence: The Everyday Technology That Has Become the New Weapon in Crypto Scams","resumo":"Cybercriminals are adopting advanced everyday artificial intelligence tools to carry out sophisticated cryptocurrency scams. These new tactics deceive victims with impressive ease, simulating legitimate interactions and cloning digital identities. Security experts warn of the urgent need for stricter regulations and greater internet user awareness.","link":"https://bourseinside.fr/crypto/intelligence-artificielle-la-technologie-que-vous-utilisez-chaque-jour-est-devenue-la-nouvelle-arme-des-arnaques-crypto/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Qué.es","pais":"Spain","titulo":"Sleeping in Two Blocks: Science Explains Biphasic Sleep and Why Waking Up at Dawn Is Not Bad","resumo":"Recent health studies revisit the historical concept of biphasic sleep, which was common in past eras. Science shows that waking up in the middle of the night can be a natural process and not necessarily a disorder. Understanding this biological rhythm helps reduce anxiety for people who experience night awakenings.","link":"https://www.que.es/2026/10/25/sueno-bifasico-dormir-dos-bloques/","categoria":"HEALTH","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Presidential Election – Brazil's Polling Stations Close After Extended Voting Hours – Politics – SZ.de","resumo":"Polling stations officially closed in Brazil following the conclusion of a presidential election process with extended voting hours across several regions. The election mobilized millions of voters in one of the most polarized and crucial political moments in the South American country's recent history. The outcome of these elections redefines Brazil's economic and social trajectory, with strong international and diplomatic repercussions in Germany.","link":"https://www.sueddeutsche.de/politik/praesidentenwahl-brasiliens-wahllokale-schliessen-nach-verlaengertem-wahlgang-dpa.urn-newsml-dpa-com-20090101-261025-930-888813","categoria":"INTERNATIONAL","lang":"en"},{"fonte":"Panasonic Newsroom Global","pais":"Japan","titulo":"'Nessum' Communication Technology Approved as IEEE 1901-2026 International Standard","resumo":"Nessum communication technology, widely applied in the energy management sector, has been officially recognized as an international standard. This approval validates the efficiency of the protocol developed for smart grids and automation. Its global adoption is expected to accelerate in the coming years.","link":"https://news.panasonic.com/jp/press/jn261026-1","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Reuters","pais":"China","titulo":"Saudi Arabia may be expanding missile factory: satellite image analysis points to potential adoption of Chinese solid-fuel technology","resumo":"Recent satellite images reveal potential expansions at military industrial facilities in Saudi Arabia. Experts are analyzing the integration of Chinese solid-fuel propulsion technologies for long-range missiles. The scenario highlights China's technological influence in global strategic partnerships.","link":"https://www.reuters.com/jp/world/us/46LTASXD3VOTVMF3HDTRUCA6O4-2026-10-26/","categoria":"DEFENSE","lang":"en"},{"fonte":"Exchange4Media","pais":"India","titulo":"Deven Deshpande takes on Sports Marketing Lead role at PUMA India","resumo":"The Indian subsidiary of global brand PUMA has announced Deven Deshpande as the company's new sports marketing lead. The executive arrives with the mission of expanding the brand's presence and strengthening strategic connections with athletes and fans. The move reflects the company's ongoing investment in India's dynamic sports market.","link":"https://www.exchange4media.com/people-movement-news/deven-deshpande-takes-on-lead-sports-marketing-role-at-puma-india-159472.html","categoria":"MARKET","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"The Most Powerful: Cristina Fonseca ranks third in Technology and Telecommunications","resumo":"Portuguese businesswoman Cristina Fonseca stood out on the national scene by reaching third place in the ranking of the most powerful women in the Technology and Telecommunications category. The recognition crowns her successful trajectory in the startup ecosystem and the digital innovation sector. Her leadership serves as an inspiration for new generations of female entrepreneurs in the tech market.","link":"https://sapo.pt/artigo/as-mais-poderosas-cristina-fonseca-ocupa-a-terceira-posicao-de-tecnologia-e-telecomunicacoes-6ade640173157f9866a5294e","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"Event brings states together to strengthen public safety through technology","resumo":"Representatives from different Brazilian regions met to discuss the implementation of technological innovations in the fight against crime. Solutions based on data intelligence, smart monitoring, and the integration of police systems were presented. The modernization of security agencies aims to bring greater efficiency and speed to state forces.","link":"https://www.gov.br/mj/pt-br/assuntos/noticias/evento-reune-estados-para-fortalecer-seguranca-publica-por-meio-da-tecnologia","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Al Jazeera","pais":"United States","titulo":"AI's 'opportunity divide' could deepen global inequality, UN official warns","resumo":"United Nations officials are warning about the risks of disparities generated by artificial intelligence. Unequal access to technological tools could further widen the gap between developed and developing countries. The report emphasizes the need for inclusive regulations and international cooperation.","link":"https://www.aljazeera.com/news/2026/10/25/ais-opportunity-divide-could-deepen-global-inequality-un-official-warns","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
