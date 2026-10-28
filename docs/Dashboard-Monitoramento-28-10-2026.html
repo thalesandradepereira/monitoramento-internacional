@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-5xd+6Gk60Su2dJsRr1N/+tiP'; script-src 'nonce-5xd+6Gk60Su2dJsRr1N/+tiP'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="5xd+6Gk60Su2dJsRr1N/+tiP">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">28/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="5xd+6Gk60Su2dJsRr1N/+tiP">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"TradingView","pais":"Brasil","titulo":"Alta em tecnologia impulsionada pela IA eleva ações de Taiwan e Coreia do Sul","resumo":"O avanço global da inteligência artificial está impulsionando fortemente as ações do setor de tecnologia em países como Taiwan e Coreia do Sul.\nEsse movimento é sustentado pela busca massiva por semicondutores e infraestrutura de ponta essenciais para treinar novos modelos de IA.\nContudo, enquanto as bolsas da região registram valorização expressiva, as moedas locais continuam pressionadas pela incerteza econômica.","link":"https://br.tradingview.com/news/reuters.com,2026:newsml_L2N46E053:0/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"La Razón","pais":"Estados Unidos","titulo":"Força Aérea dos EUA e SpaceX testam cápsula Starfall para entrega de carga orbital","resumo":"A Força Aérea dos Estados Unidos e a SpaceX realizaram testes operacionais com a nova cápsula Starfall.\nO dispositivo foi projetado para lançar até uma tonelada de suprimentos da órbita diretamente para a Terra em emergências.\nA tecnologia busca garantir a entrega ultra-rápida de kits de sobrevivência em zonas inacessíveis ou de conflito.\nO avanço representa uma evolução significativa na logística militar e no atendimento de missões humanitárias.","link":"https://www.larazon.es/tecnologia-consumo/ciencia/fuerza-aerea-ee-uu-spacex-prueban-capsula-starfall-baja-orbita-tonelada-carga-como-kit-supervivencia_202610286ae105270e3c854342593112.html","categoria":"AEROESPAÇO","lang":"pt"},{"fonte":"Caradisiac","pais":"França","titulo":"Motorista chinês ridiculariza trava de roda graças à tecnologia de seu SUV","resumo":"Um motorista na China utilizou recursos tecnológicos avançados de seu SUV elétrico para superar uma trava de roda instalada em seu veículo. O sistema de suspensão a ar e o torque ajustável permitiram que o carro se libertasse do bloqueio sem sofrer danos estruturais. O incidente viralizou nas redes sociais, gerando debates sobre como os avanços na engenharia automotiva moderna desafiam os métodos convencionais de fiscalização.","link":"https://www.caradisiac.com/ce-conducteur-chinois-ridiculise-un-sabot-de-stationnement-grace-a-la-technologie-de-son-suv-224763.htm","categoria":"TECNOLOGIA AUTOMOTIVA","lang":"pt"},{"fonte":"The York Press","pais":"Inglaterra","titulo":"Universidade de York assina acordo de tecnologia verde com estado indiano","resumo":"A Universidade de York estabeleceu uma parceria estratégica focada em tecnologias verdes com o governo do estado de Tamil Nadu, na Índia.\nO acordo visa promover a pesquisa conjunta, inovação sustentável e transferência de conhecimento acadêmico e tecnológico entre as regiões.\nCom essa colaboração, espera-se acelerar o desenvolvimento de soluções ecológicas para enfrentar os desafios climáticos globais.","link":"https://www.yorkpress.co.uk/news/26673050.university-york-signs-green-technology-agreement/","categoria":"TECNOLOGIA VERDE","lang":"pt"},{"fonte":"El Mundo","pais":"Espanha","titulo":"OpenAI afirma ter resolvido parte de um Problema do Milênio graças à inteligência artificial","resumo":"A OpenAI anunciou um avanço significativo ao aplicar modelos de inteligência artificial na resolução de parte de um dos famosos Problemas do Milênio da matemática.\nEssa conquista demonstra o potencial crescente do aprendizado de máquina em áreas puramente teóricas e complexas.\nEspecialistas destacam que a ferramenta pode acelerar descobertas científicas que antes levavam décadas para serem solucionadas.\nA novidade reabre o debate sobre o papel dos algoritmos na pesquisa acadêmica de alto nível.","link":"https://www.elmundo.es/tecnologia/2026/10/27/6ae0efe921efa071288b45a3.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Nova tecnologia possibilita a transmissão digital de aromas","resumo":"Um novo avanço tecnológico está tornando possível a síntese e a transmissão digital de odores, permitindo que aromas sejam enviados e reproduzidos por meio de dispositivos eletrônicos.\nEssa inovação abre portas para aplicações revolucionárias em áreas como realidade virtual, jogos e comércio eletrônico, proporcionando experiências imersivas inéditas.\nEspecialistas apontam que o desenvolvimento pode transformar profundamente a maneira como interagimos com mídias e conteúdos digitais no cotidiano.","link":"https://wissenschaft.de/artikel/neue-technik-ermoeglicht-die-digitale-uebertragung-von-dueften","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"aisin.com","pais":"Japão","titulo":"Pesquisa sobre plataforma de desenvolvimento de materiais com computação quântica e IA é iniciada no Japão","resumo":"Seis empresas japonesas, incluindo a Aisin, deram início a um projeto de pesquisa conjunto aprovado pela NEDO para construir uma plataforma inovadora de desenvolvimento de materiais.\nA iniciativa visa integrar a computação quântica com a tecnologia de inteligência artificial para otimizar simulações moleculares e industriais complexas.\nO objetivo principal é acelerar a descoberta de novos materiais e demonstrar casos práticos de aplicação comercial em larga escala.","link":"https://www.aisin.com/jp/news/2026/010733.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"South China Morning Post","pais":"China","titulo":"China lança oficialmente projeto para construir 'ilha de ciência' do tamanho de um porta-aviões","resumo":"A China deu início a um audacioso projeto científico e de engenharia marítima para construir uma plataforma flutuante do tamanho de um porta-aviões dedicada à pesquisa oceânica.\nA infraestrutura servirá como centro avançado de exploração marinha, permitindo testes tecnológicos e estudos científicos em alto-mar por longos períodos.\nO projeto reforça a posição do país no desenvolvimento de tecnologias marítimas de ponta e infraestruturas científicas de grande escala.","link":"https://www.scmp.com/news/china/science/article/3372330/china-formally-launches-project-build-aircraft-carrier-sized-science-island","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Indian Express","pais":"Índia","titulo":"Amazon desestimula 'tokenmaxxing' entre funcionários devido à alta de custos com IA","resumo":"A Amazon está orientando seus funcionários a evitarem o uso excessivo de modelos de inteligência artificial, prática conhecida como 'tokenmaxxing'.\nA medida busca conter a rápida escalada de custos operacionais associados ao processamento de grandes volumes de dados em sistemas de IA generativa.\nA empresa reforça a necessidade de eficiência e uso consciente das ferramentas tecnológicas no cotidiano de trabalho.","link":"https://indianexpress.com/article/technology/tech-news-technology/amazon-discourages-tokenmaxxing-ai-usage-costs-10940049/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"Novo BMW i3 promete até 912 km de autonomia e conta com tecnologia portuguesa","resumo":"A nova geração do BMW i3 promete revolucionar o mercado de veículos elétricos ao oferecer uma incrível autonomia de até 912 quilômetros com uma única carga.\nO projeto conta com a participação direta da engenharia e tecnologia desenvolvidas em Portugal, destacando a capacidade de inovação do país na indústria automotiva global.\nO avanço consolida a transição para uma mobilidade sustentável mais eficiente e acessível no continente europeu.","link":"https://pplware.sapo.pt/motores/novo-bmw-i3-promete-ate-912-km-de-autonomia-e-chega-com-tecnologia-portuguesa/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"viva.com.br","pais":"Brasil","titulo":"IA impulsiona busca por tecnologia e habilidades humanas, aponta estudo","resumo":"Um novo estudo aponta que o crescimento da inteligência artificial no ambiente corporativo acelerou a busca por profissionais com forte domínio tecnológico.\nAo mesmo tempo, a pesquisa destaca que habilidades essencialmente humanas, como pensamento crítico e empatia, tornaram-se diferenciais estratégicos.\nA integração harmoniosa entre automação avançada e competências socioemocionais define as novas diretrizes do mercado de trabalho.","link":"https://viva.com.br/carreira-e-educacao/ia-impulsiona-busca-por-tecnologia-e-habilidades-humanas-aponta-estudo.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"News-Medical","pais":"Estados Unidos","titulo":"Tecnologia de 'lab-on-a-chip' ajuda a prever resposta ao tratamento da leucemia infantil","resumo":"Pesquisadores desenvolveram um dispositivo do tipo 'lab-on-a-chip' para avaliar células de leucemia em tempo real.\nA inovação permite analisar detalhadamente como os medicamentos afetam as amostras de pacientes pediátricos.\nCom isso, os médicos podem personalizar as terapias oncologicas e aumentar a eficácia dos tratamentos.\nEssa abordagem representa um avanço promissor para a medicina de precisão e a oncologia infantil.","link":"https://www.news-medical.net/news/20261027/Lab-on-a-chip-technology-helps-predict-childhood-leukemia-treatment-responses.aspx","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"L'Automobile Magazine","pais":"França","titulo":"Volkswagen: por que uma tecnologia chinesa pode revolucionar sua estratégia europeia","resumo":"A Volkswagen está considerando integrar arquiteturas tecnológicas desenvolvidas por fabricantes chineses para acelerar sua transição para veículos elétricos na Europa. Parcerias com empresas da China oferecem sistemas de software avançados e custos de produção significativamente menores. Essa mudança representa uma reviravolta para a indústria automotiva europeia, que busca manter competitividade contra concorrentes globais.","link":"https://www.automobile-magazine.fr/toute-l-actualite/article/53628-volkswagen-pourquoi-une-technologie-chinoise-pourrait-bouleverser-sa-strategie-europeenne","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"RAND","pais":"Inglaterra","titulo":"Rumo a uma economia circular para tecnologias solares fotovoltaicas na Austrália","resumo":"Um novo estudo analisa os caminhos para a implementação de uma economia circular voltada para painéis e tecnologias solares fotovoltaicas.\nO objetivo é mitigar o acúmulo futuro de resíduos eletrônicos por meio da reciclagem e reaproveitamento eficiente de materiais valiosos na cadeia produtiva.\nA iniciativa destaca estratégias fundamentais para tornar a transição energética global significativamente mais sustentável.","link":"https://www.rand.org/pubs/research_reports/RRA4495-1.html","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"El Confidencial","pais":"Espanha","titulo":"Daniel Litt, matemático, sobre o impacto da IA na ciência: 'Podemos terminar em um mundo sem pesquisa de qualidade'","resumo":"O matemático Daniel Litt alertou sobre os riscos da integração acelerada da inteligência artificial na comunidade científica.\nSegundo ele, a proliferação de artigos gerados por IA sem a devida verificação pode poluir os acervos acadêmicos e reduzir a qualidade das pesquisas.\nO especialista defende a criação de filtros mais rigorosos para proteger a integridade do conhecimento humano.\nO alerta reflete a crescente preocupação do meio acadêmico com a automação sem controle.","link":"https://www.elconfidencial.com/tecnologia/2026-10-28/daniel-litt-ia-ciencia-mundo-sin-investigacion-1qrt_4418652/","categoria":"CIÊNCIA E IA","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Planeta de lava 'impossível' surpreende astrônomos","resumo":"A descoberta de um exoplaneta coberto de lava com características que desafiam os modelos astrofísicos atuais deixou a comunidade científica mundial perplexa.\nO corpo celeste orbita sua estrela hospedeira em uma proximidade extrema onde não deveria conseguir manter sua atmosfera, segundo as teorias vigentes.\nO achado fornece novas pistas sobre a evolução planetária e força os cientistas a reavaliarem o entendimento sobre a formação de mundos em ambientes hostis.","link":"https://wissenschaft.de/artikel/unmoeglicher-lavaplanet-verbluefft-astronomen","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"ビジネス+IT","pais":"Japão","titulo":"IA de fronteira da OpenAI pode resolver grandes enigmas da matemática, física e computação","resumo":"Estudiosos e analistas acompanham com expectativa a possibilidade de que modelos avançados de IA da OpenAI consigam resolver três dos maiores problemas em aberto das ciências exatas.\nA confirmação dessa conquista pode causar um impacto profundo e sem precedentes no meio acadêmico e científico global.\nO feito representaria um marco histórico na aplicação da inteligência artificial para o avanço da pesquisa científica fundamental.","link":"https://www.sbbit.jp/article/cont1/187850","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"中国科学院","pais":"China","titulo":"Pesquisa sobre o hominídeo de Xujiayao desvenda a aparência dos Denisovanos","resumo":"Cientistas chineses alcançaram um marco na antropologia ao vincular os fósseis do hominídeo de Xujiayao aos Denisovanos, um grupo humano pré-histórico enigmático.\nO estudo permitiu reconstruir pela primeira vez com precisão as características faciais e cranianas dessa espécie extinta.\nEssa descoberta lança nova luz sobre a evolução humana no Leste Asiático e a diversidade biológica dos hominídeos da região.","link":"https://www.cas.cn/cm/202610/t20261028_5122973.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Business Today","pais":"Índia","titulo":"Listagem da Jio Platforms: 'Quero que a Jio esteja entre as maiores empresas de tecnologia do mundo', diz Akash Ambani","resumo":"Akash Ambani reforçou a ambição de posicionar a Jio Platforms entre as maiores empresas globais de tecnologia durante anúncios sobre a futura abertura de capital.\nA movimentação visa consolidar a liderança da Jio no ecossistema digital indiano, expandindo suas soluções em infraestrutura e serviços digitais.\nO plano de listagem marca um passo decisivo para atração de investimentos e projeção internacional do grupo indiano.","link":"https://www.businesstoday.in/latest/corporate/story/jio-platforms-listing-want-jio-to-rank-among-worlds-great-technology-firms-says-akash-ambani-564164-2026-10-28","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Ekonomista","pais":"Portugal","titulo":"Web Summit 2026: Lisboa volta a ser o centro mundial da tecnologia e da inteligência artificial","resumo":"A cidade de Lisboa se prepara para sediar novamente o Web Summit 2026, reunindo milhares de líderes, investidores e startups de todo o mundo.\nO evento deste ano terá foco central nos avanços da inteligência artificial, segurança digital e no impacto de novas tecnologias na sociedade.\nO encontro reforça a posição estratégica de Portugal como um polo internacional de inovação, empreendedorismo e desenvolvimento tecnológico.","link":"https://www.e-konomista.pt/web-summit-tecnologia/","categoria":"EVENTOS","lang":"pt"},{"fonte":"Movimento Econômico","pais":"Brasil","titulo":"Do engenho colonial ao tonel monitorado: cachaça entra na era da tecnologia","resumo":"A produção tradicional de cachaça no Brasil está passando por uma transformação digital com a adoção de sensores e monitoramento inteligente nos tonéis.\nEssas soluções tecnológicas permitem um controle preciso das condições de envelhecimento, padronizando a qualidade e reduzindo desperdícios.\nCom a modernização dos processos, o setor fortalece sua competitividade e abre novas oportunidades de expansão no mercado internacional.","link":"https://movimentoeconomico.com.br/economia/industria-empresas/bebidas/2026/10/27/do-engenho-colonial-ao-tonel-monitorado-cachaca-entra-na-era-da-tecnologia/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"BRIDGE（ブリッジ）","pais":"Estados Unidos","titulo":"Anduril e Qualcomm anunciam o 'BlueChip', PC fabricado nos EUA para defesa e governo","resumo":"As empresas Anduril e Qualcomm apresentaram a linha de computadores 'BlueChip', totalmente produzida nos Estados Unidos.\nO primeiro modelo da linha é um notebook de alto desempenho voltado exclusivamente para aplicações governamentais e militares.\nA iniciativa visa fortalecer a segurança nacional e diminuir a dependência da cadeia de suprimentos estrangeira.\nO projeto marca um avanço decisivo na busca por soberania e segurança tecnológica pelo governo americano.","link":"https://thebridge.jp/2026/10/anduril-qualcomm-bluechip-laptop","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Ao descartar 200 mil barris de lixo radioativo no Atlântico, americanos e franceses provavelmente alteraram ecossistemas marinhos","resumo":"Estudos recentes alertam para os impactos ambientais decorrentes do despejo de cerca de 200 mil barris de resíduos radioativos no Oceano Atlântico por EUA e França no século XX. Pesquisadores indicam que a corrosão dos recipientes ao longo das décadas pode ter alterado profundamente a vida marinha na região. A descoberta reforça a necessidade urgente de monitorar águas profundas e avaliar os danos de longo prazo do descarte nuclear.","link":"https://www.science-et-vie.com/mise-en-avant/en-balancant-200-000-barils-de-dechets-radioactifs-dans-latlantique-les-americains-et-francais-ont-tres-probablement-bouleverse-les-ecosystemes-marins-258015.html","categoria":"CIÊNCIA E AMBIENTE","lang":"pt"},{"fonte":"Business News Wales","pais":"Inglaterra","titulo":"Empresa de tecnologia de Swansea fecha maior contrato da sua história com gigante dos restaurantes nos EUA","resumo":"A empresa de tecnologia de Swansea garantiu seu maior contrato comercial até o momento ao fechar parceria com a rede norte-americana Golden Corral.\nO acordo envolve o fornecimento de soluções tecnológicas avançadas para otimizar as operações e o atendimento nas unidades da rede nos Estados Unidos.\nA conquista representa um marco de expansão internacional substancial para o ecossistema de inovação britânico.","link":"https://businessnewswales.com/swansea-technology-company-wins-largest-contract-in-its-history-with-us-restaurant-giant-golden-corral/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"A tendência dos dispositivos sem tela e por que eles estão cada vez mais comuns","resumo":"A busca por alternativas ao excesso de tempo em frente às telas impulsionou o surgimento de uma nova geração de aparelhos focados em comandos de voz e IA.\nDispositivos vestíveis e pingentes inteligentes prometem manter o usuário conectado sem as distrações visuais tradicionais.\nEssa tendência reflete o desejo do público por um bem-estar digital e interações mais naturais.\nEspecialistas preveem que essa categoria continuará a se expandir nos próximos anos.","link":"https://elpais.com/tecnologia/2026-10-28/la-moda-de-los-dispositivos-sin-pantalla-y-por-que-cada-vez-hay-mas.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Motor Mais","pais":"Alemanha","titulo":"Volkswagen pode usar tecnologia chinesa em veículos elétricos na Europa para economizar até 5 bilhões de euros","resumo":"Segundo especulações do mercado automotivo, a Volkswagen está avaliando o uso de plataformas e tecnologias chinesas em seus carros elétricos destinados ao mercado europeu.\nA medida visa reduzir drasticamente os custos de produção, podendo gerar uma economia estimada em até cinco bilhões de euros para a montadora alemã.\nEssa estratégia reflete a crescente competitividade das empresas da China no setor elétrico e a urgência das fabricantes tradicionais em acelerar a transição tecnológica.","link":"https://motormais.pt/2026/10/rumor-volkswagen-podera-usar-tecnologia-chinesa-nos-automoveis-electricos-vendidos-na-europa-para-poupar-ate-cinco-mil-milhoes-de-euros/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Yahoo!ファイナンス","pais":"Japão","titulo":"Maxell e Instituto de Ciência de Tóquio iniciam pesquisa conjunta sobre baterias de próxima geração","resumo":"A Maxell firmou uma parceria estratégica de pesquisa com o prestigiado Instituto de Ciência de Tóquio para desenvolver tecnologias avançadas de baterias.\nA colaboração foca no avanço de dispositivos de armazenamento de energia de alta eficiência e densidade para atender à crescente demanda tecnológica.\nO anúncio impulsionou a valorização das ações da empresa no mercado financeiro japonês.","link":"https://finance.yahoo.co.jp/news/detail/2d4154a837a24d7ba98ebb5eafd9437c5dc93893","categoria":"ENERGIA","lang":"pt"},{"fonte":"科学网—新闻","pais":"China","titulo":"Google lança o Genie 4, nova geração de modelos do mundo focada em IA física","resumo":"A Google anunciou o lançamento do Genie 4, a mais recente evolução de sua arquitetura de modelos do mundo projetada para simular ambientes complexos com alta precisão.\nO avanço tem como foco fortalecer o ecossistema de inteligência artificial física, permitindo que agentes autônomos compreendam interações mecânicas do mundo real.\nA novidade impulsiona o desenvolvimento de robôs mais inteligentes e ambientes virtuais interativos de última geração.","link":"https://news.sciencenet.cn/htmlnews/2026/10/573744.shtm","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Nasscom","pais":"Índia","titulo":"Revenção dos serviços de tecnologia: IA remodela setores de TI e BPM","resumo":"A adoção massiva de inteligência artificial está promovendo uma transformação profunda na prestação de serviços de TI e gestão de processos de negócios.\nA automação avançada e a análise preditiva redefinem os modelos operacionais, exigindo a requalificação de profissionais no setor tecnológico.\nEssa reestruturação impulsiona novos ganhos de produtividade e eficiência para empresas globais de serviços digitais.","link":"https://community.nasscom.in/report/nasscom-insights/technology-services-reinvention-ai-reshaping-it-and-bpm-services","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Executive Digest","pais":"Portugal","titulo":"IPLEXMED vence eAwards Portugal 2026 com tecnologia que detecta infecções respiratórias em 20 minutos","resumo":"A startup IPLEXMED foi a grande vencedora do eAwards Portugal 2026 ao apresentar uma solução médica capaz de diagnosticar infecções respiratórias em apenas 20 minutos.\nA inovação promete acelerar o tratamento de pacientes e reduzir significativamente o uso inadequado de antibióticos nos sistemas de saúde.\nCom essa conquista, a empresa ganha projeção internacional para expandir a aplicação da tecnologia em escala global.","link":"https://executivedigest.sapo.pt/iplexmed-vence-eawards-portugal-2026-com-tecnologia-que-deteta-infecoes-respiratorias-em-20-minutos/","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"GOV.BR","pais":"Brasil","titulo":"Ministro da Saúde conhece tecnologia inédita para diagnóstico de câncer na Unicamp","resumo":"O Ministro da Saúde visitou a Unicamp para conhecer uma tecnologia pioneira voltada ao diagnóstico de câncer na América Latina.\nA inovação permite identificar tumores de maneira mais rápida e precisa, viabilizando tratamentos precoces e com menor impacto ao paciente.\nA iniciativa destaca o papel fundamental da ciência acadêmica brasileira no desenvolvimento de soluções avançadas para a saúde pública.","link":"https://www.gov.br/saude/pt-br/assuntos/noticias-ms/2026/outubro/ministro-da-saude-visita-unicamp-e-conhece-tecnologia-inedita-para-diagnostico-de-cancer-na-america-latina","categoria":"SAÚDE","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Estados Unidos","titulo":"Anthropic destaca contribuição à ciência e alerta sobre riscos de armas biológicas em IPO","resumo":"A startup de inteligência artificial Anthropic ressaltou seus avanços científicos em documentos para a abertura de capital.\nAo mesmo tempo, a empresa alertou que os mecanismos de proteção contra o mau uso da tecnologia permanecem incompletos.\nO relatório cita o risco de uso indevido de IA para o desenvolvimento de armas biológicas e químicas.\nAs declarações reforçam os debates globais sobre governança, responsabilidade e segurança no setor de inteligência artificial.","link":"https://news.yahoo.co.jp/articles/c0aa41814037a072e771ab434205e675c5da50cb","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"La Tribune","pais":"França","titulo":"Como as gigantes de IA estão fazendo de tudo para influenciar a campanha das midterms nos EUA","resumo":"Grandes empresas de tecnologia e inteligência artificial estão intensificando esforços de desenvolvimento e lobby para moldar o cenário político nas eleições americanas. Ferramentas avançadas de geração de conteúdo e análise de dados estão sendo empregadas para direcionar campanhas e engajar eleitores. Especialistas alertam para os riscos de desinformação em massa e para a falta de regulamentação sobre o uso de IA na política.","link":"https://www.latribune.fr/article/la-tribune-dimanche/dimanche-eco/46038424068559/comment-les-geants-de-l-ia-font-tout-pour-influer-sur-la-campagne-des-midterms-aux-etats-unis","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Anthropic","pais":"Inglaterra","titulo":"Anthropic em Londres: inteligência artificial e ciência","resumo":"A Anthropic, uma das principais startups de inteligência artificial do mundo, reforça sua presença em Londres com foco na interseção entre IA e avanço científico.\nA iniciativa busca colaborar com o ecossistema de pesquisa britânico para aplicar modelos de aprendizado de máquina na resolução de problemas complexos.\nO movimento posiciona a capital britânica como um hub estratégico global para o desenvolvimento de inteligência artificial de ponta.","link":"https://www.anthropic.com/events/anthropic-in-london-ai-and-science","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"MARCA","pais":"Espanha","titulo":"Aston Martin leva a tecnologia da F1 para o conversível mais rápido de sua história: 1.079 CV e 350 km/h","resumo":"A Aston Martin apresentou seu novo conversível de alta performance, que incorpora soluções aerodinâmicas e mecânicas derivadas diretamente da Fórmula 1.\nCom incríveis 1.079 cavalos de potência, o veículo atinge velocidades de até 350 km/h, estabelecendo um novo marco para a montadora.\nO projeto demonstra como o automobilismo de competição continua a alimentar o desenvolvimento de carros de passeio avançados.\nA novidade atraiu a atenção de entusiastas de superesportivos e tecnologia automotiva.","link":"https://www.marca.com/coches-y-motos/coches/hibridos/2026/10/28/aston-martin-lleva-tecnologia-f1-descapotable-veloz-historia-1-079-cv-350-km-h.html","categoria":"INOVAÇÃO AUTOMOTIVA","lang":"pt"},{"fonte":"www.gov.br","pais":"Alemanha","titulo":"MCTI promove colóquio de paleontologia na Alemanha","resumo":"O Ministério da Ciência, Tecnologia e Inovação do Brasil promoveu um colóquio internacional de paleontologia na Alemanha para reforçar parcerias acadêmicas.\nO evento reuniu pesquisadores e especialistas de ambos os países para debater descobertas recentes, preservação de fósseis e cooperação em pesquisas geológicas.\nA iniciativa visa fortalecer os laços diplomáticos e científicos entre as instituições participantes, estimulando a troca de conhecimento técnico e acervos.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2025/06/mcti-promove-coloquio-de-paleontologia-na-alemanha","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BATONZ","pais":"Japão","titulo":"Tecnologia patenteada converte resíduos em hidrogênio e expande atuação no Sudeste Asiático","resumo":"Uma inovadora tecnologia de pré-tratamento capaz de transformar resíduos em hidrogênio limpo vem ganhando forte tração no mercado internacional.\nA empresa desenvolvedora estabeleceu parcerias de cooperação com 29 companhias, com foco principal na região da ASEAN.\nA solução busca impulsionar a economia circular e oferecer alternativas sustentáveis para a transição energética global.","link":"https://batonz.jp/sell_cases/100895","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"观点网","pais":"China","titulo":"Huawei lança o roteador X2Pro com tecnologia de rede AIMesh","resumo":"A Huawei apresentou oficialmente o roteador X2Pro, o primeiro dispositivo de conectividade da marca equipado com a nova tecnologia de rede inteligente AIMesh.\nO equipamento utiliza algoritmos de inteligência artificial para otimizar a distribuição de sinal, reduzir a latência e adaptar a cobertura dinamicamente ao ambiente.\nO lançamento fortalece a presença da gigante chinesa no segmento de infraestrutura de rede doméstica de alto desempenho.","link":"https://www.guandian.cn/article/20261028/619334.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Investing.com India","pais":"Índia","titulo":"Declaração Form 4 da Micron Technology Inc em 27 de outubro","resumo":"A Micron Technology registrou uma atualização acionária por meio da submissão do Formulário 4 junto aos órgãos reguladores dos Estados Unidos.\nO documento detalha movimentações recentes de títulos por parte de executivos da fabricante de semicondutores.\nO acompanhamento dessas transações oferece ao mercado maior transparência sobre a governança e o fluxo de capital interno da companhia.","link":"https://in.investing.com/news/stock-market-news/form-4-micron-technology-inc-for-27-october-93CH-5658635","categoria":"MERCADO FINANCEIRO","lang":"pt"},{"fonte":"SÁBADO","pais":"Portugal","titulo":"A Inteligência Artificial já está transformando o setor da saúde","resumo":"A aplicação da inteligência artificial no setor da saúde está revolucionando diagnósticos, otimizando tratamentos e personalizando o atendimento médico de forma inédita.\nFerramentas baseadas em dados já auxiliam médicos no rastreamento precoce de doenças graves e na automação de tarefas administrativas complexas.\nEspecialistas apontam que a integração contínua da IA será fundamental para aumentar a eficiência e a acessibilidade nos sistemas de saúde públicos e privados.","link":"https://www.sabado.pt/ciencia---saude/detalhe/a-inteligencia-artificial-ja-esta-a-mudar-a-saude","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Canal Rural","pais":"Brasil","titulo":"Fundo Paraná investe R$ 2,8 bilhões em ciência e tecnologia entre 2019 e 2026","resumo":"O governo do Paraná destinou R$ 2,8 bilhões via Fundo Paraná para investimentos estratégicos em ciência e tecnologia entre 2019 e 2026.\nO montante é voltado ao financiamento de pesquisas acadêmicas, modernização de ecossistemas inovadores e formação de pesquisadores no estado.\nA medida busca consolidar a região como um polo científico e impulsionar o desenvolvimento socioeconômico sustentável baseado no conhecimento.","link":"https://www.canalrural.com.br/agricultura/fundo-parana-investe-r-28-bilhoes-em-ciencia-e-tecnologia-entre-2019-e-2026/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"Telescópio Espacial UVEX da NASA supera marco fundamental de desenvolvimento","resumo":"O Telescópio Espacial de Ultra-Violeta da NASA (UVEX) foi aprovado com sucesso em uma revisão técnica crítica.\nA missão foi planejada para mapear o céu em luz ultravioleta e investigar eventos astronômicos altamente energéticos.\nOs dados coletados ajudarão cientistas a compreender melhor a evolução de estrelas e a fusão de estrelas de nêutrons.\nCom a aprovação desta fase, o projeto segue dentro do cronograma oficial para seu futuro lançamento.","link":"https://science.nasa.gov/blogs/uvex/2026/10/27/nasas-uvex-space-telescope-successfully-passes-key-milestone/","categoria":"CIÊNCIA ESPACIAL","lang":"pt"},{"fonte":"Playscope","pais":"França","titulo":"Corsair integra tecnologia de mira PureVector em sua nova linha de mouses Sabre V3 Pro","resumo":"A Corsair anunciou o lançamento da nova linha de mouses Sabre V3 Pro, voltada ao cenário competitivo de eSports, equipada com a tecnologia de rastreamento PureVector. O recurso promete entregar maior precisão de movimentos e menor latência para jogadores de alto rendimento. A novidade acirra a disputa no mercado de periféricos onde especificações de ponta são vitais para o desempenho profissional.","link":"https://www.playscope.com/corsair-integre-la-technologie-de-visee-purevector-dans-sa-nouvelle-gamme-de-souris-sabre-v3-pro/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Motojornal","pais":"Inglaterra","titulo":"Triumph Tiger 1200: mais desempenho, mais tecnologia e mais acessível para 2027","resumo":"A fabricante britânica Triumph renovou a sua linha de motocicletas maxitrail Tiger 1200 com foco em novidades tecnológicas e aprimoramento mecânico.\nOs novos modelos trazem maior conforto ergonômico, calibração otimizada no motor e recursos eletrônicos atualizados para os pilotos.\nAlém de elevar o desempenho dinâmico, a marca busca tornar a nova geração mais competitiva e acessível no mercado global.","link":"https://motojornal.pt/triumph-tiger-1200-mais-desempenho-mais-tecnologia-mais-acessivel-a-maxitrail-britanica-renova-se-para-2027/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"La Voz de Galicia","pais":"Espanha","titulo":"A tecnologia não abraça: o desafio do recém-nascido ao dar entrada na UTI","resumo":"O ingresso de recém-nascidos prematuros em unidades de terapia intensiva impõe um delicado equilíbrio entre o suporte tecnológico e o contato humano.\nEmbora os equipamentos modernos sejam vitais para a sobrevivência dos bebês, eles não substituem o afeto e o calor do contato pele a pele.\nMédicos e especialistas buscam humanizar os ambientes hospitalares sem comprometer a precisão do monitoramento eletrônico.\nO desafio reforça a importância de integrar empatia aos avanços da medicina neonatal.","link":"https://www.lavozdegalicia.es/noticia/opinion/2026/10/28/tecnologia-abraza-desafio-recien-nacido-ingresar-uci/0003_202610G28P17992.htm","categoria":"SAÚDE E TECNOLOGIA","lang":"pt"},{"fonte":"Tek Notícias","pais":"Alemanha","titulo":"SAP reforça ferramentas de IA para desenvolvedores e leva tecnologia à Estação Espacial Internacional","resumo":"A gigante alemã de software SAP anunciou o fortalecimento de suas soluções baseadas em inteligência artificial voltadas para desenvolvedores de sistemas.\nAlém do foco no aprimoramento de software corporativo, a empresa expandiu sua atuação tecnológica ao enviar suas soluções para testes na Estação Espacial Internacional.\nA iniciativa demonstra o potencial de aplicação da inteligência artificial em ambientes extremos e no processamento avançado de dados fora da Terra.","link":"https://tek.sapo.pt/noticias/computadores/artigos/sap-reforca-ferramentas-de-ia-para-developers-e-leva-tecnologia-para-a-estacao-espacial-internacional/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"神奈川工科大学","pais":"Japão","titulo":"Robótica e IA revolucionam a limpeza sanitária em projeto da Universidade Tecnológica de Kanagawa","resumo":"Pesquisadores da Universidade Tecnológica de Kanagawa estão desenvolvendo robôs autônomos integrados com inteligência artificial para a higienização de ambientes.\nO projeto combina algoritmos avançados de visão computacional e controle mecânico de precisão para executar tarefas complexas de manutenção.\nA iniciativa visa automatizar serviços essenciais e responder aos desafios da escassez de mão de obra no país.","link":"https://www.kait.jp/tech_news/20261028.html","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"云南省卫生健康委员会","pais":"China","titulo":"Conferência em Yunnan aborda avanços em interfaces cérebro-computador e reabilitação neurológica","resumo":"Especialistas e pesquisadores se reuniram na província de Yunnan para discutir a aplicação prática de interfaces cérebro-computador (BCI) na medicina regenerativa e neurológica.\nO evento destacou casos de sucesso na recuperação motora de pacientes com lesões graves por meio de dispositivos neurotecnológicos avançados.\nO avanço sinaliza a aceleração da transição dessas tecnologias do ambiente acadêmico para o mercado de cuidados de saúde.","link":"https://ynswsjkw.yn.gov.cn/html/2026/meitibaodao_1028/4025690.html","categoria":"NEUROTECNOLOGIA","lang":"pt"},{"fonte":"Moneycontrol.com","pais":"Índia","titulo":"Fuga da prisão em Tamil Nadu: 17 detentos fogem e 13 são localizados graças à tecnologia","resumo":"Após a fuga de 17 prisioneiros em Tamil Nadu, na Índia, as forças de segurança conseguiram capturar rapidamente 13 dos fugitivos.\nA operação utilizou recursos tecnológicos avançados, incluindo sistemas de monitoramento de dados e inteligência digital para o rastreamento.\nO episódio destaca a crescente eficácia do uso da tecnologia na modernização da segurança pública e na gestão de crises.","link":"https://www.moneycontrol.com/news/india/13-out-of-17-inmates-who-broke-out-of-tamil-nadu-jail-are-back-in-prison-how-technology-helped-trace-them-14061701.html","categoria":"SEGURANÇA","lang":"pt"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"Portugal lidera em peso da economia digital, mas fica atrás da média europeia na adoção de IA","resumo":"Um novo estudo revela que Portugal se destaca pelo peso expressivo da sua economia digital no produto interno bruto em comparação com outros países da Europa.\nNo entanto, o relatório alerta para o ritmo mais lento na integração de soluções de inteligência artificial pelas empresas locais em relação à média europeia.\nEspecialistas reforçam a necessidade de investimentos contínuos em capacitação tecnológica para garantir a competitividade das empresas no cenário global.","link":"https://jornaleconomico.sapo.pt/noticias/portugal-lidera-em-peso-da-economia-digital-mas-afasta-se-da-media-europeia-na-adocao-de-ia/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"TradingView","pais":"Brazil","titulo":"AI-Driven Tech Surge Boosts Taiwanese and South Korean Stocks","resumo":"The global advancement of artificial intelligence is strongly boosting tech sector stocks in countries like Taiwan and South Korea.\nThis movement is sustained by the massive demand for semiconductors and cutting-edge infrastructure essential for training new AI models.\nHowever, while regional stock markets record expressive gains, local currencies remain pressured by economic uncertainty.","link":"https://br.tradingview.com/news/reuters.com,2026:newsml_L2N46E053:0/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"La Razón","pais":"United States","titulo":"US Air Force and SpaceX Test Starfall Capsule for Orbital Cargo Delivery","resumo":"The United States Air Force and SpaceX have conducted operational tests with the new Starfall capsule.\nThe device was designed to drop up to a ton of supplies from orbit directly to Earth in emergencies.\nThe technology aims to guarantee the ultra-fast delivery of survival kits to inaccessible or conflict zones.\nThis advancement represents a significant evolution in military logistics and humanitarian mission support.","link":"https://www.larazon.es/tecnologia-consumo/ciencia/fuerza-aerea-ee-uu-spacex-prueban-capsula-starfall-baja-orbita-tonelada-carga-como-kit-supervivencia_202610286ae105270e3c854342593112.html","categoria":"AEROSPACE","lang":"en"},{"fonte":"Caradisiac","pais":"France","titulo":"Chinese Driver Mocks Wheel Clamp Thanks to SUV's Technology","resumo":"A driver in China used advanced technological features of their electric SUV to overcome a wheel clamp installed on their vehicle. The air suspension system and adjustable torque allowed the car to free itself from the block without sustaining structural damage. The incident went viral on social media, sparking debates on how advancements in modern automotive engineering challenge conventional enforcement methods.","link":"https://www.caradisiac.com/ce-conducteur-chinois-ridiculise-un-sabot-de-stationnement-grace-a-la-technologie-de-son-suv-224763.htm","categoria":"AUTOMOTIVE TECHNOLOGY","lang":"en"},{"fonte":"The York Press","pais":"England","titulo":"University of York Signs Green Tech Agreement with Indian State","resumo":"The University of York has established a strategic partnership focused on green technologies with the government of Tamil Nadu, India.\nThe agreement aims to promote joint research, sustainable innovation, and the transfer of academic and technological knowledge between the regions.\nWith this collaboration, it is hoped to accelerate the development of eco-friendly solutions to tackle global climate challenges.","link":"https://www.yorkpress.co.uk/news/26673050.university-york-signs-green-technology-agreement/","categoria":"GREEN TECHNOLOGY","lang":"en"},{"fonte":"El Mundo","pais":"Spain","titulo":"OpenAI Claims to Have Solved Part of a Millennium Problem Thanks to Artificial Intelligence","resumo":"OpenAI announced a significant breakthrough by applying artificial intelligence models to solve part of one of mathematics' famous Millennium Prize Problems.\nThis achievement demonstrates the growing potential of machine learning in purely theoretical and complex areas.\nExperts highlight that the tool can accelerate scientific discoveries that previously took decades to solve.\nThe news reopens the debate on the role of algorithms in high-level academic research.","link":"https://www.elmundo.es/tecnologia/2026/10/27/6ae0efe921efa071288b45a3.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"New Technology Enables Digital Transmission of Scents","resumo":"A new technological breakthrough is making the synthesis and digital transmission of odors possible, allowing scents to be sent and reproduced via electronic devices.\nThis innovation opens doors for revolutionary applications in areas such as virtual reality, gaming, and e-commerce, providing unprecedented immersive experiences.\nExperts point out that this development could profoundly transform the way we interact with media and digital content in daily life.","link":"https://wissenschaft.de/artikel/neue-technik-ermoeglicht-die-digitale-uebertragung-von-dueften","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"aisin.com","pais":"Japan","titulo":"Research on Materials Development Platform Using Quantum Computing and AI Begins in Japan","resumo":"Six Japanese companies, including Aisin, have launched a joint research project approved by NEDO to build an innovative materials development platform.\nThe initiative aims to integrate quantum computing with artificial intelligence technology to optimize complex molecular and industrial simulations.\nThe main objective is to accelerate the discovery of new materials and demonstrate practical large-scale commercial application cases.","link":"https://www.aisin.com/jp/news/2026/010733.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"South China Morning Post","pais":"China","titulo":"China Formally Launches Project to Build Aircraft-Carrier-Sized 'Science Island'","resumo":"China has kicked off an audacious scientific and marine engineering project to build a floating platform the size of an aircraft carrier dedicated to oceanographic research.\nThe infrastructure will serve as an advanced marine exploration center, allowing technological testing and scientific studies on the open sea for long periods.\nThe project reinforces the country's position in the development of cutting-edge maritime technologies and large-scale scientific infrastructures.","link":"https://www.scmp.com/news/china/science/article/3372330/china-formally-launches-project-build-aircraft-carrier-sized-science-island","categoria":"SCIENCE","lang":"en"},{"fonte":"The Indian Express","pais":"India","titulo":"Amazon Discourages 'Tokenmaxxing' Among Employees Amid Rising AI Costs","resumo":"Amazon is advising its employees to avoid the excessive use of artificial intelligence models, a practice known as 'tokenmaxxing'.\nThe measure seeks to curb the rapid escalation of operational costs associated with processing large volumes of data in generative AI systems.\nThe company reinforces the need for efficiency and conscious use of technological tools in day-to-day work.","link":"https://indianexpress.com/article/technology/tech-news-technology/amazon-discourages-tokenmaxxing-ai-usage-costs-10940049/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"New BMW i3 Promises Up to 567 Miles of Range and Features Portuguese Technology","resumo":"The new generation of the BMW i3 promises to revolutionize the electric vehicle market by offering an incredible range of up to 912 kilometers on a single charge.\nThe project relies on the direct participation of engineering and technology developed in Portugal, highlighting the country's innovation capacity in the global automotive industry.\nThe advancement consolidates the transition toward more efficient and accessible sustainable mobility on the European continent.","link":"https://pplware.sapo.pt/motores/novo-bmw-i3-promete-ate-912-km-de-autonomia-e-chega-com-tecnologia-portuguesa/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"viva.com.br","pais":"Brazil","titulo":"AI Drives Demand for Technology and Human Skills, Study Shows","resumo":"A new study points out that the growth of artificial intelligence in the corporate environment has accelerated the demand for professionals with strong technological mastery.\nAt the same time, the research highlights that essentially human skills, such as critical thinking and empathy, have become strategic differentials.\nThe harmonious integration of advanced automation and socio-emotional competencies defines the new guidelines of the job market.","link":"https://viva.com.br/carreira-e-educacao/ia-impulsiona-busca-por-tecnologia-e-habilidades-humanas-aponta-estudo.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"News-Medical","pais":"United States","titulo":"'Lab-on-a-Chip' Technology Helps Predict Childhood Leukemia Treatment Responses","resumo":"Researchers have developed a 'lab-on-a-chip' device to evaluate leukemia cells in real time.\nThe innovation makes it possible to analyze in detail how medications affect samples from pediatric patients.\nAs a result, doctors can personalize oncology therapies and increase treatment efficacy.\nThis approach represents a promising breakthrough for precision medicine and pediatric oncology.","link":"https://www.news-medical.net/news/20261027/Lab-on-a-chip-technology-helps-predict-childhood-leukemia-treatment-responses.aspx","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"L'Automobile Magazine","pais":"France","titulo":"Volkswagen: Why Chinese Technology Could Upend Its European Strategy","resumo":"Volkswagen is considering integrating technological architectures developed by Chinese manufacturers to accelerate its transition to electric vehicles in Europe. Partnerships with companies from China offer advanced software systems and significantly lower production costs. This shift represents a turnaround for the European automotive industry, which seeks to maintain competitiveness against global rivals.","link":"https://www.automobile-magazine.fr/toute-l-actualite/article/53628-volkswagen-pourquoi-une-technologie-chinoise-pourrait-bouleverser-sa-strategie-europeenne","categoria":"INNOVATION","lang":"en"},{"fonte":"RAND","pais":"England","titulo":"Toward a Circular Economy for Photovoltaic Solar Technologies in Australia","resumo":"A new study analyzes pathways for implementing a circular economy focused on photovoltaic solar panels and technologies.\nThe objective is to mitigate the future accumulation of electronic waste through recycling and the efficient reuse of valuable materials in the production chain.\nThe initiative highlights fundamental strategies to make the global energy transition significantly more sustainable.","link":"https://www.rand.org/pubs/research_reports/RRA4495-1.html","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"El Confidencial","pais":"Spain","titulo":"Mathematician Daniel Litt on AI's Impact on Science: 'We Could End Up in a World Without Quality Research'","resumo":"Mathematician Daniel Litt warned about the risks of the accelerated integration of artificial intelligence into the scientific community.\nAccording to him, the proliferation of AI-generated papers without proper verification can pollute academic repositories and reduce research quality.\nThe expert advocates for the creation of more rigorous filters to protect the integrity of human knowledge.\nThis warning reflects the growing concern in academia regarding unchecked automation.","link":"https://www.elconfidencial.com/tecnologia/2026-10-28/daniel-litt-ia-ciencia-mundo-sin-investigacion-1qrt_4418652/","categoria":"SCIENCE AND AI","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"\"Impossible\" Lava Planet Surprises Astronomers","resumo":"The discovery of a lava-covered exoplanet with characteristics that defy current astrophysical models has left the global scientific community perplexed. The celestial body orbits its host star at an extreme proximity where, according to existing theories, it should not be able to maintain its atmosphere. The finding provides new clues about planetary evolution and forces scientists to reassess their understanding of how worlds form in hostile environments.","link":"https://wissenschaft.de/artikel/unmoeglicher-lavaplanet-verbluefft-astronomen","categoria":"ASTRONOMY","lang":"en"},{"fonte":"ビジネス+IT","pais":"Japan","titulo":"OpenAI Frontier AI Could Solve Major Enigmas in Mathematics, Physics, and Computation","resumo":"Scholars and analysts are closely following the possibility that OpenAI's advanced AI models may solve three of the greatest open problems in the exact sciences. The confirmation of this achievement could have a profound and unprecedented impact on the global academic and scientific community. This feat would represent a historic milestone in the application of artificial intelligence to advance fundamental scientific research.","link":"https://www.sbbit.jp/article/cont1/187850","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"中国科学院","pais":"China","titulo":"Research on Xujiayao Hominin Unveils Appearance of Denisovans","resumo":"Chinese scientists have reached an anthropological milestone by linking Xujiayao hominin fossils to the Denisovans, an enigmatic prehistoric human group. The study has made it possible for the first time to accurately reconstruct the facial and cranial features of this extinct species. This discovery sheds new light on human evolution in East Asia and the biological diversity of hominins in the region.","link":"https://www.cas.cn/cm/202610/t20261028_5122973.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"Business Today","pais":"India","titulo":"Jio Platforms Listing: 'I Want Jio to Rank Among World's Greatest Technology Firms,' Says Akash Ambani","resumo":"Akash Ambani reinforced his ambition to position Jio Platforms among the world's largest technology companies during announcements regarding its upcoming initial public offering. The move aims to consolidate Jio's leadership in the Indian digital ecosystem, expanding its infrastructure solutions and digital services. The listing plan marks a decisive step toward attracting investment and boosting the Indian group's international profile.","link":"https://www.businesstoday.in/latest/corporate/story/jio-platforms-listing-want-jio-to-rank-among-worlds-great-technology-firms-says-akash-ambani-564164-2026-10-28","categoria":"BUSINESS","lang":"en"},{"fonte":"Ekonomista","pais":"Portugal","titulo":"Web Summit 2026: Lisbon Returns as Global Hub for Technology and Artificial Intelligence","resumo":"The city of Lisbon is preparing to host Web Summit 2026 once again, gathering thousands of leaders, investors, and startups from around the world. This year's event will focus centrally on advances in artificial intelligence, digital security, and the impact of new technologies on society. The gathering reinforces Portugal's strategic position as an international hub for innovation, entrepreneurship, and technological development.","link":"https://www.e-konomista.pt/web-summit-tecnologia/","categoria":"EVENTS","lang":"en"},{"fonte":"Movimento Econômico","pais":"Brazil","titulo":"From Colonial Mill to Monitored Cask: Cachaça Enters the Technology Era","resumo":"Traditional cachaça production in Brazil is undergoing a digital transformation with the adoption of sensors and smart cask monitoring. These technological solutions allow precise control over aging conditions, standardizing quality and reducing waste. With the modernization of its processes, the sector is strengthening its competitiveness and opening up new opportunities for expansion in the international market.","link":"https://movimentoeconomico.com.br/economia/industria-empresas/bebidas/2026/10/27/do-engenho-colonial-ao-tonel-monitorado-cachaca-entra-na-era-da-tecnologia/","categoria":"INNOVATION","lang":"en"},{"fonte":"BRIDGE（ブリッジ）","pais":"United States","titulo":"Anduril and Qualcomm Announce 'BlueChip', US-Made PC for Defense and Government","resumo":"Companies Anduril and Qualcomm have introduced the 'BlueChip' computer line, produced entirely in the United States. The first model in the line is a high-performance laptop aimed exclusively at government and military applications. The initiative aims to strengthen national security and decrease dependence on foreign supply chains. The project marks a decisive advance in the American government's pursuit of technological sovereignty and security.","link":"https://thebridge.jp/2026/10/anduril-qualcomm-bluechip-laptop","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"By Dumping 200,000 Barrels of Radioactive Waste in the Atlantic, Americans and French Likely Altered Marine Ecosystems","resumo":"Recent studies warn of environmental impacts stemming from the dumping of about 200,000 barrels of radioactive waste into the Atlantic Ocean by the US and France in the 20th century. Researchers indicate that the corrosion of the containers over the decades may have profoundly altered marine life in the region. The discovery reinforces the urgent need to monitor deep waters and assess the long-term damage of nuclear disposal.","link":"https://www.science-et-vie.com/mise-en-avant/en-balancant-200-000-barils-de-dechets-radioactifs-dans-latlantique-les-americains-et-francais-ont-tres-probablement-bouleverse-les-ecosystemes-marins-258015.html","categoria":"SCIENCE AND ENVIRONMENT","lang":"en"},{"fonte":"Business News Wales","pais":"England","titulo":"Swansea Tech Company Secures Largest Contract in Its History with US Restaurant Giant","resumo":"The Swansea-based technology company secured its largest commercial contract to date by partnering with North American restaurant chain Golden Corral. The agreement involves supplying advanced technological solutions to optimize operations and customer service across the chain's US locations. This achievement represents a substantial international expansion milestone for the British innovation ecosystem.","link":"https://businessnewswales.com/swansea-technology-company-wins-largest-contract-in-its-history-with-us-restaurant-giant-golden-corral/","categoria":"BUSINESS","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"The Screenless Device Trend and Why They Are Becoming Increasingly Common","resumo":"The search for alternatives to excessive screen time has driven the rise of a new generation of gadgets focused on voice commands and AI. Wearable devices and smart pendants promise to keep users connected without traditional visual distractions. This trend reflects the public's desire for digital well-being and more natural interactions. Experts predict that this category will continue to expand in the coming years.","link":"https://elpais.com/tecnologia/2026-10-28/la-moda-de-los-dispositivos-sin-pantalla-y-por-que-cada-vez-hay-mas.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Motor Mais","pais":"Germany","titulo":"Volkswagen May Use Chinese EV Technology in Europe to Save Up to 5 Billion Euros","resumo":"According to automotive market speculation, Volkswagen is evaluating the use of Chinese platforms and technologies in its electric cars destined for the European market. The measure aims to drastically reduce production costs, potentially generating estimated savings of up to five billion euros for the German automaker. This strategy reflects the growing competitiveness of Chinese companies in the electric sector and traditional manufacturers' urgency to accelerate the technological transition.","link":"https://motormais.pt/2026/10/rumor-volkswagen-podera-usar-tecnologia-chinesa-nos-automoveis-electricos-vendidos-na-europa-para-poupar-ate-cinco-mil-milhoes-de-euros/","categoria":"BUSINESS","lang":"en"},{"fonte":"Yahoo!ファイナンス","pais":"Japan","titulo":"Maxell and Institute of Science Tokyo Launch Joint Research on Next-Generation Batteries","resumo":"Maxell has established a strategic research partnership with the prestigious Institute of Science Tokyo to develop advanced battery technologies. The collaboration focuses on advancing high-efficiency and high-density energy storage devices to meet growing technological demand. The announcement boosted the company's stock value in the Japanese financial market.","link":"https://finance.yahoo.co.jp/news/detail/2d4154a837a24d7ba98ebb5eafd9437c5dc93893","categoria":"ENERGY","lang":"en"},{"fonte":"科学网—新闻","pais":"China","titulo":"Google Launches Genie 4, New Generation of World Models Focused on Physical AI","resumo":"Google has announced the launch of Genie 4, the latest evolution of its world model architecture designed to simulate complex environments with high precision. The breakthrough focuses on strengthening the physical artificial intelligence ecosystem, enabling autonomous agents to understand real-world mechanical interactions. The development drives the creation of smarter robots and next-generation interactive virtual environments.","link":"https://news.sciencenet.cn/htmlnews/2026/10/573744.shtm","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Nasscom","pais":"India","titulo":"Reinventing Tech Services: AI Reshapes IT and BPM Sectors","resumo":"The massive adoption of artificial intelligence is driving a profound transformation in the delivery of IT services and business process management. Advanced automation and predictive analytics are redefining operational models, requiring the reskilling of professionals in the tech sector. This restructuring drives new productivity and efficiency gains for global digital service companies.","link":"https://community.nasscom.in/report/nasscom-insights/technology-services-reinvention-ai-reshaping-it-and-bpm-services","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Executive Digest","pais":"Portugal","titulo":"IPLEXMED Wins eAwards Portugal 2026 with Technology That Detects Respiratory Infections in 20 Minutes","resumo":"Startup IPLEXMED was the grand winner of eAwards Portugal 2026 after presenting a medical solution capable of diagnosing respiratory infections in just 20 minutes. The innovation promises to accelerate patient treatment and significantly reduce the inappropriate use of antibiotics in healthcare systems. With this achievement, the company gains international exposure to scale the technology's application globally.","link":"https://executivedigest.sapo.pt/iplexmed-vence-eawards-portugal-2026-com-tecnologia-que-deteta-infecoes-respiratorias-em-20-minutos/","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"GOV.BR","pais":"Brazil","titulo":"Minister of Health tours unprecedented cancer diagnosis technology at Unicamp","resumo":"The Minister of Health visited Unicamp to explore a pioneering cancer diagnosis technology in Latin America.\nThe innovation identifies tumors faster and more accurately, enabling early treatments with less impact on the patient.\nThe initiative highlights the critical role of Brazilian academic science in developing advanced solutions for public health.","link":"https://www.gov.br/saude/pt-br/assuntos/noticias-ms/2026/outubro/ministro-da-saude-visita-unicamp-e-conhece-tecnologia-inedita-para-diagnostico-de-cancer-na-america-latina","categoria":"HEALTH","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"United States","titulo":"Anthropic highlights contribution to science and warns of biological weapons risks in IPO","resumo":"Artificial intelligence startup Anthropic highlighted its scientific advancements in regulatory filings for its initial public offering.\nAt the same time, the company warned that safeguards against the misuse of its technology remain incomplete.\nThe report cites the risk of AI being improperly used for the development of biological and chemical weapons.\nThese statements reinforce global debates on governance, accountability, and safety in the artificial intelligence sector.","link":"https://news.yahoo.co.jp/articles/c0aa41814037a072e771ab434205e675c5da50cb","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"La Tribune","pais":"France","titulo":"How AI giants are going to great lengths to influence the US midterms campaign","resumo":"Major tech and artificial intelligence companies are stepping up development and lobbying efforts to shape the political landscape in US elections. Advanced content generation and data analysis tools are being deployed to target campaigns and engage voters. Experts warn of the risks of mass disinformation and the lack of regulation regarding the use of AI in politics.","link":"https://www.latribune.fr/article/la-tribune-dimanche/dimanche-eco/46038424068559/comment-les-geants-de-l-ia-font-tout-pour-influer-sur-la-campagne-des-midterms-aux-etats-unis","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Anthropic","pais":"England","titulo":"Anthropic in London: Artificial intelligence and science","resumo":"Anthropic, one of the world's leading artificial intelligence startups, is bolstering its presence in London with a focus on the intersection of AI and scientific advancement.\nThe initiative seeks to collaborate with the British research ecosystem to apply machine learning models to complex problem-solving.\nThe move positions the British capital as a global strategic hub for the development of cutting-edge artificial intelligence.","link":"https://www.anthropic.com/events/anthropic-in-london-ai-and-science","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"MARCA","pais":"Spain","titulo":"Aston Martin brings F1 technology to the fastest convertible in its history: 1,079 hp and 217 mph","resumo":"Aston Martin has unveiled its new high-performance convertible, incorporating aerodynamic and mechanical solutions derived directly from Formula 1.\nFeaturing an incredible 1,079 horsepower, the vehicle reaches speeds of up to 350 km/h (217 mph), setting a new benchmark for the automaker.\nThe project demonstrates how competitive motorsport continues to fuel the development of advanced passenger cars.\nThe new release has drawn the attention of supercar enthusiasts and automotive technology fans.","link":"https://www.marca.com/coches-y-motos/coches/hibridos/2026/10/28/aston-martin-lleva-tecnologia-f1-descapotable-veloz-historia-1-079-cv-350-km-h.html","categoria":"AUTOMOTIVE INNOVATION","lang":"en"},{"fonte":"www.gov.br","pais":"Germany","titulo":"MCTI promotes paleontology colloquium in Germany","resumo":"Brazil's Ministry of Science, Technology, and Innovation promoted an international paleontology colloquium in Germany to strengthen academic partnerships.\nThe event brought together researchers and experts from both countries to discuss recent discoveries, fossil preservation, and cooperation in geological research.\nThe initiative aims to reinforce diplomatic and scientific ties between participating institutions, encouraging the exchange of technical knowledge and collections.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2025/06/mcti-promove-coloquio-de-paleontologia-na-alemanha","categoria":"SCIENCE","lang":"en"},{"fonte":"BATONZ","pais":"Japan","titulo":"Patented technology converts waste into hydrogen and expands footprint in Southeast Asia","resumo":"An innovative pre-treatment technology capable of transforming waste into clean hydrogen is gaining strong traction in the international market.\nThe developing company has established cooperative partnerships with 29 firms, with a primary focus on the ASEAN region.\nThe solution aims to drive the circular economy and offer sustainable alternatives for the global energy transition.","link":"https://batonz.jp/sell_cases/100895","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"观点网","pais":"China","titulo":"Huawei launches X2Pro router featuring AIMesh networking technology","resumo":"Huawei has officially unveiled the X2Pro router, the brand's first connectivity device equipped with the new AIMesh intelligent networking technology.\nThe equipment uses artificial intelligence algorithms to optimize signal distribution, reduce latency, and dynamically adapt coverage to the environment.\nThe launch strengthens the Chinese tech giant's presence in the high-performance home network infrastructure segment.","link":"https://www.guandian.cn/article/20261028/619334.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Investing.com India","pais":"India","titulo":"Micron Technology Inc Form 4 filing for October 27","resumo":"Micron Technology registered a shareholding update through a Form 4 submission with US regulatory bodies.\nThe document details recent securities transactions by executives of the semiconductor manufacturer.\nTracking these transactions offers the market greater transparency regarding the company's governance and internal capital flow.","link":"https://in.investing.com/news/stock-market-news/form-4-micron-technology-inc-for-27-october-93CH-5658635","categoria":"FINANCIAL MARKET","lang":"en"},{"fonte":"SÁBADO","pais":"Portugal","titulo":"Artificial intelligence is already transforming the healthcare sector","resumo":"The application of artificial intelligence in healthcare is revolutionizing diagnoses, optimizing treatments, and personalizing medical care in unprecedented ways.\nData-driven tools are already assisting physicians in the early screening of serious illnesses and the automation of complex administrative tasks.\nExperts point out that the continuous integration of AI will be essential to increasing efficiency and accessibility across public and private healthcare systems.","link":"https://www.sabado.pt/ciencia---saude/detalhe/a-inteligencia-artificial-ja-esta-a-mudar-a-saude","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Canal Rural","pais":"Brazil","titulo":"Fundo Paraná invests R$ 2.8 billion in science and technology between 2019 and 2026","resumo":"The government of Paraná allocated R$ 2.8 billion through Fundo Paraná for strategic investments in science and technology between 2019 and 2026.\nThe funds are dedicated to financing academic research, modernizing innovation ecosystems, and training researchers in the state.\nThe measure aims to solidify the region as a scientific hub and drive sustainable, knowledge-based socioeconomic development.","link":"https://www.canalrural.com.br/agricultura/fundo-parana-investe-r-28-bilhoes-em-ciencia-e-tecnologia-entre-2019-e-2026/","categoria":"SCIENCE","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"NASA's UVEX Space Telescope successfully passes key development milestone","resumo":"NASA's Ultraviolet Explorer (UVEX) space telescope has successfully passed a critical technical review.\nThe mission is designed to survey the sky in ultraviolet light and investigate high-energy astronomical events.\nThe collected data will help scientists better understand stellar evolution and the merger of neutron stars.\nWith the approval of this phase, the project remains on official schedule for its future launch.","link":"https://science.nasa.gov/blogs/uvex/2026/10/27/nasas-uvex-space-telescope-successfully-passes-key-milestone/","categoria":"SPACE SCIENCE","lang":"en"},{"fonte":"Playscope","pais":"France","titulo":"Corsair integrates PureVector aiming technology into its new Sabre V3 Pro mouse lineup","resumo":"Corsair has announced the launch of its new Sabre V3 Pro mouse lineup, aimed at the competitive eSports scene and equipped with PureVector tracking technology. The feature promises to deliver greater movement precision and lower latency for high-performance gamers. This novelty intensifies competition in the peripherals market where cutting-edge specs are vital for professional performance.","link":"https://www.playscope.com/corsair-integre-la-technologie-de-visee-purevector-dans-sa-nouvelle-gamme-de-souris-sabre-v3-pro/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Motojornal","pais":"England","titulo":"Triumph Tiger 1200: More performance, more technology, and more accessible for 2027","resumo":"British manufacturer Triumph has renewed its Tiger 1200 adventure motorcycle lineup with a focus on technological updates and mechanical enhancements.\nThe new models feature greater ergonomic comfort, optimized engine calibration, and updated electronic rider aids.\nIn addition to elevating dynamic performance, the brand seeks to make the new generation more competitive and accessible in the global market.","link":"https://motojornal.pt/triumph-tiger-1200-mais-desempenho-mais-tecnologia-mais-acessivel-a-maxitrail-britanica-renova-se-para-2027/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"La Voz de Galicia","pais":"Spain","titulo":"Technology doesn't hug: The newborn's challenge upon entering the NICU","resumo":"The admission of premature newborns to intensive care units imposes a delicate balance between technological support and human touch.\nAlthough modern equipment is vital for the babies' survival, it cannot replace the affection and warmth of skin-to-skin contact.\nDoctors and specialists strive to humanize hospital environments without compromising the precision of electronic monitoring.\nThe challenge reinforces the importance of integrating empathy into advancements in neonatal medicine.","link":"https://www.lavozdegalicia.es/noticia/opinion/2026/10/28/tecnologia-abraza-desafio-recien-nacido-ingresar-uci/0003_202610G28P17992.htm","categoria":"HEALTH AND TECHNOLOGY","lang":"en"},{"fonte":"Tek Notícias","pais":"Germany","titulo":"SAP strengthens AI tools for developers and takes technology to the International Space Station","resumo":"German software giant SAP has announced the enhancement of its artificial intelligence-based solutions aimed at system developers.\nIn addition to focusing on improving enterprise software, the company has expanded its technological footprint by sending its solutions for testing aboard the International Space Station.\nThe initiative demonstrates the potential for applying artificial intelligence in extreme environments and in advanced data processing beyond Earth.","link":"https://tek.sapo.pt/noticias/computadores/artigos/sap-reforca-ferramentas-de-ia-para-developers-e-leva-tecnologia-para-a-estacao-espacial-internacional/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"神奈川工科大学","pais":"Japan","titulo":"Robotics and AI revolutionize sanitation cleaning in Kanagawa Institute of Technology project","resumo":"Researchers at the Kanagawa Institute of Technology are developing autonomous robots integrated with artificial intelligence for environmental hygiene.\nThe project combines advanced computer vision algorithms and precision mechanical control to perform complex maintenance tasks.\nThe initiative aims to automate essential services and address the challenges of labor shortages in the country.","link":"https://www.kait.jp/tech_news/20261028.html","categoria":"ROBOTICS","lang":"en"},{"fonte":"云南省卫生健康委员会","pais":"China","titulo":"Conference in Yunnan addresses advances in brain-computer interfaces and neurological rehabilitation","resumo":"Experts and researchers gathered in Yunnan province to discuss the practical application of brain-computer interfaces (BCIs) in regenerative and neurological medicine.\nThe event highlighted success stories in the motor recovery of patients with severe injuries using advanced neurotechnological devices.\nThe breakthrough signals an acceleration in the transition of these technologies from the academic environment to the healthcare market.","link":"https://ynswsjkw.yn.gov.cn/html/2026/meitibaodao_1028/4025690.html","categoria":"NEUROTECHNOLOGY","lang":"en"},{"fonte":"Moneycontrol.com","pais":"India","titulo":"Tamil Nadu prison break: 17 inmates escape and 13 are tracked down thanks to technology","resumo":"Following the escape of 17 prisoners in Tamil Nadu, India, security forces managed to quickly recapture 13 of the fugitives.\nThe operation utilized advanced technological resources, including data monitoring systems and digital intelligence for tracking.\nThe episode highlights the growing effectiveness of using technology in public safety modernization and crisis management.","link":"https://www.moneycontrol.com/news/india/13-out-of-17-inmates-who-broke-out-of-tamil-nadu-jail-are-back-in-prison-how-technology-helped-trace-them-14061701.html","categoria":"SECURITY","lang":"en"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"Portugal leads in digital economy weight, but lags behind European average in AI adoption","resumo":"A new study reveals that Portugal stands out for the significant share of its digital economy in the gross domestic product compared to other European countries.\nHowever, the report warns of a slower pace in the integration of artificial intelligence solutions by local companies relative to the European average.\nExperts emphasize the need for continuous investments in technological training to ensure corporate competitiveness on the global stage.","link":"https://jornaleconomico.sapo.pt/noticias/portugal-lidera-em-peso-da-economia-digital-mas-afasta-se-da-media-europeia-na-adocao-de-ia/","categoria":"INNOVATION","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
