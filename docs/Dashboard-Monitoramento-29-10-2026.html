@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-9g6agHWPGEPBkw2qPx31af4w'; script-src 'nonce-9g6agHWPGEPBkw2qPx31af4w'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="9g6agHWPGEPBkw2qPx31af4w">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">29/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="9g6agHWPGEPBkw2qPx31af4w">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"Estado de Nova York restringe uso de chatbots por menores","resumo":"O estado de Nova York aprovou novas diretrizes para limitar a interação de menores de idade com programas de inteligência artificial e chatbots. A medida visa proteger a privacidade das crianças e adolescentes, além de combater os potenciais riscos do uso desregrado dessa tecnologia. A decisão abre precedentes globais sobre como governos podem regulamentar a IA no ecossistema infantil.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/29/estado-de-nova-york-restringe-uso-de-chatbots-por-menores.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Business Standard","pais":"Estados Unidos","titulo":"Matrículas em cursos de ciência da computação nos EUA caem diante do impacto da IA no mercado de trabalho","resumo":"As matrículas em programas de ciência da computação nos Estados Unidos registraram uma queda expressiva recentemente. O movimento ocorre em meio a crescentes preocupações de estudantes sobre a automação de vagas de entrada por ferramentas de inteligência artificial. Especialistas alertam que a transformação do setor exige uma reformulação urgente nos currículos acadêmicos para adaptar os futuros profissionais.","link":"https://www.business-standard.com/world-news/student-enrolment-in-us-computer-science-programs-falls-as-ai-takes-jobs-126102900433_1.html","categoria":"EDUCAÇÃO E IA","lang":"pt"},{"fonte":"Bruntwood","pais":"Inglaterra","titulo":"Bruntwood SciTech revela nova visão para o Melbourn Science Park apoiada por investimento de £11 milhões","resumo":"A Bruntwood SciTech anunciou um plano de transformação para o Melbourn Science Park com um investimento inicial de 11 milhões de libras. O projeto visa revitalizar o parque de tecnologia e ciências da vida, criando novas instalações sustentáveis e avançadas para empresas inovadoras. A iniciativa busca consolidar a região como um polo global de pesquisa, atraindo novos talentos e impulsionando o desenvolvimento científico local. Espera-se que a modernização gere diversos empregos qualificados e fortaleça o ecossistema tecnológico britânico.","link":"https://bruntwood.co.uk/news/bruntwood-scitech-unveils-new-vision-for-melbourn-science-park-backed-by-11-million-investment/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"Hackers norte-coreanos do grupo Lazarus se blindam com IA e criptografia pós-quântica","resumo":"O famoso grupo de cibercriminosos Lazarus começou a adotar tecnologias avançadas de inteligência artificial para otimizar suas operações. Além disso, os hackers estão utilizando técnicas de criptografia pós-quântica para proteger suas comunicações e malwares contra futuras análises. Especialistas em segurança alertam que essa combinação eleva drasticamente o nível de ameaça global. O uso dessas ferramentas demonstra uma evolução perigosa na sofisticação dos ataques virtuais promovidos por atores estatais.","link":"https://elpais.com/tecnologia/2026-10-29/los-hackers-norcoreanos-del-grupo-lazarus-se-blindan-con-ia-y-cifrado-poscuantico.html","categoria":"CIBERSEGURANÇA","lang":"pt"},{"fonte":"hh-autos.com","pais":"Alemanha","titulo":"Range Rover Sport Elétrico pesa 2,8 toneladas e carrega em 22 minutos","resumo":"O novo Range Rover Sport Elétrico combina alto desempenho e eletrificação avançada, apresentando um peso total de 2,8 toneladas. O modelo se destaca pela capacidade de carregamento rápido, atingindo marcas significativas em apenas 22 minutos. Essa inovação reflete a transição dos veículos de luxo para tecnologias sustentáveis sem comprometer a potência. A chegada do utilitário sinaliza novos padrões para o mercado de SUVs elétricos de grande porte.","link":"https://hh-autos.com/range-rover-sport-electric-gewicht-verschleiss/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"レスポンス（Response.jp）","pais":"Japão","titulo":"O que é 'Sim-to-Real'? A tecnologia de implementação que impulsiona a IA no EdgeTech+ 2026","resumo":"A tecnologia Sim-to-Real surge como um conceito fundamental para transferir aprendizados obtidos em ambientes virtuais simulados para a aplicação no mundo real. Esta abordagem é crucial para acelerar o desenvolvimento e o treinamento de modelos de inteligência artificial aplicados à robótica e automação. O avanço promete reduzir custos e riscos operacionais no teste de novos algoritmos avançados. A presença desse tema na feira EdgeTech+ destaca a crescente relevância do setor industrial no Japão.","link":"https://response.jp/article/2026/10/29/418376.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"中华网","pais":"China","titulo":"Yuanchun Power apresenta tecnologia elétrico-metanol na Dalian Maritime Exhibition para descarbonização do setor naval","resumo":"A Yuanchun Power apresentou suas soluções tecnológicas baseadas em sistemas elétricos a metanol durante a Dalian Maritime Exhibition. A inovação busca impulsionar a transição de baixo carbono no setor de transporte marítimo global. A proposta chinesa oferece uma alternativa viável e eficiente para reduzir emissões de poluentes em embarcações. O avanço reflete o crescimento de tecnologias sustentáveis voltadas para a indústria naval.","link":"https://mtz.china.com/touzi/2026/1029/267121.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Newspatrolling.com","pais":"Índia","titulo":"upGrad School of Technology expande seu ecossistema de aprendizado com parceria com a MongoDB","resumo":"A upGrad School of Technology anunciou uma parceria estratégica com a MongoDB para enriquecer seu currículo acadêmico com tecnologias avançadas de banco de dados. Essa colaboração visa preparar estudantes para as demandas reais do mercado de trabalho por meio de treinamento prático e certificações. A iniciativa fortalece a formação tecnológica na Índia, conectando diretamente a educação acadêmica com as necessidades da indústria de software.","link":"https://newspatrolling.com/upgrad-school-of-technology-expands-its-industry-learning-ecosystem-with-mongodb-partnership/","categoria":"EDUCAÇÃO TECNOLÓGICA","lang":"pt"},{"fonte":"RTP","pais":"Portugal","titulo":"Carcavelos recebe o Encontro Ciência 2025 na NOVA SBE","resumo":"A localidade de Carcavelos se prepara para sediar o importante Encontro Ciência 2025 nas instalações da NOVA SBE. O evento deve reunir pesquisadores, acadêmicos e entusiastas para debater os rumos da investigação científica. A iniciativa reforça o papel de Portugal no fomento ao conhecimento avançado e na troca de experiências acadêmicas. Espera-se que sejam apresentados projetos inovadores de grande impacto para a comunidade científica nacional e internacional.","link":"https://www.rtp.pt/noticias/pais/carcavelos-acolhe-encontro-ciencia-2025-na-nova-sbe_n1667327?query=adam%27s+choice\u002610838b76_page=5\u0026626ac96e_page=7\u0026de7e1ac7_page=2\u0026eda8cc54_page=5","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Anatel determina validação de biometria para usuários de linhas de celular","resumo":"A Anatel aprovou uma nova regulamentação exigindo a confirmação biométrica para o cadastramento e manutenção de linhas de celular no Brasil. A iniciativa busca combater fraudes telefônicas, falsidade ideológica e o roubo de identidade no setor de telecomunicações. Os consumidores deverão realizar o procedimento junto às operadoras, que implementarão sistemas de verificação facial e digital em breve.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/29/anatel-determina-que-usuarios-de-linhas-de-celular-terao-de-validar-biometria-saiba-como-sera-na-pratica.ghtml","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"The Times of India","pais":"Estados Unidos","titulo":"Jovem de 14 anos usa Python para desvendar a física do violino e vence prêmio nacional de ciência","resumo":"Seiji Iigaya, um estudante de 14 anos de Nova Jersey, utilizou a linguagem Python para modelar 100 pontos de contato entre o arco e as cordas do violino. O projeto permitiu mapear os princípios físicos por trás de uma execução musical expressiva e refinada. A inovação rendeu ao jovem um prestigiado prêmio nacional de ciência no valor de 3.500 dólares.","link":"https://timesofindia.indiatimes.com/science/discovery/meet-seiji-iigaya-14-from-new-jersey-used-python-to-model-100-violin-bow-string-contact-points-and-uncover-the-physics-of-expressive-playing-winning-a-3500-national-science-award/articleshow/135279704.cms","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Staffing Industry Analysts","pais":"Inglaterra","titulo":"eTeam adquire a empresa britânica de talentos em tecnologia Signify Technology","resumo":"A multinacional de soluções de recursos humanos eTeam anunciou a aquisição da Signify Technology, especialista britânica no recrutamento de talentos tecnológicos. A movimentação estratégica visa expandir a presença global da eTeam no setor de contratação especializada em TI e desenvolvimento de software. Com a união, as empresas pretendem suprir a crescente demanda internacional por profissionais altamente qualificados em áreas emergentes. O negócio fortalece o ecossistema de contratações de tecnologia no Reino Unido e consolida a capacidade de atendimento global das marcas.","link":"https://www.staffingindustry.com/news/global-daily-news/eteam-buys-uk-based-tech-talent-firm-signify-technology","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"La Voz de Galicia","pais":"Espanha","titulo":"Voltar a andar com a ajuda de um robô: 'Esta tecnologia permite realizar reabilitações mais intensivas'","resumo":"O uso de robótica médica está transformando a recuperação de pacientes com mobilidade reduzida em centros especializados. Os exoesqueletos e dispositivos automatizados oferecem suporte preciso durante os exercícios de fisioterapia intensiva. Especialistas destacam que a tecnologia amplia significativamente as chances de recuperação motora e autonomia. Além disso, a inovação acelera o processo de reabilitação ao permitir treinos mais seguros e frequentes.","link":"https://www.lavozdegalicia.es/noticia/lavozdelasalud/enfermedades/2026/10/28/volver-caminar-ayuda-robot-tecnologia-permite-realizar-rehabilitaciones-intensivas/00031793203974114894478.htm","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Reuters","pais":"Alemanha","titulo":"VW da Alemanha inaugura primeira instalação de reciclagem de peças na Saxônia","resumo":"A Volkswagen estabeleceu seu primeiro centro focado no fornecimento e reciclagem de componentes na fábrica do estado da Saxônia, Alemanha. A iniciativa visa transformar a unidade industrial em um hub estratégico para a economia circular do grupo automotivo. O projeto reforça os compromissos ambientais da montadora e otimiza o reaproveitamento de materiais na produção. Com isso, a empresa busca reduzir a pegada de carbono no ciclo de vida dos seus veículos.","link":"https://www.reuters.com/jp/economy/KYP7FHNFDBIMNBTBOYC54YTA2Y-2026-10-29/","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"Seiko Epson inicia aceitação de pedidos para novos robôs colaborativos","resumo":"A Seiko Epson expandiu sua atuação na automação industrial ao iniciar o recebimento de pedidos para sua nova linha de robôs colaborativos. Esses robôs foram projetados para trabalhar de forma segura e direta ao lado de operadores humanos nas linhas de produção. A inovação visa atender à crescente demanda por flexibilidade e eficiência em fábricas que lidam com escassez de mão de obra. A iniciativa reforça a posição do Japão no desenvolvimento de soluções robóticas de ponta.","link":"https://www.nikkei.com/article/DGXZQOMG00005_Z21C26A0000000/","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"搜狐网","pais":"China","titulo":"Science: Stanford desenvolve estrutura de biotecnologia virtual para identificar pistas no desenvolvimento de medicamentos","resumo":"Pesquisadores de Stanford criaram uma estrutura virtual inovadora publicada na revista Science para acelerar o desenvolvimento de fármacos. O sistema analisa dados de ensaios clínicos existentes para identificar novas pistas terapêuticas com alta precisão. A ferramenta promete reduzir custos e tempo no processo de descoberta de medicamentos essenciais. Essa abordagem computacional representa um avanço significativo na integração da tecnologia com a medicina.","link":"https://m.sohu.com/a/1094353082_121156425?scm=10001.325_13-325_13.0.0-0-0-0-0.5_1334","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Elets Technomedia","pais":"Índia","titulo":"Conselho de Punjab introduz Inteligência Artificial na Ciência da Computação para escolas públicas","resumo":"O Conselho de Educação de Punjab integrará tópicos de Inteligência Artificial ao currículo de Ciência da Computação para alunos do 8º ao 12º ano em escolas governamentais. A nova disciplina corresponderá a 15% das notas das avaliações práticas e teóricas. A medida busca capacitar jovens desde cedo em habilidades digitais críticas, promovendo a inclusão tecnológica e preparando futuras gerações para a economia digital.","link":"https://digitallearning.eletsonline.com/2026/10/punjab-pseb-computer-science-artificial-intelligence-csai-classes-8-12-government-schools/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Imagens aéreas de nível profissional em um drone que cabe na palma da mão","resumo":"O mercado de tecnologia portátil ganha um novo impulso com o lançamento de um drone compacto e de alto desempenho. O dispositivo promete capturar imagens aéreas com qualidade profissional apesar de seu tamanho reduzido. Essa facilidade de transporte abre novas possibilidades para criadores de conteúdo e profissionais de mídia. A inovação democratiza o acesso a recursos audiovisuais avançados sem a necessidade de equipamentos pesados.","link":"https://www.cmjornal.pt/indica/tecnologia/detalhe/imagens-aereas-de-nivel-profissional-num-drone-que-cabe-na-palma-da-mao","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Divisão de semicondutores da Samsung cresce 15 vezes, mas frustra expectativas","resumo":"A gigante sul-coreana Samsung apresentou um aumento expressivo no lucro de seu setor de semicondutores, alcançando valor 15 vezes maior em relação ao período anterior. Apesar da recuperação impulsionada pela demanda global de inteligência artificial, o valor final ficou ligeiramente abaixo das previsões de analistas de mercado. A empresa segue reestruturando suas operações para competir fortemente no mercado de chips avançados.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/28/samsung-tem-lucro-15-vezes-maior-em-divisao-de-semicondutores-mas-resultado-fica-abaixo-das-estimativas.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Forbes JAPAN","pais":"Estados Unidos","titulo":"Musk propõe comprar 418 residências nos EUA para resolver poluição sonora de centro de dados","resumo":"Um projeto de centro de dados associado a Elon Musk nos Estados Unidos gerou intensos protestos devido ao ruído contínuo emitido pelas instalações. Para mitigar a crise comunitária e política, foi apresentada uma proposta de aquisição de 418 casas no entorno do local. A situação expõe os crescentes impactos ambientais e sociais causados pela expansão da infraestrutura para inteligência artificial.","link":"https://forbesjapan.com/articles/detail/107378","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Confidencial Digital","pais":"Espanha","titulo":"O vazio legal da IA: o desafio de regular uma tecnologia que avança mais rápido que as leis","resumo":"O avanço acelerado da inteligência artificial está criando um cenário complexo para juristas e legisladores em todo o mundo. A falta de regulamentação específica dificulta o controle sobre questões de privacidade, direitos autorais e responsabilidade civil. Especialistas apontam que as leis atuais são incapazes de acompanhar o ritmo vertiginoso das inovações tecnológicas. O debate busca equilibrar a necessidade de proteção da sociedade sem sufocar o desenvolvimento científico.","link":"https://www.elconfidencialdigital.com/articulo/legislacion/vacio-legal-ia-reto-regular-tecnologia-que-avanza-mas-rapido-que-leyes/202610290500001497668.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Yahoo","pais":"Alemanha","titulo":"Sparxity instala tecnologia de computação dispersa no Centro de Supercomputação de Jülich","resumo":"A Sparxity firmou um contrato milionário para implantar sua arquitetura de computação dispersa no renomado Centro de Supercomputação de Jülich, na Alemanha. A tecnologia visa otimizar o processamento de alto desempenho e a eficiência na execução de tarefas complexas de pesquisa. Essa parceria estratégica representa um avanço significativo para a infraestrutura científica europeia. O projeto fortalece o papel de Jülich como um dos principais polos globais de inovação tecnológica.","link":"https://es.finance.yahoo.com/noticias/sparxity-instala-tecnolog%C3%ADa-computaci%C3%B3n-dispersa-185300180.html","categoria":"SUPERCOMPUTAÇÃO","lang":"pt"},{"fonte":"アットエス","pais":"Japão","titulo":"SkyDrive assina memorando com seis empresas de Cingapura para desenvolvimento de carros voadores","resumo":"A desenvolvedora japonesa de veículos eVTOL SkyDrive firmou um memorando de entendimento com seis empresas de tecnologia de Cingapura. O acordo visa a cooperação no desenvolvimento conjunto de carros voadores cobrindo áreas como manufatura, baterias e gestão de operações de voo. A parceria internacional busca acelerar a comercialização da mobilidade aérea urbana na região da Ásia-Pacífico. O movimento fortalece o ecossistema global de transporte aéreo sustentável e tecnológico.","link":"https://www.at-s.com/feed/article/pr_times/2087192.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Yahoo Finance","pais":"China","titulo":"SOUEAST S08 DM é apresentado no SOUEAST Global Technology Experience Day 2026","resumo":"A montadora SOUEAST apresentou o modelo S08 DM durante o evento Global Technology Experience Day 2026. O veículo destaca os avanços mais recentes da marca em sistemas de propulsão híbrida e conectividade veicular. A exibição reforça a estratégia de expansão global da empresa focada em veículos de nova energia. O lançamento promete atrair consumidores interessados em tecnologia automotiva de ponta.","link":"https://finance.yahoo.com/technology/articles/soueast-s08-dm-showcased-2026-035700178.html","categoria":"AUTOMOTIVO","lang":"pt"},{"fonte":"Outlook Business","pais":"Índia","titulo":"Ministro-Chefe Dr. Mohan Yadav lança a obra 'Ciência Moderna da Anemia'","resumo":"O Ministro-Chefe Dr. Mohan Yadav lançou oficialmente o livro 'Ciência Moderna da Anemia', focado em abordagens científicas e médicas atualizadas para combater a anemia. A publicação reúne estudos e diretrizes direcionados ao diagnóstico precoce e ao tratamento eficaz da condição na população. O lançamento reforça os esforços de saúde pública e pesquisa científica na Índia para mitigar problemas nutricionais e hematológicos.","link":"https://www.outlookbusiness.com/spotlight/news-wire/chief-minister-dr-mohan-yadav-releases-modern-anemia-science","categoria":"CIÊNCIA E SAÚDE","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Nexterity: um robô que automatiza tarefas perigosas","resumo":"A robótica industrial avança com a apresentação do Nexterity, um robô projetado para assumir tarefas de alto risco. A tecnologia visa proteger trabalhadores humanos ao executar atividades perigosas em ambientes complexos. Com sensores avançados e automação precisa, o equipamento promete aumentar a segurança operacional. A solução reflete a tendência global de integrar inteligência mecânica em setores de maior periculosidade.","link":"https://sapo.pt/artigo/nexterity-um-robo-que-automatiza-tarefas-perigosas-6ae28f766c1c029df5cb108a","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"CNN Brasil","pais":"Brasil","titulo":"Queijo antes de dormir causa pesadelos? Ciência investiga o mito","resumo":"Pesquisadores analisaram a crença popular de que o consumo de queijo e laticínios no período noturno causaria pesadelos bizarros. O estudo científico revela que a indigestão e os desconfortos gástricos decorrentes do consumo de alimentos pesados são os verdadeiros culpados por perturbar o sono. Ao fragmentar o ciclo REM, esse desconforto facilita a lembrança de sonhos ruins durante a noite.","link":"https://www.cnnbrasil.com.br/curiosidades/queijo-antes-de-dormir-realmente-da-pesadelos-bizarros-a-ciencia-investiga-a-lenda-e-revela-o-verdadeiro-vilao-noturno/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"NBC4 Washington","pais":"Estados Unidos","titulo":"Nova tecnologia de iluminação molecular promete revolucionar cirurgias de câncer de ovário","resumo":"Pesquisadores desenvolveram uma nova tecnologia baseada em marcação luminosa projetada para orientar cirurgiões durante intervenções de câncer de ovário. O sistema faz com que as células tumorais brilhem sob luz especial, permitindo a remoção precisa de tecidos doentes sem danificar órgãos saudáveis. A inovação tem potencial para elevar significativamente as taxas de sucesso e sobrevida das pacientes.","link":"https://www.nbcwashington.com/news/health/new-light-up-technology-aims-to-improve-ovarian-cancer-surgery/4173580/","categoria":"MEDICINA","lang":"pt"},{"fonte":"MarketScreener España","pais":"Espanha","titulo":"Exportações chinesas de tecnologia limpa reduzirão em 2026 as emissões globais em montante equivalente às do Brasil","resumo":"O crescimento exponencial na produção e exportação de tecnologias limpas pela China terá um impacto ambiental massivo até 2026. Painéis solares, baterias e veículos elétricos fabricados no país ajudarão a evitar bilhões de toneladas de carbono. A redução projetada nas emissões globais de CO2 equivale ao volume total gerado anualmente por países inteiros como o Brasil. Esse avanço fortalece a transição energética global e consolida o papel estratégico das inovações sustentáveis.","link":"https://es.marketscreener.com/noticias/las-exportaciones-chinas-de-tecnolog-a-limpia-reducir-n-en-2026-las-emisiones-globales-en-una-cuant-ce785cd3da8ff12c","categoria":"TECNOLOGIA VERDE","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"JBCC lança novo serviço de utilização de inteligência artificial orientada a dados","resumo":"A JBCC anunciou o lançamento oficial de um serviço inovador focado na utilização de inteligência artificial baseada em análise profunda de dados. A solução promete ajudar empresas a transformar grandes volumes de dados brutos em insights estratégicos e acionáveis. A plataforma facilita a integração de modelos analíticos avançados nas rotinas corporativas de tomada de decisão. A novidade reflete a forte demanda do mercado japonês por transformação digital rápida.","link":"https://www.nikkei.com/article/DGXZRSP714562_Z21C26A0000000/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"中国科技网","pais":"China","titulo":"Conjunto de tecnologia e produtos da moxabustão suspensa da medicina tibetana é lançado","resumo":"Um conjunto completo de tecnologia e produtos voltados à moxabustão suspensa da medicina tibetana foi lançado oficialmente. A iniciativa busca modernizar e padronizar técnicas tradicionais por meio de inovações tecnológicas avançadas. O projeto visa expandir a aplicação dessas terapias no setor de saúde e bem-estar contemporâneo. A integração da ciência moderna garante maior eficácia e segurança nos tratamentos.","link":"https://www.stdaily.com/web/gdxw/2026-10/29/content_604465.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"India Technology News","pais":"Índia","titulo":"Robótica, Genômica e Tecnologia Limpa do Reino Unido encontram novas oportunidades na Índia","resumo":"Empresas e centros de pesquisa britânicos nas áreas de robótica, genômica e tecnologias limpas estão expandindo suas operações e parcerias no mercado indiano. O ecossistema de inovação em rápida ascensão na Índia oferece um terreno fértil para investimentos e co-desenvolvimento tecnológico. A cooperação bilateral promete acelerar avanços em sustentabilidade, medicina de precisão e automação industrial nos dois países.","link":"https://indiatechnologynews.in/british-robotics-genomics-and-clean-technology-find-new-opportunities-in-india/","categoria":"INOVAÇÃO TECNOLÓGICA","lang":"pt"},{"fonte":"Idealista","pais":"Portugal","titulo":"Covilhã aposta em iluminação inteligente com tecnologia ARQUILED","resumo":"A cidade da Covilhã investe em modernização urbana ao adotar o sistema de iluminação inteligente da ARQUILED. A tecnologia visa otimizar o consumo energético e reduzir os custos operacionais do município. Com sensores e controle remoto, a infraestrutura luminosa se adapta às necessidades reais das ruas. A medida consolida o compromisso da região com práticas de cidades inteligentes e sustentabilidade.","link":"https://www.idealista.pt/news/financas/tecnologia/2026/10/28/78541-covilha-aposta-na-iluminacao-inteligente-com-tecnologia-arquiled","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Proifes","pais":"Brasil","titulo":"Jovem indígena participa do programa Caça Asteroides do MCTI","resumo":"Um estudante indígena de destaque passou a integrar o programa de astronomia cidadã promovido pelo Ministério da Ciência, Tecnologia e Inovação em parceria com a NASA. A iniciativa busca engajar jovens na identificação e mapeamento de corpos celestes e asteroides próximos à Terra. A participação reforça a importância da inclusão científica e do desenvolvimento acadêmico em comunidades tradicionais.","link":"https://www.proifes.org.br/noticias/garoto-indigena-participa-do-programa-caca-asteroides-mcti","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Bloomberg.com","pais":"Estados Unidos","titulo":"Marvell aproxima-se de megaacordo com a Lumentum para fortalecer infraestrutura de IA","resumo":"A Marvell Technology está em estágios avançados de negociação para adquirir a Lumentum Holdings em uma transação bilionária do setor de semicondutores. O foco principal da compra é incorporar soluções ópticas de alta velocidade essenciais para a conectividade de grandes centros de dados de inteligência artificial. O acordo pode redefinir o mercado de componentes de rede e consolidar a liderança da empresa no segmento.","link":"https://www.bloomberg.com/news/articles/2026-10-28/marvell-is-said-to-near-deal-for-lumentum-in-ai-related-megadeal","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"GranadaDigital","pais":"Espanha","titulo":"O IAA-CSIC desenvolve tecnologia para combinar a luz de sete telescópios","resumo":"Pesquisadores do Instituto de Astrofísica da Andaluzia desenvolveram um sistema óptico revolucionário de interferometria. A nova tecnologia permite unir a luz captada por sete telescópios simultaneamente para gerar imagens de altíssima resolução. O avanço viabiliza a observação detalhada de fenômenos astronômicos distantes com uma precisão sem precedentes. A inovação promete impulsionar novas descobertas sobre a formação de estrelas e exoplanetas no universo.","link":"https://www.granadadigital.es/iaa-csic-tecnologia-telescopios/","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"週刊粧業オンライン","pais":"Japão","titulo":"FANCL lança plataforma de inteligência do cliente unindo dados e três tecnologias de IA","resumo":"A FANCL iniciou as operações de sua nova infraestrutura voltada para o entendimento do comportamento de seus consumidores. O sistema combina dados proprietários da empresa com três tecnologias distintas de inteligência artificial para personalização extrema. A meta é prever necessidades dos clientes e otimizar estratégias de marketing e atendimento de forma automatizada. A iniciativa demonstra como a inteligência artificial está transformando a gestão de dados no setor de varejo.","link":"https://www.syogyo.jp/news/2026/10/post_045062","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Xataka","pais":"China","titulo":"Detecção de falha geológica de 8 km em cidade chinesa concilia eclipse histórico com a ciência","resumo":"Cientistas identificaram uma falha geológica de 8 quilômetros localizada sob uma cidade chinesa. Essa descoberta permitiu ajustar cálculos astronômicos e resolver discrepâncias históricas sobre um eclipse antigo. O achado une a geologia moderna com registros astronômicos seculares para validar eventos históricos. A pesquisa demonstra como a ciência atual pode esclarecer mistérios do passado distante.","link":"https://www.xataka.com/espacio/deteccion-fallo-8-km-ciudad-china-reconcilia-ciencia-uno-eclipses-antiguos-historia","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The New Indian Express","pais":"Índia","titulo":"Tamil Nadu não deve apenas seguir a tecnologia, mas criá-la e exportá-la, afirma ministro","resumo":"O ministro do estado de Tamil Nadu declarou que a região está transicionando de uma consumidora de tecnologia para uma liderança criadora e exportadora de soluções tecnológicas. O governo estadual planeja incentivar a infraestrutura de P\u0026D, atrair startups de ponta e fortalecer a formação de talentos qualificados. A estratégia visa posicionar o estado como um polo global de inovação e desenvolvimento de software e hardware.","link":"https://www.newindianexpress.com/states/tamil-nadu/2026/Oct/29/tn-to-not-merely-follow-technology-but-create-it-and-export-says-minister","categoria":"TECNOLOGIA E INOVAÇÃO","lang":"pt"},{"fonte":"BusinessIT","pais":"Portugal","titulo":"Setor da saúde abre o mercado saudita para a tecnologia portuguesa","resumo":"Empresas portuguesas de tecnologia voltada para a saúde conquistam espaço no mercado da Arábia Saudita. A expansão demonstra a alta competitividade e a qualidade das soluções desenvolvidas em Portugal para o setor médico. Essa parceria estratégica fortalece as exportações de serviços tecnológicos de alto valor agregado. O marco abre portas para futuras colaborações bilaterais no âmbito da saúde digital.","link":"https://business-it.pt/2026/10/28/saude-abre-porta-saudita-a-tecnologia-portuguesa/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Lucro da Microsoft salta 32% e atinge US$ 36,63 bilhões no trimestre","resumo":"A Microsoft divulgou seus resultados financeiros com um crescimento expressivo de 32% no lucro trimestral, consolidando mais de US$ 36 bilhões. O excelente desempenho foi impulsionado principalmente pela expansão continuada da divisão de nuvem Azure e investimentos maciços em IA. A empresa reafirma sua posição de liderança tecnológica no setor corporativo e de inteligência artificial.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/28/lucro-da-microsoft-cresce-32percent-e-atinge-us-3663-bilhoes-no-trimestre.ghtml","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Anthropic","pais":"Estados Unidos","titulo":"Programa de IA para a Ciência expande atuação para fundações e institutos de pesquisa","resumo":"A iniciativa dedicada à aplicação de inteligência artificial na pesquisa científica anunciou uma ampliação de suas parcerias com grandes fundações globais. O objetivo é acelerar descobertas em áreas cruciais como biologia estrutural, física de materiais e modelos climáticos. A expansão visa democratizar o acesso a supercomputadores e modelos de IA para cientistas de diversas instituições.","link":"https://www.anthropic.com/news/ai-for-science-expands-foundations-research-institutions","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Infobae","pais":"Espanha","titulo":"'Podemos ter uma renda universal por produto': a promessa de Larry Ellison, diretor de tecnologia da Oracle, sobre a IA","resumo":"O cofundador da Oracle defendeu que a inteligência artificial causará uma revolução econômica profunda nos próximos anos. Segundo o executivo, o ganho de produtividade gerado pela IA permitirá criar novos modelos de renda básica baseados na distribuição de produtos. A automação massiva de serviços e manufatura poderia baratear custos de vida de forma drástica. A declaração reacende o debate global sobre o impacto do avanço tecnológico no futuro do trabalho e da sociedade.","link":"https://www.infobae.com/tecno/2026/10/29/podemos-tener-un-ingreso-universal-por-producto-la-promesa-de-larry-ellison-director-de-tecnologia-de-oracle-sobre-la-ia/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Nikon","pais":"Japão","titulo":"Lançada a lente zoom NIKKOR Z 120-300mm f/2.8 com teleconversor 1.4x integrado para fotógrafos esportivos","resumo":"A Nikon anunciou o lançamento global da lente NIKKOR Z 120-300mm f/2.8 TC VR S, sendo a primeira do mundo com teleconversor de 1.4x embutido. Projetada especialmente para fotógrafos profissionais de esportes e vida selvagem, a lente oferece versatilidade sem perder a abertura constante de f/2.8. O equipamento traz estabilização de imagem avançada e construção óptica de alto desempenho para câmeras mirrorless. O lançamento marca um grande avanço na engenharia de dispositivos ópticos de precisão.","link":"https://www.jp.nikon.com/company/news/2026/1029_01/","categoria":"HARDWARE","lang":"pt"},{"fonte":"华南师范大学新闻网","pais":"China","titulo":"Guangdong Yalian Technology visita faculdades para discutir cooperação em dados e formação em 'IA + Negócios'","resumo":"A Guangdong Yalian Technology visitou faculdades de economia, gestão e negócios tecnológicos para alinhar parcerias estratégicas. A reunião focou na formação de talentos especializados na integração de inteligência artificial com o setor de negócios. Além disso, as instituições discutiram a exploração conjunta de elementos de dados para inovação acadêmica e de mercado. A cooperação fortalece o ecossistema educacional e tecnológico da região.","link":"http://news.scnu.edu.cn/73600","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Hindustan Times","pais":"Índia","titulo":"Complexo Esportivo da Força Aérea próximo à residência do Primeiro-Ministro em Déli é fechado","resumo":"O Complexo Esportivo da Força Aérea, localizado perto da residência oficial do Primeiro-Ministro em Nova Déli, foi fechado por tempo indeterminado sem aviso prévio oficial detalhado. A medida levantou especulações sobre protocolos de segurança reforçados e reorganização do espaço urbano na região governamental. O fechamento afeta frequentadores locais e gera repercussão nos veículos de imprensa do país.","link":"https://www.hindustantimes.com/india-news/iaf-sports-complex-near-pm-residence-shut-till-further-notice-101793178738416.html","categoria":"TENDÊNCIAS E NOTÍCIAS","lang":"pt"},{"fonte":"SÁBADO","pais":"Portugal","titulo":"Nova tecnologia forense liga Ted Bundy a assassinato de adolescente após 52 anos","resumo":"A aplicação de métodos forenses avançados permitiu solucionar um mistério de mais de cinco décadas envolvendo o famoso serial killer Ted Bundy. A tecnologia de análise genética e de vestígios foi fundamental para conectar o criminoso ao homicídio. O caso demonstra o poder transformador da ciência forense moderna na elucidação de crimes históricos. A descoberta traz respostas tão esperadas por familiares e pela justiça após tantos anos.","link":"https://www.sabado.pt/mundo/detalhe/nova-tecnologia-forense-associa-ted-bundy-a-homicidio-de-adolescente-52-anos-depois","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Impa Tech abre 150 vagas para graduação em Matemática, Tecnologia e Inovação","resumo":"O Impa Tech iniciou o processo seletivo para preencher 150 vagas no curso de bacharelado voltado à Matemática aplicada à Tecnologia e Inovação. A graduação gratuita oferece infraestrutura de ponta e visa formar profissionais altamente qualificados para o mercado de alta tecnologia. As oportunidades priorizam estudantes com bom desempenho em olimpíadas científicas de todo o país.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/impa-tech-abre-selecao-com-150-vagas-para-o-bacharelado-em-matematica-da-tecnologia-e-inovacao","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"NASA escolhe 19 novos projetos de ciência cidadã para o ciclo de 2026","resumo":"A agência espacial norte-americana selecionou 19 novas propostas no âmbito do seu programa de ciência cidadã previsto para 2026. A iniciativa permite que voluntários e entusiastas do mundo todo colaborem diretamente com cientistas no processamento de dados astronômicos e ambientais. Os projetos abrangem desde a busca por exoplanetas até o monitoramento de mudanças climáticas na Terra.","link":"https://science.nasa.gov/get-involved/citizen-science/nasa-selects-19-new-citizen-science-proposals-in-2026/","categoria":"ESPAÇO","lang":"pt"},{"fonte":"MarketScreener España","pais":"Espanha","titulo":"Avanço: Investidores em fundos retornam à tecnologia apesar dos receios sobre a inteligência artificial","resumo":"O mercado financeiro registra uma forte retomada do aporte de capitais em fundos focados no setor de tecnologia. Mesmo diante da volatilidade e das incertezas sobre o retorno de investimentos em inteligência artificial, a confiança dos investidores cresceu. Grandes gestoras destacam que a busca por inovação continua sendo o principal motor do rendimento a longo prazo. O movimento reflete o otimismo contínuo na transformação digital da economia mundial.","link":"https://es.marketscreener.com/noticias/avanza-los-inversores-en-fondos-regresan-a-la-tecnolog-a-pese-a-los-recelos-sobre-la-inteligencia-a-ce785cd3dd8df620","categoria":"MERCADO DIGITAL","lang":"pt"},{"fonte":"O GLOBO","pais":"United States","titulo":"New York State restricts chatbot use for minors","resumo":"The state of New York has approved new guidelines to limit the interaction of minors with artificial intelligence programs and chatbots. The measure aims to protect the privacy of children and adolescents, in addition to combating the potential risks of the unregulated use of this technology. The decision sets a global precedent on how governments can regulate AI within the youth ecosystem.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/29/estado-de-nova-york-restringe-uso-de-chatbots-por-menores.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Business Standard","pais":"United States","titulo":"US computer science enrollment drops amid AI job market impact","resumo":"Computer science program enrollments in the United States have experienced a significant decline recently. The shift comes amid growing student concerns over the automation of entry-level positions by artificial intelligence tools. Experts warn that the sector's transformation requires an urgent overhaul of academic curricula to adapt future professionals.","link":"https://www.business-standard.com/world-news/student-enrolment-in-us-computer-science-programs-falls-as-ai-takes-jobs-126102900433_1.html","categoria":"EDUCATION \u0026 AI","lang":"en"},{"fonte":"Bruntwood","pais":"United Kingdom","titulo":"Bruntwood SciTech unveils new vision for Melbourn Science Park backed by £11 million investment","resumo":"Bruntwood SciTech has announced a transformation plan for Melbourn Science Park with an initial investment of 11 million pounds. The project aims to revitalize the technology and life sciences park, creating new sustainable and advanced facilities for innovative companies. The initiative seeks to consolidate the region as a global research hub, attracting new talent and driving local scientific development. The modernization is expected to generate diverse skilled jobs and strengthen the British technology ecosystem.","link":"https://bruntwood.co.uk/news/bruntwood-scitech-unveils-new-vision-for-melbourn-science-park-backed-by-11-million-investment/","categoria":"INNOVATION","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"North Korean hackers from Lazarus group armor up with AI and post-quantum cryptography","resumo":"The famous cybercrime group Lazarus has begun adopting advanced artificial intelligence technologies to optimize its operations. In addition, the hackers are using post-quantum cryptography techniques to protect their communications and malware against future analysis. Security experts warn that this combination drastically raises the level of global threat. The use of these tools demonstrates a dangerous evolution in the sophistication of virtual attacks promoted by state actors.","link":"https://elpais.com/tecnologia/2026-10-29/los-hackers-norcoreanos-del-grupo-lazarus-se-blindan-con-ia-y-cifrado-poscuantico.html","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"hh-autos.com","pais":"Germany","titulo":"Electric Range Rover Sport weighs 2.8 tons and charges in 22 minutes","resumo":"The new electric Range Rover Sport combines high performance and advanced electrification, featuring a total weight of 2.8 tons. The model stands out for its fast-charging capability, reaching significant milestones in just 22 minutes. This innovation reflects the luxury vehicle sector's transition to sustainable technologies without compromising power. The arrival of the utility vehicle signals new standards for the large electric SUV market.","link":"https://hh-autos.com/range-rover-sport-electric-gewicht-verschleiss/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"レスポンス（Response.jp）","pais":"Japan","titulo":"What is 'Sim-to-Real'? The implementation technology driving AI at EdgeTech+ 2026","resumo":"Sim-to-Real technology is emerging as a fundamental concept for transferring learnings obtained in simulated virtual environments to real-world applications. This approach is crucial for accelerating the development and training of artificial intelligence models applied to robotics and automation. The advancement promises to reduce operational costs and risks in testing new advanced algorithms. The presence of this topic at the EdgeTech+ exhibition highlights the growing relevance of the industrial sector in Japan.","link":"https://response.jp/article/2026/10/29/418376.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"中华网","pais":"China","titulo":"Yuanchun Power showcases electric-methanol technology at Dalian Maritime Exhibition for maritime sector decarbonization","resumo":"Yuanchun Power presented its technological solutions based on methanol electric systems during the Dalian Maritime Exhibition. The innovation seeks to drive the low-carbon transition in the global maritime transport sector. The Chinese proposal offers a viable and efficient alternative to reduce pollutant emissions in vessels. The advancement reflects the growth of sustainable technologies aimed at the naval industry.","link":"https://mtz.china.com/touzi/2026/1029/267121.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Newspatrolling.com","pais":"India","titulo":"upGrad School of Technology expands its learning ecosystem with MongoDB partnership","resumo":"The upGrad School of Technology has announced a strategic partnership with MongoDB to enrich its academic curriculum with advanced database technologies. This collaboration aims to prepare students for real job market demands through practical training and certifications. The initiative strengthens technology education in India, directly connecting academic education with the needs of the software industry.","link":"https://newspatrolling.com/upgrad-school-of-technology-expands-its-industry-learning-ecosystem-with-mongodb-partnership/","categoria":"TECHNOLOGICAL EDUCATION","lang":"en"},{"fonte":"RTP","pais":"Portugal","titulo":"Carcavelos hosts Encontro Ciência 2025 at NOVA SBE","resumo":"The town of Carcavelos is preparing to host the important Encontro Ciência 2025 at the NOVA SBE facilities. The event is expected to bring together researchers, academics, and enthusiasts to discuss the directions of scientific research. The initiative reinforces Portugal's role in fostering advanced knowledge and exchanging academic experiences. Innovative projects of major impact for the national and international scientific community are expected to be presented.","link":"https://www.rtp.pt/noticias/pais/carcavelos-acolhe-encontro-ciencia-2025-na-nova-sbe_n1667327?query=adam%27s+choice\u002610838b76_page=5\u0026626ac96e_page=7\u0026de7e1ac7_page=2\u0026eda8cc54_page=5","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Anatel mandates biometric validation for cell phone line users","resumo":"Anatel has approved a new regulation requiring biometric confirmation for the registration and maintenance of cell phone lines in Brazil. The initiative aims to combat telephone fraud, identity theft, and impersonation in the telecommunications sector. Consumers will need to complete the procedure with their carriers, which will implement facial and digital verification systems soon.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/29/anatel-determina-que-usuarios-de-linhas-de-celular-terao-de-validar-biometria-saiba-como-sera-na-pratica.ghtml","categoria":"DIGITAL SECURITY","lang":"en"},{"fonte":"The Times of India","pais":"United States","titulo":"14-year-old uses Python to uncover violin physics and wins national science award","resumo":"Seiji Iigaya, a 14-year-old student from New Jersey, used the Python programming language to model 100 contact points between the violin bow and strings. The project made it possible to map the physical principles behind expressive and refined musical performance. The innovation earned the young man a prestigious national science award worth $3,500.","link":"https://timesofindia.indiatimes.com/science/discovery/meet-seiji-iigaya-14-from-new-jersey-used-python-to-model-100-violin-bow-string-contact-points-and-uncover-the-physics-of-expressive-playing-winning-a-3500-national-science-award/articleshow/135279704.cms","categoria":"SCIENCE","lang":"en"},{"fonte":"Staffing Industry Analysts","pais":"United Kingdom","titulo":"eTeam acquires British tech talent firm Signify Technology","resumo":"Human resources solutions multinational eTeam has announced the acquisition of Signify Technology, a British specialist in tech talent recruitment. The strategic move aims to expand eTeam's global presence in the specialized IT hiring and software development sector. With the merger, the companies intend to meet the growing international demand for highly qualified professionals in emerging areas. The deal strengthens the UK's technology hiring ecosystem and consolidates the brands' global service capabilities.","link":"https://www.staffingindustry.com/news/global-daily-news/eteam-buys-uk-based-tech-talent-firm-signify-technology","categoria":"BUSINESS","lang":"en"},{"fonte":"La Voz de Galicia","pais":"Spain","titulo":"Walking again with the help of a robot: 'This technology allows for more intensive rehabilitations'","resumo":"The use of medical robotics is transforming the recovery of patients with reduced mobility in specialized centers. Exoskeletons and automated devices offer precise support during intensive physical therapy exercises. Experts highlight that the technology significantly increases the chances of motor recovery and autonomy. Furthermore, the innovation accelerates the rehabilitation process by allowing safer and more frequent training sessions.","link":"https://www.lavozdegalicia.es/noticia/lavozdelasalud/enfermedades/2026/10/28/volver-caminar-ayuda-robot-tecnologia-permite-realizar-rehabilitaciones-intensivas/00031793203974114894478.htm","categoria":"ROBOTICS","lang":"en"},{"fonte":"Reuters","pais":"Germany","titulo":"Germany's VW inaugurates first parts recycling facility in Saxony","resumo":"Volkswagen has established its first center focused on component sourcing and recycling at the factory in the state of Saxony, Germany. The initiative aims to transform the industrial unit into a strategic hub for the automotive group's circular economy. The project reinforces the automaker's environmental commitments and optimizes the reuse of materials in production. With this, the company seeks to reduce its carbon footprint throughout the lifecycle of its vehicles.","link":"https://www.reuters.com/jp/economy/KYP7FHNFDBIMNBTBOYC54YTA2Y-2026-10-29/","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"Seiko Epson begins accepting orders for new collaborative robots","resumo":"Seiko Epson has expanded its footprint in industrial automation by beginning to accept orders for its new line of collaborative robots. These robots are designed to work safely and directly alongside human operators on production lines. The innovation aims to meet the growing demand for flexibility and efficiency in factories dealing with labor shortages. The initiative reinforces Japan's position in the development of cutting-edge robotic solutions.","link":"https://www.nikkei.com/article/DGXZQOMG00005_Z21C26A0000000/","categoria":"ROBOTICS","lang":"en"},{"fonte":"搜狐网","pais":"China","titulo":"Science: Stanford develops virtual biotechnology framework to identify clues in drug development","resumo":"Stanford researchers have created an innovative virtual framework published in the journal Science to accelerate drug development. The system analyzes data from existing clinical trials to identify new therapeutic leads with high precision. The tool promises to reduce costs and time in the essential drug discovery process. This computational approach represents a significant breakthrough in the integration of technology with medicine.","link":"https://m.sohu.com/a/1094353082_121156425?scm=10001.325_13-325_13.0.0-0-0-0-0.5_1334","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Elets Technomedia","pais":"India","titulo":"Punjab Board introduces Artificial Intelligence to Computer Science for public schools","resumo":"The Punjab School Education Board will integrate Artificial Intelligence topics into the Computer Science curriculum for students from 8th to 12th grade in government schools. The new subject will account for 15% of the grades in practical and theoretical assessments. The measure aims to train young people early in critical digital skills, promoting technological inclusion and preparing future generations for the digital economy.","link":"https://digitallearning.eletsonline.com/2026/10/punjab-pseb-computer-science-artificial-intelligence-csai-classes-8-12-government-schools/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Professional-grade aerial images in a drone that fits in the palm of your hand","resumo":"The portable technology market receives a new boost with the launch of a compact, high-performance drone. The device promises to capture aerial footage with professional quality despite its reduced size. This ease of transport opens up new possibilities for content creators and media professionals. The innovation democratizes access to advanced audiovisual resources without the need for heavy equipment.","link":"https://www.cmjornal.pt/indica/tecnologia/detalhe/imagens-aereas-de-nivel-profissional-num-drone-que-cabe-na-palma-da-mao","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Samsung semiconductor division grows 15 times, but frustrates expectations","resumo":"South Korean tech giant Samsung posted a sharp increase in profits for its semiconductor sector, reaching a value 15 times higher than the previous period. Despite the recovery driven by global demand for artificial intelligence, the final figure came in slightly below market analyst forecasts. The company continues to restructure its operations to compete strongly in the advanced chip market.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/28/samsung-tem-lucro-15-vezes-maior-em-divisao-de-semicondutores-mas-resultado-fica-abaixo-das-estimativas.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Forbes JAPAN","pais":"United States","titulo":"Musk proposes buying 418 homes in the US to solve data center noise pollution","resumo":"A data center project associated with Elon Musk in the United States sparked intense protests due to continuous noise emitted by the facilities. To mitigate the community and political crisis, a proposal was presented to acquire 418 homes surrounding the site. The situation highlights the growing environmental and social impacts caused by the expansion of artificial intelligence infrastructure.","link":"https://forbesjapan.com/articles/detail/107378","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Confidencial Digital","pais":"Spain","titulo":"The legal vacuum of AI: the challenge of regulating a technology that advances faster than laws","resumo":"The accelerated advancement of artificial intelligence is creating a complex scenario for legal scholars and legislators worldwide. The lack of specific regulation hinders control over issues of privacy, copyright, and civil liability. Experts point out that current laws are incapable of keeping pace with the breakneck speed of technological innovations. The debate seeks to balance the need to protect society without stifling scientific development.","link":"https://www.elconfidencialdigital.com/articulo/legislacion/vacio-legal-ia-reto-regular-tecnologia-que-avanza-mas-rapido-que-leyes/202610290500001497668.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Yahoo","pais":"Germany","titulo":"Sparxity installs distributed computing technology at the Jülich Supercomputing Centre","resumo":"Sparxity has signed a multi-million dollar contract to deploy its distributed computing architecture at the renowned Jülich Supercomputing Centre in Germany. The technology aims to optimize high-performance processing and efficiency in executing complex research tasks. This strategic partnership represents a significant milestone for European scientific infrastructure. The project strengthens Jülich's role as one of the main global hubs for technological innovation.","link":"https://es.finance.yahoo.com/noticias/sparxity-instala-tecnolog%C3%ADa-computaci%C3%B3n-dispersa-185300180.html","categoria":"SUPERCOMPUTING","lang":"en"},{"fonte":"アットエス","pais":"Japan","titulo":"SkyDrive signs memorandum with six Singaporean companies for flying car development","resumo":"Japanese eVTOL developer SkyDrive has signed a memorandum of understanding with six Singaporean technology companies. The agreement aims at cooperation in the joint development of flying cars covering areas such as manufacturing, batteries, and flight operations management. The international partnership seeks to accelerate the commercialization of urban air mobility in the Asia-Pacific region. The move strengthens the global ecosystem of sustainable and technological air transport.","link":"https://www.at-s.com/feed/article/pr_times/2087192.html","categoria":"INNOVATION","lang":"en"},{"fonte":"Yahoo Finance","pais":"China","titulo":"SOUEAST S08 DM showcased at the SOUEAST Global Technology Experience Day 2026","resumo":"Automaker SOUEAST presented the S08 DM model during the Global Technology Experience Day 2026 event. The vehicle highlights the brand's most recent advancements in hybrid propulsion systems and vehicular connectivity. The exhibition reinforces the company's global expansion strategy focused on new energy vehicles. The launch promises to attract consumers interested in cutting-edge automotive technology.","link":"https://finance.yahoo.com/technology/articles/soueast-s08-dm-showcased-2026-035700178.html","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"Outlook Business","pais":"India","titulo":"Chief Minister Dr. Mohan Yadav releases the book 'Modern Anemia Science'","resumo":"Chief Minister Dr. Mohan Yadav officially launched the book 'Modern Anemia Science', focused on updated scientific and medical approaches to combat anemia. The publication brings together studies and guidelines aimed at the early diagnosis and effective treatment of the condition in the population. The launch reinforces public health and scientific research efforts in India to mitigate nutritional and hematological problems.","link":"https://www.outlookbusiness.com/spotlight/news-wire/chief-minister-dr-mohan-yadav-releases-modern-anemia-science","categoria":"SCIENCE AND HEALTH","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Nexterity: a robot that automates hazardous tasks","resumo":"Industrial robotics is advancing with the introduction of Nexterity, a robot designed to take over high-risk tasks. The technology aims to protect human workers by performing dangerous activities in complex environments. With advanced sensors and precise automation, the equipment promises to increase operational safety. The solution reflects the global trend of integrating mechanical intelligence into more hazardous sectors.","link":"https://sapo.pt/artigo/nexterity-um-robo-que-automatiza-tarefas-perigosas-6ae28f766c1c029df5cb108a","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"CNN Brasil","pais":"Brazil","titulo":"Cheese before bed causes nightmares? Science investigates the myth","resumo":"Researchers analyzed the popular belief that consuming cheese and dairy products at night causes bizarre nightmares. The scientific study reveals that indigestion and gastric discomfort resulting from eating heavy foods are the true culprits for disturbing sleep. By fragmenting the REM cycle, this discomfort makes it easier to remember bad dreams during the night.","link":"https://www.cnnbrasil.com.br/curiosidades/queijo-antes-de-dormir-realmente-da-pesadelos-bizarros-a-ciencia-investiga-a-lenda-e-revela-o-verdadeiro-vilao-noturno/","categoria":"SCIENCE","lang":"en"},{"fonte":"NBC4 Washington","pais":"United States","titulo":"New molecular lighting technology promises to revolutionize ovarian cancer surgeries","resumo":"Researchers have developed a new technology based on fluorescent marking designed to guide surgeons during ovarian cancer interventions. The system makes tumor cells glow under special light, allowing the precise removal of diseased tissue without damaging healthy organs. The innovation has the potential to significantly raise success and survival rates for patients.","link":"https://www.nbcwashington.com/news/health/new-light-up-technology-aims-to-improve-ovarian-cancer-surgery/4173580/","categoria":"MEDICINE","lang":"en"},{"fonte":"MarketScreener España","pais":"Spain","titulo":"Chinese clean tech exports to cut global emissions in 2026 by an amount equivalent to Brazil's","resumo":"The exponential growth in the production and export of clean technologies by China will have a massive environmental impact by 2026. Solar panels, batteries, and electric vehicles manufactured in the country will help prevent billions of tons of carbon. The projected reduction in global CO2 emissions is equivalent to the total volume generated annually by entire countries like Brazil. This breakthrough strengthens the global energy transition and consolidates the strategic role of sustainable innovations.","link":"https://es.marketscreener.com/noticias/las-exportaciones-chinas-de-tecnolog-a-limpia-reducir-n-en-2026-las-emisiones-globales-en-una-cuant-ce785cd3da8ff12c","categoria":"GREEN TECHNOLOGY","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"JBCC launches new data-driven artificial intelligence utilization service","resumo":"JBCC announced the official launch of an innovative service focused on utilizing artificial intelligence based on deep data analysis. The solution promises to help companies transform large volumes of raw data into strategic, actionable insights. The platform facilitates the integration of advanced analytical models into corporate decision-making routines. The novelty reflects the strong demand of the Japanese market for rapid digital transformation.","link":"https://www.nikkei.com/article/DGXZRSP714562_Z21C26A0000000/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"中国科技网","pais":"China","titulo":"Tibetan Medicine Suspended Moxibustion Technology and Product Suite Launched","resumo":"A comprehensive suite of technology and products aimed at Tibetan medicine suspended moxibustion was officially launched. The initiative seeks to modernize and standardize traditional techniques through advanced technological innovations. The project aims to expand the application of these therapies in the contemporary health and wellness sector. The integration of modern science ensures greater efficacy and safety in treatments.","link":"https://www.stdaily.com/web/gdxw/2026-10/29/content_604465.html","categoria":"SCIENCE","lang":"en"},{"fonte":"India Technology News","pais":"India","titulo":"UK Robotics, Genomics and Clean Technology Find New Opportunities in India","resumo":"British companies and research centers in the fields of robotics, genomics, and clean technology are expanding their operations and partnerships in the Indian market. India's rapidly rising innovation ecosystem offers fertile ground for investments and technological co-development. Bilateral cooperation promises to accelerate advances in sustainability, precision medicine, and industrial automation in both countries.","link":"https://indiatechnologynews.in/british-robotics-genomics-and-clean-technology-find-new-opportunities-in-india/","categoria":"TECHNOLOGICAL INNOVATION","lang":"en"},{"fonte":"Idealista","pais":"Portugal","titulo":"Covilhã Focuses on Smart Lighting with ARQUILED Technology","resumo":"The city of Covilhã is investing in urban modernization by adopting ARQUILED's smart lighting system. The technology aims to optimize energy consumption and reduce the municipality's operating costs. With sensors and remote control, the lighting infrastructure adapts to the real needs of the streets. The measure consolidates the region's commitment to smart city practices and sustainability.","link":"https://www.idealista.pt/news/financas/tecnologia/2026/10/28/78541-covilha-aposta-na-iluminacao-inteligente-com-tecnologia-arquiled","categoria":"INNOVATION","lang":"en"},{"fonte":"Proifes","pais":"Brazil","titulo":"Young Indigenous Student Participates in MCTI Asteroid Search Program","resumo":"A prominent indigenous student has joined the citizen astronomy program promoted by the Ministry of Science, Technology, and Innovation in partnership with NASA. The initiative seeks to engage youth in the identification and mapping of celestial bodies and near-Earth asteroids. The participation reinforces the importance of scientific inclusion and academic development in traditional communities.","link":"https://www.proifes.org.br/noticias/garoto-indigena-participa-do-programa-caca-asteroides-mcti","categoria":"SCIENCE","lang":"en"},{"fonte":"Bloomberg.com","pais":"United States","titulo":"Marvell Nears Mega-Deal with Lumentum to Strengthen AI Infrastructure","resumo":"Marvell Technology is in advanced stages of negotiations to acquire Lumentum Holdings in a multi-billion dollar semiconductor sector transaction. The main focus of the acquisition is to incorporate high-speed optical solutions essential for the connectivity of large artificial intelligence data centers. The deal could redefine the network components market and consolidate the company's leadership in the segment.","link":"https://www.bloomberg.com/news/articles/2026-10-28/marvell-is-said-to-near-deal-for-lumentum-in-ai-related-megadeal","categoria":"BUSINESS","lang":"en"},{"fonte":"GranadaDigital","pais":"Spain","titulo":"The IAA-CSIC Develops Technology to Combine Light from Seven Telescopes","resumo":"Researchers from the Astrophysics Institute of Andalusia have developed a revolutionary optical interferometry system. The new technology allows the combination of light captured by seven telescopes simultaneously to generate ultra-high-resolution images. The breakthrough enables the detailed observation of distant astronomical phenomena with unprecedented precision. The innovation promises to drive new discoveries about the formation of stars and exoplanets in the universe.","link":"https://www.granadadigital.es/iaa-csic-tecnologia-telescopios/","categoria":"ASTRONOMY","lang":"en"},{"fonte":"週刊粧業オンライン","pais":"Japan","titulo":"FANCL Launches Customer Intelligence Platform Uniting Data and Three AI Technologies","resumo":"FANCL has initiated operations for its new infrastructure aimed at understanding consumer behavior. The system combines the company's proprietary data with three distinct artificial intelligence technologies for extreme personalization. The goal is to predict customer needs and optimize marketing and service strategies in an automated way. The initiative demonstrates how artificial intelligence is transforming data management in the retail sector.","link":"https://www.syogyo.jp/news/2026/10/post_045062","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Xataka","pais":"China","titulo":"Detection of 8-km Geological Fault in Chinese City Reconciles Historic Eclipse with Science","resumo":"Scientists have identified an 8-kilometer geological fault located beneath a Chinese city. This discovery made it possible to adjust astronomical calculations and resolve historical discrepancies regarding an ancient eclipse. The finding bridges modern geology with centuries-old astronomical records to validate historical events. The research demonstrates how current science can clarify mysteries of the distant past.","link":"https://www.xataka.com/espacio/deteccion-fallo-8-km-ciudad-china-reconcilia-ciencia-uno-eclipses-antiguos-historia","categoria":"SCIENCE","lang":"en"},{"fonte":"The New Indian Express","pais":"India","titulo":"Tamil Nadu Must Not Merely Follow Technology, But Create and Export It, Says Minister","resumo":"The minister of Tamil Nadu stated that the region is transitioning from a technology consumer to a leading creator and exporter of technological solutions. The state government plans to encourage R\u0026D infrastructure, attract cutting-edge startups, and strengthen the training of qualified talent. The strategy aims to position the state as a global hub for innovation and software and hardware development.","link":"https://www.newindianexpress.com/states/tamil-nadu/2026/Oct/29/tn-to-not-merely-follow-technology-but-create-it-and-export-says-minister","categoria":"TECHNOLOGY AND INNOVATION","lang":"en"},{"fonte":"BusinessIT","pais":"Portugal","titulo":"Healthcare Sector Opens Saudi Market to Portuguese Technology","resumo":"Portuguese health tech companies are gaining ground in the Saudi Arabian market. The expansion demonstrates the high competitiveness and quality of solutions developed in Portugal for the medical sector. This strategic partnership strengthens exports of high-value-added technological services. The milestone opens doors for future bilateral collaborations in digital health.","link":"https://business-it.pt/2026/10/28/saude-abre-porta-saudita-a-tecnologia-portuguesa/","categoria":"BUSINESS","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Microsoft's Profit Jumps 32% to Reach $36.63 Billion in the Quarter","resumo":"Microsoft released its financial results with an expressive 32% growth in quarterly profit, consolidating more than $36 billion. The excellent performance was driven primarily by the continued expansion of the Azure cloud division and massive investments in AI. The company reaffirms its technological leadership position in the corporate and artificial intelligence sectors.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/28/lucro-da-microsoft-cresce-32percent-e-atinge-us-3663-bilhoes-no-trimestre.ghtml","categoria":"BUSINESS","lang":"en"},{"fonte":"Anthropic","pais":"United States","titulo":"AI for Science Program Expands Operations to Foundations and Research Institutes","resumo":"The initiative dedicated to the application of artificial intelligence in scientific research has announced an expansion of its partnerships with major global foundations. The goal is to accelerate discoveries in crucial areas such as structural biology, materials physics, and climate models. The expansion aims to democratize access to supercomputers and AI models for scientists from various institutions.","link":"https://www.anthropic.com/news/ai-for-science-expands-foundations-research-institutions","categoria":"INNOVATION","lang":"en"},{"fonte":"Infobae","pais":"Spain","titulo":"'We Can Have a Universal Basic Product Income': Oracle CTO Larry Ellison's Promise on AI","resumo":"The co-founder of Oracle argued that artificial intelligence will cause a profound economic revolution in the coming years. According to the executive, the productivity gains generated by AI will make it possible to create new basic income models based on the distribution of products. The massive automation of services and manufacturing could drastically lower the cost of living. The statement reignites the global debate on the impact of technological advancement on the future of work and society.","link":"https://www.infobae.com/tecno/2026/10/29/podemos-tener-un-ingreso-universal-por-producto-la-promesa-de-larry-ellison-director-de-tecnologia-de-oracle-sobre-la-ia/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Nikon","pais":"Japan","titulo":"NIKKOR Z 120-300mm f/2.8 Zoom Lens Launched with Integrated 1.4x Teleconverter for Sports Photographers","resumo":"Nikon announced the global launch of the NIKKOR Z 120-300mm f/2.8 TC VR S lens, becoming the world's first with a built-in 1.4x teleconverter. Designed especially for professional sports and wildlife photographers, the lens offers versatility without sacrificing the constant f/2.8 aperture. The equipment brings advanced image stabilization and high-performance optical construction for mirrorless cameras. The launch marks a major breakthrough in precision optical device engineering.","link":"https://www.jp.nikon.com/company/news/2026/1029_01/","categoria":"HARDWARE","lang":"en"},{"fonte":"华南师范大学新闻网","pais":"China","titulo":"Guangdong Yalian Technology Visits Colleges to Discuss Data Cooperation and 'AI + Business' Training","resumo":"Guangdong Yalian Technology visited colleges of economics, management, and technological business to align strategic partnerships. The meeting focused on training specialized talent in the integration of artificial intelligence with the business sector. In addition, the institutions discussed the joint exploration of data elements for academic and market innovation. Cooperation strengthens the region's educational and technological ecosystem.","link":"http://news.scnu.edu.cn/73600","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Hindustan Times","pais":"India","titulo":"Air Force Sports Complex near Prime Minister's residence in Delhi shut down","resumo":"The Air Force Sports Complex, located near the official Prime Minister's residence in New Delhi, has been closed indefinitely without detailed official prior notice. The measure has sparked speculation about heightened security protocols and the reorganization of urban space in the governmental district. The closure affects local visitors and has generated widespread coverage in the country's media outlets.","link":"https://www.hindustantimes.com/india-news/iaf-sports-complex-near-pm-residence-shut-till-further-notice-101793178738416.html","categoria":"TRENDS AND NEWS","lang":"en"},{"fonte":"SÁBADO","pais":"Portugal","titulo":"New forensic technology links Ted Bundy to teenager's murder after 52 years","resumo":"The application of advanced forensic methods has made it possible to solve a mystery spanning more than five decades involving the famous serial killer Ted Bundy. Genetic and trace evidence analysis technology was crucial in connecting the criminal to the homicide. The case demonstrates the transformative power of modern forensic science in elucidating historical crimes. The discovery brings long-awaited answers to family members and justice after so many years.","link":"https://www.sabado.pt/mundo/detalhe/nova-tecnologia-forense-associa-ted-bundy-a-homicidio-de-adolescente-52-anos-depois","categoria":"SCIENCE","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"Impa Tech opens 150 spots for undergraduate degree in Mathematics, Technology, and Innovation","resumo":"Impa Tech has initiated the selection process to fill 150 spots in the bachelor's degree program focused on Applied Mathematics to Technology and Innovation. The free undergraduate program offers state-of-the-art infrastructure and aims to train highly qualified professionals for the high-tech market. The opportunities prioritize students with strong performances in scientific olympiads across the country.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/noticias-julho-outubro-2026/impa-tech-abre-selecao-com-150-vagas-para-o-bacharelado-em-matematica-da-tecnologia-e-inovacao","categoria":"EDUCATION","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"NASA selects 19 new citizen science projects for the 2026 cycle","resumo":"The U.S. space agency has selected 19 new proposals under its 2026 citizen science program. The initiative allows volunteers and enthusiasts worldwide to collaborate directly with scientists in processing astronomical and environmental data. The projects range from the search for exoplanets to monitoring climate change on Earth.","link":"https://science.nasa.gov/get-involved/citizen-science/nasa-selects-19-new-citizen-science-proposals-in-2026/","categoria":"SPACE","lang":"en"},{"fonte":"MarketScreener España","pais":"Spain","titulo":"Advancement: Fund investors return to technology despite concerns over artificial intelligence","resumo":"The financial market is recording a strong resurgence in capital inflows to funds focused on the technology sector. Even in the face of volatility and uncertainties regarding the return on investments in artificial intelligence, investor confidence has grown. Major asset managers highlight that the pursuit of innovation remains the primary driver of long-term performance. The movement reflects continued optimism in the digital transformation of the global economy.","link":"https://es.marketscreener.com/noticias/avanza-los-inversores-en-fondos-regresan-a-la-tecnolog-a-pese-a-los-recelos-sobre-la-inteligencia-a-ce785cd3dd8df620","categoria":"DIGITAL MARKET","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
