@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-2b2I25Cr8MRbUtvoa5FfigO1'; script-src 'nonce-2b2I25Cr8MRbUtvoa5FfigO1'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="2b2I25Cr8MRbUtvoa5FfigO1">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">31/10/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="2b2I25Cr8MRbUtvoa5FfigO1">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"G1","pais":"Brasil","titulo":"IA virou um problema para as gigantes de tecnologia? Entenda o tombo bilionário nas bolsas","resumo":"As grandes empresas de tecnologia enfrentam forte pressão do mercado financeiro devido aos altos investimentos e incertezas sobre o retorno da inteligência artificial. Essa desconfiança resultou em uma perda bilionária no valor de mercado de gigantes do setor nas bolsas de valores. O cenário reflete a apreensão dos investidores quanto à sustentabilidade desse crescimento acelerado. Especialistas agora analisam se os massivos aportes em infraestrutura se traduzirão em lucros reais no curto prazo.","link":"https://g1.globo.com/economia/noticia/2026/10/31/ia-virou-um-problema-para-as-gigantes-de-tecnologia-entenda-o-tombo-bilionario-nas-bolsas.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"G1","pais":"Estados Unidos","titulo":"'Slopaganda': Como a IA Virou Arma Eleitoral nos EUA e Movimentou Mais de US$ 137 Milhões","resumo":"O uso de inteligência artificial generativa em campanhas políticas atingiu patamares inéditos nos Estados Unidos, movimentando mais de 137 milhões de dólares. O fenômeno, apelidado de 'slopaganda', utiliza imagens, vídeos e áudios hiper-realistas para manipular a opinião pública e atacar adversários. Especialistas alertam sobre a rapidez com que esses conteúdos falsos se espalham nas redes sociais, desafiando as plataformas e a legislação eleitoral. Esse cenário levanta preocupações profundas sobre a integridade dos processos democráticos futuros.","link":"https://g1.globo.com/tecnologia/noticia/2026/10/31/slopaganda-como-a-ia-virou-arma-eleitoral-nos-eua-e-movimentou-mais-de-us-137-milhoes.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Campus France","pais":"França","titulo":"Transferência de tecnologia: três institutos de pesquisa franceses lideram na Europa","resumo":"Três renomados institutos de pesquisa franceses alcançaram o topo dos rankings europeus em transferência de tecnologia e inovação aplicada. Esse desempenho destaca a capacidade da França de transformar pesquisas científicas de ponta em soluções industriais e comerciais de alto impacto. O avanço fortalece o ecossistema tecnológico do país e sua competitividade global frente a outros polos de inovação.","link":"https://www.campusfrance.org/fr/transferts-de-technologie-trois-instituts-de-recherche-francais-leaders-en-europe","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Yorkshire Evening Post","pais":"Inglaterra","titulo":"Grande avanço cirúrgico para Leeds com a introdução de tecnologia robótica pioneira em hospital","resumo":"Um hospital em Leeds alcançou um marco cirúrgico significativo ao adotar uma nova tecnologia robótica altamente avançada. A inovação promete aumentar drasticamente a precisão dos procedimentos complexos e reduzir o tempo de recuperação dos pacientes. Com essa integração, a instituição se consolida na vanguarda do atendimento médico e da aplicação de robótica na saúde. Esse avanço representa um grande impacto para a medicina do Reino Unido e para a qualidade de vida da população local.","link":"https://www.yorkshireeveningpost.co.uk/health/major-surgical-breakthrough-for-leeds-as-hospital-introduces-pioneering-robotic-technology-9321088","categoria":"MEDICINA ROBÓTICA","lang":"pt"},{"fonte":"National Geographic España","pais":"Espanha","titulo":"Quem protege o que você pensa? A tecnologia que pode 'ler' sua mente","resumo":"Avanços em neurotecnologia e inteligência artificial estão permitindo a decodificação de sinais cerebrais com precisão sem precedentes. Essa inovação abre portas para tratamentos médicos revolucionários e interfaces homem-máquina diretas. No entanto, surgem debates éticos e jurídicos urgentes sobre a privacidade mental e os neurodireitos. É fundamental estabelecer regulamentações para evitar o uso indevido desses dados altamente sensíveis.","link":"https://www.nationalgeographic.com.es/ciencia/quien-protege-que-piensas-ia-ya-se-ha-metido-nuestro-cerebro_29737","categoria":"NEUROTECNOLOGIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Conferência Ásia-Pacífico: CEO da Boehringer afirma que o Ocidente 'não tem o monopólio da inovação'","resumo":"Durante a Conferência Ásia-Pacífico, o líder da gigante farmacêutica Boehringer Ingelheim destacou a crescente relevância dos polos tecnológicos asiáticos. O executivo ressaltou que o Ocidente precisa colaborar mais de perto com os ecossistemas globais de pesquisa para manter a competitividade. A declaração reflete a mudança no eixo da inovação global e a necessidade de estratégias alinhadas aos avanços tecnológicos do Oriente.","link":"https://www.sueddeutsche.de/wirtschaft/asien-pazifik-konferenz-boehringer-chef-westen-hat-kein-monopol-auf-innovation-dpa.urn-newsml-dpa-com-20090101-261031-930-921468","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"A inteligência artificial está ameaçando a pesquisa científica? Controvérsia na matemática gera preocupações","resumo":"O avanço vertiginoso das ferramentas de inteligência artificial na ciência tem gerado debates acalorados sobre a integridade e o futuro da pesquisa científica. No campo da matemática, a crescente dependência de algoritmos para propor resoluções e analisar dados complexos levanta questionamentos sobre a profundidade do aprendizado humano. Especialistas alertam para os riscos de falhas indetectáveis e para a perda da intuição matemática tradicional. O cenário exige novas diretrizes éticas para equilibrar a inovação tecnológica com a rigorosidade acadêmica.","link":"https://news.yahoo.co.jp/articles/b04ac7671ba10da2c495bf388e9198103b525158","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"手机新浪网","pais":"China","titulo":"CATL utiliza inteligência artificial para acelerar avanços em tecnologia de baterias","resumo":"O fundador da CATL declarou que a tecnologia atual de baterias ainda não é suficiente e precisa de evoluções profundas. A empresa passou a integrar inteligência artificial para acelerar a pesquisa e o desenvolvimento na área de eletroquímica. A abordagem permite simular e descobrir novos materiais com uma rapidez sem precedentes no setor. A inovação promete impulsionar o desempenho e a autonomia dos veículos elétricos globais.","link":"https://k.sina.com.cn/article_5953740931_162dee083067043wng.html?from=tech","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Brut","pais":"Índia","titulo":"Como os Diamantes Nascem em Laboratório? A Ciência por Trás dos Diamantes Sintéticos","resumo":"Os diamantes cultivados em laboratório representam uma revolução tecnológica no setor de gemas e joias. Utilizando processos avançados de alta pressão e temperatura ou deposição de vapor químico, a ciência recria as mesmas condições do manto terrestre. Essa inovação oferece uma alternativa sustentável, acessível e eticamente responsável em relação à mineração tradicional.","link":"https://www.brut.media/in/videos/culture-lifestyle/fashion/how-are-diamonds-born-in-a-lab-the-science-behind-lab-grown-diamonds-in-collab-with-limelight-diamonds","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Município de Cinfães","pais":"Portugal","titulo":"Geopastoreio: a tecnologia a serviço da pecuária e da proteção do território!","resumo":"A iniciativa utiliza ferramentas tecnológicas avançadas para auxiliar na atividade pecuária tradicional e na gestão ambiental. O projeto visa otimizar o pastejo em áreas de risco, promovendo a sustentabilidade ecológica e a prevenção de incêndios florestais. A integração entre inovação e recursos naturais fortalece a economia rural e a segurança territorial em Portugal.","link":"https://cm-cinfaes.pt/noticias-base/geopastoreio-a-tecnologia-ao-servico-da-pastoricia-e-da-protecao-do-territorio","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Ministério da Educação estuda recriar Ciência Sem Fronteiras priorizando áreas como IA, Matemática e engenharias","resumo":"O Ministério da Educação estuda a reformulação do programa Ciência sem Fronteiras para capacitar estudantes brasileiros no exterior. A nova versão terá foco estratégico em áreas cruciais como Inteligência Artificial, Matemática e Engenharias. A iniciativa visa qualificar a mão de obra nacional para atender às crescentes demandas tecnológicas globais. O projeto busca fortalecer o ecossistema de inovação e pesquisa científica no país.","link":"https://oglobo.globo.com/brasil/educacao/noticia/2026/10/30/ministerio-da-educacao-estuda-recriar-ciencia-sem-fronteiras-priorizando-areas-como-ia-matematica-e-engenharias.ghtml","categoria":"CIÊNCIA E EDUCAÇÃO","lang":"pt"},{"fonte":"EL PAÍS English","pais":"Estados Unidos","titulo":"'É a Inflação, Estúpido': Eleitores dos EUA Rejeitam a Economia Apesar do Crescimento Econômico","resumo":"Apesar de dados macroeconômicos apontarem para o crescimento contínuo nos Estados Unidos, a percepção dos eleitores continua fortemente negativa devido à alta inflação. O custo de vida elevado em itens essenciais como alimentação e moradia sufoca o orçamento das famílias americanas. Essa desconexão entre os indicadores oficiais e a realidade financeira diária gera um forte descontentamento popular. Como resultado, o cenário econômico torna-se o tema central e mais crítico nas discussões políticas atuais.","link":"https://english.elpais.com/economy-and-business/2026-10-31/its-the-inflation-stupid-us-voters-sour-on-the-economy-despite-economic-growth.html?outputType=amp","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Le Grand Continent","pais":"França","titulo":"Trumpflação: como Trump fez a inflação americana voltar a subir","resumo":"A recente análise econômica debate o conceito de Trumpflação e os efeitos das políticas tarifárias e fiscais propostas na economia dos Estados Unidos. O ressurgimento da inflação norte-americana gera repercussões diretas nos mercados globais e afeta o comércio internacional da França e da União Europeia. O cenário exige readequações nas estratégias financeiras e de investimento de grandes corporações globais.","link":"https://legrandcontinent.eu/fr/2026/10/30/trumpflation-comment-trump-a-fait-repartir-linflation-americaine/","categoria":"TRENDING TOPICS","lang":"pt"},{"fonte":"Valor Econômico","pais":"Inglaterra","titulo":"Bolsas da Europa fecham majoritariamente em queda com 'sell-off' de tecnologia","resumo":"Os principais mercados acionários europeus encerraram o dia em território negativo, impulsionados por uma forte onda de vendas no setor de tecnologia. A desvalorização generalizada refletiu o receio dos investidores diante de incertezas econômicas e da reavaliação de ativos de alto crescimento. Essa liquidação massiva impactou diretamente os principais índices da região, incluindo a Bolsa de Londres. O movimento acende o alerta sobre a volatilidade e a sustentabilidade da alta recente no segmento tecnológico.","link":"https://valor.globo.com/financas/noticia/2026/10/30/bolsas-da-europa-fecham-majoritariamente-em-queda-com-sell-off-de-tecnologia.ghtml","categoria":"MERCADO FINANCEIRO","lang":"pt"},{"fonte":"El Español","pais":"Espanha","titulo":"Quando a mobilidade das cidades deixou de ser ficção científica","resumo":"A transformação dos transportes urbanos integrou tecnologias inteligentes que antes existiam apenas na ficção. Veículos elétricos, sistemas de tráfego autônomos e plataformas de micromobilidade redefiniram o deslocamento nas grandes metrópoles. Essa evolução visa reduzir emissões de carbono e otimizar a eficiência das rotas diárias. O futuro das cidades inteligentes agora depende de infraestruturas conectadas e sustentáveis.","link":"https://www.elespanol.com/enclave-ods/opinion/20261031/movilidad-ciudades-dejo-ciencia-ficcion/1003744436472_13.html","categoria":"MOBILIDADE URBANA","lang":"pt"},{"fonte":"Euronews.com","pais":"Alemanha","titulo":"Economia francesa estagna: Risco de recessão e impasse orçamentário","resumo":"A economia da França enfrenta um momento crítico de estagnação decorrente do bloqueio político no orçamento nacional. Especialistas alertam para o aumento do risco de recessão no país, afetando a estabilidade financeira de toda a Zona do Euro. O cenário exige reformas estruturais e acordos legislativos rápidos para conter o impacto negativo no crescimento regional.","link":"https://de.euronews.com/2026/10/30/franzosische-wirtschaft-steht-still-rezessionsrisiko-und-haushaltsblockade","categoria":"ECONOMIA","lang":"pt"},{"fonte":"中国科技网","pais":"China","titulo":"Avanço em tecnologia eVTOL: novo rotor de quatro pás passa em testes de túnel de vento","resumo":"Pesquisadores alcançaram um avanço significativo no desenvolvimento de aeronaves elétricas de decolagem e pouso vertical. O novo sistema de rotor com pás sobrepostas completou com sucesso os testes de validação em túnel de vento. A tecnologia reduz significativamente a vibração e a carga mecânica, melhorando a estabilidade de voo. Esse progresso representa um passo crucial para a comercialização de veículos de mobilidade aérea urbana.","link":"https://www.stdaily.com/web/gdxw/2026-10/31/content_605987.html","categoria":"AERONÁUTICA","lang":"pt"},{"fonte":"Voice of Ladakh","pais":"Índia","titulo":"SHS\u0026T Kargil Inaugura Tecnologia de Desidratação por Infravermelho para Secagem de Frutas e Vegetais","resumo":"A instituição SHS\u0026T Kargil apresentou uma nova tecnologia de desidratação por infravermelho voltada para o processamento agrícola. Essa inovação visa otimizar a secagem de frutas e vegetais, preservando melhor os nutrientes e aumentando a vida útil dos produtos locais. O avanço impulsiona o desenvolvimento científico e econômico da região ao fortalecer a cadeia de suprimentos alimentares.","link":"https://voiceofladakh.in/2026/10/shst-kargil-inaugurates-infrared-dehydration-technology-for-drying-fruits-and-vegetables/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"PCGuia","pais":"Portugal","titulo":"Z2RAM promete resolver a crise global de memórias até 2030","resumo":"Uma nova tecnologia de semicondutores chamada Z2RAM surge como uma solução promissora para mitigar a escassez de componentes no mercado internacional. Com previsões de implementação industrial até o final da década, a inovação promete revolucionar a eficiência energética e o desempenho de dispositivos eletrônicos. O impacto dessa descoberta pode redefinir a cadeia de suprimentos global para a indústria de tecnologia.","link":"https://www.pcguia.pt/2026/10/o-fim-do-apocalipse-das-memorias-pode-chegar-pelas-maos-de-uma-tecnologia-inovadora-com-dois-transistores/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Gazeta do Povo","pais":"Brasil","titulo":"BYD pede a Lula acordo com a China para transferência de tecnologia","resumo":"A fabricante de veículos elétricos BYD solicitou apoio governamental para viabilizar acordos de transferência tecnológica entre Brasil e China. A proposta visa fortalecer a produção local e acelerar o desenvolvimento de soluções sustentáveis na indústria automotiva nacional. O avanço dessas negociações pode consolidar o país como um polo de inovação em mobilidade elétrica na América Latina. A iniciativa também promete impulsionar a infraestrutura e a geração de empregos qualificados no setor.","link":"https://www.gazetadopovo.com.br/republica/byd-pede-a-lula-acordo-com-a-china-para-transferencia-de-tecnologia/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Europa Press","pais":"Estados Unidos","titulo":"Rubio Pede no G20 Apoio à Liderança dos EUA em Energia, Tecnologia e IA para Atender aos Interesses do Grupo","resumo":"Durante a reunião do G20, representantes norte-americanos defenderam o fortalecimento da liderança dos Estados Unidos nos setores de inteligência artificial, tecnologia avançada e transição energética. A proposta busca alinhar as inovações tecnológicas americanas com as demandas globais de desenvolvimento sustentável e eficiência. O discurso enfatizou que o avanço conjunto nestas áreas estratégicas beneficiará a infraestrutura global e a segurança econômica. A iniciativa destaca a competição geoestratégica pelo domínio de tecnologias emergentes.","link":"https://www.europapress.es/internacional/noticia-rubio-pide-reunion-g2o-unidad-frente-desafios-economicos-energeticos-20261031034602.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Notícias ao Minuto","pais":"França","titulo":"Fitch mantém nota A+ para a França, mas baixa perspectiva","resumo":"A agência de classificação de risco Fitch manteve o rating soberano da França em A+, contudo rebaixou a perspectiva do país para negativa. A decisão reflete preocupações crescentes em relação à trajetória da dívida pública e aos desafios políticos para aprovação do orçamento. A mudança de perspectiva aumenta a pressão sobre o governo francês para implementar reformas fiscais e conter o déficit público.","link":"https://www.noticiasaominuto.com/economia/3076147/fitch-mantem-nota-a-para-a-franca-mas-baixa-perspetiva","categoria":"ECONOMIA","lang":"pt"},{"fonte":"International Atomic Energy Agency","pais":"Inglaterra","titulo":"Como a tecnologia nuclear está ajudando as cidades a se tornarem mais sustentáveis","resumo":"A tecnologia nuclear está assumindo um papel central nas estratégias modernas de desenvolvimento urbano e transição energética. Através de microrreatores e inovações em eficiência, essa fonte de energia limpa oferece alternativas viáveis para descarbonizar grandes centros urbanos. A aplicação prática demonstra redução significativa nas emissões de carbono sem comprometer o suprimento constante de eletricidade. Essa tendência aponta para um futuro em que a ciência nuclear é chave na busca por sustentabilidade urbana.","link":"https://www.iaea.org/newscenter/news/how-nuclear-technology-is-helping-cities-become-more-sustainable","categoria":"ENERGIA SUSTENTÁVEL","lang":"pt"},{"fonte":"Villa de la Orotava","pais":"Espanha","titulo":"La Orotava acolhe a XXIII Feira da Ciência, a maior de sua história e com caráter regional","resumo":"O município de La Orotava sedia a vigésima terceira edição de sua tradicional Feira da Ciência. O evento deste ano é o maior já realizado, reunindo estudantes, pesquisadores e o público em geral da região. A programação conta com experimentos ao vivo, oficinas interativas e divulgações científicas acessíveis. A iniciativa reforça a importância da popularização do conhecimento científico entre os jovens.","link":"https://www.laorotava.es/es/noticias/la-orotava-acoge-la-xxiii-feria-de-la-ciencia-la-mayor-de-su-historia-y-con-caracter","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Goethe-Institut","pais":"Alemanha","titulo":"Foco na IA: Política e sociedade na Alemanha e nos EUA","resumo":"Um debate aprofundado analisa o impacto da inteligência artificial nas estruturas políticas e sociais da Alemanha e dos Estados Unidos. Os especialistas discutem como diferentes abordagens regulatórias moldam o desenvolvimento tecnológico e a governança de dados. O diálogo destaca os desafios éticos e as oportunidades de inovação que redefinem o futuro das relações internacionais.","link":"https://www.goethe.de/ins/us/de/ver.cfm?event_id=27376538","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Notícias ao Minuto","pais":"China","titulo":"Chery anuncia tecnologia de carregamento capaz de rodar 500 km com apenas cinco minutos de carga","resumo":"A montadora chinesa Chery revelou uma nova arquitetura de carregamento ultrarrápido destinada a veículos elétricos de nova geração. A inovação promete entregar autonomia de quinhentos quilômetros com um tempo de recarga de apenas cinco minutos. O avanço busca eliminar a ansiedade de autonomia dos motoristas e rivalizar com o tempo de abastecimento tradicional. A tecnologia reforça a liderança do setor automotivo chinês na transição para a mobilidade elétrica.","link":"https://www.noticiasaominuto.com/auto/3075668/chery-anuncia-tecnologia-de-carregamento-para-500-km-em-cinco-minutos","categoria":"TECNOLOGIA AUTOMOTIVA","lang":"pt"},{"fonte":"Bloomberg","pais":"Índia","titulo":"Como a Jio Transformou a Índia, um Byte Barato por Vez","resumo":"A entrada da operadora Jio no mercado de telecomunicações indiano promoveu uma verdadeira revolução digital no país. Ao oferecer dados móveis a preços extremamente acessíveis, a empresa conectou centenas de milhões de cidadãos à internet. Essa democratização do acesso impulsionou a economia digital, transformou o consumo de mídia e acelerou a inovação tecnológica na Índia.","link":"https://www.bloomberg.com/news/features/2026-10-30/how-jio-transformed-india-s-mobile-internet-economy-one-cheap-byte-at-a-time","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Funchal Notícias","pais":"Portugal","titulo":"Da ciência à inteligência artificial nas conversas do MadIT – Madeira Innovation Talks","resumo":"O evento MadIT reuniu especialistas na Ilha da Madeira para debater o avanço da inteligência artificial e o papel fundamental da investigação científica. As discussões focaram na transição digital e no impacto dessas ferramentas emergentes na sociedade moderna e na economia regional. A iniciativa consolida a região como um polo ativo de debate tecnológico e científico em Portugal.","link":"https://funchalnoticias.net/2026/10/30/da-ciencia-a-inteligencia-artificial-nas-conversas-do-madit-madeira-innovation-talks/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Médica do DF usa robô de alta tecnologia em cirurgia de mama","resumo":"Uma médica do Distrito Federal realizou um procedimento cirúrgico mamário inovador utilizando assistência robótica de última geração. A tecnologia avançada permite cortes mais precisos, reduz o tempo de recuperação e minimiza os riscos para a paciente. Esse avanço destaca o crescimento da medicina de alta precisão na rede de saúde brasileira. A prática exemplifica como a inovação tecnológica pode transformar os tratamentos e a qualidade de vida dos pacientes.","link":"https://g1.globo.com/google/amp/df/distrito-federal/df2/video/medica-do-df-usa-robo-de-alta-tecnologia-em-cirurgia-de-mama-15147312.ghtml","categoria":"MEDICINA E TECNOLOGIA","lang":"pt"},{"fonte":"Poder360","pais":"Estados Unidos","titulo":"Bolsas dos EUA Fecham em Forte Queda com Tombo do Setor de Tecnologia","resumo":"Os principais índices das bolsas de valores dos Estados Unidos encerraram o dia com perdas expressivas, impulsionadas pelo recuo acentuado das grandes empresas de tecnologia. Investidores demonstraram cautela diante das incertezas sobre o retorno financeiro dos pesados investimentos em infraestrutura digital. O movimento de venda em massa refletiu o receio de uma desaceleração no ritmo de crescimento das Big Techs a curto prazo. O resultado acendeu alertas sobre a volatilidade do mercado financeiro global.","link":"https://www.poder360.com.br/poder-economia/bolsas-dos-eua-fecham-em-forte-queda-com-tombo-da-tecnologia/","categoria":"MERCADO FINANCEIRO","lang":"pt"},{"fonte":"Euronews.com","pais":"França","titulo":"Economia francesa estagnada com incerteza orçamentária alimentando receios de recessão","resumo":"A economia da França encontra-se em um momento de estagnação impulsionada pelas dúvidas em torno do novo orçamento fiscal do país. A falta de definições claras sobre cortes de gastos e aumentos de impostos tem afetado a confiança dos empresários e consumidores locais. Esse cenário incerto eleva o risco de uma retração do produto interno bruto nos próximos trimestres.","link":"https://www.euronews.com/2026/10/30/french-economy-at-a-standstill-as-budget-uncertainty-fuels-recession-fears","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Lusa","pais":"Espanha","titulo":"Economia da Espanha cresceu 2,7% no terceiro trimestre","resumo":"O produto interno bruto da Espanha registrou um avanço consistente de 2,7% no terceiro trimestre. Esse desempenho econômico superou as expectativas do mercado e se destacou no cenário europeu. O crescimento foi impulsionado pelo consumo das famílias, turismo forte e investimentos estratégicos. Especialistas destacam o impacto positivo desse dinamismo para o mercado de trabalho local.","link":"https://www.lusa.pt/economia/article/2026-10-30/48035354/economia-de-espanha-cresceu-2-7-no-terceiro-trimestre","categoria":"ECONOMIA","lang":"pt"},{"fonte":"WirtschaftsWoche","pais":"Alemanha","titulo":"Economia alemã cresce surpreendentemente e inflação cai significativamente","resumo":"Contrariando projeções pessimistas, a economia da Alemanha apresentou um crescimento inesperado no trimestre recente. Paralelamente, a taxa de inflação no país registrou uma queda expressiva, trazendo alívio para consumidores e investidores. Este movimento positivo sugere um cenário de recuperação e fortalece os indicadores estratégicos do mercado europeu.","link":"https://www.wiwo.de/politik/konjunktur/konjunktur-deutsche-wirtschaft-waechst-ueberraschend-inflation-sinkt-deutlich/100266192.html","categoria":"MERCADO","lang":"pt"},{"fonte":"上观新闻","pais":"China","titulo":"Prêmio World Laureates 2026 é concedido a Shao Feng, primeiro vencedor de nacionalidade chinesa","resumo":"O prestigiado prêmio mundial de cientistas reconheceu o pesquisador Shao Feng por suas contribuições fundamentais na área de biologia celular. Ele se tornou o primeiro cidadão chinês a receber a honraria internacional desde a criação do prêmio. As descobertas do cientista lançaram novas luzes sobre os mecanismos de imunidade inata e piroptose celular. A premiação destaca a crescente relevância e liderança da ciência chinesa no cenário global.","link":"https://www.jfdaily.com/news/detail?id=1204581","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Business Standard","pais":"Índia","titulo":"Ministro do Reino Unido Pede Maior Rapidez na Inovação e Adoção na Saúde entre Índia e Reino Unido","resumo":"Um ministro do Reino Unido defendeu a aceleração de parcerias estratégicas em inovação na área da saúde entre a Índia e os britânicos. A cooperação busca facilitar a adoção de novas tecnologias médicas, acelerar pesquisas clínicas e aprimorar sistemas de saúde em ambas as nações. A iniciativa pretende aproximar ecossistemas de tecnologia e ciência para responder a desafios globais.","link":"https://www.business-standard.com/economy/news/uk-minister-calls-for-speedier-india-uk-healthcare-innovation-adoption-126103100159_1.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Notícias de Coimbra","pais":"Portugal","titulo":"De Coimbra para o país: TUMO quer levar tecnologia e criatividade a mais jovens","resumo":"O centro educacional TUMO expande suas atividades a partir de Coimbra para capacitar as novas gerações nas áreas de tecnologia, design e programação. O projeto oferece metodologias extracurriculares inovadoras para estimular o pensamento criativo e o letramento digital entre os jovens portugueses. A iniciativa desempenha um papel crucial na preparação do futuro capital humano para o mercado tecnológico.","link":"https://www.noticiasdecoimbra.pt/de-coimbra-para-o-pais-tumo-quer-levar-tecnologia-e-criatividade-a-mais-jovens/","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Confira em quais celulares o WhatsApp deixa de funcionar em novembro","resumo":"O aplicativo de mensagens WhatsApp encerrará o suporte para diversos modelos antigos de smartphones a partir de novembro. A medida visa garantir maior segurança e implementar novos recursos que exigem sistemas operacionais mais atualizados. Dispositivos com versões defasadas do Android e iOS perderão o acesso ao serviço de forma gradual. Os usuários afetados precisarão atualizar o sistema de seus aparelhos ou adquirir novos dispositivos para continuar utilizando a plataforma.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/31/confira-em-quais-celulares-o-whatsapp-deixa-de-funcionar-em-novembro.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Yahoo","pais":"Estados Unidos","titulo":"Daly, do Fed, Afirma que IA é Importante para a Política Monetária a Médio e Curto Prazo","resumo":"A presidente do Federal Reserve de São Francisco, Mary Daly, destacou que a inteligência artificial desempenha um papel cada vez mais relevante nas decisões de política monetária. Segundo a executiva, a adoção da tecnologia afeta diretamente a produtividade, o mercado de trabalho e as projeções de inflação no curto e médio prazo. O acompanhamento rigoroso dessas transformações digitais é essencial para ajustar as taxas de juros de forma precisa. O posicionamento do Fed reforça como a IA transformou-se em uma variável macroeconômica fundamental.","link":"https://es.finance.yahoo.com/noticias/daly-fed-ia-importante-pol%C3%ADtica-164802435.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Le Monde.fr","pais":"França","titulo":"Com queda surpresa do PIB no terceiro trimestre, economia francesa flerta com a recessão","resumo":"A economia francesa registrou uma contração inesperada em seu Produto Interno Bruto no terceiro trimestre do ano, acendendo sinais de alerta. O resultado negativo surpreendeu analistas que esperavam um crescimento modesto impulsionado pelo consumo interno. A desaceleração do PIB coloca a França na iminência de uma recessão técnica, complicando ainda mais a gestão fiscal do governo.","link":"https://www.lemonde.fr/economie/article/2026/10/30/recul-surprise-du-pib-au-troisieme-trimestre-l-economie-francaise-flirte-avec-la-recession_6802918_3234.html","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Ayuntamiento de Valladolid","pais":"Espanha","titulo":"O Museu da Ciência de Valladolid celebra a Semana da Ciência com ampla programação para todos os públicos","resumo":"O Museu da Ciência de Valladolid preparou um evento especial para comemorar a Semana da Ciência. A programação diversificada inclui exposições temporárias, palestras com especialistas e atividades práticas. A meta é aproximar a comunidade de temas científicos contemporâneos de maneira lúdica e educativa. O evento visa incentivar a vocação científica e despertar a curiosidade em visitantes de todas as idades.","link":"https://www.valladolid.es/es/actualidad/noticias/museo-ciencia-valladolid-celebra-semana-ciencia-amplio-prog","categoria":"DIVULGAÇÃO CIENTÍFICA","lang":"pt"},{"fonte":"schleswig-holstein.de","pais":"Alemanha","titulo":"Política: Produção de semicondutores em Itzehoe","resumo":"A Alemanha fortalece sua autonomia tecnológica com novos investimentos voltados à produção de semicondutores na cidade de Itzehoe. A iniciativa visa reduzir a dependência europeia de fornecedores externos e impulsionar a cadeia global de suprimentos microeletrônicos. O projeto promete atrair empregos qualificados e consolidar a região como um polo estratégico da indústria de alta tecnologia.","link":"https://www.schleswig-holstein.de/DE/landesregierung/ministerien-behoerden/VII/_startseite/Artikel2026/IV_2026/261030_FB_Vishay?nn=e65d7965-27f2-43e0-b3d4-54a5dcf3a9ba","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"上观新闻","pais":"China","titulo":"Equipe universitária desenvolve tecnologia condutiva para impulsionar eletrônicos flexíveis","resumo":"Estudantes de graduação da Universidade de Ciência e Tecnologia da China Oriental desenvolveram um material compósito metálico inovador. A tecnologia visa garantir a produção nacional de insumos avançados para o mercado de eletrônicos flexíveis. O novo condutor oferece alta flexibilidade sem comprometer a eficiência de transmissão de corrente elétrica. O projeto reduz a dependência externa e acelera a aplicação de dispositivos dobráveis e vestíveis.","link":"https://www.shobserver.cn/news/detail?id=1204483","categoria":"INOVAÇÃO TECNOLÓGICA","lang":"pt"},{"fonte":"Investment Guru India","pais":"Índia","titulo":"Índia Sediará a 'Semana de Ciência e Parceria ICAR-CGIAR' em Abril do Próximo Ano","resumo":"A Índia confirmou que sediará o evento global focado em pesquisa e inovação agrícola em cooperação com a rede CGIAR. A iniciativa reunirá cientistas, especialistas e líderes governamentais para discutir estratégias sustentáveis de produção de alimentos. O encontro busca fortalecer a segurança alimentar e aplicar tecnologias agrícolas avançadas diante das mudanças climáticas.","link":"https://investmentguruindia.com/newsdetail/india-to-host-icar-cgiar-science-and-partnership-week-in-april-next-year128380","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"CNN Portugal","pais":"Portugal","titulo":"SIRESP vai passar para tecnologia 5G e permitir transmissão de vídeo em tempo real","resumo":"O sistema de comunicações de emergência SIRESP passará a adotar a tecnologia 5G, garantindo maior robustez operacional e velocidade nas transmissões. A atualização permitirá o envio de vídeo em alta definição em tempo real para melhorar a coordenação entre forças de segurança e socorro. Essa modernização representa um marco significativo na infraestrutura crítica de comunicações de Portugal.","link":"https://cnnportugal.iol.pt/siresp/comunicacoes-de-emergencia/siresp-vai-passar-para-tecnologia-5g-e-permitir-transmissao-de-video-em-tempo-real/20261030/6ae4bacfd34e53c759c78b93","categoria":"TELECOMUNICAÇÕES","lang":"pt"},{"fonte":"Valor Econômico","pais":"Brasil","titulo":"Nasdaq despenca com liquidação de posições no setor de tecnologia","resumo":"O índice acionário Nasdaq registrou uma forte queda impulsionada por uma onda de venda massiva de ações de empresas de tecnologia. Investidores demonstraram preocupação com as avaliações esticadas das companhias e a incerteza quanto aos lucros futuros do setor. O movimento de liquidação afetou diretamente o valor de grandes corporações globais de inovação. Analistas indicam que o mercado passa por uma reavaliação de riscos diante do cenário econômico global.","link":"https://valor.globo.com/financas/noticia/2026/10/30/nasdaq-despenca-com-liquidacao-de-posicoes-no-setor-de-tecnologia.ghtml","categoria":"MERCADO TECH","lang":"pt"},{"fonte":"InfoMoney","pais":"Estados Unidos","titulo":"Ações de Tecnologia Despencam nos EUA com Temores sobre Gastos em IA","resumo":"As ações das gigantes de tecnologia norte-americanas sofreram forte desvalorização após analistas questionarem o volume exorbitante de capital alocado em projetos de inteligência artificial. O ceticismo do mercado aumentou devido à demora no retorno sobre os investimentos bilionários em data centers e semicondutores. Investidores exigem maior clareza e previsibilidade sobre a rentabilidade dessas novas ferramentas tecnológicas. Essa desconfiança gerou uma onda de liquidação de papéis e pressionou o setor de inovação.","link":"https://www.infomoney.com.br/mercados/acoes-de-tecnologia-despencam-nos-eua-com-temores-sobre-gastos-em-ia/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"BFM","pais":"França","titulo":"Economia francesa estagna e ministro alerta para a necessidade de maiores esforços orçamentários","resumo":"O ministro das Contas Públicas francês alertou que a paralisação da economia exigirá cortes orçamentários ainda mais severos do que os previstos originalmente. A estagnação econômica reduz a arrecadação de impostos e compromete as metas de redução do déficit público nacional. Diante desse quadro, o governo precisará negociar medidas impopulares no parlamento para equilibrar as finanças do país.","link":"https://www.bfmtv.com/economie/economie-social/finances-publiques/l-economie-francaise-stagne-et-c-est-une-mauvaise-nouvelle-pour-le-budget-le-ministre-des-comptes-publics-estime-qu-il-va-falloir-faire-davantage-d-efforts-que-dans-le-texte-initial_AD-202610300509.html","categoria":"POLÍTICA","lang":"pt"},{"fonte":"Ayuntamiento de Madrid","pais":"Espanha","titulo":"Semana da Ciência: História explicada pela Física com Javier Ablanque","resumo":"Como parte das atividades da Semana da Ciência, o especialista Javier Ablanque conduz uma palestra instigante. O evento explora grandes acontecimentos históricos através das leis fundamentais da Física. A apresentação combina rigor acadêmico e entretenimento para mostrar o impacto da ciência no destino humano. A iniciativa demonstra como conceitos físicos ajudam a elucidar mistérios do passado.","link":"https://www.madrid.es/portales/munimadrid/es/Inicio/Actualidad/Actividades-y-eventos/Semana-de-la-Ciencia-2026-Conferencia-Historias-de-la-Historia-explicadas-por-la-Fisica-con-Javier-Ablanque/?vgnextfmt=default\u0026vgnextoid=2b9c231888881a10VgnVCM100000891ecb1aRCRD\u0026vgnextchannel=ca9671ee4a9eb410VgnVCM100000171f5a0aRCRD","categoria":"FÍSICA","lang":"pt"},{"fonte":"Yahoo","pais":"Alemanha","titulo":"Economia alemã cresce acima do previsto no terceiro trimestre impulsionada por gastos públicos","resumo":"O Produto Interno Bruto alemão surpreendeu analistas ao registrar expansão acima do esperado durante o terceiro trimestre. Os aportes e investimentos governamentais foram os principais motores por trás desse avanço expressivo. Os dados reforçam a resiliência da maior economia da Europa frente aos desafios globais e à volatilidade dos mercados.","link":"https://es.finance.yahoo.com/noticias/econom%C3%ADa-alemana-creci%C3%B3-previsto-tercer-140949327.html","categoria":"ECONOMIA","lang":"pt"},{"fonte":"新浪财经","pais":"China","titulo":"Xangai foca na indústria de satélites para liderar a nova economia espacial","resumo":"A maior metrópole econômica da China traçou um plano estratégico para transformar a fabricação de satélites em seu novo motor de crescimento. O projeto visa criar um ecossistema completo para comunicação espacial, navegação e observação terrestre. Empresas de tecnologia e institutos de pesquisa estão recebendo incentivos para expandir a infraestrutura em órbita. A iniciativa fortalece a posição do país na corrida comercial da exploração espacial privada.","link":"https://finance.sina.com.cn/jjxw/2026-10-31/doc-inixakva1843016.shtml","categoria":"TECNOLOGIA ESPACIAL","lang":"pt"},{"fonte":"G1","pais":"Brazil","titulo":"Has AI Become a Problem for Tech Giants? Understanding the Billion-Dollar Stock Market Plunge","resumo":"Major tech companies are facing intense pressure from the financial market due to high investments and uncertainties regarding the return on artificial intelligence. This distrust has resulted in a billion-dollar loss in market value for sector giants on the stock exchanges. The scenario reflects investors' apprehension regarding the sustainability of this accelerated growth. Experts are now analyzing whether massive infrastructure investments will translate into real profits in the short term.","link":"https://g1.globo.com/economia/noticia/2026/10/31/ia-virou-um-problema-para-as-gigantes-de-tecnologia-entenda-o-tombo-bilionario-nas-bolsas.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"G1","pais":"United States","titulo":"'Slopaganda': How AI Became an Electoral Weapon in the US and Moved Over $137 Million","resumo":"The use of generative artificial intelligence in political campaigns has reached unprecedented levels in the United States, moving over 137 million dollars. The phenomenon, dubbed 'slopaganda', utilizes hyper-realistic images, videos, and audio to manipulate public opinion and attack opponents. Experts warn about how quickly these fake contents spread on social media, challenging platforms and electoral legislation. This scenario raises deep concerns about the integrity of future democratic processes.","link":"https://g1.globo.com/tecnologia/noticia/2026/10/31/slopaganda-como-a-ia-virou-arma-eleitoral-nos-eua-e-movimentou-mais-de-us-137-milhoes.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Campus France","pais":"France","titulo":"Technology Transfer: Three French Research Institutes Lead in Europe","resumo":"Three renowned French research institutes have reached the top of European rankings in technology transfer and applied innovation. This performance highlights France's ability to transform cutting-edge scientific research into high-impact industrial and commercial solutions. The advancement strengthens the country's technological ecosystem and its global competitiveness against other innovation hubs.","link":"https://www.campusfrance.org/fr/transferts-de-technologie-trois-instituts-de-recherche-francais-leaders-en-europe","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Yorkshire Evening Post","pais":"England","titulo":"Major Surgical Breakthrough for Leeds as Hospital Introduces Pioneering Robotic Technology","resumo":"A hospital in Leeds has achieved a significant surgical milestone by adopting highly advanced new robotic technology. The innovation promises to drastically increase the precision of complex procedures and reduce patient recovery times. With this integration, the institution establishes itself at the forefront of medical care and the application of robotics in healthcare. This advancement represents a major impact for UK medicine and the quality of life of the local population.","link":"https://www.yorkshireeveningpost.co.uk/health/major-surgical-breakthrough-for-leeds-as-hospital-introduces-pioneering-robotic-technology-9321088","categoria":"ROBOTIC MEDICINE","lang":"en"},{"fonte":"National Geographic España","pais":"Spain","titulo":"Who Protects What You Think? The Technology That Can 'Read' Your Mind","resumo":"Advances in neurotechnology and artificial intelligence are enabling the decoding of brain signals with unprecedented precision. This innovation opens doors to revolutionary medical treatments and direct human-machine interfaces. However, urgent ethical and legal debates are emerging regarding mental privacy and neurorights. It is essential to establish regulations to prevent the misuse of this highly sensitive data.","link":"https://www.nationalgeographic.com.es/ciencia/quien-protege-que-piensas-ia-ya-se-ha-metido-nuestro-cerebro_29737","categoria":"NEUROTECHNOLOGY","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Asia-Pacific Conference: Boehringer CEO States That the West 'Does Not Have a Monopoly on Innovation'","resumo":"During the Asia-Pacific Conference, the leader of pharmaceutical giant Boehringer Ingelheim highlighted the growing relevance of Asian tech hubs. The executive stressed that the West needs to collaborate more closely with global research ecosystems to maintain competitiveness. The statement reflects the shift in the axis of global innovation and the need for strategies aligned with Eastern technological advancements.","link":"https://www.sueddeutsche.de/wirtschaft/asien-pazifik-konferenz-boehringer-chef-westen-hat-kein-monopol-auf-innovation-dpa.urn-newsml-dpa-com-20090101-261031-930-921468","categoria":"INNOVATION","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Is Artificial Intelligence Threatening Scientific Research? Controversy in Mathematics Raises Concerns","resumo":"The vertiginous advancement of artificial intelligence tools in science has sparked heated debates about the integrity and future of scientific research. In the field of mathematics, the growing reliance on algorithms to propose resolutions and analyze complex data raises questions about the depth of human learning. Experts warn of the risks of undetectable failures and the loss of traditional mathematical intuition. The scenario demands new ethical guidelines to balance technological innovation with academic rigor.","link":"https://news.yahoo.co.jp/articles/b04ac7671ba10da2c495bf388e9198103b525158","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"手机新浪网","pais":"China","titulo":"CATL Uses Artificial Intelligence to Accelerate Breakthroughs in Battery Technology","resumo":"The founder of CATL stated that current battery technology is still not sufficient and needs profound evolution. The company has begun integrating artificial intelligence to accelerate research and development in the field of electrochemistry. The approach makes it possible to simulate and discover new materials with unprecedented speed in the sector. The innovation promises to boost the performance and range of global electric vehicles.","link":"https://k.sina.com.cn/article_5953740931_162dee083067043wng.html?from=tech","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Brut","pais":"India","titulo":"How Are Lab-Grown Diamonds Born? The Science Behind Synthetic Diamonds","resumo":"Lab-grown diamonds represent a technological revolution in the gem and jewelry sector. Utilizing advanced high-pressure and high-temperature processes or chemical vapor deposition, science recreates the same conditions of the Earth's mantle. This innovation offers a sustainable, accessible, and ethically responsible alternative compared to traditional mining.","link":"https://www.brut.media/in/videos/culture-lifestyle/fashion/how-are-diamonds-born-in-a-lab-the-science-behind-lab-grown-diamonds-in-collab-with-limelight-diamonds","categoria":"SCIENCE","lang":"en"},{"fonte":"Município de Cinfães","pais":"Portugal","titulo":"Geopasturing: Technology at the Service of Livestock Farming and Territorial Protection!","resumo":"The initiative uses advanced technological tools to assist in traditional livestock activity and environmental management. The project aims to optimize grazing in high-risk areas, promoting ecological sustainability and forest fire prevention. The integration between innovation and natural resources strengthens the rural economy and territorial security in Portugal.","link":"https://cm-cinfaes.pt/noticias-base/geopastoreio-a-tecnologia-ao-servico-da-pastoricia-e-da-protecao-do-territorio","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Ministry of Education Studies Recreating Science Without Borders, Prioritizing Areas Like AI, Mathematics, and Engineering","resumo":"The Ministry of Education is studying the reformulation of the Science without Borders program to train Brazilian students abroad. The new version will have a strategic focus on crucial areas such as Artificial Intelligence, Mathematics, and Engineering. The initiative aims to qualify national labor to meet growing global technological demands. The project seeks to strengthen the country's innovation and scientific research ecosystem.","link":"https://oglobo.globo.com/brasil/educacao/noticia/2026/10/30/ministerio-da-educacao-estuda-recriar-ciencia-sem-fronteiras-priorizando-areas-como-ia-matematica-e-engenharias.ghtml","categoria":"SCIENCE AND EDUCATION","lang":"en"},{"fonte":"EL PAÍS English","pais":"United States","titulo":"'It's the Inflation, Stupid': US Voters Reject the Economy Despite Economic Growth","resumo":"Although macroeconomic data points to continuous growth in the United States, voter perception remains strongly negative due to high inflation. The high cost of living in essential items such as food and housing suffocates American families' budgets. This disconnect between official indicators and daily financial reality generates strong public discontent. As a result, the economic scenario becomes the central and most critical topic in current political discussions.","link":"https://english.elpais.com/economy-and-business/2026-10-31/its-the-inflation-stupid-us-voters-sour-on-the-economy-despite-economic-growth.html?outputType=amp","categoria":"ECONOMY","lang":"en"},{"fonte":"Le Grand Continent","pais":"France","titulo":"Trumpflation: How Trump Made American Inflation Rise Again","resumo":"The recent economic analysis debates the concept of Trumpflation and the effects of tariff and fiscal policies proposed on the United States economy. The resurgence of North American inflation generates direct repercussions on global markets and affects the international trade of France and the European Union. The scenario demands readjustments in the financial and investment strategies of major global corporations.","link":"https://legrandcontinent.eu/fr/2026/10/30/trumpflation-comment-trump-a-fait-repartir-linflation-americaine/","categoria":"TRENDING TOPICS","lang":"en"},{"fonte":"Valor Econômico","pais":"England","titulo":"European Stock Markets Close Mostly Lower Amid Tech Sell-Off","resumo":"Major European stock markets ended the day in negative territory, driven by a strong wave of selling in the technology sector. The widespread devaluation reflected investor fears in the face of economic uncertainties and the revaluation of high-growth assets. This massive liquidation directly impacted the region's main indices, including the London Stock Exchange. The movement sounds the alarm regarding the volatility and sustainability of the recent upturn in the technological segment.","link":"https://valor.globo.com/financas/noticia/2026/10/30/bolsas-da-europa-fecham-majoritariamente-em-queda-com-sell-off-de-tecnologia.ghtml","categoria":"FINANCIAL MARKET","lang":"en"},{"fonte":"El Español","pais":"Spain","titulo":"When City Mobility Stopped Being Science Fiction","resumo":"The transformation of urban transport has integrated smart technologies that previously existed only in fiction. Electric vehicles, autonomous traffic systems, and micromobility platforms have redefined commuting in major metropolises. This evolution aims to reduce carbon emissions and optimize the efficiency of daily routes. The future of smart cities now depends on connected and sustainable infrastructure.","link":"https://www.elespanol.com/enclave-ods/opinion/20261031/movilidad-ciudades-dejo-ciencia-ficcion/1003744436472_13.html","categoria":"URBAN MOBILITY","lang":"en"},{"fonte":"Euronews.com","pais":"Germany","titulo":"French economy stagnates: Recession risk and budgetary deadlock","resumo":"France's economy is facing a critical moment of stagnation resulting from political deadlock over the national budget. Experts warn of an increased risk of recession in the country, affecting the financial stability of the entire Eurozone. The scenario demands structural reforms and rapid legislative agreements to contain the negative impact on regional growth.","link":"https://de.euronews.com/2026/10/30/franzosische-wirtschaft-steht-still-rezessionsrisiko-und-haushaltsblockade","categoria":"ECONOMY","lang":"en"},{"fonte":"中国科技网","pais":"China","titulo":"Advancement in eVTOL technology: New four-blade rotor passes wind tunnel tests","resumo":"Researchers have achieved a significant breakthrough in the development of electric vertical takeoff and landing aircraft. The new overlapping-blade rotor system has successfully completed wind tunnel validation tests. The technology significantly reduces vibration and mechanical load, improving flight stability. This progress represents a crucial step toward the commercialization of urban air mobility vehicles.","link":"https://www.stdaily.com/web/gdxw/2026-10/31/content_605987.html","categoria":"AERONAUTICS","lang":"en"},{"fonte":"Voice of Ladakh","pais":"India","titulo":"SHS\u0026T Kargil inaugurates infrared dehydration technology for drying fruits and vegetables","resumo":"The SHS\u0026T Kargil institution has introduced a new infrared dehydration technology aimed at agricultural processing. This innovation seeks to optimize the drying of fruits and vegetables, better preserving nutrients and increasing the shelf life of local products. The advancement drives the region's scientific and economic development by strengthening the food supply chain.","link":"https://voiceofladakh.in/2026/10/shst-kargil-inaugurates-infrared-dehydration-technology-for-drying-fruits-and-vegetables/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"PCGuia","pais":"Portugal","titulo":"Z2RAM promises to resolve the global memory crisis by 2030","resumo":"A new semiconductor technology called Z2RAM has emerged as a promising solution to mitigate component shortages in the international market. With industrial implementation projected by the end of the decade, the innovation promises to revolutionize energy efficiency and the performance of electronic devices. The impact of this discovery could redefine the global supply chain for the technology industry.","link":"https://www.pcguia.pt/2026/10/o-fim-do-apocalipse-das-memorias-pode-chegar-pelas-maos-de-uma-tecnologia-inovadora-com-dois-transistores/","categoria":"INNOVATION","lang":"en"},{"fonte":"Gazeta do Povo","pais":"Brazil","titulo":"BYD asks Lula for agreement with China on technology transfer","resumo":"Electric vehicle manufacturer BYD has requested government support to facilitate technology transfer agreements between Brazil and China. The proposal aims to strengthen local production and accelerate the development of sustainable solutions in the national automotive industry. The advancement of these negotiations could consolidate the country as an innovation hub for electric mobility in Latin America. The initiative also promises to boost infrastructure and the generation of qualified jobs in the sector.","link":"https://www.gazetadopovo.com.br/republica/byd-pede-a-lula-acordo-com-a-china-para-transferencia-de-tecnologia/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Europa Press","pais":"United States","titulo":"Rubio requests G20 support for U.S. leadership in energy, technology, and AI to serve group interests","resumo":"During the G20 meeting, North American representatives defended strengthening the leadership of the United States in the artificial intelligence, advanced technology, and energy transition sectors. The proposal seeks to align American technological innovations with global demands for sustainable development and efficiency. The speech emphasized that joint advancement in these strategic areas will benefit global infrastructure and economic security. The initiative highlights the geostrategic competition for dominance in emerging technologies.","link":"https://www.europapress.es/internacional/noticia-rubio-pide-reunion-g2o-unidad-frente-desafios-economicos-energeticos-20261031034602.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Notícias ao Minuto","pais":"France","titulo":"Fitch maintains A+ rating for France, but lowers outlook","resumo":"Credit rating agency Fitch has maintained France's sovereign rating at A+, but lowered the country's outlook to negative. The decision reflects growing concerns regarding the trajectory of public debt and political challenges in passing the budget. The outlook change increases pressure on the French government to implement fiscal reforms and curb the public deficit.","link":"https://www.noticiasaominuto.com/economia/3076147/fitch-mantem-nota-a-para-a-franca-mas-baixa-perspetiva","categoria":"ECONOMY","lang":"en"},{"fonte":"International Atomic Energy Agency","pais":"England","titulo":"How nuclear technology is helping cities become more sustainable","resumo":"Nuclear technology is taking on a central role in modern urban development strategies and the energy transition. Through microreactors and efficiency innovations, this clean energy source offers viable alternatives to decarbonize major urban centers. Practical application demonstrates a significant reduction in carbon emissions without compromising the constant electricity supply. This trend points to a future where nuclear science is key in the pursuit of urban sustainability.","link":"https://www.iaea.org/newscenter/news/how-nuclear-technology-is-helping-cities-become-more-sustainable","categoria":"SUSTAINABLE ENERGY","lang":"en"},{"fonte":"Villa de la Orotava","pais":"Spain","titulo":"La Orotava hosts the 23rd Science Fair, the largest in its history and with a regional character","resumo":"The municipality of La Orotava is hosting the twenty-third edition of its traditional Science Fair. This year's event is the largest ever held, bringing together students, researchers, and the general public from the region. The program features live experiments, interactive workshops, and accessible science communication. The initiative reinforces the importance of popularizing scientific knowledge among young people.","link":"https://www.laorotava.es/es/noticias/la-orotava-acoge-la-xxiii-feria-de-la-ciencia-la-mayor-de-su-historia-y-con-caracter","categoria":"SCIENCE","lang":"en"},{"fonte":"Goethe-Institut","pais":"Germany","titulo":"Focus on AI: Politics and society in Germany and the U.S.","resumo":"An in-depth debate analyzes the impact of artificial intelligence on the political and social structures of Germany and the United States. Experts discuss how different regulatory approaches shape technological development and data governance. The dialogue highlights the ethical challenges and innovation opportunities that are redefining the future of international relations.","link":"https://www.goethe.de/ins/us/de/ver.cfm?event_id=27376538","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Notícias ao Minuto","pais":"China","titulo":"Chery announces charging technology capable of 500 km range with just a five-minute charge","resumo":"Chinese automaker Chery has unveiled a new ultra-fast charging architecture aimed at new-generation electric vehicles. The innovation promises to deliver a range of five hundred kilometers with a recharge time of just five minutes. The advancement seeks to eliminate drivers' range anxiety and rival traditional refueling times. The technology reinforces the leadership of the Chinese automotive sector in the transition to electric mobility.","link":"https://www.noticiasaominuto.com/auto/3075668/chery-anuncia-tecnologia-de-carregamento-para-500-km-em-cinco-minutos","categoria":"AUTOMOTIVE TECHNOLOGY","lang":"en"},{"fonte":"Bloomberg","pais":"India","titulo":"How Jio transformed India, one cheap byte at a time","resumo":"Operator Jio's entry into the Indian telecommunications market promoted a true digital revolution in the country. By offering mobile data at extremely affordable prices, the company connected hundreds of millions of citizens to the internet. This democratization of access boosted the digital economy, transformed media consumption, and accelerated technological innovation in India.","link":"https://www.bloomberg.com/news/features/2026-10-30/how-jio-transformed-india-s-mobile-internet-economy-one-cheap-byte-at-a-time","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Funchal Notícias","pais":"Portugal","titulo":"From science to artificial intelligence in the discussions at MadIT – Madeira Innovation Talks","resumo":"The MadIT event brought together experts on Madeira Island to debate the advancement of artificial intelligence and the fundamental role of scientific research. Discussions focused on digital transformation and the impact of these emerging tools on modern society and the regional economy. The initiative consolidates the region as an active hub for technological and scientific debate in Portugal.","link":"https://funchalnoticias.net/2026/10/30/da-ciencia-a-inteligencia-artificial-nas-conversas-do-madit-madeira-innovation-talks/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"DF physician uses high-tech robot in breast surgery","resumo":"A physician from the Federal District performed an innovative breast surgery procedure using cutting-edge robotic assistance. The advanced technology allows for more precise cuts, reduces recovery time, and minimizes risks for the patient. This advancement highlights the growth of high-precision medicine within the Brazilian healthcare network. The practice exemplifies how technological innovation can transform treatments and patients' quality of life.","link":"https://g1.globo.com/google/amp/df/distrito-federal/df2/video/medica-do-df-usa-robo-de-alta-tecnologia-em-cirurgia-de-mama-15147312.ghtml","categoria":"MEDICINE AND TECHNOLOGY","lang":"en"},{"fonte":"Poder360","pais":"United States","titulo":"U.S. stock markets close sharply down amid tech sector slump","resumo":"The main U.S. stock market indices ended the day with expressive losses, driven by the sharp decline of major technology companies. Investors showed caution in the face of uncertainties regarding the financial return on heavy investments in digital infrastructure. The mass sell-off reflected fears of a slowdown in the growth pace of Big Techs in the short term. The result triggered warnings about the volatility of the global financial market.","link":"https://www.poder360.com.br/poder-economia/bolsas-dos-eua-fecham-em-forte-queda-com-tombo-da-tecnologia/","categoria":"FINANCIAL MARKET","lang":"en"},{"fonte":"Euronews.com","pais":"France","titulo":"French economy stagnates as budgetary uncertainty fuels recession fears","resumo":"France's economy is experiencing a period of stagnation driven by doubts surrounding the country's new fiscal budget. The lack of clear definitions regarding spending cuts and tax hikes has weighed on local business and consumer confidence. This uncertain scenario increases the risk of a gross domestic product contraction in the upcoming quarters.","link":"https://www.euronews.com/2026/10/30/french-economy-at-a-standstill-as-budget-uncertainty-fuels-recession-fears","categoria":"ECONOMY","lang":"en"},{"fonte":"Lusa","pais":"Spain","titulo":"Spain's economy grew by 2.7% in the third quarter","resumo":"Spain's gross domestic product posted consistent growth of 2.7% in the third quarter. This economic performance beat market expectations and stood out within the European landscape. Growth was driven by household consumption, robust tourism, and strategic investments. Experts highlight the positive impact of this momentum on the local labor market.","link":"https://www.lusa.pt/economia/article/2026-10-30/48035354/economia-de-espanha-cresceu-2-7-no-terceiro-trimestre","categoria":"ECONOMY","lang":"en"},{"fonte":"WirtschaftsWoche","pais":"Germany","titulo":"German economy grows surprisingly and inflation drops significantly","resumo":"Defying pessimistic projections, Germany's economy showed unexpected growth in the recent quarter. At the same time, the country's inflation rate recorded a significant drop, bringing relief to consumers and investors. This positive movement suggests a recovery scenario and strengthens the European market's strategic indicators.","link":"https://www.wiwo.de/politik/konjunktur/konjunktur-deutsche-wirtschaft-waechst-ueberraschend-inflation-sinkt-deutlich/100266192.html","categoria":"MARKET","lang":"en"},{"fonte":"上观新闻","pais":"China","titulo":"2026 World Laureates Prize awarded to Shao Feng, first Chinese national winner","resumo":"The prestigious global science prize has recognized researcher Shao Feng for his fundamental contributions to the field of cellular biology. He became the first Chinese citizen to receive the international honor since the prize's inception. The scientist's discoveries have shed new light on the mechanisms of innate immunity and cellular pyroptosis. The award highlights the growing relevance and leadership of Chinese science on the global stage.","link":"https://www.jfdaily.com/news/detail?id=1204581","categoria":"SCIENCE","lang":"en"},{"fonte":"Business Standard","pais":"India","titulo":"UK Minister calls for swifter healthcare innovation and adoption between India and UK","resumo":"A UK minister has advocated for accelerating strategic partnerships in healthcare innovation between India and Britain. The cooperation seeks to facilitate the adoption of new medical technologies, accelerate clinical research, and improve healthcare systems in both nations. The initiative aims to bring technology and science ecosystems closer together to address global challenges.","link":"https://www.business-standard.com/economy/news/uk-minister-calls-for-speedier-india-uk-healthcare-innovation-adoption-126103100159_1.html","categoria":"INNOVATION","lang":"en"},{"fonte":"Notícias de Coimbra","pais":"Portugal","titulo":"From Coimbra to the country: TUMO wants to bring technology and creativity to more young people","resumo":"The TUMO educational center is expanding its activities from Coimbra to empower new generations in the fields of technology, design, and programming. The project offers innovative extracurricular methodologies to stimulate creative thinking and digital literacy among young Portuguese people. The initiative plays a crucial role in preparing future human capital for the tech market.","link":"https://www.noticiasdecoimbra.pt/de-coimbra-para-o-pais-tumo-quer-levar-tecnologia-e-criatividade-a-mais-jovens/","categoria":"EDUCATION","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Check which phones will lose WhatsApp support in November","resumo":"The WhatsApp messaging app will end support for several older smartphone models starting in November. The measure aims to ensure greater security and implement new features that require more up-to-date operating systems. Devices running outdated versions of Android and iOS will gradually lose access to the service. Affected users will need to update their devices' software or purchase new hardware to continue using the platform.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/10/31/confira-em-quais-celulares-o-whatsapp-deixa-de-funcionar-em-novembro.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Yahoo","pais":"United States","titulo":"Fed's Daly says AI is important for medium and short-term monetary policy","resumo":"San Francisco Federal Reserve President Mary Daly highlighted that artificial intelligence plays an increasingly relevant role in monetary policy decisions. According to the executive, the adoption of the technology directly affects productivity, the labor market, and short- and medium-term inflation projections. Rigorous monitoring of these digital transformations is essential to precisely adjust interest rates. The Fed's stance reinforces how AI has transformed into a fundamental macroeconomic variable.","link":"https://es.finance.yahoo.com/noticias/daly-fed-ia-importante-pol%C3%ADtica-164802435.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Le Monde.fr","pais":"France","titulo":"With surprise GDP drop in the third quarter, French economy flirts with recession","resumo":"The French economy recorded an unexpected contraction in its Gross Domestic Product in the third quarter of the year, raising red flags. The negative result surprised analysts who expected modest growth driven by domestic consumption. The slowdown in GDP puts France on the verge of a technical recession, further complicating the government's fiscal management.","link":"https://www.lemonde.fr/economie/article/2026/10/30/recul-surprise-du-pib-au-troisieme-trimestre-l-economie-francaise-flirte-avec-la-recession_6802918_3234.html","categoria":"ECONOMY","lang":"en"},{"fonte":"Ayuntamiento de Valladolid","pais":"Spain","titulo":"Valladolid Science Museum celebrates Science Week with a broad program for all audiences","resumo":"The Valladolid Science Museum has prepared a special event to celebrate Science Week. The diverse schedule includes temporary exhibitions, lectures with experts, and hands-on activities. The goal is to bring the community closer to contemporary scientific topics in a fun and educational way. The event aims to encourage scientific vocations and spark curiosity in visitors of all ages.","link":"https://www.valladolid.es/es/actualidad/noticias/museo-ciencia-valladolid-celebra-semana-ciencia-amplio-prog","categoria":"SCIENTIFIC OUTREACH","lang":"en"},{"fonte":"schleswig-holstein.de","pais":"Germany","titulo":"Policy: Semiconductor production in Itzehoe","resumo":"Germany is strengthening its technological autonomy with new investments aimed at semiconductor production in the city of Itzehoe. The initiative aims to reduce European dependence on external suppliers and boost the global microelectronic supply chain. The project promises to attract skilled jobs and solidify the region as a strategic hub for the high-tech industry.","link":"https://www.schleswig-holstein.de/DE/landesregierung/ministerien-behoerden/VII/_startseite/Artikel2026/IV_2026/261030_FB_Vishay?nn=e65d7965-27f2-43e0-b3d4-54a5dcf3a9ba","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"上观新闻","pais":"China","titulo":"University team develops conductive technology to boost flexible electronics","resumo":"Undergraduate students at East China University of Science and Technology have developed an innovative metallic composite material. The technology aims to ensure domestic production of advanced inputs for the flexible electronics market. The new conductor offers high flexibility without compromising electrical current transmission efficiency. The project reduces external dependence and accelerates the application of foldable and wearable devices.","link":"https://www.shobserver.cn/news/detail?id=1204483","categoria":"TECHNOLOGICAL INNOVATION","lang":"en"},{"fonte":"Investment Guru India","pais":"India","titulo":"India to host 'ICAR-CGIAR Science and Partnership Week' in April next year","resumo":"India has confirmed it will host the global event focused on agricultural research and innovation in cooperation with the CGIAR network. The initiative will bring together scientists, experts, and government leaders to discuss sustainable food production strategies. The meeting seeks to strengthen food security and apply advanced agricultural technologies in the face of climate change.","link":"https://investmentguruindia.com/newsdetail/india-to-host-icar-cgiar-science-and-partnership-week-in-april-next-year128380","categoria":"SCIENCE","lang":"en"},{"fonte":"CNN Portugal","pais":"Portugal","titulo":"SIRESP to transition to 5G technology and enable real-time video transmission","resumo":"The SIRESP emergency communications system will adopt 5G technology, ensuring greater operational robustness and transmission speed. The upgrade will allow the sending of high-definition video in real time to improve coordination between security and rescue forces. This modernization represents a significant milestone in Portugal's critical communications infrastructure.","link":"https://cnnportugal.iol.pt/siresp/comunicacoes-de-emergencia/siresp-vai-passar-para-tecnologia-5g-e-permitir-transmissao-de-video-em-tempo-real/20261030/6ae4bacfd34e53c759c78b93","categoria":"TELECOMMUNICATIONS","lang":"en"},{"fonte":"Valor Econômico","pais":"Brazil","titulo":"Nasdaq plunges amid tech sector stock sell-off","resumo":"The Nasdaq stock index registered a sharp drop driven by a wave of massive selling in technology company stocks. Investors showed concern over stretched company valuations and uncertainty regarding the sector's future earnings. The liquidation movement directly affected the value of large global innovation corporations. Analysts indicate that the market is undergoing a risk reassessment in light of the global economic scenario.","link":"https://valor.globo.com/financas/noticia/2026/10/30/nasdaq-despenca-com-liquidacao-de-posicoes-no-setor-de-tecnologia.ghtml","categoria":"TECH MARKET","lang":"en"},{"fonte":"InfoMoney","pais":"United States","titulo":"Tech Stocks Plunge in the US Amid Fears Over AI Spending","resumo":"Shares of major US tech companies suffered a sharp decline after analysts questioned the exorbitant amount of capital allocated to artificial intelligence projects. Market skepticism has increased due to delays in returns on multibillion-dollar investments in data centers and semiconductors. Investors are demanding greater clarity and predictability regarding the profitability of these new technological tools. This distrust triggered a wave of stock sell-offs and pressured the innovation sector.","link":"https://www.infomoney.com.br/mercados/acoes-de-tecnologia-despencam-nos-eua-com-temores-sobre-gastos-em-ia/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"BFM","pais":"France","titulo":"French Economy Stagnates as Minister Warns of Need for Greater Budgetary Efforts","resumo":"The French Public Accounts Minister warned that the economic standstill will require even harsher budget cuts than originally anticipated. Economic stagnation reduces tax revenues and compromises the country's national public deficit reduction targets. Given this scenario, the government will need to negotiate unpopular measures in parliament to balance the nation's finances.","link":"https://www.bfmtv.com/economie/economie-social/finances-publiques/l-economie-francaise-stagne-et-c-est-une-mauvaise-nouvelle-pour-le-budget-le-ministre-des-comptes-publics-estime-qu-il-va-falloir-faire-davantage-d-efforts-que-dans-le-texte-initial_AD-202610300509.html","categoria":"POLITICS","lang":"en"},{"fonte":"Ayuntamiento de Madrid","pais":"Spain","titulo":"Science Week: History Explained Through Physics with Javier Ablanque","resumo":"As part of Science Week activities, specialist Javier Ablanque is leading an insightful lecture. The event explores major historical events through the fundamental laws of physics. The presentation combines academic rigor and entertainment to showcase the impact of science on human destiny. The initiative demonstrates how physical concepts help elucidate mysteries of the past.","link":"https://www.madrid.es/portales/munimadrid/es/Inicio/Actualidad/Actividades-y-eventos/Semana-de-la-Ciencia-2026-Conferencia-Historias-de-la-Historia-explicadas-por-la-Fisica-con-Javier-Ablanque/?vgnextfmt=default\u0026vgnextoid=2b9c231888881a10VgnVCM100000891ecb1aRCRD\u0026vgnextchannel=ca9671ee4a9eb410VgnVCM100000171f5a0aRCRD","categoria":"PHYSICS","lang":"en"},{"fonte":"Yahoo","pais":"Germany","titulo":"German Economy Grows More Than Expected in the Third Quarter Boosted by Public Spending","resumo":"Germany's Gross Domestic Product surprised analysts by registering higher-than-expected expansion during the third quarter. Government contributions and investments were the main drivers behind this significant advance. The data reinforces the resilience of Europe's largest economy in the face of global challenges and market volatility.","link":"https://es.finance.yahoo.com/noticias/econom%C3%ADa-alemana-creci%C3%B3-previsto-tercer-140949327.html","categoria":"ECONOMY","lang":"en"},{"fonte":"新浪财经","pais":"China","titulo":"Shanghai Focuses on Satellite Industry to Lead New Space Economy","resumo":"China's largest economic metropolis has outlined a strategic plan to turn satellite manufacturing into its new growth engine. The project aims to create a complete ecosystem for space communication, navigation, and Earth observation. Tech companies and research institutes are receiving incentives to expand infrastructure in orbit. The initiative strengthens the country's position in the commercial race of private space exploration.","link":"https://finance.sina.com.cn/jjxw/2026-10-31/doc-inixakva1843016.shtml","categoria":"SPACE TECHNOLOGY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
