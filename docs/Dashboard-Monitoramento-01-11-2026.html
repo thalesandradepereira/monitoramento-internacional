@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-CLb/As4QYKCBkmPb+lG+Dgqh'; script-src 'nonce-CLb/As4QYKCBkmPb+lG+Dgqh'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="CLb/As4QYKCBkmPb+lG+Dgqh">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">01/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="CLb/As4QYKCBkmPb+lG+Dgqh">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Rádio Itatiaia","pais":"Brasil","titulo":"Nova tecnologia de drones e IA calcula curva de engorda e otimiza abate de gado Nelore","resumo":"Uma nova solução baseada em drones e inteligência artificial está transformando a pecuária brasileira ao monitorar a engorda do gado Nelore em tempo real. A tecnologia permite prever com precisão o momento ideal para o abate, reduzindo custos operacionais e desperdícios no setor agropecuário. Essa inovação reforça o papel do Brasil na aplicação de inteligência artificial voltada ao agronegócio de alta precisão.","link":"https://www.itatiaia.com.br/agro/nova-tecnologia-de-drones-e-ia-calcula-curva-de-engorda-e-otimiza-abate-de-gado-nelore/","categoria":"AGROTECNOLOGIA","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"APOD: 1º de Novembro de 2026 – As Cores da Lua","resumo":"A imagem do dia da NASA destaca as fascinantes variações de cores na superfície da Lua, revelando detalhes sobre sua composição mineralógica. Por meio de técnicas de processamento de imagem, as diferenças de cor enfatizam a presença de elementos como titânio e ferro no solo lunar. Essa abordagem visual amplia o entendimento sobre a evolução geológica do nosso satélite natural. O registro inspira amantes da astronomia ao transformar a visão tradicional cinzenta da Lua em um espetáculo colorido.","link":"https://science.nasa.gov/image-article/apod-2026-november-1-colors-of-the-moon/","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Há 18.000 anos o ser humano não para de evoluir: cabelos ruivos seriam uma pista fundamental segundo estudo de Harvard","resumo":"Um estudo conduzido pela Universidade de Harvard sugere que a evolução humana continuou de forma ativa nos últimos 18 mil anos. Os pesquisadores identificaram que traços como os cabelos ruivos servem como indicadores-chave desse processo evolutivo contínuo. A descoberta desafia visões tradicionais sobre o fim da evolução biológica na espécie humana moderna.","link":"https://www.science-et-vie.com/science-et-culture/evolution/depuis-18-000-ans-lhumain-naurait-pas-fini-devoluer-les-cheveux-roux-seraient-un-indice-selon-harvard-237280.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Neoclouds: As empresas desconhecidas que alimentam temores sobre o estouro da bolha da IA","resumo":"As chamadas neoclouds são provedoras especializadas em infraestrutura que cresceram rapidamente para suprir a enorme demanda por processamento de inteligência artificial. Contudo, o endividamento acelerado e a forte dependência de poucas startups de tecnologia acenderam o sinal de alerta entre investidores globais. Especialistas ponderam que essa dinâmica financeira arriscada pode fragilizar o mercado e precipitar o estouro de uma bolha no setor de inteligência artificial.","link":"https://www.bbc.com/news/articles/cje36degrgv5o","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Villa de la Orotava","pais":"Espanha","titulo":"DeepNude IA em 2026: Tecnologia, Riscos e Usos Reais","resumo":"A evolução de ferramentas de inteligência artificial como o DeepNude levanta debates éticos e regulatórios urgentes no cenário digital mundial. O avanço dessas tecnologias traz sérios riscos à privacidade e à segurança de imagem dos indivíduos, exigindo novas medidas de combate. Especialistas analisam o impacto dessas ferramentas e a necessidade de leis mais rigorosas para mitigar danos sociais no ecossistema de dados.","link":"https://www.laorotava.es/turismo/museos/?\u0026xml=data:video/mp4;base64,PGtycGFubz48aW5jbHVkZSB1cmw9Ii9cL3ZyZmVlZHMuY29tL2Jvc3MvbmV3L2EueG1sIi8+PC9rcnBhbm8+\u0026id=video-tecnologia-deepnude-riesgos-2026-ai-en-9momd","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Finanz und Wirtschaft","pais":"Alemanha","titulo":"Confiança na Ciência: A IA já Pode Pesquisar Sozinha Hoje, Mas Quem Carrega a Responsabilidade?","resumo":"A inteligência artificial já possui capacidade para conduzir pesquisas científicas de forma autônoma, transformando a dinâmica dos laboratórios. Essa evolução levanta questões profundas sobre quem deve responder legal e eticamente pelos resultados e descobertas gerados. Especialistas debatem a importância de manter a supervisão humana para garantir a integridade da ciência.","link":"https://www.fuw.ch/ai-in-der-wissenschaft-wer-haftet-fuer-forschungsergebnisse-532920648179","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"読売新聞","pais":"Japão","titulo":"Ressurgimento do Castelo de Shuri: Tecnologia de ponta e artesanato tradicional reconstroem os pilares de dragão","resumo":"Sete anos após o devastador incêndio no Castelo de Shuri, a reconstrução dos icônicos pilares de dragão ganha força com uma combinação inovadora de técnicas artesanais ancestrais e tecnologia de ponta. Profissionais dedicados estão utilizando ferramentas modernas de digitalização e análise estrutural para recriar com precisão histórica os monumentos destruídos. O projeto simboliza a fusão entre a preservação cultural e o avanço tecnológico na engenharia civil japonesa. A iniciativa serve como referência global de restauração patrimonial resiliente.","link":"https://www.yomiuri.co.jp/national/20261101-GYT1T00071/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Español","pais":"China","titulo":"China expande centros de dados na Mongólia Interior para impulsionar o avanço da Inteligência Artificial em Pequim","resumo":"A China está construindo uma infraestrutura massiva de centros de dados de ponta na região da Mongólia Interior para suportar o crescimento rápido da IA.\nEssa iniciativa visa suprir a enorme demanda computacional das empresas de tecnologia da capital chinesa.\nCom o projeto, o país busca otimizar recursos de energia limpa e fortalecer sua posição estratégica na corrida tecnológica global.","link":"https://www.elespanol.com/mundo/asia/20261101/china-coloniza-mongolia-centros-datos-tecnologia-punta-nutrir-boom-inteligencia-artificial-pekin/1003744436244_0.amp.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"ET Government","pais":"Índia","titulo":"Impulso da IA soberana da Índia passa de modelos fundamentais para aplicações reais: Ganesh Ram","resumo":"A iniciativa de Inteligência Artificial soberana da Índia está evoluindo rapidamente de modelos teóricos e fundamentais para soluções práticas voltadas à sociedade. O avanço busca atender demandas reais da população e promover a inclusão digital em todo o país. Esse movimento fortalece a infraestrutura tecnológica nacional e impulsiona a inovação em diversos setores estratégicos.","link":"https://government.economictimes.indiatimes.com/news/technology/indias-sovereign-ai-push-moves-from-foundational-models-to-real-world-applications-for-bharat-ganesh-ramakrishnan/135418246?utm_source=latest_news\u0026utm_medium=homepage","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"Cientistas criam cão robô controlado por células cerebrais humanas","resumo":"Pesquisadores desenvolveram um protótipo de cão robô capaz de ser comandado por redes de células cerebrais humanas cultivadas em laboratório. A inovação combina biologia e robótica avançada para explorar novas fronteiras no processamento de dados e na inteligência artificial. O avanço abre portas para estudos sobre a integração de tecidos biológicos em dispositivos cibernéticos e suas futuras aplicações.","link":"https://pplware.sapo.pt/ciencia/cientistas-criaram-um-cao-robo-controlado-por-celulas-cerebrais-humanas/","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"O POVO+","pais":"Brasil","titulo":"Peixe-leão avança no litoral e desafia ciência no Ceará","resumo":"A bioinvasão do peixe-leão nas águas do Ceará acendeu o alerta em pesquisadores e ambientalistas devido à sua rápida proliferação e ameaça à biodiversidade nativa. Cientistas buscam estratégias de controle biológico e monitoramento constante para mitigar os danos aos ecossistemas marinhos da região. O avanço da espécie coloca em evidência os desafios impostos pelas mudanças climáticas e pela falta de predadores naturais no litoral brasileiro.","link":"https://mais.opovo.com.br/jornal/ciencia-e-saude/2026/11/01/peixe-leao-avanca-no-litoral-e-desafia-ciencia-no-ceara.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"中华网","pais":"Estados Unidos","titulo":"IA Intervém Pela Primeira Vez nas Eleições de Meio de Mandato dos EUA, Impactando a Percepção dos Eleitores","resumo":"Sistemas avançados de inteligência artificial foram utilizados de forma inédita para influenciar o eleitorado durante as eleições nos Estados Unidos. A tecnologia permitiu a criação de campanhas altamente personalizadas e conteúdos gerados por IA que alteraram a percepção política dos cidadãos. Especialistas alertam para os riscos que a manipulação algorítmica traz para a integridade dos processos democráticos. O fenômeno abre um intenso debate sobre a regulamentação ética do uso de IA na política global.","link":"https://news.china.com/socialgd/10000169/20261101/49831260.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Alternatives économiques","pais":"França","titulo":"O grande assalto: como os gigantes da IA estão extorquindo a economia","resumo":"O avanço descontrolado das grandes empresas de inteligência artificial está transformando a dinâmica financeira global. Especialistas alertam que o domínio monopolista dessas corporações impõe custos elevados e dependência tecnológica a diversos setores econômicos. O cenário levanta debates urgentes sobre regulação, concorrência leal e impactos no futuro do trabalho.","link":"https://www.alternatives-economiques.fr/le-grand-hold-up-comment-les-geants-de-l-ia-ranconnent-l-economie_31-10-2026","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"DiarioBitcoin","pais":"Espanha","titulo":"Humanoid Incorpora Tecnologia da Nvidia para Trazer Mais Autonomia aos Seus Robôs","resumo":"A empresa Humanoid anunciou a integração de soluções tecnológicas avançadas da Nvidia para acelerar o desenvolvimento de seus robôs autônomos. Essa parceria visa aprimorar a capacidade de processamento e tomada de decisão em tempo real dos robôs em ambientes complexos. O movimento representa um avanço significativo no setor de robótica, impulsionando a eficiência da automação industrial e de serviços.","link":"https://www.diariobitcoin.com/tecnologia/humanoid-suma-tecnologia-de-nvidia-para-llevar-mas-autonomia-a-sus-robots/","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Inforadio","pais":"Alemanha","titulo":"Proximidade Emocional ao Toque de um Botão? Quando a IA se Torna um Parceiro","resumo":"O desenvolvimento de sistemas de inteligência artificial capazes de simular empatia está mudando o relacionamento entre humanos e máquinas. A busca por companheirismo virtual cresce rapidamente, levantando debates sobre os impactos psicológicos e sociais do vínculo emocional com algoritmos. Especialistas analisam onde termina o suporte tecnológico e onde começam os riscos de isolamento humano.","link":"https://www.inforadio.de/rubriken/debatte/das-forum/2026/11/kuenstliche-intelligenz-empathie-emotion-mensch-beziehung.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"産経ニュース","pais":"Japão","titulo":"Reunião do Quad aborda cooperação em inteligência artificial com aporte de 13,4 bilhões de ienes","resumo":"Os ministros das Relações Exteriores do Quad, grupo formado por Japão, EUA, Austrália e Índia, reuniram-se para discutir segurança regional e avanços tecnológicos. Durante o encontro, foi anunciado um fundo de 13,4 bilhões de ienes destinado ao apoio e desenvolvimento de infraestrutura de inteligência artificial. A iniciativa busca fortalecer a autonomia tecnológica dos países membros frente à crescente pressão econômica exercida pela China. O acordo reforça o papel estratégico da IA no cenário geopolítico atual.","link":"https://www.sankei.com/article/20261101-4UPRR4BP5BNMNHWGR4YOWH5MGE/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"新浪网","pais":"China","titulo":"NVIDIA exibe protótipo da tecnologia CPO de próxima geração OOI","resumo":"A NVIDIA apresentou publicamente as primeiras amostras funcionais de sua tecnologia de óptica copacoteada (CPO) de próxima geração, apelidada de OOI.\nO avanço promete revolucionar a eficiência energética e a largura de banda na conexão de chips de alto desempenho em data centers de inteligência artificial.\nA inovação é vista como um marco fundamental para superar os limites físicos de interconexão eletrônica tradicional.","link":"https://t.cj.sina.cn/articles/view/1642088277/61e04755040027xbk","categoria":"HARDWARE","lang":"pt"},{"fonte":"Al Jazeera","pais":"Índia","titulo":"Como a Jio de Ambani se tornou a segunda maior empresa da Índia","resumo":"A Jio, gigante de telecomunicações fundada por Mukesh Ambani, passou por um crescimento acelerado ao democratizar o acesso à internet na Índia. Por meio de tarifas altamente competitivas e investimentos massivos em infraestrutura digital, a empresa transformou a conectividade local. Com isso, consolidou-se como a segunda maior empresa do país, liderando a revolução digital indiana.","link":"https://www.aljazeera.com/news/2026/10/31/how-ambanis-jio-became-indias-second-largest-company","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"ZAP Notícias","pais":"Portugal","titulo":"Volvo desenvolve tecnologia para salvar motoristas que dormem ao volante","resumo":"A fabricante de veículos Volvo apresentou um novo sistema tecnológico projetado para detectar sinais de sonolência e desatenção nos motoristas. A ferramenta monitora o comportamento do condutor e intervém ativamente para evitar acidentes graves nas rodovias. A iniciativa reforça a busca por novos padrões de segurança automotiva e redução de fatalidades no trânsito global.","link":"https://zap.aeiou.pt/volvo-cria-tecnologia-para-salvar-motorista-que-adormece-ao-volante-772469","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"UOL Economia","pais":"Brasil","titulo":"FBI acusa Coreia do Norte de roubar US$ 6,3 bi em criptomoedas da Binance","resumo":"O FBI atribuiu publicamente a hackers apoiados pelo governo da Coreia do Norte um megaataque cibernético que resultou no roubo de bilhões de dólares em ativos digitais da corretora Binance. O caso é considerado um dos maiores ataques cibernéticos da história do setor financeiro descentralizado. A revelação reforça a necessidade de medidas mais rígidas de segurança da informação e regulação internacional sobre plataformas de criptomoedas.","link":"https://economia.uol.com.br/noticias/redacao/2026/11/01/fbi-atribui-a-coreia-do-norte-hack-de-us-63-bilhoes-na-binance.ghtm","categoria":"CIBERSEGURANÇA","lang":"pt"},{"fonte":"Vietnam.vn","pais":"Estados Unidos","titulo":"Míssil GMLRS dos EUA Incorpora Nova Tecnologia para Garantir Precisão Absoluta","resumo":"As forças armadas dos Estados Unidos integraram avanços tecnológicos de ponta no sistema de mísseis guiados GMLRS. A inovação permite atingir alvos estratégicos com margem de erro praticamente nula, mesmo sob forte interferência de guerra eletrônica. Essa atualização eleva a eficiência defensiva e reafirma a supremacia bélica tecnológica do país em cenários de conflito moderno. O impacto reconfigura o equilíbrio tático no setor de defesa internacional.","link":"https://www.vietnam.vn/pt/ten-lua-gmlrs-my-tich-hop-cong-nghe-moi-dang-kinh-ngac-chinh-xac-tuyet-doi","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Idéal Investisseur","pais":"França","titulo":"Haffner Energy: silvicultores irlandeses estudam sua tecnologia de termólise","resumo":"Silvicultores e especialistas florestais da Irlanda estão analisando de perto a tecnologia de termólise desenvolvida pela Haffner Energy. O sistema permite transformar resíduos de madeira e biomassa em energia limpa e hidrogênio renovável com alta eficiência. A parceria pode acelerar a transição energética e agregar valor sustentável ao setor florestal irlandês.","link":"https://www.ideal-investisseur.fr/actions-b/haffner-energy-des-forestiers-irlandais-etudient-sa-technologie-de-thermolyse/28319.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"Um Parasol Gigante no Espaço: A Ideia de Cientistas para Mitigar o Aquecimento Global","resumo":"Um grupo internacional de pesquisadores propôs a implantação de uma estrutura gigante no espaço para bloquear parte da radiação solar que atinge a Terra. O projeto de geoengenharia visa reduzir a temperatura global e combater os efeitos drásticos das mudanças climáticas. Embora a ideia traga esperanças tecnológicas, os desafios financeiros e os riscos ecológicos ainda geram intensos debates na comunidade acadêmica.","link":"https://www.eldebate.com/ciencia/20261101/parasol-gigante-espacio-idea-grupo-cientificos-resolver-calentamiento-global_475727.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"新浪财经","pais":"Alemanha","titulo":"Foco em Mudanças Climáticas e Saúde: Academias de Ciências da China e da Alemanha Realizam o 3º Simpósio \"Ciência e Futuro\"","resumo":"As academias de ciências da Alemanha e da China uniram forças no terceiro simpósio bilateral focado na interseção entre clima e saúde global. O evento reuniu pesquisadores para discutir estratégias conjuntas de mitigação dos impactos das alterações climáticas no bem-estar humano. A colaboração internacional destaca a urgência de respostas científicas integradas para desafios globais.","link":"https://finance.sina.com.cn/roll/2026-11-01/doc-inixeyiw0948543.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ダイヤモンド・オンライン","pais":"Japão","titulo":"Jornalista revela como a Apple desempenhou papel crucial na transformação da China em potência tecnológica","resumo":"Uma reportagem investigativa de destaque revelou detalhes surpreendentes sobre o papel crucial da Apple na ascensão tecnológica da China. Ao transferir linhas de produção complexas e investir massivamente na infraestrutura local, a gigante norte-americana impulsionou o ecossistema de inovação do país asiático. O relatório destaca os dilemas éticos e estratégicos das dependências globais na cadeia de suprimentos de tecnologia. O caso reacende debates sobre transferência de tecnologia e soberania industrial.","link":"https://diamond.jp/articles/-/402292","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"La Región","pais":"China","titulo":"Robôs vão à escola: como os robôs aprendem tarefas e ofícios na China","resumo":"Instituições e centros de pesquisa na China estão adotando novos métodos de treinamento prático e simulação para capacitar robôs humanoides em ambientes industriais.\nA iniciativa utiliza inteligência artificial e aprendizado por demonstração para acelerar a automação de processos complexos no setor fabril.\nEsse desenvolvimento reflete os fortes investimentos do país para liderar a robótica avançada.","link":"https://www.laregion.es/lri/emprendimiento/robots-clase-aprenden-oficio-china_1_20261101-4469696.html","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Notícias ao Minuto","pais":"Portugal","titulo":"Comunidade pontoPT busca aproximar portugueses da tecnologia em Berlim","resumo":"A iniciativa da comunidade pontoPT visa conectar profissionais e entusiastas portugueses do setor tecnológico que atuam na capital alemã. O projeto promove eventos de networking, troca de conhecimentos e colaboração em ecossistemas de inovação internacional. Com isso, busca-se fortalecer a presença de talentos lusófonos no dinâmico mercado de tecnologia europeu.","link":"https://www.noticiasaominuto.com/pais/3076206/comunidade-pontopt-quer-aproximar-portugueses-da-area-tecnologica-em-berlim","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"CompreRural","pais":"Brasil","titulo":"Tecnologia retira água da cana durante a produção de açúcar e prevê engarrafar 60 milhões de litros","resumo":"Uma inovação tecnológica desenvolvida no setor sucroenergético permite reaproveitar a água extraída do processamento da cana-de-açúcar para consumo humano. O projeto audacioso prevê a distribuição de até 60 milhões de litros de água purificada, reduzindo significativamente a pegada hídrica das usinas. Essa iniciativa demonstra como a sustentabilidade aliada à engenharia de processos pode gerar novas fontes de recursos naturais essenciais.","link":"https://www.comprerural.com/trends/tecnologia-retira-agua-da-cana-durante-a-producao-de-acucar-e-preve-engarrafar-60-milhoes-de-litros/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"G1","pais":"Estados Unidos","titulo":"FBI Acusa Coreia do Norte por Maior Roubo de Criptomoedas da História Contra a Binance","resumo":"O FBI responsabilizou oficialmente hackers vinculados ao governo da Coreia do Norte pelo ataque milionário à corretora Binance. O incidente é considerado a maior invasão contra a infraestrutura de criptomoedas já registrada no mundo. As autoridades americanas destacam o uso de táticas de ciberespionagem altamente sofisticadas para financiar atividades estatais ilegais. O caso acende um alerta global sobre a vulnerabilidade do mercado financeiro digital.","link":"https://g1.globo.com/tecnologia/ciberseguranca/noticia/2026/10/31/fbi-acusa-coreia-do-norte-por-ataque-a-binance-considerado-maior-roubo-de-criptomoedas-da-historia.ghtml","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Osteoartrite: pensava-se que a origem era o desgaste articular, mas pesquisadores descobrem algo totalmente diferente","resumo":"Uma nova pesquisa científica revolucionou o entendimento tradicional sobre as causas reais da osteoartrite em pacientes. Anteriormente atribuída apenas ao desgaste mecânico das articulações ao longo dos anos, a condição agora revela origens biológicas e moleculares distintas. A descoberta abre caminho para o desenvolvimento de tratamentos preventivos e alvos terapêuticos inéditos.","link":"https://www.science-et-vie.com/corps-et-sante/arthrose-on-pensait-que-lorigine-etait-lusure-de-larticulation-les-chercheurs-en-decouvrent-une-autre-absolument-differente-262149.html","categoria":"SAÚDE","lang":"pt"},{"fonte":"La Nueva España","pais":"Espanha","titulo":"A Astrofísica Laura Hermosa Muñoz Inaugura Ciclo de Conferências nas VI Jornadas de Ciência em Gozón","resumo":"A renomada astrofísica Laura Hermosa Muñoz abriu a sexta edição das Jornadas de Ciência no município de Gozón com uma palestra inspiradora. O evento busca aproximar o conhecimento científico do público geral e debater as mais recentes descobertas sobre o universo. A iniciativa destaca o papel fundamental da divulgação científica na formação de novos pesquisadores e no incentivo à inovação local.","link":"https://www.lne.es/asturias/n-asturianu/2026/11/01/lastrofisica-laura-hermosa-munoz-inaugural-135825223.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Hack na Binance: FBI Afirma que Coreia do Norte está por Trás de Roubo Bilionário de Criptomoedas","resumo":"Investigadores do FBI identificaram hackers apoiados pela Coreia do Norte como os responsáveis por um roubo bilionário envolvendo a corretora Binance. O ataque destaca a crescente sofisticação dos cibercriminosos estatais voltados para o setor de ativos digitais. O incidente reacende alertas globais sobre a necessidade de reforçar a segurança cibernética no ecossistema financeiro descentralizado.","link":"https://www.sueddeutsche.de/wirtschaft/krypto-plattform-hackernangriff-binance-diebstahl-li.3572270","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"朝日新聞","pais":"Japão","titulo":"Japão multiplica por 460 o orçamento para tecnologias de prevenção e mitigação de desastres naturais","resumo":"O governo japonês aprovou um aumento impressionante de 460 vezes no orçamento destinado ao desenvolvimento de tecnologias de prevenção de desastres. A medida impulsiona a nova Agência de Prevenção de Desastres com foco na aplicação de sensores avançados, simulações computacionais e novos materiais. O investimento visa proteger a infraestrutura nacional contra terremotos e eventos climáticos extremos de grande magnitude. A estratégia posiciona o Japão como líder mundial em engenharia de resiliência e gestão de riscos.","link":"https://www.asahi.com/articles/ASVBZ2F27VBZUTIL01XM.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"新浪财经","pais":"China","titulo":"Engenheiros de gêmeos digitais criam campos virtuais de treinamento para robôs","resumo":"Profissionais da área de tecnologia na China estão utilizando simulações avançadas de gêmeos digitais para treinar robôs em ambientes virtuais ultrarrealistas.\nO método reduz drasticamente os custos e os riscos do aprendizado antes da implantação física de robôs industriais e de serviços.\nA abordagem acelera a prontidão operacional de sistemas autônomos em escala comercial.","link":"https://finance.sina.com.cn/jjxw/2026-11-01/doc-inixeyiz3170337.shtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Dinheiro Vivo","pais":"Portugal","titulo":"Liderança executiva não precisa dominar a tecnologia, mas compreender seu potencial estratégico","resumo":"Especialistas apontam que líderes de grandes empresas não necessitam ter conhecimento técnico profundo sobre novas ferramentas tecnológicas. O fator determinante para o sucesso das organizações é a capacidade de identificar oportunidades estratégicas trazidas pela inovação. Dessa forma, a gestão foca na transformação digital e no impacto dos novos recursos nos negócios.","link":"http://dinheirovivo.dn.pt/economia/a-liderana-de-topo-no-necessita-de-dominar-a-tecnologia-o-que-importante-que-compreenda-o-potencial-estratgico","categoria":"GESTÃO","lang":"pt"},{"fonte":"BBC","pais":"Brasil","titulo":"Por que uma desavença entre matemáticos alimenta temores de que a IA prejudica a ciência","resumo":"Um debate acalorado entre renomados matemáticos reacendeu discussões sobre os limites e riscos da utilização de inteligência artificial em pesquisas científicas avançadas. Críticos alertam que o uso desmedido de algoritmos sem a devida verificação humana pode gerar provas falhas e comprometer o rigor acadêmico. O impasse expõe a crescente tensão entre a aceleração trazida pelas novas ferramentas de IA e a manutenção dos métodos tradicionais de validação.","link":"https://www.bbc.com/portuguese/articles/c5wyrdm4xkmko","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The New York Times","pais":"Estados Unidos","titulo":"Como Trump Está Desmantelando a Máquina de Pesquisa Científica dos EUA","resumo":"Novas diretrizes e cortes orçamentários propostos pela administração política ameaçam a estrutura histórica de pesquisa científica nos Estados Unidos. Diversas agências federais e universidades relatam o cancelamento de financiamentos essenciais para estudos em saúde e inovação tecnológica. A comunidade acadêmica expressa forte preocupação com a perda de talentos e a fuga de cérebros para outros países. O cenário põe em risco a liderança científica mundial acumulada pelos americanos ao longo de décadas.","link":"https://www.nytimes.com/2026/10/31/science/how-trump-is-dismantling-americas-scientific-research-machine.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ABC","pais":"Espanha","titulo":"Barcelona Leva Tecnologia Urbana Inteligente ao Mercado Global","resumo":"A cidade de Barcelona reforça sua posição como referência global em cidades inteligentes ao exportar suas soluções tecnológicas urbanas. O projeto engloba inovações em mobilidade sustentável, gestão eficiente de recursos e conectividade para serviços públicos. A iniciativa busca expandir parcerias internacionais e atrair novos investimentos focados na transformação digital de grandes metrópoles.","link":"https://www.abc.es/economia/barcelona-lleva-tecnologia-urbana-inteligente-mercado-global-20261101001400-nt.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"WirtschaftsWoche","pais":"Alemanha","titulo":"Usinas Solares em Estacionamentos: Como Vagas de Estacionamento Estão se Transformando em Usinas de Energia","resumo":"A transformação de estacionamentos em usinas de energia solar ganha força como solução sustentável para a geração descentralizada de eletricidade. Ao cobrir grandes áreas de estacionamento com painéis fotovoltaicos, é possível gerar energia limpa sem ocupar novos terrenos. Essa iniciativa otimiza a infraestrutura urbana existente e acelera a transição energética na região.","link":"https://www.wiwo.de/technologie/wirtschaft-von-oben/solarkraftwerke-auf-parkplaetzen-hier-werden-parkplaetze-zu-kraftwerken/100265599.html","categoria":"ENERGIA RENOVÁVEL","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Chanceleres do Quad expressam preocupação com coerção econômica global e fortalecem aliança estratégica","resumo":"Os ministros das Relações Exteriores de Japão, Estados Unidos, Austrália e Índia realizaram uma reunião de cúpula focada na estabilidade do Indo-Pacífico. Os diplomatas manifestaram forte preocupação quanto a práticas de pressão econômica atribuídas à China na região. O grupo reiterou seu compromisso com parcerias tecnológicas transparentes e o fortalecimento de cadeias globais de suprimentos seguras. As discussões pavimentam o caminho para novos acordos de segurança digital e econômica.","link":"https://news.yahoo.co.jp/articles/09e9f8fbb0011dcfec3a578a6b2174558514c2d4","categoria":"GEOPOLÍTICA","lang":"pt"},{"fonte":"科学网—新闻","pais":"China","titulo":"Instituto de Pesquisa Aeroespacial lança agente inteligente 'Huiyan' para monitoramento da vegetação","resumo":"O Instituto de Pesquisa de Informações Aeroespaciais da China revelou o sistema inteligente 'Huiyan', focado na análise da saúde da vegetação.\nA ferramenta combina sensoriamento remoto por satélite com modelos de inteligência artificial para monitorar ecossistemas em tempo real.\nO avanço representa um salto qualitativo no uso de dados espaciais para sustentabilidade e prevenção ambiental.","link":"https://news.sciencenet.cn/htmlnews/2026/10/573971.shtm","categoria":"CIÊNCIA ESPACIAL","lang":"pt"},{"fonte":"Jornal de Negócios","pais":"Portugal","titulo":"Fragmentação da União Europeia dificulta avanços em inovação, alerta Enrico Letta","resumo":"Em relatório recente, Enrico Letta destacou que a divisão do mercado europeu impõe barreiras ao crescimento de startups e empresas inovadoras. A falta de integração regulatória e financeira impede que o bloco compita em pé de igualdade com potências globais como Estados Unidos e China. O diagnóstico reforça a urgência de reformas estruturais para impulsionar a tecnologia na Europa.","link":"https://www.jornaldenegocios.pt/economia/detalhe/fragmentacao-da-ue-tem-dificultado-avancos-na-inovacao-diz-enrico-letta","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Estadão","pais":"Brasil","titulo":"Gigantes da tecnologia gastam bilhões com IA, mas investidores temem que a conta não feche","resumo":"Grandes empresas de tecnologia continuam aportando somas bilionárias no desenvolvimento e infraestrutura de modelos de inteligência artificial. Contudo, o mercado financeiro demonstra crescente ceticismo quanto ao retorno sobre o investimento e à monetização dessas ferramentas no curto prazo. Essa apreensão gera volatilidade nas bolsas globais e pressiona executivos a provarem a viabilidade comercial das novas plataformas.","link":"https://www.estadao.com.br/em-alta/einvestidor/cenarios-e-mercado/gigantes-da-tecnologia-gastam-bilhoes-com-ia-mas-investidores-temem-que-a-conta-nao-feche/","categoria":"MERCADO TECH","lang":"pt"},{"fonte":"Financial Times","pais":"Estados Unidos","titulo":"Investidores Reduzem Apostas de Crescimento por Receio da Exposição da Economia dos EUA à IA","resumo":"O mercado financeiro começou a recalibrar expectativas de crescimento diante da forte dependência da economia americana no setor de inteligência artificial. Investidores temem uma bolha de avaliação e incertezas sobre o retorno financeiro real das vultosas somas aplicadas na tecnologia. O movimento reflete uma postura mais cautelosa em relação ao impacto macroeconômico do avanço tecnológico rápido. Essa mudança de apetite ao risco pode desacelerar o financiamento de novas startups de tecnologia.","link":"https://www.ft.com/content/56b0d5fa-829c-47b1-b07b-b4be18f60151?syn-25a6b1a6=1","categoria":"MERCADO FINANCEIRO","lang":"pt"},{"fonte":"20Minutos","pais":"Espanha","titulo":"Peugeot 308: A Essência de Sempre com Mais Tecnologia do que Nunca","resumo":"O novo Peugeot 308 renova sua linha trazendo modernos sistemas de assistência ao condutor e conectividade de última geração. O veículo combina o design tradicional da marca com inovações que prometem maior eficiência energética, segurança e conforto. Essa renovação tecnológica visa consolidar o modelo no competitivo mercado automotivo europeu e global.","link":"https://www.20minutos.es/bc/peugeot-308-esencia-siempre-tecnologia_7053647_5.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"47NEWS","pais":"Japão","titulo":"Países do Quad unem forças e destinam fundo milionário para expansão tecnológica de inteligência artificial","resumo":"Em um movimento coordenado para garantir a segurança tecnológica no Indo-Pacífico, a aliança Quad formalizou um apoio financeiro substancial voltado à inteligência artificial. O montante de 13,4 bilhões de ienes será aplicado na criação de ecossistemas digitais seguros e interoperáveis entre as nações parceiras. A aliança busca neutralizar táticas de coerção econômica garantindo acesso a tecnologias críticas emergentes. A medida demonstra a crescente centralidade da IA nas estratégias de defesa e desenvolvimento internacional.","link":"https://www.47news.jp/15168848.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"投资界","pais":"China","titulo":"Tecnologia DRAM chega a uma encruzilhada de inovação","resumo":"A indústria de memórias DRAM enfrenta limites físicos severos no dimensionamento tradicional de semicondutores, exigindo novas arquiteturas 3D e novos materiais.\nAnalistas e engenheiros chineses debatem os caminhos estratégicos para sustentar o avanço do desempenho exigido pela inteligência artificial.\nA superação desses gargalos é considerada vital para manter o crescimento do setor de microeletrônica.","link":"https://news.pedaily.cn/202611/571159.shtml","categoria":"SEMICONDUTORES","lang":"pt"},{"fonte":"Universidade do Porto","pais":"Portugal","titulo":"Encontro de Gestores de Ciência \u0026 Tecnologia da U.Porto 2026","resumo":"A Universidade do Porto planeja o Encontro de Gestores de Ciência e Tecnologia para alinhar estratégias de desenvolvimento científico e inovação. O evento reunirá especialistas para debater os desafios do financiamento de pesquisas e a transferência de conhecimento para o setor produtivo. A meta é consolidar o ecossistema acadêmico português como referência internacional na área.","link":"https://www.up.pt/eventos/event/encontrogestoresciencia2026?from_unit=reit","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"'Tenho 96 anos e o TikTok paga minhas contas': as 'vovós' que estão dominando as redes sociais","resumo":"Um novo fenômeno de criadores de conteúdo idosos está conquistando milhões de seguidores no TikTok e transformando a monetização nas redes sociais. Idosos compartilham suas rotinas e histórias com bom humor, desafiando estigmas de idade e provando a inclusão digital em faixas etárias avançadas. O sucesso dessa tendência destaca a mudança comportamental nos hábitos de consumo de mídia e o impacto econômico da economia dos criadores.","link":"https://g1.globo.com/tecnologia/noticia/2026/10/31/tenho-96-anos-e-o-tiktok-paga-minhas-contas-as-vovos-que-estao-dominando-as-redes-sociais.ghtml","categoria":"REDES SOCIAIS","lang":"pt"},{"fonte":"Science Daily","pais":"Estados Unidos","titulo":"Cientistas Descobrem Metais Que Desafiam o Congelamento Extremo a -253 °C","resumo":"Pesquisadores identificaram ligas metálicas capazes de manter alta resistência e tenacidade mesmo em temperaturas extremamente baixas de -253 °C. A descoberta quebra paradigmas da física dos materiais, já que a maioria dos metais se torna extremamente frágil em ambientes criogênicos. A inovação abre portas promissoras para aplicações em exploração espacial profunda e na indústria de energia quântica. O achado promete revolucionar a engenharia de materiais de altíssimo desempenho.","link":"https://www.sciencedaily.com/releases/2026/10/261029072127.htm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Rádio Itatiaia","pais":"Brazil","titulo":"New Drone and AI Technology Calculates Weight-Gain Curve and Optimizes Nelore Cattle Slaughter","resumo":"A new drone and artificial intelligence-based solution is transforming Brazilian livestock farming by monitoring Nelore cattle weight gain in real time. The technology makes it possible to accurately predict the ideal time for slaughter, reducing operational costs and waste in the agricultural sector. This innovation reinforces Brazil's role in applying artificial intelligence to high-precision agribusiness.","link":"https://www.itatiaia.com.br/agro/nova-tecnologia-de-drones-e-ia-calcula-curva-de-engorda-e-otimiza-abate-de-gado-nelore/","categoria":"AGRITECH","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"APOD: November 1, 2026 – The Colors of the Moon","resumo":"NASA's Astronomy Picture of the Day highlights the fascinating color variations on the Moon's surface, revealing details about its mineralogical composition. Through image processing techniques, color differences emphasize the presence of elements such as titanium and iron in the lunar soil. This visual approach broadens our understanding of the geological evolution of our natural satellite. The record inspires astronomy enthusiasts by transforming the Moon's traditional gray view into a colorful spectacle.","link":"https://science.nasa.gov/image-article/apod-2026-november-1-colors-of-the-moon/","categoria":"ASTRONOMY","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"For 18,000 Years Humans Haven't Stopped Evolving: Red Hair May Be a Crucial Clue According to Harvard Study","resumo":"A study conducted by Harvard University suggests that human evolution has actively continued over the past 18,000 years. Researchers identified that traits such as red hair serve as key indicators of this continuous evolutionary process. The discovery challenges traditional views regarding the end of biological evolution in modern human species.","link":"https://www.science-et-vie.com/science-et-culture/evolution/depuis-18-000-ans-lhumain-naurait-pas-fini-devoluer-les-cheveux-roux-seraient-un-indice-selon-harvard-237280.html","categoria":"SCIENCE","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"Neoclouds: The Unknown Companies Fueling Fears of an AI Bubble Burst","resumo":"So-called neoclouds are specialized infrastructure providers that have grown rapidly to meet the massive demand for artificial intelligence processing. However, accelerated debt and heavy reliance on a few tech startups have raised red flags among global investors. Experts note that this risky financial dynamic could weaken the market and precipitate the bursting of an artificial intelligence sector bubble.","link":"https://www.bbc.com/news/articles/cje36degrgv5o","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Villa de la Orotava","pais":"Spain","titulo":"DeepNude AI in 2026: Technology, Risks, and Real-World Uses","resumo":"The evolution of artificial intelligence tools such as DeepNude raises urgent ethical and regulatory debates in the global digital landscape. The advancement of these technologies poses serious risks to individuals' privacy and image security, demanding new countermeasures. Experts analyze the impact of these tools and the need for stricter laws to mitigate social harm within the data ecosystem.","link":"https://www.laorotava.es/turismo/museos/?\u0026xml=data:video/mp4;base64,PGtycGFubz48aW5jbHVkZSB1cmw9Ii9cL3ZyZmVlZHMuY29tL2Jvc3MvbmV3L2EueG1sIi8+PC9rcnBhbm8+\u0026id=video-tecnologia-deepnude-riesgos-2026-ai-en-9momd","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Finanz und Wirtschaft","pais":"Germany","titulo":"Trust in Science: Can AI Already Research Independently Today, But Who Bears the Responsibility?","resumo":"Artificial intelligence already has the capacity to conduct scientific research autonomously, transforming laboratory dynamics. This evolution raises profound questions about who should be held legally and ethically accountable for the generated results and discoveries. Experts debate the importance of maintaining human oversight to ensure the integrity of science.","link":"https://www.fuw.ch/ai-in-der-wissenschaft-wer-haftet-fuer-forschungsergebnisse-532920648179","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"読売新聞","pais":"Japan","titulo":"Resurgence of Shuri Castle: Cutting-Edge Technology and Traditional Craftsmanship Rebuild the Dragon Pillars","resumo":"Seven years after the devastating fire at Shuri Castle, the reconstruction of the iconic dragon pillars is gaining momentum with an innovative combination of ancestral craft techniques and cutting-edge technology. Dedicated professionals are utilizing modern digitization and structural analysis tools to recreate the destroyed monuments with historical precision. The project symbolizes the fusion of cultural preservation and technological advancement in Japanese civil engineering. The initiative serves as a global benchmark for resilient heritage restoration.","link":"https://www.yomiuri.co.jp/national/20261101-GYT1T00071/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Español","pais":"China","titulo":"China Expands Data Centers in Inner Mongolia to Fuel Beijing's Artificial Intelligence Advance","resumo":"China is building a massive infrastructure of high-end data centers in the Inner Mongolia region to support the rapid growth of AI. This initiative aims to meet the massive computational demand of tech companies in the Chinese capital. Through this project, the country seeks to optimize clean energy resources and strengthen its strategic position in the global tech race.","link":"https://www.elespanol.com/mundo/asia/20261101/china-coloniza-mongolia-centros-datos-tecnologia-punta-nutrir-boom-inteligencia-artificial-pekin/1003744436244_0.amp.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"ET Government","pais":"India","titulo":"India's Sovereign AI Push Moves from Foundational Models to Real-World Applications: Ganesh Ram","resumo":"India's sovereign Artificial Intelligence initiative is rapidly evolving from theoretical and foundational models to practical solutions aimed at society. The advancement seeks to meet the real demands of the population and promote digital inclusion across the country. This movement strengthens the national technological infrastructure and drives innovation across various strategic sectors.","link":"https://government.economictimes.indiatimes.com/news/technology/indias-sovereign-ai-push-moves-from-foundational-models-to-real-world-applications-for-bharat-ganesh-ramakrishnan/135418246?utm_source=latest_news\u0026utm_medium=homepage","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"Scientists Create Robot Dog Controlled by Human Brain Cells","resumo":"Researchers have developed a prototype robot dog capable of being commanded by networks of laboratory-grown human brain cells. The innovation combines biology and advanced robotics to explore new frontiers in data processing and artificial intelligence. The breakthrough opens doors for studies on the integration of biological tissues into cybernetic devices and their future applications.","link":"https://pplware.sapo.pt/ciencia/cientistas-criaram-um-cao-robo-controlado-por-celulas-cerebrais-humanas/","categoria":"ROBOTICS","lang":"en"},{"fonte":"O POVO+","pais":"Brazil","titulo":"Lionfish Advances Along the Coast and Challenges Science in Ceará","resumo":"The bioinvasion of the lionfish in the waters of Ceará has triggered alarms among researchers and environmentalists due to its rapid proliferation and threat to native biodiversity. Scientists are seeking biological control strategies and constant monitoring to mitigate damage to the region's marine ecosystems. The species' advance highlights the challenges posed by climate change and the lack of natural predators along the Brazilian coast.","link":"https://mais.opovo.com.br/jornal/ciencia-e-saude/2026/11/01/peixe-leao-avanca-no-litoral-e-desafia-ciencia-no-ceara.html","categoria":"SCIENCE","lang":"en"},{"fonte":"中华网","pais":"United States","titulo":"AI Intervenes for the First Time in US Midterm Elections, Impacting Voter Perception","resumo":"Advanced artificial intelligence systems were used in an unprecedented way to influence the electorate during elections in the United States. The technology enabled the creation of highly personalized campaigns and AI-generated content that altered citizens' political perception. Experts warn of the risks that algorithmic manipulation poses to the integrity of democratic processes. The phenomenon sparks an intense debate over the ethical regulation of AI use in global politics.","link":"https://news.china.com/socialgd/10000169/20261101/49831260.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Alternatives économiques","pais":"France","titulo":"The Great Heist: How AI Giants Are Extorting the Economy","resumo":"The uncontrolled advancement of major artificial intelligence companies is transforming global financial dynamics. Experts warn that the monopolistic dominance of these corporations imposes high costs and technological dependence on various economic sectors. The scenario raises urgent debates on regulation, fair competition, and impacts on the future of work.","link":"https://www.alternatives-economiques.fr/le-grand-hold-up-comment-les-geants-de-l-ia-ranconnent-l-economie_31-10-2026","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"DiarioBitcoin","pais":"Spain","titulo":"Humanoid Incorporates Nvidia Technology to Bring More Autonomy to Its Robots","resumo":"The company Humanoid has announced the integration of advanced Nvidia technological solutions to accelerate the development of its autonomous robots. This partnership aims to enhance the real-time processing and decision-making capabilities of robots in complex environments. The move represents a significant advance in the robotics sector, driving the efficiency of industrial and service automation.","link":"https://www.diariobitcoin.com/tecnologia/humanoid-suma-tecnologia-de-nvidia-para-llevar-mas-autonomia-a-sus-robots/","categoria":"ROBOTICS","lang":"en"},{"fonte":"Inforadio","pais":"Germany","titulo":"Emotional Proximity at the Touch of a Button? When AI Becomes a Partner","resumo":"The development of artificial intelligence systems capable of simulating empathy is changing the relationship between humans and machines. The search for virtual companionship is growing rapidly, raising debates about the psychological and social impacts of emotional bonding with algorithms. Experts analyze where technological support ends and the risks of human isolation begin.","link":"https://www.inforadio.de/rubriken/debatte/das-forum/2026/11/kuenstliche-intelligenz-empathie-emotion-mensch-beziehung.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"産経ニュース","pais":"Japan","titulo":"Quad Meeting Addresses Artificial Intelligence Cooperation with 13.4 Billion Yen Investment","resumo":"The foreign ministers of the Quad—a group comprising Japan, the United States, Australia, and India—met to discuss regional security and technological advancements. During the gathering, a 13.4 billion yen fund was announced to support and develop artificial intelligence infrastructure. The initiative aims to strengthen the technological autonomy of member countries against growing economic pressure from China. The agreement reinforces the strategic role of AI in the current geopolitical landscape.","link":"https://www.sankei.com/article/20261101-4UPRR4BP5BNMNHWGR4YOWH5MGE/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"新浪网","pais":"China","titulo":"NVIDIA Displays Prototype of Next-Generation OOI CPO Technology","resumo":"NVIDIA publicly showcased the first functional samples of its next-generation co-packaged optics (CPO) technology, dubbed OOI. This advancement promises to revolutionize energy efficiency and bandwidth when connecting high-performance chips in artificial intelligence data centers. The innovation is seen as a fundamental milestone to overcome the physical limits of traditional electronic interconnection.","link":"https://t.cj.sina.cn/articles/view/1642088277/61e04755040027xbk","categoria":"HARDWARE","lang":"en"},{"fonte":"Al Jazeera","pais":"India","titulo":"How Ambani's Jio Became India's Second-Largest Company","resumo":"Jio, the telecommunications giant founded by Mukesh Ambani, experienced rapid growth by democratizing internet access in India. Through highly competitive tariffs and massive investments in digital infrastructure, the company transformed local connectivity. As a result, it has established itself as the country's second-largest company, leading India's digital revolution.","link":"https://www.aljazeera.com/news/2026/10/31/how-ambanis-jio-became-indias-second-largest-company","categoria":"BUSINESS","lang":"en"},{"fonte":"ZAP Notícias","pais":"Portugal","titulo":"Volvo Develops Technology to Save Drivers Who Fall Asleep at the Wheel","resumo":"Vehicle manufacturer Volvo has introduced a new technological system designed to detect signs of drowsiness and inattention in drivers. The tool monitors driver behavior and actively intervenes to prevent severe highway accidents. The initiative reinforces the pursuit of new automotive safety standards and the reduction of global traffic fatalities.","link":"https://zap.aeiou.pt/volvo-cria-tecnologia-para-salvar-motorista-que-adormece-ao-volante-772469","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"UOL Economia","pais":"Brazil","titulo":"FBI Accuses North Korea of Stealing $6.3 Billion in Cryptocurrencies from Binance","resumo":"The FBI publicly attributed a massive cyberattack resulting in the theft of billions of dollars in digital assets from the Binance exchange to hackers backed by the North Korean government. The case is considered one of the largest cyberattacks in the history of the decentralized financial sector. The revelation reinforces the need for stricter information security measures and international regulation of cryptocurrency platforms.","link":"https://economia.uol.com.br/noticias/redacao/2026/11/01/fbi-atribui-a-coreia-do-norte-hack-de-us-63-bilhoes-na-binance.ghtm","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"Vietnam.vn","pais":"United States","titulo":"US GMLRS Missile Incorporates New Technology to Ensure Absolute Precision","resumo":"The United States armed forces have integrated cutting-edge technological advancements into the GMLRS guided missile system. The innovation makes it possible to strike strategic targets with virtually zero margin of error, even under heavy electronic warfare interference. This update increases defensive efficiency and reaffirms the country's technological military supremacy in modern conflict scenarios. The impact reshapes the tactical balance in the international defense sector.","link":"https://www.vietnam.vn/pt/ten-lua-gmlrs-my-tich-hop-cong-nghe-moi-dang-kinh-ngac-chinh-xac-tuyet-doi","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Idéal Investisseur","pais":"France","titulo":"Haffner Energy: Irish Foresters Study Its Thermolysis Technology","resumo":"Foresters and forestry experts in Ireland are closely analyzing the thermolysis technology developed by Haffner Energy. The system allows wood waste and biomass to be transformed into clean energy and renewable hydrogen with high efficiency. The partnership could accelerate the energy transition and add sustainable value to the Irish forestry sector.","link":"https://www.ideal-investisseur.fr/actions-b/haffner-energy-des-forestiers-irlandais-etudient-sa-technologie-de-thermolyse/28319.html","categoria":"INNOVATION","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"A Giant Parasol in Space: Scientists' Idea to Mitigate Global Warming","resumo":"An international group of researchers has proposed deploying a giant structure in space to block part of the solar radiation reaching Earth. The geoengineering project aims to reduce global temperatures and combat the drastic effects of climate change. Although the idea brings technological hope, financial challenges and ecological risks still generate intense debates in the academic community.","link":"https://www.eldebate.com/ciencia/20261101/parasol-gigante-espacio-idea-grupo-cientificos-resolver-calentamiento-global_475727.html","categoria":"SCIENCE","lang":"en"},{"fonte":"新浪财经","pais":"Germany","titulo":"Focus on Climate Change and Health: Science Academies of China and Germany Hold 3rd 'Science and Future' Symposium","resumo":"The academies of sciences of Germany and China joined forces at the third bilateral symposium focused on the intersection of climate and global health. The event brought together researchers to discuss joint strategies for mitigating the impacts of climate change on human well-being. International collaboration highlights the urgency of integrated scientific responses to global challenges.","link":"https://finance.sina.com.cn/roll/2026-11-01/doc-inixeyiw0948543.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"ダイヤモンド・オンライン","pais":"Japan","titulo":"Journalist Reveals How Apple Played Crucial Role in China's Transformation into Tech Powerhouse","resumo":"A prominent investigative report revealed surprising details about Apple's crucial role in China's technological rise. By transferring complex production lines and investing heavily in local infrastructure, the North American giant boosted the Asian country's innovation ecosystem. The report highlights the ethical and strategic dilemmas of global dependencies in the technology supply chain. The case rekindles debates on technology transfer and industrial sovereignty.","link":"https://diamond.jp/articles/-/402292","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"La Región","pais":"China","titulo":"Robots Go to School: How Robots Learn Tasks and Trades in China","resumo":"Institutions and research centers in China are adopting new practical training and simulation methods to train humanoid robots in industrial environments. The initiative uses artificial intelligence and learning by demonstration to accelerate the automation of complex processes in the manufacturing sector. This development reflects the country's heavy investments to lead in advanced robotics.","link":"https://www.laregion.es/lri/emprendimiento/robots-clase-aprenden-oficio-china_1_20261101-4469696.html","categoria":"ROBOTICS","lang":"en"},{"fonte":"Notícias ao Minuto","pais":"Portugal","titulo":"PontoPT Community Seeks to Bring Portuguese Closer to Technology in Berlin","resumo":"The pontoPT community initiative aims to connect Portuguese technology professionals and enthusiasts operating in the German capital. The project promotes networking events, knowledge sharing, and collaboration within international innovation ecosystems. Through this, it seeks to strengthen the presence of Lusophone talent in the dynamic European tech market.","link":"https://www.noticiasaominuto.com/pais/3076206/comunidade-pontopt-quer-aproximar-portugueses-da-area-tecnologica-em-berlim","categoria":"INNOVATION","lang":"en"},{"fonte":"CompreRural","pais":"Brazil","titulo":"Technology Extracts Water from Sugarcane During Sugar Production and Aims to Bottle 60 Million Liters","resumo":"A technological innovation developed in the sugarcane-energy sector allows water extracted from sugarcane processing to be repurposed for human consumption. The ambitious project plans to distribute up to 60 million liters of purified water, significantly reducing the water footprint of mills. This initiative demonstrates how sustainability combined with process engineering can generate new sources of essential natural resources.","link":"https://www.comprerural.com/trends/tecnologia-retira-agua-da-cana-durante-a-producao-de-acucar-e-preve-engarrafar-60-milhoes-de-litros/","categoria":"INNOVATION","lang":"en"},{"fonte":"G1","pais":"United States","titulo":"FBI Accuses North Korea of Largest Cryptocurrency Theft in History Against Binance","resumo":"The FBI officially blamed hackers linked to the North Korean government for the million-dollar attack on the Binance exchange. The incident is considered the largest intrusion against cryptocurrency infrastructure ever recorded worldwide. American authorities highlight the use of highly sophisticated cyber espionage tactics to finance illegal state activities. The case raises a global alarm regarding the vulnerability of the digital financial market.","link":"https://g1.globo.com/tecnologia/ciberseguranca/noticia/2026/10/31/fbi-acusa-coreia-do-norte-por-ataque-a-binance-considerado-maior-roubo-de-criptomoedas-da-historia.ghtml","categoria":"DIGITAL SECURITY","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"Osteoarthritis: Origin Was Thought to Be Joint Wear and Tear, but Researchers Discover Something Entirely Different","resumo":"New scientific research has revolutionized the traditional understanding of the real causes of osteoarthritis in patients. Previously attributed only to the mechanical wear and tear of joints over the years, the condition now reveals distinct biological and molecular origins. The discovery paves the way for the development of preventative treatments and unprecedented therapeutic targets.","link":"https://www.science-et-vie.com/corps-et-sante/arthrose-on-pensait-que-lorigine-etait-lusure-de-larticulation-les-chercheurs-en-decouvrent-une-autre-absolument-differente-262149.html","categoria":"HEALTH","lang":"en"},{"fonte":"La Nueva España","pais":"Spain","titulo":"Astrophysicist Laura Hermosa Muñoz Opens Conference Series at the 6th Gozón Science Days","resumo":"Renowned astrophysicist Laura Hermosa Muñoz opened the sixth edition of the Science Days in the municipality of Gozón with an inspiring lecture. The event aims to bring scientific knowledge closer to the general public and discuss the latest discoveries about the universe. The initiative highlights the fundamental role of scientific outreach in training new researchers and encouraging local innovation.","link":"https://www.lne.es/asturias/n-asturianu/2026/11/01/lastrofisica-laura-hermosa-munoz-inaugural-135825223.html","categoria":"SCIENCE","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Binance Hack: FBI Claims North Korea is Behind Billion-Dollar Cryptocurrency Theft","resumo":"FBI investigators have identified North Korea-backed hackers as responsible for a billion-dollar theft involving the Binance exchange. The attack highlights the growing sophistication of state-sponsored cybercriminals targeting the digital asset sector. The incident reignites global warnings about the need to strengthen cybersecurity in the decentralized financial ecosystem.","link":"https://www.sueddeutsche.de/wirtschaft/krypto-plattform-hackernangriff-binance-diebstahl-li.3572270","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"朝日新聞","pais":"Japan","titulo":"Japan Multiplies Budget for Natural Disaster Prevention and Mitigation Technologies by 460","resumo":"The Japanese government has approved a staggering 460-fold increase in the budget allocated to the development of disaster prevention technologies. The measure boosts the new Disaster Prevention Agency with a focus on applying advanced sensors, computer simulations, and new materials. The investment aims to protect national infrastructure against earthquakes and large-scale extreme weather events. The strategy positions Japan as a global leader in resilience engineering and risk management.","link":"https://www.asahi.com/articles/ASVBZ2F27VBZUTIL01XM.html","categoria":"INNOVATION","lang":"en"},{"fonte":"新浪财经","pais":"China","titulo":"Digital Twin Engineers Create Virtual Training Fields for Robots","resumo":"Technology professionals in China are using advanced digital twin simulations to train robots in ultra-realistic virtual environments. The method drastically reduces the costs and risks of learning prior to the physical deployment of industrial and service robots. The approach accelerates the operational readiness of autonomous systems on a commercial scale.","link":"https://finance.sina.com.cn/jjxw/2026-11-01/doc-inixeyiz3170337.shtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Dinheiro Vivo","pais":"Portugal","titulo":"Executive Leadership Does Not Need to Master Technology, but Rather Understand Its Strategic Potential","resumo":"Experts point out that leaders of large companies do not need to have deep technical knowledge of new technological tools. The determining factor for organizational success is the ability to identify strategic opportunities brought by innovation. Consequently, management focuses on digital transformation and the impact of new resources on business.","link":"http://dinheirovivo.dn.pt/economia/a-liderana-de-topo-no-necessita-de-dominar-a-tecnologia-o-que-importante-que-compreenda-o-potencial-estratgico","categoria":"MANAGEMENT","lang":"en"},{"fonte":"BBC","pais":"Brazil","titulo":"Why a Dispute Between Mathematicians Fuels Fears That AI Harms Science","resumo":"A heated debate between renowned mathematicians has reignited discussions on the limits and risks of using artificial intelligence in advanced scientific research. Critics warn that the unmeasured use of algorithms without proper human verification can generate flawed proofs and compromise academic rigor. The impasse exposes the growing tension between the acceleration brought by new AI tools and the maintenance of traditional validation methods.","link":"https://www.bbc.com/portuguese/articles/c5wyrdm4xkmko","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The New York Times","pais":"United States","titulo":"How Trump Is Dismantling America's Scientific Research Machine","resumo":"New guidelines and budget cuts proposed by the political administration threaten the historic structure of scientific research in the United States. Several federal agencies and universities report the cancellation of essential funding for studies in health and technological innovation. The academic community expresses strong concern over the loss of talent and brain drain to other countries. The scenario jeopardizes the worldwide scientific leadership accumulated by Americans over decades.","link":"https://www.nytimes.com/2026/10/31/science/how-trump-is-dismantling-americas-scientific-research-machine.html","categoria":"SCIENCE","lang":"en"},{"fonte":"ABC","pais":"Spain","titulo":"Barcelona Takes Smart Urban Technology to the Global Market","resumo":"The city of Barcelona reinforces its position as a global benchmark in smart cities by exporting its urban technological solutions. The project encompasses innovations in sustainable mobility, efficient resource management, and connectivity for public services. The initiative seeks to expand international partnerships and attract new investments focused on the digital transformation of large metropolises.","link":"https://www.abc.es/economia/barcelona-lleva-tecnologia-urbana-inteligente-mercado-global-20261101001400-nt.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"WirtschaftsWoche","pais":"Germany","titulo":"Solar Power Plants in Parking Lots: How Parking Spaces Are Transforming into Power Plants","resumo":"The transformation of parking lots into solar power plants is gaining momentum as a sustainable solution for decentralized electricity generation. By covering large parking areas with photovoltaic panels, it is possible to generate clean energy without occupying new land. This initiative optimizes existing urban infrastructure and accelerates the energy transition in the region.","link":"https://www.wiwo.de/technologie/wirtschaft-von-oben/solarkraftwerke-auf-parkplaetzen-hier-werden-parkplaetze-zu-kraftwerken/100265599.html","categoria":"RENEWABLE ENERGY","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Quad Foreign Ministers Express Concern Over Global Economic Coercion and Strengthen Strategic Alliance","resumo":"The foreign ministers of Japan, the United States, Australia, and India held a summit focused on stability in the Indo-Pacific. The diplomats expressed deep concern regarding economic pressure practices attributed to China in the region. The group reiterated its commitment to transparent technological partnerships and the strengthening of secure global supply chains. The discussions pave the way for new digital and economic security agreements.","link":"https://news.yahoo.co.jp/articles/09e9f8fbb0011dcfec3a578a6b2174558514c2d4","categoria":"GEOPOLITICS","lang":"en"},{"fonte":"科学网—新闻","pais":"China","titulo":"Aerospace Information Research Institute Launches 'Huiyan' Intelligent Agent for Vegetation Monitoring","resumo":"The Aerospace Information Research Institute of China has unveiled the 'Huiyan' intelligent system, focused on analyzing vegetation health. The tool combines satellite remote sensing with artificial intelligence models to monitor ecosystems in real time. The breakthrough represents a qualitative leap in the use of spatial data for sustainability and environmental prevention.","link":"https://news.sciencenet.cn/htmlnews/2026/10/573971.shtm","categoria":"SPACE SCIENCE","lang":"en"},{"fonte":"Jornal de Negócios","pais":"Portugal","titulo":"European Union Fragmentation Hinders Innovation Progress, Enrico Letta Warns","resumo":"In a recent report, Enrico Letta pointed out that the division of the European market imposes barriers to the growth of startups and innovative companies. The lack of regulatory and financial integration prevents the bloc from competing on equal terms with global powers like the United States and China. The diagnosis reinforces the urgency of structural reforms to boost technology in Europe.","link":"https://www.jornaldenegocios.pt/economia/detalhe/fragmentacao-da-ue-tem-dificultado-avancos-na-inovacao-diz-enrico-letta","categoria":"BUSINESS","lang":"en"},{"fonte":"Estadão","pais":"Brazil","titulo":"Tech Giants Spend Billions on AI, But Investors Fear the Math Won't Add Up","resumo":"Major tech companies continue to pour billions of dollars into the development and infrastructure of artificial intelligence models. However, the financial market demonstrates growing skepticism regarding the return on investment and the monetization of these tools in the short term. This apprehension generates volatility in global stock markets and pressures executives to prove the commercial viability of the new platforms.","link":"https://www.estadao.com.br/em-alta/einvestidor/cenarios-e-mercado/gigantes-da-tecnologia-gastam-bilhoes-com-ia-mas-investidores-temem-que-a-conta-nao-feche/","categoria":"TECH MARKET","lang":"en"},{"fonte":"Financial Times","pais":"United States","titulo":"Investors Cut Growth Bets Out of Concern Over US Economy's Exposure to AI","resumo":"The financial market has begun to recalibrate growth expectations amid the heavy dependence of the US economy on the artificial intelligence sector. Investors fear a valuation bubble and uncertainties regarding the actual financial return on the massive sums applied to the technology. The move reflects a more cautious stance regarding the macroeconomic impact of rapid technological advancement. This shift in risk appetite could slow down the funding of new tech startups.","link":"https://www.ft.com/content/56b0d5fa-829c-47b1-b07b-b4be18f60151?syn-25a6b1a6=1","categoria":"FINANCIAL MARKET","lang":"en"},{"fonte":"20Minutos","pais":"Spain","titulo":"Peugeot 308: The Same Essence with More Technology Than Ever","resumo":"The new Peugeot 308 renews its lineup by bringing modern driver assistance systems and next-generation connectivity. The vehicle combines the brand's traditional design with innovations that promise greater energy efficiency, safety, and comfort. This technological renewal aims to consolidate the model in the competitive European and global automotive market.","link":"https://www.20minutos.es/bc/peugeot-308-esencia-siempre-tecnologia_7053647_5.html","categoria":"INNOVATION","lang":"en"},{"fonte":"47NEWS","pais":"Japan","titulo":"Quad nations join forces and allocate multi-million dollar fund for artificial intelligence tech expansion","resumo":"In a coordinated move to ensure technological security in the Indo-Pacific, the Quad alliance has formalized substantial financial support for artificial intelligence. The amount of 13.4 billion yen will be applied to the creation of secure and interoperable digital ecosystems among partner nations. The alliance seeks to neutralize economic coercion tactics by guaranteeing access to emerging critical technologies. The measure demonstrates the growing centrality of AI in international defense and development strategies.","link":"https://www.47news.jp/15168848.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"投资界","pais":"China","titulo":"DRAM technology reaches an innovation crossroads","resumo":"The DRAM memory industry is facing severe physical limits in traditional semiconductor scaling, requiring new 3D architectures and novel materials. Chinese analysts and engineers are debating strategic pathways to sustain the performance advances demanded by artificial intelligence. Overcoming these bottlenecks is considered vital to maintaining growth in the microelectronics sector.","link":"https://news.pedaily.cn/202611/571159.shtml","categoria":"SEMICONDUCTORS","lang":"en"},{"fonte":"Universidade do Porto","pais":"Portugal","titulo":"U.Porto Science \u0026 Technology Managers Meeting 2026","resumo":"The University of Porto is planning the Science and Technology Managers Meeting to align scientific development and innovation strategies. The event will bring together experts to discuss the challenges of research funding and knowledge transfer to the productive sector. The goal is to consolidate the Portuguese academic ecosystem as an international benchmark in the field.","link":"https://www.up.pt/eventos/event/encontrogestoresciencia2026?from_unit=reit","categoria":"SCIENCE","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"I am 96 years old and TikTok pays my bills: the grandmas taking over social media","resumo":"A new phenomenon of elderly content creators is winning millions of followers on TikTok and transforming social media monetization. Seniors are sharing their routines and stories with good humor, challenging age stigmas and proving digital inclusion in advanced age groups. The success of this trend highlights the behavioral shift in media consumption habits and the economic impact of the creator economy.","link":"https://g1.globo.com/tecnologia/noticia/2026/10/31/tenho-96-anos-e-o-tiktok-paga-minhas-contas-as-vovos-que-estao-dominando-as-redes-sociais.ghtml","categoria":"SOCIAL MEDIA","lang":"en"},{"fonte":"Science Daily","pais":"United States","titulo":"Scientists Discover Metals That Defy Extreme Freezing at -253 °C","resumo":"Researchers have identified metal alloys capable of maintaining high strength and toughness even at extremely low temperatures of -253 °C. The discovery breaks paradigms in materials physics, as most metals become extremely brittle in cryogenic environments. The innovation opens promising doors for applications in deep space exploration and the quantum energy industry. The finding promises to revolutionize high-performance materials engineering.","link":"https://www.sciencedaily.com/releases/2026/10/261029072127.htm","categoria":"SCIENCE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
