@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-WTghtFfidlSI0bnh2jnrV5ZG'; script-src 'nonce-WTghtFfidlSI0bnh2jnrV5ZG'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="WTghtFfidlSI0bnh2jnrV5ZG">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">02/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="WTghtFfidlSI0bnh2jnrV5ZG">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Globo","pais":"Brasil","titulo":"Robô serpente do MIT percorre o intestino por dentro para tratar doenças","resumo":"Pesquisadores do MIT desenvolveram um robô flexível em formato de serpente projetado para navegar pelo trato gastrointestinal de forma minimamente invasiva. A inovação visa facilitar exames complexos e a entrega localizada de medicamentos no organismo humano. Essa tecnologia promete transformar tratamentos médicos e procedimentos cirúrgicos de precisão no futuro.","link":"https://revistagalileu.globo.com/tecnologia/noticia/2026/11/como-novo-robo-do-mit-investiga-problemas-no-intestino-de-dentro-do-corpo.ghtml","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Advanced Science News","pais":"Estados Unidos","titulo":"A Ativação de Profagos Transforma Biofilmes Bacterianos em Fábricas Programáveis de DNA","resumo":"Pesquisadores descobriram um método inovador para ativar profagos em biofilmes bacterianos, transformando-os em eficientes fábricas de DNA sintético. Essa abordagem permite a produção controlada de materiais genéticos diretamente em sistemas biológicos complexos. O avanço promete revolucionar a biologia sintética e o desenvolvimento de novas terapias genéticas direcionadas.","link":"https://www.advancedsciencenews.com/prophage-activation-turns-bacterial-biofilms-into-programmable-dna-factories/","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Alternatives économiques","pais":"França","titulo":"O grande assalto: como os gigantes da IA estão extorquindo a economia","resumo":"O avanço descontrolado das empresas de inteligência artificial está transformando radicalmente o ecossistema econômico global. Empresas de tecnologia impõem novos custos e dependências para acessar ferramentas avançadas de aprendizado de máquina. Analistas alertam para o impacto monopolista que essa centralização de poder pode causar no mercado. Essa dinâmica levanta debates urgentes sobre regulação e soberania digital em diversos países.","link":"https://www.alternatives-economiques.fr/le-grand-hold-up-comment-les-geants-de-l-ia-ranconnent-l-economie_01-11-2026","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Reuters","pais":"Inglaterra","titulo":"Economia global: Atividade fabril na Ásia sente desaceleração do boom de IA","resumo":"A atividade industrial na Ásia apresenta sinais de desaceleração à medida que o ímpeto inicial dos investimentos massivos em inteligência artificial começa a perder força. O setor fabril da região enfrentava um forte aquecimento impulsionado pela demanda global por semicondutores e hardware avançado. Especialistas alertam que a diminuição desse ritmo pode impactar o crescimento econômico de diversos países asiáticos dependentes de tecnologia. O cenário exige novas estratégias para manter a competitividade diante das incertezas do mercado global.","link":"https://www.reuters.com/world/asia-pacific/global-economy-asias-factory-activity-feels-fading-glimmer-ai-boom-2026-11-02/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ConSalud","pais":"Espanha","titulo":"Descobre-se que a tecnologia de interface cerebral usada para próteses táteis e visuais é praticamente a mesma","resumo":"Pesquisadores identificaram que os princípios fundamentais das interfaces cérebro-máquina para sentidos táteis e visuais compartilham arquiteturas praticamente idênticas. Essa descoberta promete acelerar o desenvolvimento de próteses neurais mais avançadas e acessíveis para pacientes com deficiências sensoriais. O avanço representa um grande marco no campo da neurotecnologia e da medicina regenerativa.","link":"https://www.consalud.es/saludigital/ia-big-data/descubren-que-la-tecnologia-de-interfaz-cerebral-utilizada-para-protesis-tactiles-y-visuales-es-practicamente-la-misma.html","categoria":"NEUROTECNOLOGIA","lang":"pt"},{"fonte":"Advanced Science News","pais":"Alemanha","titulo":"Claudia Felser: Explorando novas fronteiras na ciência dos materiais","resumo":"A física e química alemã Claudia Felser tem se destacado por suas pesquisas revolucionárias na descoberta de novos materiais quânticos e topológicos. Seus trabalhos abrem caminho para o desenvolvimento de tecnologias avançadas em spintrônica e computação quântica. Essas inovações promovem saltos significativos no processamento de dados e na eficiência energética global.","link":"https://www.advancedsciencenews.com/claudia-felser-exploring-new-frontiers-in-materials-science/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ビジネス+IT","pais":"Japão","titulo":"Ricoh e Kawasaki Heavy Industries usam IA para transformar conhecimento de engenheiros em patrimônio de design","resumo":"A Ricoh e a Kawasaki Heavy Industries iniciaram um teste prático para converter o conhecimento tácito de engenheiros veteranos em ativos digitais de design com apoio de inteligência artificial. O projeto visa capturar a tomada de decisão e a experiência acumulada por especialistas para evitar a perda de know-how crítico. Essa iniciativa busca garantir a continuidade da inovação técnica e otimizar os processos de desenvolvimento industrial no Japão.","link":"https://www.sbbit.jp/article/st/188008","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"驱动之家","pais":"China","titulo":"China alcança marco histórico em comunicação óptica com fibra de núcleo oco","resumo":"A China alcançou um grande avanço na tecnologia de comunicações ópticas ao realizar a primeira transmissão bidirecional em tempo real do mundo através de fibra de núcleo oco em uma distância de mil quilômetros. Esse feito superou limitações anteriores de atenuação de sinal e latência em redes de longa distância. A inovação promete revolucionar a infraestrutura de dados global, permitindo redes de altíssima velocidade e capacidade extrema.","link":"https://news.mydrivers.com/1/1162/1162323.htm","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Times of India","pais":"Índia","titulo":"AISSMS IOIT sedia Cúpula de IA 2026 em Pune com 54 projetos estudantis","resumo":"A instituição AISSMS IOIT realizou a Cúpula de IA 2026 na cidade de Pune, apresentando dezenas de projetos inovadores desenvolvidos por estudantes. O evento reuniu especialistas da indústria e acadêmicos para discutir o futuro do setor tecnológico na Índia. As iniciativas apresentadas abordaram temas cruciais como aprendizado de máquina, automação e soluções digitais aplicadas. O encontro reforça o papel da educação técnica na formação dos novos líderes do mercado de tecnologia.","link":"https://timesofindia.indiatimes.com/education/news/aissms-ioit-hosts-ai-summit-2026-in-pune-54-student-projects-showcased-across-emerging-technology-domains/articleshow/135446509.cms","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"welectric.pt","pais":"Portugal","titulo":"Volkswagen acelera na condução autônoma: testa tecnologia chinesa e prepara o ID. Buzz sem motorista","resumo":"A Volkswagen está intensificando seus testes de veículos autônomos utilizando soluções tecnológicas desenvolvidas na China. O foco principal é a preparação do modelo ID. Buzz para operar totalmente sem motorista em ambientes urbanos. Essa iniciativa representa um avanço estratégico para popularizar o transporte autônomo no mercado global.","link":"https://welectric.pt/2026/11/02/volkswagen-acelera-na-conducao-autonoma-testa-tecnologia-chinesa-e-prepara-o-id-buzz-sem-condutor/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"R7","pais":"Brasil","titulo":"Nova tecnologia monitora a saúde de bezerras pelo pescoço","resumo":"Uma nova ferramenta tecnológica baseada em sensores acoplados ao pescoço de bezerras permite monitorar a saúde e o comportamento dos animais em tempo real. O sistema identifica precocemente sinais de doenças e alterações alimentares, otimizando o manejo pecuário. A inovação reduz perdas na produção e promove o bem-estar animal no setor agropecuário.","link":"https://noticias.r7.com/prisma/mundo-agro/nova-tecnologia-monitora-a-saude-de-bezerras-pelo-pescoco-02112026/","categoria":"AGROTECNOLOGIA","lang":"pt"},{"fonte":"Advanced Science News","pais":"Estados Unidos","titulo":"Nova Pele Eletrônica Avança no Monitoramento da Saúde Pessoal","resumo":"Uma nova tecnologia de pele eletrônica flexível foi desenvolvida para capturar sinais vitais contínuos com alta precisão e conforto. O dispositivo é capaz de monitorar indicadores biométricos em tempo real, integrando-se facilmente à rotina diária dos usuários. Essa inovação abre caminho para diagnósticos precoces mais eficazes e cuidados médicos personalizados de forma não invasiva.","link":"https://www.advancedsciencenews.com/novel-e-skin-advances-personal-health-monitoring/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Sob o gelo da Antártida, robô subaquático filma pela primeira vez uma colônia de 1.036 ninhos de peixes","resumo":"Um robô subaquático alcançou profundidades inéditas sob a camada de gelo da Antártida para registrar um ecossistema surpreendente. As imagens inéditas revelaram uma gigantesca colônia de reprodução contendo mais de mil ninhos de peixes mapeados. A descoberta fornece dados cruciais para entender a biodiversidade marinha em ambientes de condições extremas. Cientistas destacam a importância do uso da robótica avançada para a conservação e pesquisa polar.","link":"https://www.science-et-vie.com/nature-et-environnement/animaux/sous-la-glace-de-lantarctique-un-robot-sous-marin-filme-pour-la-premiere-fois-une-colonie-de-dun-millier-de-nids-de-poissons-253056.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Sony","pais":"Inglaterra","titulo":"Apoiando novas formas de criação com a tecnologia de separação de som em contínua evolução da Sony","resumo":"A Sony apresentou novos avanços em sua tecnologia de separação de áudio projetada para transformar a produção musical e de mídia. A ferramenta utiliza algoritmos avançados para isolar instrumentos e vocais com precisão sem precedentes em faixas já gravadas. Essa inovação oferece maior liberdade criativa para produtores, músicos e criadores de conteúdo em todo o mundo. O impacto esperado é uma revolução na maneira como o conteúdo de áudio clássico e moderno é editado e remixado.","link":"https://www.sony.com/en/SonyInfo/blog/2026/11/02/index.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"Voyager 1 está prestes a alcançar algo que nenhuma máquina humana jamais conseguiu","resumo":"A sonda espacial Voyager 1 continua a fazer história ao atingir regiões inexploradas do espaço interestelar extremo. Engenheiros conseguiram otimizar seus instrumentos remanescentes para garantir que ela opere em condições adversas e continue enviando dados inéditos à Terra. Este feito reafirma o legado da missão como o projeto de exploração científica mais duradouro da humanidade.","link":"https://www.eldebate.com/ciencia/20261102/voyager-1-esta-punto-conseguir-algo-ninguna-maquina-humana-logrado-jamas_475393.html","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"DW.com","pais":"Alemanha","titulo":"Governo alemão aposta em economia high tech para conter avanço da ultradireita na Alemanha","resumo":"O governo da Alemanha está direcionando investimentos massivos para o setor de alta tecnologia como parte de uma estratégia socioeconômica. A iniciativa visa criar empregos qualificados e impulsionar regiões menos desenvolvidas para conter a ascensão política da extrema-direita. A aposta em inovação busca garantir a competitividade industrial do país e fortalecer a coesão social a longo prazo.","link":"https://amp.dw.com/pt-br/governo-alem%C3%A3o-aposta-em-economia-high-tech-para-conter-avan%C3%A7o-da-ultradireita-na-alemanha/a-79778231","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"共同通信PRワイヤー","pais":"Japão","titulo":"Samsung fornecerá tecnologia Galaxy e programas para atletas nos Jogos Olímpicos da Juventude de Dakar 2026","resumo":"A Samsung anunciou que disponibilizará sua tecnologia da linha Galaxy para apoiar os Jogos Olímpicos da Juventude em Dakar 2026. A empresa oferecerá dispositivos móveis e programas educativos focados em inovação digital para a capacitação dos jovens atletas. A ação reforça o compromisso global da marca em promover a inclusão digital e a tecnologia no meio esportivo.","link":"https://kyodonewsprwire.jp/release/202611029132","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"观点网","pais":"China","titulo":"NVIDIA apresenta protótipo da tecnologia OOI para óptica co-embalada de próxima geração","resumo":"A NVIDIA exibiu amostras funcionais de seu novo protótipo OOI, focado na próxima geração de tecnologia CPO (Co-Packaged Optics). O avanço visa reduzir drasticamente o consumo de energia e aumentar a largura de banda na interconexão de chips de inteligência artificial. A solução atende à crescente demanda de processamento em datacenters modernos. Especialistas preveem que a inovação transformará a arquitetura de supercomputadores.","link":"https://www.guandian.cn/article/20261102/621747.html","categoria":"HARDWARE","lang":"pt"},{"fonte":"The Hindu","pais":"Índia","titulo":"Avaliação da Ultraviolette X-47 Venom: Mais desempenho e tecnologia em uma moto elétrica completa","resumo":"A nova moto elétrica Ultraviolette X-47 Venom passou por testes detalhados destacando seus avanços substanciais em desempenho e autonomia. O modelo integra tecnologias de ponta para oferecer uma pilotagem mais eficiente, refinada e segura no segmento esportivo. A análise ressalta o avanço do setor de veículos elétricos de duas rodas no mercado indiano e global. O lançamento estabelece novos padrões de inovação e engenharia para a indústria de transporte sustentável.","link":"https://www.thehindu.com/life-and-style/motoring/ultraviolette-x-47-venom-review-more-performance-more-technology-and-a-more-complete-electric-motorcycle/article71652333.ece","categoria":"MOBILIDADE ELÉTRICA","lang":"pt"},{"fonte":"SIC Notícias","pais":"Portugal","titulo":"Lexus ES: luxo encontra a eletrificação com tecnologia de ponta","resumo":"O novo Lexus ES combina o refinamento característico da marca de luxo com sistemas avançados de propulsão elétrica. O modelo traz recursos de conectividade de última geração e assistentes de condução inteligentes para aprimorar a experiência ao volante. A novidade reforça a transição das montadoras premium em direção a uma mobilidade mais sustentável e tecnológica.","link":"https://sicnoticias.pt/sobre-rodas/2026-11-01-video-lexus-es-luxo-encontra-a-eletrificacao-com-tecnologia-de-ponta-68a634e1","categoria":"AUTOMÓVEIS","lang":"pt"},{"fonte":"Quatro Rodas","pais":"Brasil","titulo":"Mercedes aplica tecnologia da F1 no novo motor 1.5 turbo elétrico do GLB 250","resumo":"A Mercedes-Benz incorporou avanços de eficiência da Fórmula 1 no desenvolvimento do modelo GLB 250 com motorização 1.5 turbo elétrico. A solução combina desempenho aprimorado com menor emissão de poluentes e consumo otimizado de combustível. A iniciativa reforça a tendência de transferência de tecnologia das pistas para os carros de passeio.","link":"https://quatrorodas.abril.com.br/noticias/mercedes-leva-tecnologia-da-f1-ao-glb-250-com-novo-motor-1-5-com-turbo-eletrico/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Advanced Science News","pais":"Estados Unidos","titulo":"Superando os Limites da Óptica Usando Ruído","resumo":"Cientistas conseguiram utilizar o ruído óptico, antes visto como um obstáculo, para expandir a capacidade de resolução dos sistemas de imagem. A nova técnica permite enxergar detalhes em escalas micro e nanoscópicas que antes eram inalcançáveis por métodos convencionais. Esse progresso tem o potencial de impactar significativamente desde a fabricação de semicondutores até diagnósticos biológicos de alta precisão.","link":"https://www.advancedsciencenews.com/pushing-the-limits-of-optics-with-noise/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Ouest-France","pais":"França","titulo":"Framatome industrializa na Loire-Atlantique uma nova tecnologia que aumenta a segurança dos combustíveis nucleares","resumo":"A empresa Framatome iniciou o processo de industrialização de uma solução tecnológica inovadora para o setor energético. A novidade visa reforçar significativamente a segurança do combustível utilizado em reatores nucleares. Essa evolução promete aumentar a resistência das usinas contra acidentes graves e otimizar a eficiência da geração de energia. A iniciativa posiciona a região como um polo estratégico na transição e segurança energética europeia.","link":"https://agence-api.ouest-france.fr/energie/framatome-industrialise-en-loire-atlantique-une-nouvelle-technologie-securisant-les-combustibles-nucleaires-e8dc5d8e-d607-11f1-84f3-5611f158a658","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Wärtsilä","pais":"Inglaterra","titulo":"Novo estudo: Escolhas corretas de tecnologia de energia para data centers fora da rede podem gerar economia global de até 200 bilhões de euros","resumo":"Um estudo recente revela que a adoção de tecnologias energéticas adequadas para data centers isolados da rede tradicional pode resultar em uma economia de até 200 bilhões de euros globalmente. O aumento explosivo do processamento de dados tem exigido infraestruturas de energia cada vez mais eficientes e sustentáveis. A implementação de soluções avançadas reduz custos operacionais significativos e diminui a pegada de carbono do setor digital. Essa transição energética torna-se fundamental para a sustentabilidade da expansão dos centros de dados.","link":"https://www.wartsila.com/png/news/02-11-2026-new-study-right-power-technology-choices-for-off-grid-data-centres-could-deliver-up-to-eur-200-billion-in-global-savings-3808329","categoria":"ENERGIA","lang":"pt"},{"fonte":"elDiario.es","pais":"Espanha","titulo":"A astronauta que estuda a menstruação no espaço: “A ciência sempre foi muito patriarcal”","resumo":"Uma pesquisa pioneira analisa os impactos da microgravidade na saúde reprodutiva e no ciclo menstrual das mulheres durante missões de longa duração. O estudo visa preencher uma lacuna histórica na medicina espacial, que tradicionalmente priorizou dados masculinos em suas análises. A iniciativa busca garantir maior equidade e segurança médica para as futuras viagens rumo à Lua e a Marte.","link":"https://www.eldiario.es/catalunya/astronauta-estudia-menstruacion-espacio-ciencia-sido-patriarcal_128_13622864.html","categoria":"CIÊNCIA ESPACIAL","lang":"pt"},{"fonte":"AXIS","pais":"Japão","titulo":"Seiko lança novo modelo inspirado no primeiro relógio de parede a quartzo do mundo","resumo":"A Seiko anunciou o lançamento de um novo modelo de relógio de parede que herda o legado do primeiro relógio a quartzo residencial do mundo. O modelo original foi oficialmente registrado no Patrimônio de Tecnologia Futura pelo Museu Nacional de Natureza e Ciência do Japão. A novidade combina o valor histórico da precisão japonesa com design contemporâneo focado na alta durabilidade.","link":"https://www.axismag.jp/posts/2026/11/727381.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"中国科技网","pais":"China","titulo":"Especialista afirma que mãos diestras são o 'Everest' da inteligência artificial corporificada","resumo":"O renomado cientista Harry Shum destacou que o desenvolvimento de mãos robóticas diestras representa o maior desafio técnico para a inteligência artificial corporificada. A complexidade de replicar a destreza, sensibilidade e controle motor humano exige avanços profundos em sensores e algoritmos de aprendizado. Vencer essa barreira permitirá que robôs executem tarefas industriais e domésticas delicadas. A evolução nessa área promete acelerar a automação de próxima geração.","link":"https://www.stdaily.com/web/gdxw/2026-11/02/content_606705.html","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"The New Indian Express","pais":"Índia","titulo":"Conselho da Tirumala Tirupati Devasthanams combina tradição e tecnologia","resumo":"A administração do famoso templo de Tirumala Tirupati adotou soluções tecnológicas avançadas para otimizar a gestão de multidões e serviços aos peregrinos. A iniciativa busca preservar tradições históricas enquanto implementa ferramentas digitais modernas para melhorar a segurança e a eficiência operacional. O uso de sistemas inteligentes visa proporcionar uma experiência mais ágil e organizada para milhões de visitantes diários. O projeto exemplifica como instituições tradicionais podem se modernizar sem perder sua essência cultural.","link":"https://www.newindianexpress.com/states/andhra-pradesh/2026/Nov/02/tirumala-tirupati-devasthanams-trust-board-blends-tradition-with-technology","categoria":"INOVAÇÃO TECNOLÓGICA","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"Enviar cheiros pela internet? Sim, já é possível compartilhar aromas à distância","resumo":"Pesquisadores desenvolveram novos dispositivos capazes de digitalizar e transmitir fragrâncias por meio de conexões digitais. A tecnologia utiliza cartuchos de aromas e sinais codificados para reproduzir sensações olfativas em tempo real. Essa inovação promete transformar a experiência do usuário em plataformas de entretenimento e comércio eletrônico.","link":"https://pplware.sapo.pt/ciencia/enviar-cheiros-pela-internet-sim-ja-e-possivel-partilhar-aromas-a-distancia/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"R7","pais":"Brasil","titulo":"A ciência perigosa por trás da Rainha do Crime e os mistérios dos venenos","resumo":"Uma análise científica explora os conhecimentos de toxicologia utilizados por Agatha Christie em suas obras literárias policiais. A autora aproveitava sua experiência farmacêutica para detalhar envenenamentos de forma surpreendentemente precisa. O estudo destaca a interseção histórica entre a ciência química e o desenvolvimento da narrativa de mistério.","link":"https://noticias.r7.com/internacional/ela-poderia-ter-se-safado-de-um-assassinato-a-ciencia-perigosa-por-tras-da-rainha-do-crime-02112026/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BioSpace","pais":"Estados Unidos","titulo":"Tecnologia da Gemelli Biotech é Usada em Estudo Relacionado à Expressão Gênica Intestinal","resumo":"A tecnologia Trio-Smart da Gemelli Biotech foi empregada em uma pesquisa pioneira sobre a superprodução de sulfeto no intestino. O estudo estabeleceu uma relação direta entre essa alteração química e um perfil específico de expressão gênica no intestino delgado. As descobertas abrem novas vias para o diagnóstico e tratamento de distúrbios gastrointestinais complexos.","link":"https://www.biospace.com/press-releases/technology-behind-gemelli-biotechs-trio-smart-used-in-new-study-linking-intestinal-sulfide-overproduction-to-a-distinct-small-bowel-gene-expression-signature","categoria":"SAÚDE","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Europa observa o Marrocos do espaço e assiste impotente à expansão de uma gigantesca mancha vermelha","resumo":"Satélites europeus de monitoramento espacial detectaram uma alteração geográfica alarmante no território marroquino. A imagem de satélite mostra o avanço acelerado de uma mancha vermelha associada a secas severas e degradação do solo. O fenômeno evidencia o impacto direto das mudanças climáticas na região norte-africana. Especialistas alertam para a necessidade de medidas urgentes de adaptação ambiental e gestão de recursos hídricos.","link":"https://www.science-et-vie.com/ciel-et-espace/leurope-observe-le-maroc-depuis-lespace-et-assiste-impuissante-a-lexpansion-dune-gigantesque-tache-rouge-264283.html","categoria":"TECNOLOGIA ESPACIAL","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Polícia usa reconhecimento facial para digitalizar um milhão de rostos em teste na Austrália Ocidental resultando em 122 prisões","resumo":"Um projeto piloto na Austrália Ocidental utilizou sistemas de reconhecimento facial para analisar cerca de um milhão de rostos durante um período de testes. A operação de vigilância tecnológica resultou na identificação e prisão de 122 suspeitos procurados pela justiça. O resultado gerou intensos debates sobre a eficiência da inteligência artificial na segurança pública versus os riscos à privacidade dos cidadãos. Defensores dos direitos civis exigem regulamentação mais severa para o uso dessa tecnologia.","link":"https://www.theguardian.com/australia-news/2026/nov/02/wa-police-facial-recognition-technology-trial","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Motor16","pais":"Espanha","titulo":"O Grupo BMW já movimentou um milhão de carros sem motorista dentro de suas fábricas","resumo":"O Grupo BMW alcançou a marca histórica de um milhão de veículos autônomos movimentados dentro de suas instalações fabris sem intervenção humana. A tecnologia utiliza robótica avançada, sensores inteligentes e automação para otimizar a logística e a eficiência da produção industrial. Essa conquista demonstra a consolidação da indústria 4.0 na manufatura automotiva global.","link":"https://www.motor16.com/tecnologia/bmw-millon-sin-conductor/","categoria":"AUTOMAÇÃO","lang":"pt"},{"fonte":"ダイヤモンド・オンライン","pais":"Japão","titulo":"Quem é 'Sarah'? A mulher misteriosa que motivou centenas de engenheiros do novo Mazda CX-5","resumo":"A Mazda revelou os bastidores do desenvolvimento do novo CX-5 e o impacto de uma figura fictícia chamada Sarah no projeto. Essa persona de cliente serviu como guia metodológico para mobilizar centenas de engenheiros em torno das reais necessidades dos motoristas. O processo inovador de engenharia orientada ao usuário redefiniu padrões de design e dinâmica veicular na montadora.","link":"https://diamond.jp/articles/-/402232?page=2","categoria":"ENGENHARIA","lang":"pt"},{"fonte":"中国科大新闻网","pais":"China","titulo":"Avanços na tecnologia 6G prometem redefinir a conectividade móvel na China","resumo":"As pesquisas em torno da rede 6G estão se intensificando na China, com avanços significativos na integração de comunicação e sensoriamento espacial. A nova geração de redes promete velocidades multiplicadas e latência próxima de zero, viabilizando cidades inteligentes e ambientes imersivos em tempo real. O país busca consolidar sua liderança global no estabelecimento dos padrões de telecomunicação do futuro. Os testes práticos já começam a demonstrar o imenso potencial da tecnologia.","link":"https://news.ustc.edu.cn/info/1056/96782.htm","categoria":"TELECOMUNICAÇÕES","lang":"pt"},{"fonte":"Administration of Union Territory of Ladakh","pais":"Índia","titulo":"SHS\u0026T Kargil inaugura tecnologia de desidratação por infravermelho para secagem de frutas e vegetais","resumo":"A instituição SHS\u0026T Kargil apresentou uma inovadora tecnologia de desidratação baseada em radiação infravermelha voltada ao processamento de frutas e vegetais. O método reduz significativamente o tempo de secagem enquanto preserva o valor nutricional e a qualidade dos alimentos produzidos. A novidade representa um impacto positivo para os agricultores locais ao diminuir o desperdício pós-colheita e agregar valor aos produtos. A iniciativa fortalece o desenvolvimento tecnológico agrícola e a segurança alimentar na região.","link":"https://ladakh.gov.in/shst-kargil-inaugurates-infrared-dehydration-technology-for-drying-fruits-and-vegetables/","categoria":"AGROTECNOLOGIA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Audi não reinventa a roda, mas quase: marca alemã dá nova vida a tecnologia de mais de 100 anos","resumo":"A Audi resgatou um conceito de engenharia centenário e o aprimorou com materiais modernos e controle eletrônico. Essa reformulação visa otimizar a eficiência energética e o desempenho dos veículos elétricos de nova geração. O projeto demonstra como ideias clássicas podem ser reinterpretadas para resolver desafios tecnológicos contemporâneos.","link":"https://sapo.pt/artigo/audi-nao-reinventa-a-roda-mas-quase-marca-alema-da-uma-nova-vida-a-uma-tecnologia-com-mais-de-100-anos-6ae79b73f8020b05950f8d5e","categoria":"ENGENHARIA","lang":"pt"},{"fonte":"Tudo ok Notícias","pais":"Brasil","titulo":"Senac-DF participa do evento Conecta IA com debates sobre o futuro da tecnologia","resumo":"O Senac-DF marcou presença no evento Conecta IA reunindo especialistas para discutir o impacto da inteligência artificial no mercado e na educação. Os debates abordaram a capacitação profissional frente às rápidas transformações tecnológicas atuais. A iniciativa visa preparar a sociedade para as exigências e desafios da era digital.","link":"https://tudooknoticias.com.br/distrito-federal/senac-df-participa-do-conecta-ia-com-debates-sobre-tecnologia/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"APOD: Uma Longa Nuvem em Marte","resumo":"Uma impressionante imagem divulgada destaca uma formação de nuvem extremamente longa sobre a superfície do planeta Marte. Fenômenos atmosféricos como este oferecem dados cruciais para entender a dinâmica do clima e o comportamento dos ventos no planeta vermelho. A observação constante ajuda cientistas a planejar futuras missões de exploração espacial com maior segurança.","link":"https://science.nasa.gov/image-article/apod-2026-november-2-a-long-cloud-on-mars/","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"Investing.com France","pais":"França","titulo":"Ações asiáticas sobem impulsionadas pela Tecnologia antes dos resultados da Apple","resumo":"Os mercados financeiros na Ásia apresentaram forte valorização impulsionados pelo otimismo no setor tecnológico global. Investidores ajustaram suas posições em expectativa à divulgação do balanço financeiro trimestral da Apple. A valorização de empresas de semicondutores e hardware fortaleceu os principais índices da região. O movimento reflete a alta dependência do mercado acionário em relação ao desempenho das Big Techs.","link":"https://fr.investing.com/news/stock-market-news/les-actions-asiatiques-progressent-grace-a-la-technologie-avant-les-resultats-dapple-3667304","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Yahoo Finance Australia","pais":"Inglaterra","titulo":"Atualização do setor NZX: Ações de bens de consumo duráveis avançam, enquanto setor de tecnologia de saúde enfrenta dificuldades","resumo":"O mercado de ações da Nova Zelândia registrou valorização significativa nas empresas focadas em bens de consumo duráveis durante o último período. Em contrapartida, as companhias dedicadas à tecnologia voltada para a saúde apresentaram desafios e retração em seu valor de mercado. Analistas apontam que a readequação dos investimentos reflete incertezas econômicas e ajustes no setor pós-pandemia. O cenário demonstra a volatilidade do mercado financeiro frente às constantes inovações tecnológicas.","link":"https://au.finance.yahoo.com/news/nzx-sector-consumer-durable-stocks-011036278.html","categoria":"MERCADO","lang":"pt"},{"fonte":"Diario de Sevilla","pais":"Espanha","titulo":"Tecnologia a laser revoluciona a restauração da pedra da Catedral de Sevilha","resumo":"A emblemática Catedral de Sevilha está aplicando sistemas de limpeza e restauração a laser de última geração para preservar suas estruturas históricas de pedra. A técnica inovadora permite remover séculos de poluição e sujidade com extrema precisão, sem danificar os materiais delicados do monumento. O projeto tornou-se uma referência internacional no uso de tecnologia aplicada à conservação do patrimônio cultural.","link":"https://www.diariodesevilla.es/semana_santa/tecnologia-laser-revoluciona-restauracion-piedra-catedral-sevilla_0_2008354110.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Japan Today","pais":"Japão","titulo":"Febre dos adesivos no Japão atinge a política com conjuntos temáticos de Sanae Takaichi","resumo":"A cultura popular de colecionar adesivos no Japão encontrou o cenário político com a popularização de coleções inspiradas na política Sanae Takaichi. O fenômeno reflete a forte influência de itens colecionáveis e cultura pop na comunicação política moderna do país. O sucesso de vendas destaca novas formas de engajamento do público com figuras públicas e tendências urbanas.","link":"https://japantoday.com/category/politics/japan-sticker-craze-meets-politics-as-pm-takaichi-themed-sets-prove-hit","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"中国科技网","pais":"China","titulo":"Computador científico 3D permite filmar moléculas em alta definição na China","resumo":"Uma nova ferramenta de computação científica em 3D foi desenvolvida para capturar o movimento de moléculas em tempo real, funcionando como um 'cinema em alta definição' do mundo microscópico. A inovação permite observar dinâmicas moleculares com precisão inédita, acelerando a descoberta de novos medicamentos e materiais avançados. A tecnologia representa um salto para a pesquisa biológica e química. Cientistas celebram a conquista como um marco para a simulação científica.","link":"https://www.stdaily.com/web/gdxw/2026-11/02/content_606556.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Construction World","pais":"Índia","titulo":"Índia criará Hub Nacional de Tecnologia em Hidrocarbonetos","resumo":"O governo indiano anunciou a criação de um centro nacional focado em pesquisas e desenvolvimento tecnológico para a indústria de hidrocarbonetos. O novo hub visa impulsionar a inovação no setor energético, promovendo eficiência e novas soluções sustentáveis para o país. A estrutura reunirá especialistas da indústria, pesquisadores e órgãos públicos em um esforço conjunto de modernização. Espera-se que a iniciativa reduza a dependência externa e fortaleça a soberania energética indiana.","link":"https://www.constructionworld.in/energy-infrastructure/oil-and-gas/india-to-set-up-national-hydrocarbon-technology-hub/99726","categoria":"ENERGIA","lang":"pt"},{"fonte":"Record","pais":"Portugal","titulo":"Democrático e acessível! O Xiaomi Redmi Note 17 Pro 5G é destaque no 11.11 do AliExpress","resumo":"O Xiaomi Redmi Note 17 Pro 5G surge como uma das principais atrações do evento de vendas 11.11 no AliExpress. O smartphone oferece especificações avançadas, incluindo conectividade de quinta geração e câmeras de alta resolução, por um preço competitivo. O lançamento consolida a presença de dispositivos com ótimo custo-benefício no mercado consumidor.","link":"https://www.record.pt/indica/tecnologia/detalhe/democratico-e-acessivel-o-xiaomi-redmi-note-17-pro-5g-e-um-dos-smartphones-em-destaque-no-11-11-do-aliexpress","categoria":"SMARTPHONES","lang":"pt"},{"fonte":"Rádio Pampa","pais":"Brasil","titulo":"Estudo alerta que uma em cada cinco crianças sofreu abuso facilitado pela tecnologia","resumo":"Um relatório revelou que uma expressiva parcela de crianças e adolescentes já foi vítima de exploração ou abuso facilitado por ferramentas digitais. O dado acende um alerta global sobre a necessidade de reforçar a segurança e a proteção de menores na internet. Especialistas defendem políticas públicas severas e maior conscientização sobre o uso seguro de plataformas.","link":"https://www.radiopampa.com.br/uma-em-cada-cinco-criancas-e-adolescentes-sofreu-ao-menos-uma-forma-de-exploracao-e-abuso-sexual-facilitada-pela-tecnologia/","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"O GLOBO","pais":"Estados Unidos","titulo":"Com Cortes e Agenda Ideológica, Trump Desmantela a Ciência nos EUA e Ameaça Liderança Estratégica do País","resumo":"Uma série de cortes orçamentários severos e redirecionamentos políticos coloca em risco a infraestrutura científica e tecnológica dos Estados Unidos. Especialistas alertam que a redução de investimentos em pesquisas fundamentais pode minar a vantagem competitiva do país no cenário global. O cenário gera preocupação em institutos de pesquisa e universidades quanto à fuga de cérebros e atraso em inovações.","link":"https://oglobo.globo.com/mundo/noticia/2026/11/02/com-cortes-e-agenda-ideologica-trump-desmantela-a-ciencia-nos-eua-e-ameaca-lideranca-estrategica-do-pais.ghtml","categoria":"POLÍTICA CIENTÍFICA","lang":"pt"},{"fonte":"Presse Agence","pais":"França","titulo":"LYON: Tecnologia no esporte - Fitness Boost e bSport se unem para criar solução integrada para academias","resumo":"Duas empresas de tecnologia esportiva anunciaram uma parceria estratégica na cidade de Lyon. A união entre a Fitness Boost e a bSport visa entregar uma plataforma de gestão unificada para clubes e academias. A ferramenta combina automação de processos, agendamentos digitais e análise de dados de desempenho. A inovação promete otimizar a experiência dos praticantes de atividades físicas e a eficiência operacional dos gestores.","link":"https://presseagence.fr/lyon-technologie-du-sport-fitness-boost-et-bsport-sallient-pour-une-solution-integree-destinee-aux-clubs/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Globo","pais":"Brazil","titulo":"MIT snake robot travels inside the intestine to treat diseases","resumo":"MIT researchers have developed a flexible snake-shaped robot designed to navigate the gastrointestinal tract in a minimally invasive manner. The innovation aims to facilitate complex examinations and the localized delivery of drugs within the human body. This technology promises to transform medical treatments and precision surgical procedures in the future.","link":"https://revistagalileu.globo.com/tecnologia/noticia/2026/11/como-novo-robo-do-mit-investiga-problemas-no-intestino-de-dentro-do-corpo.ghtml","categoria":"ROBOTICS","lang":"en"},{"fonte":"Advanced Science News","pais":"United States","titulo":"Prophage Activation Turns Bacterial Biofilms into Programmable DNA Factories","resumo":"Researchers have discovered an innovative method to activate prophages in bacterial biofilms, turning them into efficient synthetic DNA factories. This approach allows the controlled production of genetic materials directly within complex biological systems. The breakthrough promises to revolutionize synthetic biology and the development of new targeted gene therapies.","link":"https://www.advancedsciencenews.com/prophage-activation-turns-bacterial-biofilms-into-programmable-dna-factories/","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Alternatives économiques","pais":"France","titulo":"The great heist: how AI giants are shaking down the economy","resumo":"The unchecked advance of artificial intelligence companies is radically transforming the global economic ecosystem. Tech companies are imposing new costs and dependencies to access advanced machine learning tools. Analysts warn of the monopolistic impact this centralization of power could cause in the market. This dynamic raises urgent debates on regulation and digital sovereignty in various countries.","link":"https://www.alternatives-economiques.fr/le-grand-hold-up-comment-les-geants-de-l-ia-ranconnent-l-economie_01-11-2026","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Reuters","pais":"England","titulo":"Global economy: Asia factory activity feels fading glimmer of AI boom","resumo":"Industrial activity in Asia is showing signs of slowdown as the initial momentum of massive investments in artificial intelligence begins to lose steam. The region's manufacturing sector had been experiencing a strong heating driven by global demand for semiconductors and advanced hardware. Experts warn that the decrease in this pace could impact the economic growth of several technology-dependent Asian countries. The scenario demands new strategies to maintain competitiveness in the face of global market uncertainties.","link":"https://www.reuters.com/world/asia-pacific/global-economy-asias-factory-activity-feels-fading-glimmer-ai-boom-2026-11-02/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ConSalud","pais":"Spain","titulo":"Brain interface technology used for tactile and visual prosthetics discovered to be practically the same","resumo":"Researchers have identified that the fundamental principles of brain-computer interfaces for tactile and visual senses share practically identical architectures. This discovery promises to accelerate the development of more advanced and accessible neural prosthetics for patients with sensory disabilities. The breakthrough represents a major milestone in the field of neurotechnology and regenerative medicine.","link":"https://www.consalud.es/saludigital/ia-big-data/descubren-que-la-tecnologia-de-interfaz-cerebral-utilizada-para-protesis-tactiles-y-visuales-es-practicamente-la-misma.html","categoria":"NEUROTECHNOLOGY","lang":"en"},{"fonte":"Advanced Science News","pais":"Germany","titulo":"Claudia Felser: Exploring new frontiers in materials science","resumo":"German physicist and chemist Claudia Felser has stood out for her groundbreaking research in the discovery of new quantum and topological materials. Her work paves the way for the development of advanced technologies in spintronics and quantum computing. These innovations drive significant leaps in data processing and global energy efficiency.","link":"https://www.advancedsciencenews.com/claudia-felser-exploring-new-frontiers-in-materials-science/","categoria":"SCIENCE","lang":"en"},{"fonte":"ビジネス+IT","pais":"Japan","titulo":"Ricoh and Kawasaki Heavy Industries use AI to transform engineer knowledge into design assets","resumo":"Ricoh and Kawasaki Heavy Industries have initiated a practical test to convert the tacit knowledge of veteran engineers into digital design assets with the support of artificial intelligence. The project aims to capture the decision-making and accumulated experience of specialists to prevent the loss of critical know-how. This initiative seeks to ensure the continuity of technical innovation and optimize industrial development processes in Japan.","link":"https://www.sbbit.jp/article/st/188008","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"驱动之家","pais":"China","titulo":"China achieves historic milestone in optical communication with hollow-core fiber","resumo":"China has achieved a major breakthrough in optical communications technology by performing the world's first real-time bidirectional transmission through hollow-core fiber over a distance of one thousand kilometers. This feat overcame previous limitations of signal attenuation and latency in long-distance networks. The innovation promises to revolutionize global data infrastructure, enabling ultra-high-speed networks and extreme capacity.","link":"https://news.mydrivers.com/1/1162/1162323.htm","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Times of India","pais":"India","titulo":"AISSMS IOIT hosts AI Summit 2026 in Pune with 54 student projects showcased","resumo":"The AISSMS IOIT institution held the AI Summit 2026 in the city of Pune, presenting dozens of innovative projects developed by students. The event brought together industry experts and academics to discuss the future of the technology sector in India. The initiatives presented addressed crucial themes such as machine learning, automation, and applied digital solutions. The gathering reinforces the role of technical education in shaping the new leaders of the tech market.","link":"https://timesofindia.indiatimes.com/education/news/aissms-ioit-hosts-ai-summit-2026-in-pune-54-student-projects-showcased-across-emerging-technology-domains/articleshow/135446509.cms","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"welectric.pt","pais":"Portugal","titulo":"Volkswagen accelerates in autonomous driving: tests Chinese technology and prepares driverless ID. Buzz","resumo":"Volkswagen is intensifying its autonomous vehicle testing using technological solutions developed in China. The primary focus is the preparation of the ID. Buzz model to operate entirely without a driver in urban environments. This initiative represents a strategic breakthrough to popularize autonomous transport in the global market.","link":"https://welectric.pt/2026/11/02/volkswagen-acelera-na-conducao-autonoma-testa-tecnologia-chinesa-e-prepara-o-id-buzz-sem-condutor/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"R7","pais":"Brazil","titulo":"New technology monitors the health of female calves via the neck","resumo":"A new technological tool based on sensors attached to the neck of female calves allows monitoring of the animals' health and behavior in real-time. The system early identifies signs of diseases and dietary changes, optimizing livestock management. The innovation reduces production losses and promotes animal welfare in the agricultural sector.","link":"https://noticias.r7.com/prisma/mundo-agro/nova-tecnologia-monitora-a-saude-de-bezerras-pelo-pescoco-02112026/","categoria":"AGTECH","lang":"en"},{"fonte":"Advanced Science News","pais":"United States","titulo":"New Electronic Skin Advances Personal Health Monitoring","resumo":"A new flexible electronic skin technology has been developed to capture continuous vital signs with high precision and comfort. The device is capable of monitoring biometric indicators in real-time, easily integrating into the users' daily routine. This innovation paves the way for more effective early diagnoses and personalized medical care in a non-invasive manner.","link":"https://www.advancedsciencenews.com/novel-e-skin-advances-personal-health-monitoring/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"Under the Antarctic ice, underwater robot films a colony of 1,036 fish nests for the first time","resumo":"An underwater robot reached unprecedented depths beneath the Antarctic ice sheet to record a surprising ecosystem. The unprecedented images revealed a massive breeding colony containing over a thousand mapped fish nests. The discovery provides crucial data to understand marine biodiversity in extreme condition environments. Scientists highlight the importance of using advanced robotics for polar conservation and research.","link":"https://www.science-et-vie.com/nature-et-environnement/animaux/sous-la-glace-de-lantarctique-un-robot-sous-marin-filme-pour-la-premiere-fois-une-colonie-de-dun-millier-de-nids-de-poissons-253056.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Sony","pais":"England","titulo":"Supporting new forms of creation with Sony's continuously evolving sound separation technology","resumo":"Sony has introduced new advancements in its audio separation technology designed to transform music and media production. The tool utilizes advanced algorithms to isolate instruments and vocals with unprecedented precision in already recorded tracks. This innovation offers greater creative freedom for producers, musicians, and content creators worldwide. The expected impact is a revolution in the way classic and modern audio content is edited and remixed.","link":"https://www.sony.com/en/SonyInfo/blog/2026/11/02/index.html","categoria":"INNOVATION","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"Voyager 1 is about to achieve something no human machine has ever managed","resumo":"The Voyager 1 space probe continues to make history by reaching unexplored regions of the extreme interstellar space. Engineers managed to optimize its remaining instruments to ensure it operates in adverse conditions and continues sending unprecedented data to Earth. This feat reaffirms the mission's legacy as humanity's longest-running scientific exploration project.","link":"https://www.eldebate.com/ciencia/20261102/voyager-1-esta-punto-conseguir-algo-ninguna-maquina-humana-logrado-jamas_475393.html","categoria":"ASTRONOMY","lang":"en"},{"fonte":"DW.com","pais":"Germany","titulo":"German Government Bets on High-Tech Economy to Contain the Rise of the Far-Right","resumo":"The German government is directing massive investments into the high-tech sector as part of a socioeconomic strategy. The initiative aims to create skilled jobs and boost less-developed regions to curb the political rise of the extreme right. The bet on innovation seeks to ensure the country's industrial competitiveness and strengthen social cohesion in the long term.","link":"https://amp.dw.com/pt-br/governo-alem%C3%A3o-aposta-em-economia-high-tech-para-conter-avan%C3%A7o-da-ultradireita-na-alemanha/a-79778231","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"共同通信PRワイヤー","pais":"Japan","titulo":"Samsung to Provide Galaxy Technology and Programs for Athletes at the Dakar 2026 Youth Olympic Games","resumo":"Samsung has announced it will make its Galaxy line technology available to support the Youth Olympic Games in Dakar 2026. The company will offer mobile devices and educational programs focused on digital innovation to empower young athletes. The action reinforces the brand's global commitment to promoting digital inclusion and technology in the sporting arena.","link":"https://kyodonewsprwire.jp/release/202611029132","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"观点网","pais":"China","titulo":"NVIDIA Unveils OOI Technology Prototype for Next-Generation Co-Packaged Optics","resumo":"NVIDIA has showcased functional samples of its new OOI prototype, focused on the next generation of Co-Packaged Optics (CPO) technology. The advancement aims to drastically reduce energy consumption and increase bandwidth in the interconnection of artificial intelligence chips. The solution addresses the growing processing demand in modern datacenters. Experts predict that the innovation will transform supercomputer architecture.","link":"https://www.guandian.cn/article/20261102/621747.html","categoria":"HARDWARE","lang":"en"},{"fonte":"The Hindu","pais":"India","titulo":"Ultraviolette X-47 Venom Review: More Performance and Technology in a Complete Electric Motorcycle","resumo":"The new Ultraviolette X-47 Venom electric motorcycle has undergone detailed testing highlighting its substantial advancements in performance and range. The model integrates cutting-edge technologies to offer a more efficient, refined, and safe ride in the sport segment. The review highlights the progress of the two-wheeled electric vehicle sector in the Indian and global markets. The launch sets new standards of innovation and engineering for the sustainable transportation industry.","link":"https://www.thehindu.com/life-and-style/motoring/ultraviolette-x-47-venom-review-more-performance-more-technology-and-a-more-complete-electric-motorcycle/article71652333.ece","categoria":"ELECTRIC MOBILITY","lang":"en"},{"fonte":"SIC Notícias","pais":"Portugal","titulo":"Lexus ES: Luxury Meets Electrification with Cutting-Edge Technology","resumo":"The new Lexus ES combines the luxury brand's signature refinement with advanced electric propulsion systems. The model brings next-generation connectivity features and intelligent driving assistants to enhance the behind-the-wheel experience. The novelty reinforces the transition of premium automakers toward more sustainable and technological mobility.","link":"https://sicnoticias.pt/sobre-rodas/2026-11-01-video-lexus-es-luxo-encontra-a-eletrificacao-com-tecnologia-de-ponta-68a634e1","categoria":"AUTOMOBILES","lang":"en"},{"fonte":"Quatro Rodas","pais":"Brazil","titulo":"Mercedes Applies F1 Technology to the New 1.5 Turbo Electric Engine of the GLB 250","resumo":"Mercedes-Benz has incorporated Formula 1 efficiency advancements into the development of the GLB 250 model with a 1.5 turbo electric powertrain. The solution combines improved performance with lower pollutant emissions and optimized fuel consumption. The initiative reinforces the trend of transferring track technology to passenger cars.","link":"https://quatrorodas.abril.com.br/noticias/mercedes-leva-tecnologia-da-f1-ao-glb-250-com-novo-motor-1-5-com-turbo-eletrico/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Advanced Science News","pais":"United States","titulo":"Pushing the Limits of Optics Using Noise","resumo":"Scientists have managed to utilize optical noise, previously seen as an obstacle, to expand the resolution capacity of imaging systems. The new technique allows details to be seen at micro and nanoscale levels that were previously unreachable by conventional methods. This progress has the potential to significantly impact everything from semiconductor manufacturing to high-precision biological diagnostics.","link":"https://www.advancedsciencenews.com/pushing-the-limits-of-optics-with-noise/","categoria":"SCIENCE","lang":"en"},{"fonte":"Ouest-France","pais":"France","titulo":"Framatome Industrializes New Technology in Loire-Atlantique to Increase Nuclear Fuel Safety","resumo":"Framatome has begun the industrialization process for an innovative technological solution for the energy sector. The novelty aims to significantly reinforce the safety of the fuel used in nuclear reactors. This evolution promises to increase the resilience of power plants against severe accidents and optimize power generation efficiency. The initiative positions the region as a strategic hub in the European energy transition and security.","link":"https://agence-api.ouest-france.fr/energie/framatome-industrialise-en-loire-atlantique-une-nouvelle-technologie-securisant-les-combustibles-nucleaires-e8dc5d8e-d607-11f1-84f3-5611f158a658","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Wärtsilä","pais":"England","titulo":"New Study: Right Power Technology Choices for Off-Grid Data Centers Could Deliver Up to EUR 200 Billion in Global Savings","resumo":"A recent study reveals that the adoption of appropriate energy technologies for data centers isolated from the traditional grid can result in savings of up to 200 billion euros globally. The explosive increase in data processing has demanded increasingly efficient and sustainable energy infrastructures. The implementation of advanced solutions significantly reduces operational costs and lowers the carbon footprint of the digital sector. This energy transition becomes fundamental for the sustainability of data center expansion.","link":"https://www.wartsila.com/png/news/02-11-2026-new-study-right-power-technology-choices-for-off-grid-data-centres-could-deliver-up-to-eur-200-billion-in-global-savings-3808329","categoria":"ENERGY","lang":"en"},{"fonte":"elDiario.es","pais":"Spain","titulo":"The Astronaut Who Studies Menstruation in Space: \"Science Has Always Been Very Patriarchal\"","resumo":"Pioneering research analyzes the impacts of microgravity on women's reproductive health and menstrual cycle during long-duration missions. The study aims to fill a historical gap in space medicine, which has traditionally prioritized male data in its analyses. The initiative seeks to ensure greater equity and medical safety for future trips to the Moon and Mars.","link":"https://www.eldiario.es/catalunya/astronauta-estudia-menstruacion-espacio-ciencia-sido-patriarcal_128_13622864.html","categoria":"SPACE SCIENCE","lang":"en"},{"fonte":"AXIS","pais":"Japan","titulo":"Seiko Launches New Model Inspired by the World's First Quartz Wall Clock","resumo":"Seiko has announced the launch of a new wall clock model that inherits the legacy of the world's first residential quartz clock. The original model was officially registered in the Future Technology Heritage by Japan's National Museum of Nature and Science. The novelty combines the historical value of Japanese precision with contemporary design focused on high durability.","link":"https://www.axismag.jp/posts/2026/11/727381.html","categoria":"INNOVATION","lang":"en"},{"fonte":"中国科技网","pais":"China","titulo":"Expert States That Dexterous Hands Are the 'Everest' of Embodied Artificial Intelligence","resumo":"Renowned scientist Harry Shum pointed out that the development of dexterous robotic hands represents the greatest technical challenge for embodied artificial intelligence. The complexity of replicating human dexterity, sensitivity, and motor control requires profound advances in sensors and learning algorithms. Overcoming this barrier will allow robots to perform delicate industrial and domestic tasks. Evolution in this area promises to accelerate next-generation automation.","link":"https://www.stdaily.com/web/gdxw/2026-11/02/content_606705.html","categoria":"ROBOTICS","lang":"en"},{"fonte":"The New Indian Express","pais":"India","titulo":"Tirumala Tirupati Devasthanams Trust Board Blends Tradition with Technology","resumo":"The administration of the famous Tirumala Tirupati temple has adopted advanced technological solutions to optimize crowd management and pilgrim services. The initiative seeks to preserve historical traditions while implementing modern digital tools to improve security and operational efficiency. The use of smart systems aims to provide a smoother and more organized experience for millions of daily visitors. The project exemplifies how traditional institutions can modernize without losing their cultural essence.","link":"https://www.newindianexpress.com/states/andhra-pradesh/2026/Nov/02/tirumala-tirupati-devasthanams-trust-board-blends-tradition-with-technology","categoria":"TECHNOLOGICAL INNOVATION","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"Sending Scents Over the Internet? Yes, It Is Already Possible to Share Aromas Remotely","resumo":"Researchers have developed new devices capable of digitizing and transmitting fragrances via digital connections. The technology uses scent cartridges and coded signals to reproduce olfactory sensations in real time. This innovation promises to transform the user experience on entertainment and e-commerce platforms.","link":"https://pplware.sapo.pt/ciencia/enviar-cheiros-pela-internet-sim-ja-e-possivel-partilhar-aromas-a-distancia/","categoria":"INNOVATION","lang":"en"},{"fonte":"R7","pais":"Brazil","titulo":"The Dangerous Science Behind the Queen of Crime and the Mysteries of Poisons","resumo":"A scientific analysis explores the toxicology knowledge used by Agatha Christie in her detective fiction works. The author took advantage of her pharmaceutical background to detail poisonings with surprising precision. The study highlights the historical intersection between chemical science and the development of the mystery narrative.","link":"https://noticias.r7.com/internacional/ela-poderia-ter-se-safado-de-um-assassinato-a-ciencia-perigosa-por-tras-da-rainha-do-crime-02112026/","categoria":"SCIENCE","lang":"en"},{"fonte":"BioSpace","pais":"United States","titulo":"Gemelli Biotech Technology Used in Study Related to Intestinal Gene Expression","resumo":"Gemelli Biotech's Trio-Smart technology was employed in pioneering research on intestinal sulfide overproduction. The study established a direct relationship between this chemical alteration and a specific gene expression profile in the small intestine. These findings open new pathways for the diagnosis and treatment of complex gastrointestinal disorders.","link":"https://www.biospace.com/press-releases/technology-behind-gemelli-biotechs-trio-smart-used-in-new-study-linking-intestinal-sulfide-overproduction-to-a-distinct-small-bowel-gene-expression-signature","categoria":"HEALTH","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"Europe Observes Morocco from Space and Watches Helplessly as a Gigantic Red Stain Expands","resumo":"European space monitoring satellites have detected an alarming geographical alteration in Moroccan territory. The satellite image shows the accelerated advance of a red stain associated with severe droughts and soil degradation. The phenomenon highlights the direct impact of climate change in the North African region. Experts warn of the urgent need for environmental adaptation measures and water resource management.","link":"https://www.science-et-vie.com/ciel-et-espace/leurope-observe-le-maroc-depuis-lespace-et-assiste-impuissante-a-lexpansion-dune-gigantesque-tache-rouge-264283.html","categoria":"SPACE TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Police Use Facial Recognition to Scan One Million Faces in Western Australia Trial Resulting in 122 Arrests","resumo":"A pilot project in Western Australia used facial recognition systems to scan about one million faces during a testing period. The technological surveillance operation resulted in the identification and arrest of 122 suspects wanted by the law. The result sparked intense debates over the efficiency of artificial intelligence in public safety versus risks to citizens' privacy. Civil rights advocates are demanding stricter regulation for the use of this technology.","link":"https://www.theguardian.com/australia-news/2026/nov/02/wa-police-facial-recognition-technology-trial","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Motor16","pais":"Spain","titulo":"BMW Group Has Already Moved One Million Driverless Cars Inside Its Factories","resumo":"The BMW Group has reached the historic milestone of one million autonomous vehicles moved within its manufacturing facilities without human intervention. The technology utilizes advanced robotics, smart sensors, and automation to optimize logistics and industrial production efficiency. This achievement demonstrates the consolidation of Industry 4.0 in global automotive manufacturing.","link":"https://www.motor16.com/tecnologia/bmw-millon-sin-conductor/","categoria":"AUTOMATION","lang":"en"},{"fonte":"ダイヤモンド・オンライン","pais":"Japan","titulo":"Who is 'Sarah'? The Mysterious Woman Who Motivated Hundreds of Engineers for the New Mazda CX-5","resumo":"Mazda revealed the behind-the-scenes development of the new CX-5 and the impact of a fictional figure named Sarah on the project. This customer persona served as a methodological guide to mobilize hundreds of engineers around the real needs of drivers. The innovative user-oriented engineering process redefined design and vehicle dynamics standards at the automaker.","link":"https://diamond.jp/articles/-/402232?page=2","categoria":"ENGINEERING","lang":"en"},{"fonte":"中国科大新闻网","pais":"China","titulo":"Advancements in 6G Technology Promise to Redefine Mobile Connectivity in China","resumo":"Research surrounding the 6G network is intensifying in China, with significant advancements in the integration of communication and spatial sensing. The new generation of networks promises multiplied speeds and near-zero latency, enabling smart cities and real-time immersive environments. The country seeks to consolidate its global leadership in establishing future telecommunication standards. Practical tests are already beginning to demonstrate the immense potential of the technology.","link":"https://news.ustc.edu.cn/info/1056/96782.htm","categoria":"TELECOMMUNICATIONS","lang":"en"},{"fonte":"Administration of Union Territory of Ladakh","pais":"India","titulo":"SHS\u0026T Kargil Inaugurates Infrared Dehydration Technology for Drying Fruits and Vegetables","resumo":"The SHS\u0026T Kargil institution presented an innovative dehydration technology based on infrared radiation aimed at processing fruits and vegetables. The method significantly reduces drying time while preserving the nutritional value and quality of the produced food. The novelty represents a positive impact for local farmers by decreasing post-harvest waste and adding value to products. The initiative strengthens agricultural technological development and food security in the region.","link":"https://ladakh.gov.in/shst-kargil-inaugurates-infrared-dehydration-technology-for-drying-fruits-and-vegetables/","categoria":"AGRITECH","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Audi Doesn't Reinvent the Wheel, But Almost: German Brand Gives New Life to 100-Year-Old Technology","resumo":"Audi has rescued a century-old engineering concept and improved it with modern materials and electronic control. This redesign aims to optimize the energy efficiency and performance of next-generation electric vehicles. The project demonstrates how classic ideas can be reinterpreted to solve contemporary technological challenges.","link":"https://sapo.pt/artigo/audi-nao-reinventa-a-roda-mas-quase-marca-alema-da-uma-nova-vida-a-uma-tecnologia-com-mais-de-100-anos-6ae79b73f8020b05950f8d5e","categoria":"ENGINEERING","lang":"en"},{"fonte":"Tudo ok Notícias","pais":"Brazil","titulo":"Senac-DF Participates in Conecta IA Event with Debates on the Future of Technology","resumo":"Senac-DF attended the Conecta IA event, bringing together experts to discuss the impact of artificial intelligence on the market and education. The debates addressed professional training in the face of today's rapid technological transformations. The initiative aims to prepare society for the demands and challenges of the digital age.","link":"https://tudooknoticias.com.br/distrito-federal/senac-df-participa-do-conecta-ia-com-debates-sobre-tecnologia/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"APOD: A Long Cloud on Mars","resumo":"A striking published image highlights an extremely long cloud formation over the surface of the planet Mars. Atmospheric phenomena like this offer crucial data to understand climate dynamics and wind behavior on the red planet. Constant observation helps scientists plan future space exploration missions with greater safety.","link":"https://science.nasa.gov/image-article/apod-2026-november-2-a-long-cloud-on-mars/","categoria":"ASTRONOMY","lang":"en"},{"fonte":"Investing.com France","pais":"France","titulo":"Asian Stocks Rise Boosted by Technology Ahead of Apple Earnings","resumo":"Financial markets in Asia showed strong appreciation driven by optimism in the global tech sector. Investors adjusted their positions in anticipation of the release of Apple's quarterly financial report. The valuation of semiconductor and hardware companies strengthened the region's main indices. The movement reflects the stock market's high reliance on Big Tech performance.","link":"https://fr.investing.com/news/stock-market-news/les-actions-asiatiques-progressent-grace-a-la-technologie-avant-les-resultats-dapple-3667304","categoria":"BUSINESS","lang":"en"},{"fonte":"Yahoo Finance Australia","pais":"England","titulo":"NZX Sector Update: Consumer Durable Stocks Advance While Health Tech Sector Struggles","resumo":"The New Zealand stock market registered significant appreciation in companies focused on consumer durable goods during the past period. In contrast, companies dedicated to health-related technology faced challenges and a retraction in market value. Analysts point out that the readjustment of investments reflects economic uncertainties and adjustments in the post-pandemic sector. The scenario demonstrates the financial market's volatility in the face of constant technological innovations.","link":"https://au.finance.yahoo.com/news/nzx-sector-consumer-durable-stocks-011036278.html","categoria":"MARKET","lang":"en"},{"fonte":"Diario de Sevilla","pais":"Spain","titulo":"Laser Technology Revolutionizes Stone Restoration at Seville Cathedral","resumo":"The emblematic Seville Cathedral is applying state-of-the-art laser cleaning and restoration systems to preserve its historical stone structures. The innovative technique makes it possible to remove centuries of pollution and dirt with extreme precision without damaging the monument's delicate materials. The project has become an international benchmark in the use of technology applied to cultural heritage conservation.","link":"https://www.diariodesevilla.es/semana_santa/tecnologia-laser-revoluciona-restauracion-piedra-catedral-sevilla_0_2008354110.html","categoria":"INNOVATION","lang":"en"},{"fonte":"Japan Today","pais":"Japan","titulo":"Japan's Sticker Craze Hits Politics with Sanae Takaichi Themed Sets","resumo":"Japan's popular culture of collecting stickers has met the political arena with the popularization of collections inspired by politician Sanae Takaichi. The phenomenon reflects the strong influence of collectible items and pop culture in the country's modern political communication. The sales success highlights new forms of public engagement with public figures and urban trends.","link":"https://japantoday.com/category/politics/japan-sticker-craze-meets-politics-as-pm-takaichi-themed-sets-prove-hit","categoria":"TRENDS","lang":"en"},{"fonte":"中国科技网","pais":"China","titulo":"3D Scientific Computer Allows Filming Molecules in High Definition in China","resumo":"A new 3D scientific computing tool has been developed to capture the movement of molecules in real time, functioning as a 'high-definition cinema' of the microscopic world. The innovation allows for the observation of molecular dynamics with unprecedented precision, accelerating the discovery of new drugs and advanced materials. The technology represents a leap for biological and chemical research. Scientists celebrate the achievement as a milestone for scientific simulation.","link":"https://www.stdaily.com/web/gdxw/2026-11/02/content_606556.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Construction World","pais":"India","titulo":"India to Create National Hydrocarbon Technology Hub","resumo":"The Indian government has announced the creation of a national center focused on research and technological development for the hydrocarbon industry. The new hub aims to drive innovation in the energy sector, promoting efficiency and new sustainable solutions for the country. The structure will bring together industry experts, researchers, and public agencies in a joint modernization effort. The initiative is expected to reduce foreign dependence and strengthen India's energy sovereignty.","link":"https://www.constructionworld.in/energy-infrastructure/oil-and-gas/india-to-set-up-national-hydrocarbon-technology-hub/99726","categoria":"ENERGY","lang":"en"},{"fonte":"Record","pais":"Portugal","titulo":"Democratic and Accessible! The Xiaomi Redmi Note 17 Pro 5G Stands Out in AliExpress's 11.11 Sale","resumo":"The Xiaomi Redmi Note 17 Pro 5G emerges as one of the main attractions of the 11.11 shopping event on AliExpress. The smartphone offers advanced specifications, including fifth-generation connectivity and high-resolution cameras, at a competitive price. The launch consolidates the presence of high-value devices in the consumer market.","link":"https://www.record.pt/indica/tecnologia/detalhe/democratico-e-acessivel-o-xiaomi-redmi-note-17-pro-5g-e-um-dos-smartphones-em-destaque-no-11-11-do-aliexpress","categoria":"SMARTPHONES","lang":"en"},{"fonte":"Rádio Pampa","pais":"Brazil","titulo":"Study Warns That One in Five Children Has Suffered Technology-Facilitated Abuse","resumo":"A report revealed that a significant portion of children and adolescents has already been the victim of exploitation or abuse facilitated by digital tools. The data raises a global alarm about the need to reinforce safety and the protection of minors online. Experts advocate for strict public policies and greater awareness regarding the safe use of platforms.","link":"https://www.radiopampa.com.br/uma-em-cada-cinco-criancas-e-adolescentes-sofreu-ao-menos-uma-forma-de-exploracao-e-abuso-sexual-facilitada-pela-tecnologia/","categoria":"DIGITAL SECURITY","lang":"en"},{"fonte":"O GLOBO","pais":"United States","titulo":"With Cuts and Ideological Agenda, Trump Dismantles US Science and Threatens the Country's Strategic Leadership","resumo":"A series of severe budget cuts and policy shifts puts the scientific and technological infrastructure of the United States at risk. Experts warn that the reduction of investments in fundamental research could undermine the country's competitive advantage on the global stage. The scenario raises concern among research institutes and universities regarding brain drain and delays in innovation.","link":"https://oglobo.globo.com/mundo/noticia/2026/11/02/com-cortes-e-agenda-ideologica-trump-desmantela-a-ciencia-nos-eua-e-ameaca-lideranca-estrategica-do-pais.ghtml","categoria":"SCIENCE POLICY","lang":"en"},{"fonte":"Presse Agence","pais":"France","titulo":"LYON: Sports Technology - Fitness Boost and bSport Team Up to Create Integrated Solution for Gyms","resumo":"Two sports technology companies have announced a strategic partnership in the city of Lyon. The union between Fitness Boost and bSport aims to deliver a unified management platform for clubs and fitness centers. The tool combines process automation, digital scheduling, and performance data analysis. The innovation promises to optimize the experience of physical activity practitioners and the operational efficiency of managers.","link":"https://presseagence.fr/lyon-technologie-du-sport-fitness-boost-et-bsport-sallient-pour-une-solution-integree-destinee-aux-clubs/","categoria":"INNOVATION","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
