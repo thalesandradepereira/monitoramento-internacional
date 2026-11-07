@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-GuX6f6qcuhqEHhGSHL1TUSJi'; script-src 'nonce-GuX6f6qcuhqEHhGSHL1TUSJi'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="GuX6f6qcuhqEHhGSHL1TUSJi">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">07/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="GuX6f6qcuhqEHhGSHL1TUSJi">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Estadão","pais":"Brasil","titulo":"Como a inteligência artificial supera os melhores matemáticos do mundo e seus riscos","resumo":"Modelos avançados de inteligência artificial vêm alcançando resultados surpreendentes ao resolver problemas matemáticos complexos que antes desafiavam os maiores peritos do planeta. Essa evolução demonstra o avanço acelerado da capacidade computacional e do raciocínio lógico em sistemas autônomos. Contudo, especialistas alertam para os riscos associados à dependência excessiva dessas ferramentas sem a devida verificação humana. O impacto dessa transformação levanta debates profundos sobre o futuro da pesquisa científica e o papel do julgamento crítico.","link":"https://www.estadao.com.br/economia/negocios/como-a-inteligencia-artificial-supera-os-melhores-matematicos-do-mundo-e-quais-sao-os-riscos-disso/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The New York Times","pais":"Estados Unidos","titulo":"Como a Inteligência Artificial Acabou de Mudar um Princípio Fundamental da Ciência da Computação","resumo":"Avanços recentes em inteligência artificial estão desafiando conceitos históricos e consolidados dentro da ciência da computação. A capacidade de modelos generativos de resolver problemas complexos sem algoritmos tradicionais reescreve a teoria prática do desenvolvimento. Especialistas analisam como essa mudança paradigmática afeta a educação e o futuro dos profissionais de tecnologia mundialmente.","link":"https://www.nytimes.com/2026/11/06/science/ai-exponential-time-hypothesis.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Euronews.com","pais":"França","titulo":"Tecnologia de calor intenso dá segunda vida às pás eólicas","resumo":"Uma nova abordagem utilizando tratamento térmico de alta intensidade está revolucionando a reciclagem de pás de turbinas eólicas descartadas. O processo permite separar os materiais compostos de forma eficiente, viabilizando o reaproveitamento de fibra de vidro e resinas. Essa inovação promete reduzir drasticamente o acúmulo de resíduos industriais no setor de energia renovável. A iniciativa representa um passo fundamental para tornar a matriz eólica ainda mais sustentável.","link":"https://pt.euronews.com/2026/11/07/tecnologia-de-calor-intenso-da-segunda-vida-as-pas-eolicas","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"Durham University","pais":"Inglaterra","titulo":"Ministro da Ciência lança hub de tecnologia em saúde de £ 12,2 milhões","resumo":"O Governo do Reino Unido anunciou a criação de um centro voltado à inovação médica e tecnologias voltadas à saúde pública. Com um investimento inicial significativo, o projeto busca acelerar o desenvolvimento de tratamentos modernos e dispositivos biomédicos de ponta. A iniciativa pretende aproximar pesquisadores e empresas para impulsionar o setor no país.","link":"https://www.durham.ac.uk/news-events/latest-news/2026/11/science-minister-launches-122m-health-technology-hub/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Farmacosalud","pais":"Espanha","titulo":"Uma nova tecnologia permite a preservação ou recuperação da voz em pessoas com ELA","resumo":"Pesquisadores desenvolveram uma solução tecnológica inovadora capaz de registrar e sintetizar a voz de pacientes diagnosticados com Esclerose Lateral Amiotrófica (ELA). A inovação visa manter a identidade vocal dos afetados antes do avanço dos sintomas motores e da perda da fala. O impacto direto se reflete na melhoria significativa da qualidade de vida e no fortalecimento do bem-estar emocional dos pacientes e de suas famílias.","link":"https://farmacosalud.com/una-novedosa-tecnologia-permite-la-preservacion-o-recuperacion-de-la-voz-en-personas-con-ela/","categoria":"TECNOLOGIA E SAÚDE","lang":"pt"},{"fonte":"BILD","pais":"Alemanha","titulo":"Tesla Cybertruck: Produção terminará em 2027 e esperança para a Europa diminui","resumo":"A Tesla indicou que a produção do polêmico Cybertruck pode ser encerrada já em 2027, frustrando os entusiastas da marca ao redor do mundo. A decisão afeta diretamente os consumidores europeus, que mantinham expectativas de ver o veículo elétrico comercializado oficialmente no continente. Regulamentações rígidas de segurança na Europa e desafios na escala de fabricação aceleraram a mudança de planos da empresa. O movimento reforça a reorientação da montadora para novos projetos de mobilidade e veículos autônomos nos próximos anos.","link":"https://www.bild.de/politik/ausland-und-internationales/tesla-cybertruck-produktion-endet-2027-europa-hoffnung-schwindet-6aee4d04a389bc337cfc88ac","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Sony Patenteia IA para Detectar Jogadores Veteranos Disfarçados de Novatos em Games","resumo":"A Sony registrou a patente de uma inteligência artificial capaz de identificar a prática de smurfing, onde jogadores experientes criam novas contas para enfrentar iniciantes. O sistema analisa padrões comportamentais, precisão e estatísticas de partidas para detectar discrepâncias no perfil dos usuários. A iniciativa busca restaurar o equilíbrio competitivo e melhorar a experiência de novos jogadores no ecossistema de games.","link":"https://news.yahoo.co.jp/expert/articles/f213c1d98b0b83938dd22fdd1e7f240bc90c3a96","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"生物通","pais":"China","titulo":"Plataforma de detecção SERS de ultra-alta sensibilidade baseada em CRISPR para detecção sem interferência de proteína Tau fosforilada na doença de Alzheimer","resumo":"Pesquisadores desenvolveram uma nova plataforma de sensoriamento baseada na tecnologia CRISPR associada à espalhamento Raman amplificado por superfície (SERS). O sistema permite a detecção precisa e sem interferências da proteína Tau fosforilada, um dos principais marcadores biológicos da doença de Alzheimer. Esta inovação representa um avanço significativo para o diagnóstico precoce e monitoramento não invasivo de doenças neurodegenerativas, abrindo novas portas para o desenvolvimento de terapias personalizadas e medicina de precisão no campo da saúde global.","link":"https://www.ebiotrade.com/newsf/2026-11/20261107082452192.htm","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"The Times of India","pais":"Índia","titulo":"Mahesh Babu sobre jogos: É um espaço onde a arte encontra a tecnologia avançada","resumo":"O renomado ator Mahesh Babu compartilhou suas perspectivas sobre a crescente indústria dos jogos eletrônicos e o impacto cultural desse mercado. Ele destacou como os games modernos evoluíram para se tornar uma convergência única entre expressão artística e tecnologia de ponta. Além disso, o setor de jogos continua a atrair grandes investimentos e a redefinir o entretenimento digital. Essa declaração reforça a relevância da inovação tecnológica no mercado de mídias interativas.","link":"https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/mahesh-babu-on-gaming-it-is-a-space-where-art-meets-advanced-technology/articleshow/135625971.cms","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Notícias de Coimbra","pais":"Portugal","titulo":"Esta tecnologia de Coimbra quer evitar acidentes com drones; projeto vai à Web Summit","resumo":"Uma nova tecnologia desenvolvida em Coimbra promete revolução na segurança do espaço aéreo ao prevenir colisões entre drones e outras aeronaves. A inovação será apresentada oficialmente durante o prestigiado evento Web Summit. O projeto visa criar um padrão mais seguro para o avanço do transporte autônomo. O impacto esperado é a transformação na gestão da aviação não decolada em centros urbanos.","link":"https://www.noticiasdecoimbra.pt/esta-tecnologia-de-coimbra-quer-evitar-acidentes-com-drones-projeto-que-promete-mudar-o-espaco-aereo-vai-a-web-summit/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Idiomas indígenas do México são utilizados no treinamento de modelos de IA","resumo":"Iniciativas tecnológicas recentes estão integrando línguas originárias mexicanas no treinamento de algoritmos de inteligência artificial. O projeto busca expandir a diversidade linguística no processamento de linguagem natural e evitar a extinção digital desses idiomas. A inclusão melhora a acessibilidade digital para comunidades nativas e preserva o patrimônio cultural ancestral. Essa abordagem demonstra o potencial da tecnologia como aliada na conservação da diversidade cultural global.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/07/idiomas-indigenas-do-mexico-sao-usados-para-treinar-modelo-de-ia.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"OpenAI","pais":"Estados Unidos","titulo":"Medindo Como Agentes de IA Lidam com a Ciência Prática de Laboratório","resumo":"Pesquisadores começaram a avaliar o desempenho de sistemas autônomos de inteligência artificial em tarefas de laboratório de biologia experimental. O estudo demonstra a eficiência e as limitações atuais desses agentes ao executar procedimentos complexos sem intervenção humana contínua. Essa integração promete acelerar descobertas científicas e automatizar etapas críticas na pesquisa biomédica.","link":"https://openai.com/index/measuring-how-ai-agents-handle-wet-lab-science/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Le Progrès","pais":"França","titulo":"Rhône: Um novo tipo de TGV chega aos trilhos com tecnologia digital de Villeurbanne","resumo":"A região de Rhône começou a testar um novo modelo de trem de alta velocidade equipado com sistemas digitais de última geração. Desenvolvida em Villeurbanne, a tecnologia otimiza o consumo de energia e melhora a precisão do tráfego ferroviário. O projeto busca modernizar a infraestrutura de transporte de passageiros garantindo maior segurança e pontualidade. Os testes iniciais demonstram avanços significativos na eficiência operacional dos trens.","link":"https://www.leprogres.fr/economie/2026/11/07/un-nouveau-genre-de-tgv-sur-les-rails-avec-une-technologie-numerique-villeurbannaise","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"University of York","pais":"Inglaterra","titulo":"Ministro da Ciência visita York para discutir inovação regional e crescimento econômico","resumo":"Autoridades governamentais reuniram-se com líderes locais em York para promover iniciativas científicas descentralizadas e acelerar a economia regional. O foco da visita foi mapear oportunidades para startups locais e universidades interessadas em liderar novos projetos tecnológicos. A estratégia visa consolidar o Reino Unido como um polo de atração de investimentos científicos fora dos grandes centros urbanos.","link":"https://www.york.ac.uk/news-and-events/news/2026/research/minister-innovation-guildhall/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Levante-EMV","pais":"Espanha","titulo":"Relógios inteligentes podem aprender a ler gestos de mão com precisão superior a 92%","resumo":"Avanços em sensores e algoritmos avançados prometem transformar a forma como interagimos com dispositivos vestíveis no dia a dia. Estudos recentes demonstram que smartwatches conseguem interpretar movimentos finos das mãos com uma taxa de precisão que ultrapassa os 92%. Essa evolução abre caminho para interfaces sem toque mais acessíveis, intuitivas e eficientes em múltiplos cenários operacionais.","link":"https://www.levante-emv.com/tendencias21/2026/11/06/relojes-inteligentes-aprender-leer-gestos-136178649.html","categoria":"INOVAÇÃO TECNOLÓGICA","lang":"pt"},{"fonte":"SAPO","pais":"Alemanha","titulo":"Angola busca atrair investimentos alemães para setores estratégicos da economia","resumo":"O governo de Angola intensificou seus esforços diplomáticos e comerciais para captar investimentos diretos de empresas alemãs em sua infraestrutura. O foco abrange áreas vitais como energia renovável, tecnologia industrial, logística e exploração sustentável de recursos naturais. Autoridades angolanas destacam as reformas econômicas recentes como garantia de um ambiente de negócios mais seguro e atraente. Essa parceria busca fortalecer o desenvolvimento socioeconômico do país africano e diversificar sua matriz produtiva.","link":"https://sapo.pt/artigo/angola-procura-atrair-investimento-alemao-para-sectores-estrategicos-da-economia-6aee4bac013ef6a6901a44b4","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"Universidade de Tóquio Usa Tecnologia Quântica para Simular Crescimento de Gotas de Nuvens","resumo":"Cientistas da Universidade de Tóquio criaram um método inovador baseado em computação quântica para calcular como as micropartículas de água se desenvolvem nas nuvens. A simulação desse processo meteorológico costuma exigir alta capacidade computacional devido à complexidade matemática envolvida. A novidade promete aprimorar consideravelmente a precisão das previsões de chuvas e tempestades extremas.","link":"https://www.nikkei.com/article/DGXZQOSG057F80V01C26A1000000/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"东大新闻网","pais":"China","titulo":"Sistema de condução autônoma treinado com 12 bilhões de quilômetros ganha prêmio de progresso científico e tecnológico","resumo":"Um projeto liderado pela Universidade do Sudeste da China recebeu o primeiro prêmio de Progresso Científico e Tecnológico Provincial ao utilizar uma vasta base de dados para aprimorar a direção autônoma. O sistema foi alimentado com dados correspondentes a 12 bilhões de quilômetros de rodagem para garantir a máxima segurança dos veículos inteligentes. O avanço demonstra a escala impressionante do treinamento de inteligência artificial na China, impulsionando a confiabilidade das tecnologias de transporte autônomo no futuro próximo.","link":"https://news.seu.edu.cn/2026/1107/c5485a588867/page.htm","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The Hindu","pais":"Índia","titulo":"Boletim de linha política: O caso Imran Khan e estrangeiros na política nacional","resumo":"O novo boletim informativo analisa os desdobramentos do julgamento de Imran Khan e a discussão sobre a interferência estrangeira no cenário político nacional. A publicação explora os desdobramentos diplomáticos e jurídicos que afetam a estabilidade da região. O debate ressalta a complexidade das relações internacionais frente à soberania política interna. Essas questões permanecem no centro das atenções geopolíticas e do interesse público.","link":"https://www.thehindu.com/opinion/political-line-newsletter-the-imran-khan-case-and-foreigners-in-national-politics/article71675626.ece","categoria":"POLÍTICA","lang":"pt"},{"fonte":"Notícias de Coimbra","pais":"Portugal","titulo":"Cabos de internet agora podem detectar problemas graças a tecnologia criada em Coimbra","resumo":"Pesquisadores de Coimbra criaram uma solução capaz de transformar cabos de fibra óptica comuns em sensores de monitoramento em tempo real. A tecnologia permite identificar falhas estruturais, tremores e avarias na rede de comunicação antes que interrupções ocorram. Essa abordagem reduz drasticamente os custos de manutenção da infraestrutura digital. O avanço representa um grande salto para a estabilidade do tráfego global de dados.","link":"https://www.noticiasdecoimbra.pt/cabos-de-internet-podem-agora-detectar-problemas-gracas-a-uma-tecnologia-criada-em-coimbra/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Corrida pela IA gera apreensão no mercado e resulta em perda de US$ 1 trilhão","resumo":"A intensa competição no setor de inteligência artificial provocou um forte movimento de desvalorização das principais empresas de tecnologia global. Investidores manifestaram preocupações quanto aos altos custos de infraestrutura e ao retorno financeiro dessas inovações no curto prazo. Como resultado, gigantes do setor registraram perdas trilionárias em valor de mercado em uma única sessão. O cenário reflete a volatilidade e o aumento das exigências sobre os resultados práticos da IA.","link":"https://g1.globo.com/economia/noticia/2026/11/06/acoes-ia-globais.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Estados Unidos","titulo":"Queda nas Ações de Tecnologia dos EUA: A Bolha da IA Está Estourando?","resumo":"O mercado financeiro norte-americano registrou uma desvalorização acentuada nas principais empresas de tecnologia, levantando dúvidas sobre a sustentabilidade dos investimentos em IA. Analistas debatem se o movimento reflete apenas uma correção natural ou o início do estouro de uma bolha especulativa. O impacto do setor de tecnologia reverbera globalmente, afetando expectativas de lucros futuros.","link":"https://www.theguardian.com/technology/2026/nov/06/us-tech-stock-ai-bubble-bursting-market-meltdown-explainer","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"RFI","pais":"França","titulo":"Na Europa, cresce a oposição contra a construção de novos data centers","resumo":"Diversas comunidades e grupos ambientalistas europeus estão se mobilizando contra a expansão acelerada de grandes centros de dados. As principais preocupações envolvem o consumo excessivo de energia elétrica e a demanda por recursos hídricos para refrigeração. Governos locais enfrentam o desafio de equilibrar a transição digital com metas de sustentabilidade ambiental. O debate ganha força à medida que o uso de inteligência artificial exige cada vez mais infraestrutura.","link":"https://www.rfi.fr/fr/%C3%A9conomie/20261107-en-europe-la-contestation-contre-la-construction-de-centres-de-donn%C3%A9es-s-amplifie","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Stirling Council","pais":"Inglaterra","titulo":"Ciência, esporte e sucesso no Festival de Ciência de Stirling","resumo":"A nova edição do Festival de Ciência de Stirling alcançou marcos históricos de público e engajamento comunitário ao unir temas esportivos e científicos. O evento destacou a importância da física e da biologia na melhoria do desempenho atlético e na promoção da saúde. Especialistas esperam que a abordagem pedagógica estimule mais jovens a seguir carreiras nas áreas STEM.","link":"https://www.stirling.gov.uk/news/science-sport-and-success-as-stirling-science-festival-breaks-new-ground/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Objective","pais":"Espanha","titulo":"A bolha da IA está estourando? Eleições nos EUA derrubam o setor de tecnologia em Wall Street","resumo":"O setor tecnológico enfrentou uma forte retração nas bolsas de valores norte-americanas impulsionada por incertezas políticas e econômicas associadas às eleições nos Estados Unidos. Analistas e investidores debatem se o movimento sinaliza o esgotamento do entusiasmo em torno da inteligência artificial. O cenário traz volatilidade para o mercado global e acende o alerta para grandes empresas de tecnologia.","link":"https://theobjective.com/economia/2026-11-07/estalla-burbuja-ia-elecciones-eeuu-tecnologia-wall-street/","categoria":"MERCADO DIGITAL","lang":"pt"},{"fonte":"tagesschau.de","pais":"Alemanha","titulo":"Venda massiva de ações de tecnologia e semicondutores provoca queda nas bolsas mundiais","resumo":"Uma forte onda de liquidação de papéis de grandes empresas de tecnologia e fabricantes de chips desencadeou quedas acentuadas nos principais mercados globais. Investidores demonstraram forte preocupação com a desaceleração da demanda por hardware avançado e revisões nas projeções de lucros das gigantes do setor. O movimento refletiu o aumento da volatilidade global e incertezas macroeconômicas que afetam o financiamento de inovações. Analistas apontam que a rotação de capital deve redefinir as estratégias no setor tecnológico nos próximos meses.","link":"https://www.tagesschau.de/video/video-1679328.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"NHKニュース","pais":"Japão","titulo":"Cientistas do Ártico Alertam para a Velocidade do Aquecimento Global Antes da COP","resumo":"Pesquisadores especializados no monitoramento do Polo Norte manifestaram profunda preocupação com o ritmo acelerado do aumento das temperaturas na região antes da conferência da COP. Os dados recentes indicam o derretimento recorde de camadas de gelo e perturbações graves na biodiversidade local. O grupo faz um apelo urgente para que as nações adotem metas climáticas mais rígidas para conter o colapso ambiental.","link":"https://news.web.nhk/newsweb/na/nd-20261107de72044","categoria":"MEIO AMBIENTE","lang":"pt"},{"fonte":"新华网","pais":"China","titulo":"Cientista chinesa Ye Yuru ganha o Prêmio Internacional UNESCO de Pesquisa em Ciências da Vida","resumo":"A cientista chinesa e reitora Ye Yuru foi laureada com o prestigiado Prêmio Internacional UNESCO para Pesquisa em Ciências da Vida por suas contribuições extraordinárias à neurociência. Suas pesquisas inovadoras concentram-se no entendimento dos mecanismos moleculares das doenças neurodegenerativas e no desenvolvimento de novas abordagens terapêuticas. Este prêmio destaca a crescente liderança e visibilidade global da comunidade científica da China na descoberta de soluções para desafios de saúde global complexos.","link":"https://www.news.cn/tech/20261107/e2823a1c88884b6baca750e428a2b8fa/c.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Renascença","pais":"Portugal","titulo":"O que mudou na tecnologia em 10 anos de Web Summit em Lisboa?","resumo":"Uma década após a chegada do Web Summit a Lisboa, a cena tecnológica de Portugal passou por uma transformação profunda e duradoura. O ecossistema de startups locais expandiu significativamente, atrativo para investimentos internacionais gigantescos. Além disso, a conferência moldou novos talentos e promoveu a digitalização de diversos setores da economia nacional. O evento consagrou a capital portuguesa como um dos principais hubs de inovação da Europa.","link":"https://rr.pt/especial/economia/2026/11/06/o-que-mudou-na-tecnologia-em-10-anos-de-web-summit-em-lisboa/492386/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Forbes Brasil","pais":"Brasil","titulo":"Embrapa lança tecnologia de rastreabilidade para impulsionar exportações do agronegócio","resumo":"A Embrapa apresentou uma nova solução tecnológica voltada para a rastreabilidade da produção agropecuária destinada ao mercado externo. A inovação permite acompanhar todo o ciclo produtivo, garantindo critérios rigorosos de sustentabilidade e conformidade sanitária. Com a ferramenta, produtores brasileiros ganham maior competitividade e transparência perante exigências internacionais rigorosas. O avanço consolida a aplicação da ciência da computação e dados no aprimoramento do agronegócio nacional.","link":"https://forbes.com.br/forbes-agro/2026/11/embrapa-lanca-tecnologia-de-rastreabilidade-para-exportacoes-do-agro-veja-os-destaques-do-agroround/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"BBC","pais":"Estados Unidos","titulo":"Elon Musk Parece Sinalizar o Fim da Linha para o Cybertruck","resumo":"Declarações recentes de Elon Musk geraram forte repercussão ao sugerir uma possível descontinuação ou mudança drástica no futuro do Cybertruck. O veículo elétrico futurista da Tesla enfrentou diversos desafios de produção, atrasos no cronograma e críticas do mercado desde seu lançamento. A incerteza em torno do projeto reflete novos rumos estratégicos dentro da montadora.","link":"https://www.bbc.com/news/articles/cq1j33w7d232o","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"Investing.com France","pais":"França","titulo":"Musk cita conflitos com a Alphabet após saída de executivo do Google do conselho da SpaceX","resumo":"Elon Musk declarou que conflitos de interesse com a Alphabet motivaram a renúncia de um importante executivo do Google no conselho da SpaceX. A movimentação reflete a crescente rivalidade entre as gigantes de tecnologia em setores como inteligência artificial e conectividade via satélite. A saída encerra um período de parceria estratégica direta na governança da empresa de exploração espacial. O cenário evidencia a complexidade das alianças corporativas no ecossistema de alta tecnologia.","link":"https://fr.investing.com/news/company-news/musk-cite-des-conflits-avec-alphabet-apres-le-depart-dun-cadre-de-google-du-conseil-de-spacex-3683518","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Ações de IA sobem após recuperação no valor de mercado","resumo":"As empresas ligadas à inteligência artificial registraram expressiva recuperação na bolsa após um período de alta volatilidade e perdas acumuladas. Analistas atribuem a alta à forte demanda contínua por serviços em nuvem e infraestrutura para modelos de linguagem. O setor de tecnologia demonstra resiliência e mantém o otimismo entre grandes investidores globais.","link":"https://www.bbc.co.uk/news/articles/c35ynnpzdq51o","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Investing.com España","pais":"Espanha","titulo":"Musk cita conflitos com Alphabet após saída de executivo do Google do conselho da SpaceX","resumo":"Elon Musk revelou publicamente atritos estratégicos e potenciais conflitos de interesse com a Alphabet, controladora do Google. A declaração ocorreu logo após a saída oficial de um alto executivo da gigante de buscas do conselho de administração da SpaceX. O episódio reflete a crescente rivalidade entre as grandes empresas de tecnologia nos setores aeroespacial, de telecomunicações e de inteligência artificial.","link":"https://es.investing.com/news/company-news/musk-cita-conflictos-con-alphabet-tras-la-salida-de-ejecutivo-de-google-del-consejo-de-spacex-3917484","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Spektrum der Wissenschaft","pais":"Alemanha","titulo":"Álgebra: Jovem de 18 anos faz avanço no famoso problema dos Chicken Nuggets","resumo":"Um estudante de apenas 18 anos alcançou um avanço matemático impressionante ao abordar o clássico problema de Frobenius, conhecido popularmente como o problema dos Chicken Nuggets. A questão lida com a combinação linear de números inteiros para determinar o maior valor que não pode ser formado por determinados conjuntos de moedas ou unidades. A resolução apresentada pelo jovem chamou a atenção da comunidade acadêmica internacional pela simplicidade e elegância técnica. O feito demonstra o potencial da nova geração de pesquisadores em contribuir para a teoria dos números e álgebra abstrata.","link":"https://www.spektrum.de/news/algebra-18-jaehriger-macht-fortschritte-beim-chicken-nuggets-problem/2353042","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"経済産業省","pais":"Japão","titulo":"Ministro do Japão Discute Cooperação Energética e Tecnológica com Liderança dos Emirados Árabes","resumo":"O Ministro da Economia do Japão, Ryosei Akazawa, realizou uma reunião online com o CEO da ADNOC e Ministro de Tecnologia dos Emirados Árabes Unidos, Sultan Al Jaber. As conversas abordaram o fortalecimento da aliança em energia limpa, tecnologias de descarbonização e segurança no suprimento de petróleo. O diálogo busca assegurar o abastecimento energético do Japão enquanto impulsiona metas globais de sustentabilidade.","link":"https://www.meti.go.jp/press/2026/11/20261106004.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"International Atomic Energy Agency","pais":"China","titulo":"Tecnologia nuclear espacial: De baterias a foguetes do futuro","resumo":"O avanço das tecnologias nucleares aplicadas ao setor espacial está revolucionando o desenvolvimento de novos sistemas de propulsão e geração de energia para missões de longa duração. As pesquisas abrangem desde baterias atômicas de alta eficiência para sondas distantes até motores nucleares capazes de impulsionar foguetes a velocidades sem precedentes. Essa inovação é fundamental para a exploração de espaço profundo, viabilizando a presença humana sustentável em outros corpos celestes no futuro.","link":"http://www.iaea.org/zh/newscenter/news/tai-kong-he-ji-shu-cong-dian-chi-dao-wei-lai-huo-jian","categoria":"TECNOLOGIA ESPACIAL","lang":"pt"},{"fonte":"PCGuia","pais":"Portugal","titulo":"Web Summit começa nesta segunda-feira com impacto de 2,5 bilhões de euros na economia de Portugal","resumo":"A nova edição do Web Summit inicia suas atividades em Lisboa destacando a consolidação do evento no ecossistema europeu. Em dez anos de realização no país, a conferência gerou um retorno de cerca de 2,5 bilhões de euros para a economia portuguesa. O encontro reúne os maiores nomes globais de inovação, investidores e criadores de startups. O impacto econômico e tecnológico reafirma o papel estratégico do evento para a imagem internacional do país.","link":"https://www.pcguia.pt/2026/11/web-summit-arranca-na-segunda-feira-em-dez-anos-este-evento-de-tecnologia-ja-contribuiu-com-quase-25-mil-milhoes-de-euros-para-a-economia-portuguesa/","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Band","pais":"Brasil","titulo":"Projeto baiano de tecnologia marinha representará o Brasil na França","resumo":"Um projeto inovador desenvolvido na Bahia focado no monitoramento e tecnologia marinha foi selecionado para representar o país em evento internacional na França. A iniciativa utiliza ferramentas avançadas para mapear a biodiversidade oceânica e prever impactos ambientais na costa brasileira. O reconhecimento destaca o potencial da pesquisa científica e do desenvolvimento tecnológico produzido no Nordeste. A participação internacional projeta o Brasil como destaque em soluções tecnológicas sustentáveis para o oceano.","link":"https://www.band.com.br/nacional/ba/projeto-baiano-de-tecnologia-marinha-vai-representar-o-brasil-na-franca","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The New York Times","pais":"Estados Unidos","titulo":"Principal Agência de Espionagem da China Recrutou Mulher Que Teve Como Alvo Jensen Huang","resumo":"Um relatório revelou uma operação de inteligência chinesa direcionada a figuras estratégicas da indústria global de semicondutores, incluindo o CEO da Nvidia. O caso destaca o aumento das tensões geopolíticas e da espionagem corporativa no setor de alta tecnologia e microchips. Autoridades reforçam a necessidade de medidas mais rígidas de segurança contra espionagem industrial.","link":"https://www.nytimes.com/2026/11/06/us/politics/chinese-spy-agency-nvidia-jensen-huang.html","categoria":"SEGURANÇA","lang":"pt"},{"fonte":"JeuxVideo.com","pais":"França","titulo":"Xbox lança tecnologia crucial antes de GTA 6: entenda por que o FSR 4.1 muda tudo","resumo":"A divisão de jogos da Microsoft começou a implementar a tecnologia FSR 4.1 para otimizar o desempenho gráfico nos consoles Xbox. O recurso de upscaling de imagem promete entregar altíssima fidelidade visual sem comprometer a taxa de quadros por segundo. A atualização é vista como um movimento estratégico crucial para preparar a plataforma para lançamentos exigentes como GTA 6. Gamers e especialistas comemoram o avanço técnico que eleva a experiência de jogo.","link":"https://www.jeuxvideo.com/news/2112491/xbox-deploie-une-technologie-majeure-avant-la-sortie-de-gta-6-pourquoi-le-fsr-4-1-change-tout.htm","categoria":"GAMING","lang":"pt"},{"fonte":"Financial Times","pais":"Inglaterra","titulo":"Economia dos EUA supera previsões ao criar 165.000 empregos em outubro","resumo":"O mercado de trabalho norte-americano demonstrou força surpreendente no último mês ao ultrapassar as projeções feitas por economistas. A criação de postos de trabalho em setores estratégicos sinaliza resistência contra pressões inflacionárias globais. O resultado impactou positivamente os mercados financeiros internacionais e as perspectivas globais de investimentos.","link":"https://www.ft.com/content/f84c722c-99a9-4628-84dc-c42a192cb35c?syn-25a6b1a6=1","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"Industria Química","pais":"Espanha","titulo":"Eastman recupera subsídio de 375 milhões de dólares para expandir tecnologia de reciclagem molecular","resumo":"A empresa Eastman garantiu um financiamento crucial de 375 milhões de dólares destinado ao avanço de suas operações industriais de reciclagem sustentável. O projeto utiliza tecnologia de reciclagem molecular para decompor plásticos difíceis de processar em seus componentes primários. A iniciativa impulsiona a economia circular e representa um avanço importante no combate à poluição plástica global.","link":"https://www.industriaquimica.es/noticias/20261107/eastman-recupera-una-ayuda-375-millones-dolares-ampliar-su-tecnologia-reciclaje-molecular","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"DW.com","pais":"Alemanha","titulo":"Chanceler alemão afirma que o Estado deve minimizar a intervenção na economia","resumo":"Em pronunciamento recente, o chanceler da Alemanha defendeu que o governo deve reduzir ao máximo as interferências diretas nas atividades econômicas do país. A declaração visa incentivar a livre iniciativa, atrair capital privado e desburocratizar o ambiente produtivo nacional. A postura ocorre em meio a debates intensos sobre a necessidade de acelerar a recuperação industrial alemã. Críticos e apoiadores discutem como o equilíbrio entre regulação e liberdade de mercado afetará a competitividade da nação.","link":"https://www.dw.com/zh/%E5%BE%B7%E5%9B%BD%E6%80%BB%E7%90%86%E5%9B%BD%E5%AE%B6%E5%BA%94%E5%B0%BD%E5%8F%AF%E8%83%BD%E5%87%8F%E5%B0%91%E5%AF%B9%E7%BB%8F%E6%B5%8E%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%B9%B2%E9%A2%84/a-79867314","categoria":"ECONOMIA","lang":"pt"},{"fonte":"21财经","pais":"China","titulo":"Ex-vice-presidente do Banco Mundial alerta que IA pode aumentar disparidade entre países nos próximos dez anos","resumo":"O economista Ian Goldin alertou que a inteligência artificial pode expandir significativamente a lacuna de desenvolvimento socioeconômico entre nações ricas e em desenvolvimento nos próximos cinco a dez anos. A disparidade de acesso a infraestrutura tecnológica e recursos de computação de ponta coloca os países em desenvolvimento em desvantagem competitiva. O alerta enfatiza a necessidade urgente de políticas globais e cooperação internacional para garantir que os benefícios da revolução digital sejam distribuídos de forma equitativa.","link":"https://www.21jingji.com/article/20261107/herald/f13e791c8bbe23bf6fc57e5df19fcbd7.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"O novo Honda Avancier contará com tecnologia híbrida Honda Hybrid","resumo":"A Honda anunciou que a nova versão do SUV Avancier será equipada com a avançada motorização Honda Hybrid. A tecnologia busca combinar alta eficiência energética, menor emissão de poluentes e desempenho dinâmico aprimorado. O movimento reforça o compromisso da montadora com a transição rumo à mobilidade de baixo carbono. A inovação atende à demanda crescente do mercado por veículos mais sustentáveis e tecnológicos.","link":"https://sapo.pt/artigo/o-novo-honda-avancier-tera-a-tecnologia-hibrida-honda-hybrid-6aedfbceecae781d736b2575","categoria":"AUTOMOTIVO","lang":"pt"},{"fonte":"UOL Economia","pais":"Brasil","titulo":"Bolsas globais enfrentam forte queda impulsionada pelo recuo das ações de tecnologia","resumo":"Mercados financeiros em todo o mundo registraram expressiva desvalorização puxados pela queda acentuada dos papéis de grandes empresas de tecnologia. A instabilidade decorre do ceticismo sobre a rentabilidade imediata de novos investimentos massivos no setor de inovação. O efeito dominó afetou bolsas globais e gerou apreensão entre investidores de diferentes segmentos econômicos. O movimento evidencia o peso do setor de tecnologia no equilíbrio macroeconômico global.","link":"https://economia.uol.com.br/cotacoes/noticias/redacao/2026/11/06/bolsas-globais-6-de-novembro-de-2026.ghtm","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Yahoo Finance Singapore","pais":"Estados Unidos","titulo":"Microchip Technology Adiciona Chips de IA e Espaciais com Receita de US$ 1,621 Bilhão no 2º Trimestre","resumo":"A Microchip Technology reportou resultados financeiros robustos impulsionados pela expansão de seu portfólio para aplicações em inteligência artificial e exploração espacial. A empresa conseguiu superar desafios da cadeia de suprimentos ao focar em componentes de alto valor agregado. O crescimento reforça a demanda global por semicondutores especializados em setores estratégicos.","link":"https://sg.finance.yahoo.com/news/microchip-technology-mchp-added-ai-042513167.html","categoria":"HARDWARE","lang":"pt"},{"fonte":"Futura, le média qui explore le monde","pais":"França","titulo":"A urina é realmente estéril? A resposta da ciência pode surpreender você","resumo":"Um mito amplamente difundido na medicina popular afirma erroneamente que a urina humana é totalmente livre de microrganismos. Estudos científicos recentes comprovaram que a bexiga possui seu próprio microbioma composto por diversas bactérias benéficas. A descoberta muda a compreensão sobre infecções urinárias e a saúde do trato renal. O avanço da microbiologia continua desmistificando crenças antigas sobre o corpo humano.","link":"https://www.futura-sciences.com/pt/saude/a-urina-e-realmente-esteril-a-resposta-da-ciencia-pode-surpreende-lo_24153/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Sky News","pais":"Inglaterra","titulo":"Monument Technology negocia rodada de financiamento de £ 20 milhões","resumo":"A empresa de tecnologia bancária Monument Technology está em negociações avançadas para captação de investimentos visando expandir suas operações. Os recursos serão destinados ao aprimoramento de suas plataformas digitais e à contratação de novos talentos técnicos. A movimentação reflete o vigor contínuo do setor de fintechs no mercado britânico.","link":"https://news.sky.com/story/monument-technology-in-talks-about-20m-funding-round-13608823","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Estadão","pais":"Brazil","titulo":"How Artificial Intelligence Surpasses the World's Best Mathematicians and Its Risks","resumo":"Advanced artificial intelligence models have been achieving surprising results by solving complex mathematical problems that once challenged the greatest experts on the planet. This evolution demonstrates the accelerated advancement of computational capability and logical reasoning in autonomous systems. However, experts warn of the risks associated with excessive reliance on these tools without proper human verification. The impact of this transformation raises deep debates about the future of scientific research and the role of critical judgment.","link":"https://www.estadao.com.br/economia/negocios/como-a-inteligencia-artificial-supera-os-melhores-matematicos-do-mundo-e-quais-sao-os-riscos-disso/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The New York Times","pais":"United States","titulo":"How Artificial Intelligence Just Changed a Fundamental Computer Science Principle","resumo":"Recent advances in artificial intelligence are challenging historical and consolidated concepts within computer science. The ability of generative models to solve complex problems without traditional algorithms is rewriting development theory in practice. Experts analyze how this paradigmatic shift affects education and the future of technology professionals worldwide.","link":"https://www.nytimes.com/2026/11/06/science/ai-exponential-time-hypothesis.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Euronews.com","pais":"France","titulo":"Intense Heat Technology Gives Wind Blades a Second Life","resumo":"A new approach using high-intensity thermal treatment is revolutionizing the recycling of discarded wind turbine blades. The process makes it possible to separate composite materials efficiently, enabling the reuse of fiberglass and resins. This innovation promises to drastically reduce the accumulation of industrial waste in the renewable energy sector. The initiative represents a fundamental step in making wind power even more sustainable.","link":"https://pt.euronews.com/2026/11/07/tecnologia-de-calor-intenso-da-segunda-vida-as-pas-eolicas","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"Durham University","pais":"England","titulo":"Science Minister Launches £12.2 Million Health Technology Hub","resumo":"The UK Government announced the creation of a center focused on medical innovation and public health technologies. With a significant initial investment, the project seeks to accelerate the development of modern treatments and cutting-edge biomedical devices. The initiative intends to bring researchers and companies closer together to boost the sector in the country.","link":"https://www.durham.ac.uk/news-events/latest-news/2026/11/science-minister-launches-122m-health-technology-hub/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Farmacosalud","pais":"Spain","titulo":"New Technology Allows Preservation or Recovery of Voice in People with ALS","resumo":"Researchers have developed an innovative technological solution capable of recording and synthesizing the voice of patients diagnosed with Amyotrophic Lateral Sclerosis (ALS). The innovation aims to maintain the vocal identity of those affected before the progression of motor symptoms and speech loss. The direct impact is reflected in a significant improvement in quality of life and the strengthening of emotional well-being for patients and their families.","link":"https://farmacosalud.com/una-novedosa-tecnologia-permite-la-preservacion-o-recuperacion-de-la-voz-en-personas-con-ela/","categoria":"TECHNOLOGY AND HEALTH","lang":"en"},{"fonte":"BILD","pais":"Germany","titulo":"Tesla Cybertruck: Production to End in 2027 and Hope for Europe Fades","resumo":"Tesla indicated that production of the controversial Cybertruck could end as early as 2027, frustrating brand enthusiasts around the world. The decision directly affects European consumers, who held expectations of seeing the electric vehicle officially marketed on the continent. Strict safety regulations in Europe and manufacturing scale challenges accelerated the company's shift in plans. The move reinforces the automaker's reorientation toward new mobility projects and autonomous vehicles in the coming years.","link":"https://www.bild.de/politik/ausland-und-internationales/tesla-cybertruck-produktion-endet-2027-europa-hoffnung-schwindet-6aee4d04a389bc337cfc88ac","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Sony Patents AI to Detect Veteran Gamers Disguised as Newbies in Video Games","resumo":"Sony has filed a patent for an artificial intelligence capable of identifying smurfing, where experienced players create new accounts to face beginners. The system analyzes behavioral patterns, accuracy, and match statistics to detect discrepancies in user profiles. The initiative seeks to restore competitive balance and improve the experience of new players in the gaming ecosystem.","link":"https://news.yahoo.co.jp/expert/articles/f213c1d98b0b83938dd22fdd1e7f240bc90c3a96","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"生物通","pais":"China","titulo":"CRISPR-Based Ultra-High-Sensitivity SERS Detection Platform for Interference-Free Detection of Phosphorylated Tau Protein in Alzheimer's Disease","resumo":"Researchers have developed a new sensing platform based on CRISPR technology combined with surface-enhanced Raman scattering (SERS). The system allows for the precise and interference-free detection of phosphorylated Tau protein, one of the main biological markers of Alzheimer's disease. This innovation represents a significant advance for early diagnosis and non-invasive monitoring of neurodegenerative diseases, opening new doors for the development of personalized therapies and precision medicine in the global health field.","link":"https://www.ebiotrade.com/newsf/2026-11/20261107082452192.htm","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"The Times of India","pais":"India","titulo":"Mahesh Babu on Gaming: It Is a Space Where Art Meets Advanced Technology","resumo":"Renowned actor Mahesh Babu shared his perspectives on the growing video game industry and the cultural impact of this market. He highlighted how modern games have evolved to become a unique convergence between artistic expression and cutting-edge technology. Furthermore, the gaming sector continues to attract major investments and redefine digital entertainment. This statement reinforces the relevance of technological innovation in the interactive media market.","link":"https://timesofindia.indiatimes.com/entertainment/hindi/bollywood/news/mahesh-babu-on-gaming-it-is-a-space-where-art-meets-advanced-technology/articleshow/135625971.cms","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Notícias de Coimbra","pais":"Portugal","titulo":"This Coimbra Technology Aims to Prevent Drone Accidents; Project Headed to Web Summit","resumo":"A new technology developed in Coimbra promises a revolution in airspace safety by preventing collisions between drones and other aircraft. The innovation will be officially presented during the prestigious Web Summit event. The project aims to create a safer standard for the advancement of autonomous transport. The expected impact is a transformation in the management of unmanned aviation in urban centers.","link":"https://www.noticiasdecoimbra.pt/esta-tecnologia-de-coimbra-quer-evitar-acidentes-com-drones-projeto-que-promete-mudar-o-espaco-aereo-vai-a-web-summit/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Mexico's Indigenous Languages Used in Training AI Models","resumo":"Recent technological initiatives are integrating Mexican native languages into the training of artificial intelligence algorithms. The project seeks to expand linguistic diversity in natural language processing and prevent the digital extinction of these languages. The inclusion improves digital accessibility for native communities and preserves ancestral cultural heritage. This approach demonstrates the potential of technology as an ally in the conservation of global cultural diversity.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/07/idiomas-indigenas-do-mexico-sao-usados-para-treinar-modelo-de-ia.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"OpenAI","pais":"United States","titulo":"Measuring How AI Agents Handle Wet Lab Science","resumo":"Researchers have begun evaluating the performance of autonomous artificial intelligence systems in experimental biology laboratory tasks. The study demonstrates the current efficiency and limitations of these agents when executing complex procedures without continuous human intervention. This integration promises to accelerate scientific discoveries and automate critical steps in biomedical research.","link":"https://openai.com/index/measuring-how-ai-agents-handle-wet-lab-science/","categoria":"SCIENCE","lang":"en"},{"fonte":"Le Progrès","pais":"France","titulo":"Rhône: A New Type of TGV Hits the Rails with Digital Technology from Villeurbanne","resumo":"The Rhône region has begun testing a new high-speed train model equipped with next-generation digital systems. Developed in Villeurbanne, the technology optimizes energy consumption and improves railway traffic precision. The project aims to modernize passenger transport infrastructure while ensuring greater safety and punctuality. Initial tests demonstrate significant advances in the operational efficiency of the trains.","link":"https://www.leprogres.fr/economie/2026/11/07/un-nouveau-genre-de-tgv-sur-les-rails-avec-une-technologie-numerique-villeurbannaise","categoria":"INNOVATION","lang":"en"},{"fonte":"University of York","pais":"England","titulo":"Science Minister Visits York to Discuss Regional Innovation and Economic Growth","resumo":"Government authorities met with local leaders in York to promote decentralized scientific initiatives and accelerate the regional economy. The focus of the visit was to map out opportunities for local startups and universities interested in leading new technological projects. The strategy aims to consolidate the UK as a hub for attracting scientific investments outside of major urban centers.","link":"https://www.york.ac.uk/news-and-events/news/2026/research/minister-innovation-guildhall/","categoria":"INNOVATION","lang":"en"},{"fonte":"Levante-EMV","pais":"Spain","titulo":"Smartwatches Can Learn to Read Hand Gestures with Over 92% Accuracy","resumo":"Advances in sensors and sophisticated algorithms promise to transform how we interact with wearable devices on a daily basis. Recent studies demonstrate that smartwatches can interpret fine hand movements with an accuracy rate exceeding 92%. This evolution paves the way for more accessible, intuitive, and efficient touchless interfaces across multiple operational scenarios.","link":"https://www.levante-emv.com/tendencias21/2026/11/06/relojes-inteligentes-aprender-leer-gestos-136178649.html","categoria":"TECHNOLOGICAL INNOVATION","lang":"en"},{"fonte":"SAPO","pais":"Germany","titulo":"Angola seeks to attract German investment for strategic economic sectors","resumo":"The Angolan government has intensified its diplomatic and commercial efforts to attract direct investment from German companies in its infrastructure. The focus covers vital areas such as renewable energy, industrial technology, logistics, and the sustainable exploitation of natural resources. Angolan authorities highlight recent economic reforms as a guarantee of a safer and more attractive business environment. This partnership seeks to strengthen the socio-economic development of the African country and diversify its productive base.","link":"https://sapo.pt/artigo/angola-procura-atrair-investimento-alemao-para-sectores-estrategicos-da-economia-6aee4bac013ef6a6901a44b4","categoria":"BUSINESS","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"University of Tokyo uses quantum technology to simulate cloud droplet growth","resumo":"Scientists at the University of Tokyo have created an innovative method based on quantum computing to calculate how water microparticles develop in clouds. Simulating this meteorological process usually requires high computational capacity due to the mathematical complexity involved. The breakthrough promises to considerably improve the accuracy of forecasts for rain and extreme storms.","link":"https://www.nikkei.com/article/DGXZQOSG057F80V01C26A1000000/","categoria":"SCIENCE","lang":"en"},{"fonte":"东大新闻网","pais":"China","titulo":"Autonomous driving system trained with 12 billion kilometers wins science and technology progress award","resumo":"A project led by Southeast University in China received the first Provincial Science and Technology Progress Award for using a vast database to improve autonomous driving. The system was fed with data corresponding to 12 billion kilometers of driving to ensure maximum safety for intelligent vehicles. The advance demonstrates the impressive scale of artificial intelligence training in China, boosting the reliability of autonomous transportation technologies in the near future.","link":"https://news.seu.edu.cn/2026/1107/c5485a588867/page.htm","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The Hindu","pais":"India","titulo":"Political line newsletter: The Imran Khan case and foreigners in national politics","resumo":"The new newsletter analyzes the developments of Imran Khan's trial and the discussion surrounding foreign interference in the national political scene. The publication explores the diplomatic and legal developments affecting the region's stability. The debate highlights the complexity of international relations in the face of internal political sovereignty. These issues remain at the center of geopolitical attention and public interest.","link":"https://www.thehindu.com/opinion/political-line-newsletter-the-imran-khan-case-and-foreigners-in-national-politics/article71675626.ece","categoria":"POLITICS","lang":"en"},{"fonte":"Notícias de Coimbra","pais":"Portugal","titulo":"Internet cables can now detect problems thanks to technology created in Coimbra","resumo":"Researchers from Coimbra have created a solution capable of transforming ordinary fiber optic cables into real-time monitoring sensors. The technology makes it possible to identify structural failures, tremors, and breakdowns in the communication network before outages occur. This approach drastically reduces the maintenance costs of digital infrastructure. The advancement represents a major leap for the stability of global data traffic.","link":"https://www.noticiasdecoimbra.pt/cabos-de-internet-podem-agora-detectar-problemas-gracas-a-uma-tecnologia-criada-em-coimbra/","categoria":"INNOVATION","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"AI race sparks market apprehension and results in $1 trillion loss","resumo":"Intense competition in the artificial intelligence sector triggered a sharp sell-off in major global technology companies. Investors expressed concerns regarding high infrastructure costs and the short-term financial return of these innovations. As a result, industry giants recorded trillions of dollars in market value losses in a single trading session. The scenario reflects volatility and increased demands for practical AI results.","link":"https://g1.globo.com/economia/noticia/2026/11/06/acoes-ia-globais.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"United States","titulo":"US Tech Stock Plunge: Is the AI Bubble Bursting?","resumo":"The North American financial market recorded a sharp devaluation in major tech companies, raising doubts about the sustainability of AI investments. Analysts are debating whether the movement reflects just a natural correction or the beginning of a speculative bubble bursting. The impact of the technology sector reverberates globally, affecting future profit expectations.","link":"https://www.theguardian.com/technology/2026/nov/06/us-tech-stock-ai-bubble-bursting-market-meltdown-explainer","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"RFI","pais":"France","titulo":"Opposition against the construction of new data centers grows in Europe","resumo":"Several European communities and environmental groups are mobilizing against the accelerated expansion of large data centers. The main concerns involve excessive electricity consumption and the demand for water resources for cooling. Local governments face the challenge of balancing the digital transition with environmental sustainability goals. The debate is gaining momentum as the use of artificial intelligence demands increasingly more infrastructure.","link":"https://www.rfi.fr/fr/%C3%A9conomie/20261107-en-europe-la-contestation-contre-la-construction-de-centres-de-donn%C3%A9es-s-amplifie","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Stirling Council","pais":"United Kingdom","titulo":"Science, sport and success at the Stirling Science Festival","resumo":"The new edition of the Stirling Science Festival achieved historic milestones in attendance and community engagement by uniting sporting and scientific themes. The event highlighted the importance of physics and biology in improving athletic performance and promoting health. Experts hope that the pedagogical approach will encourage more young people to pursue careers in STEM fields.","link":"https://www.stirling.gov.uk/news/science-sport-and-success-as-stirling-science-festival-breaks-new-ground/","categoria":"SCIENCE","lang":"en"},{"fonte":"The Objective","pais":"Spain","titulo":"Is the AI bubble bursting? US elections drag down the tech sector on Wall Street","resumo":"The technology sector faced a sharp pullback on North American stock exchanges driven by political and economic uncertainties associated with the United States elections. Analysts and investors are debating whether the movement signals the exhaustion of enthusiasm surrounding artificial intelligence. The scenario brings volatility to the global market and sets off alarms for major tech companies.","link":"https://theobjective.com/economia/2026-11-07/estalla-burbuja-ia-elecciones-eeuu-tecnologia-wall-street/","categoria":"DIGITAL MARKET","lang":"en"},{"fonte":"tagesschau.de","pais":"Germany","titulo":"Massive sell-off of tech and semiconductor stocks triggers drops in global markets","resumo":"A strong wave of liquidation of shares in large technology companies and chip manufacturers triggered sharp drops in major global markets. Investors showed deep concern over slowing demand for advanced hardware and revisions in profit projections for industry giants. The movement reflected increased global volatility and macroeconomic uncertainties affecting the financing of innovations. Analysts point out that capital rotation should redefine strategies in the tech sector in the coming months.","link":"https://www.tagesschau.de/video/video-1679328.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"NHKニュース","pais":"Japan","titulo":"Arctic scientists warn of rapid global warming ahead of COP","resumo":"Researchers specializing in monitoring the North Pole have expressed profound concern over the accelerated pace of temperature increases in the region ahead of the COP conference. Recent data indicates record melting of ice sheets and severe disruptions to local biodiversity. The group makes an urgent appeal for nations to adopt stricter climate targets to curb environmental collapse.","link":"https://news.web.nhk/newsweb/na/nd-20261107de72044","categoria":"ENVIRONMENT","lang":"en"},{"fonte":"新华网","pais":"China","titulo":"Chinese scientist Ye Yuru wins UNESCO International Life Science Research Award","resumo":"Chinese scientist and dean Ye Yuru has been awarded the prestigious UNESCO International Life Science Research Award for her extraordinary contributions to neuroscience. Her innovative research focuses on understanding the molecular mechanisms of neurodegenerative diseases and developing new therapeutic approaches. This award highlights the growing leadership and global visibility of China's scientific community in discovering solutions to complex global health challenges.","link":"https://www.news.cn/tech/20261107/e2823a1c88884b6baca750e428a2b8fa/c.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Renascença","pais":"Portugal","titulo":"What has changed in technology in 10 years of Web Summit in Lisbon?","resumo":"A decade after the arrival of the Web Summit in Lisbon, Portugal's technology scene has undergone a profound and lasting transformation. The local startup ecosystem has expanded significantly, proving attractive to massive international investments. Furthermore, the conference has shaped new talent and promoted the digitalization of various sectors of the national economy. The event has consecrated the Portuguese capital as one of Europe's top innovation hubs.","link":"https://rr.pt/especial/economia/2026/11/06/o-que-mudou-na-tecnologia-em-10-anos-de-web-summit-em-lisboa/492386/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Forbes Brasil","pais":"Brazil","titulo":"Embrapa launches traceability technology to boost agribusiness exports","resumo":"Embrapa has unveiled a new technological solution aimed at the traceability of agricultural production destined for foreign markets. The innovation makes it possible to monitor the entire production cycle, ensuring rigorous standards of sustainability and sanitary compliance. With the tool, Brazilian producers gain greater competitiveness and transparency in the face of stringent international requirements. The advancement consolidates the application of computer science and data in improving national agribusiness.","link":"https://forbes.com.br/forbes-agro/2026/11/embrapa-lanca-tecnologia-de-rastreabilidade-para-exportacoes-do-agro-veja-os-destaques-do-agroround/","categoria":"INNOVATION","lang":"en"},{"fonte":"BBC","pais":"United States","titulo":"Elon Musk Appears to Signal the End of the Line for the Cybertruck","resumo":"Recent statements by Elon Musk have sparked heavy backlash by suggesting a possible discontinuation or drastic change in the future of the Cybertruck. Tesla's futuristic electric vehicle has faced various production challenges, schedule delays, and market criticism since its launch. The uncertainty surrounding the project reflects new strategic directions within the automaker.","link":"https://www.bbc.com/news/articles/cq1j33w7d232o","categoria":"TRENDS","lang":"en"},{"fonte":"Investing.com France","pais":"France","titulo":"Musk Cites Conflicts with Alphabet After Google Executive Leaves SpaceX Board","resumo":"Elon Musk stated that conflicts of interest with Alphabet motivated the resignation of a key Google executive from the SpaceX board. The move reflects the growing rivalry between tech giants in sectors such as artificial intelligence and satellite connectivity. The departure ends a period of direct strategic partnership in the governance of the space exploration company. The scenario highlights the complexity of corporate alliances in the high-tech ecosystem.","link":"https://fr.investing.com/news/company-news/musk-cite-des-conflits-avec-alphabet-apres-le-depart-dun-cadre-de-google-du-conseil-de-spacex-3683518","categoria":"BUSINESS","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"AI Stocks Rise Following Market Value Recovery","resumo":"Companies tied to artificial intelligence recorded an expressive recovery on the stock market following a period of high volatility and accumulated losses. Analysts attribute the surge to strong, continuous demand for cloud services and infrastructure for language models. The technology sector demonstrates resilience and maintains optimism among major global investors.","link":"https://www.bbc.co.uk/news/articles/c35ynnpzdq51o","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Investing.com España","pais":"Spain","titulo":"Musk Cites Conflicts with Alphabet After Google Executive Leaves SpaceX Board","resumo":"Elon Musk publicly revealed strategic friction and potential conflicts of interest with Alphabet, Google's parent company. The statement came shortly after the official departure of a top executive from the search giant off the SpaceX board of directors. The episode reflects the growing rivalry between major tech companies in the aerospace, telecommunications, and artificial intelligence sectors.","link":"https://es.investing.com/news/company-news/musk-cita-conflictos-con-alphabet-tras-la-salida-de-ejecutivo-de-google-del-consejo-de-spacex-3917484","categoria":"BUSINESS","lang":"en"},{"fonte":"Spektrum der Wissenschaft","pais":"Germany","titulo":"Algebra: 18-Year-Old Makes Breakthrough on Famous Chicken Nuggets Problem","resumo":"An 18-year-old student achieved an impressive mathematical breakthrough by tackling the classic Frobenius problem, popularly known as the Chicken Nuggets problem. The question deals with the linear combination of integers to determine the largest value that cannot be formed by certain sets of coins or units. The resolution presented by the youth caught the attention of the international academic community for its simplicity and technical elegance. The feat demonstrates the potential of the new generation of researchers to contribute to number theory and abstract algebra.","link":"https://www.spektrum.de/news/algebra-18-jaehriger-macht-fortschritte-beim-chicken-nuggets-problem/2353042","categoria":"SCIENCE","lang":"en"},{"fonte":"経済産業省","pais":"Japan","titulo":"Japan Minister Discusses Energy and Tech Cooperation with UAE Leadership","resumo":"Japan's Minister of Economy, Ryosei Akazawa, held an online meeting with ADNOC CEO and UAE Minister of Technology, Sultan Al Jaber. The talks addressed strengthening the alliance in clean energy, decarbonization technologies, and oil supply security. The dialogue seeks to secure Japan's energy supply while boosting global sustainability goals.","link":"https://www.meti.go.jp/press/2026/11/20261106004.html","categoria":"BUSINESS","lang":"en"},{"fonte":"International Atomic Energy Agency","pais":"China","titulo":"Space Nuclear Technology: From Batteries to Rockets of the Future","resumo":"The advancement of nuclear technologies applied to the space sector is revolutionizing the development of new propulsion and power generation systems for long-duration missions. Research ranges from high-efficiency atomic batteries for distant probes to nuclear engines capable of propelling rockets at unprecedented speeds. This innovation is fundamental for deep space exploration, enabling a sustainable human presence on other celestial bodies in the future.","link":"http://www.iaea.org/zh/newscenter/news/tai-kong-he-ji-shu-cong-dian-chi-dao-wei-lai-huo-jian","categoria":"SPACE TECHNOLOGY","lang":"en"},{"fonte":"PCGuia","pais":"Portugal","titulo":"Web Summit Kicks Off This Monday with 2.5 Billion Euro Impact on Portugal's Economy","resumo":"The new edition of the Web Summit begins its activities in Lisbon, highlighting the event's consolidation in the European ecosystem. In ten years of being held in the country, the conference has generated a return of about 2.5 billion euros for the Portuguese economy. The gathering brings together the biggest global names in innovation, investors, and startup founders. The economic and technological impact reaffirms the strategic role of the event for the country's international image.","link":"https://www.pcguia.pt/2026/11/web-summit-arranca-na-segunda-feira-em-dez-anos-este-evento-de-tecnologia-ja-contribuiu-com-quase-25-mil-milhoes-de-euros-para-a-economia-portuguesa/","categoria":"ECONOMY","lang":"en"},{"fonte":"Band","pais":"Brazil","titulo":"Bahian Marine Technology Project to Represent Brazil in France","resumo":"An innovative project developed in Bahia focused on marine monitoring and technology was selected to represent the country at an international event in France. The initiative uses advanced tools to map oceanic biodiversity and predict environmental impacts on the Brazilian coast. The recognition highlights the potential of scientific research and technological development produced in Brazil's Northeast. The international participation projects Brazil as a standout in sustainable technological solutions for the ocean.","link":"https://www.band.com.br/nacional/ba/projeto-baiano-de-tecnologia-marinha-vai-representar-o-brasil-na-franca","categoria":"SCIENCE","lang":"en"},{"fonte":"The New York Times","pais":"United States","titulo":"Top Chinese Spy Agency Recruited Woman Who Targeted Jensen Huang","resumo":"A report revealed a Chinese intelligence operation targeting strategic figures in the global semiconductor industry, including Nvidia's CEO. The case highlights rising geopolitical tensions and corporate espionage in the high-tech and microchip sector. Authorities reinforce the need for stricter security measures against industrial espionage.","link":"https://www.nytimes.com/2026/11/06/us/politics/chinese-spy-agency-nvidia-jensen-huang.html","categoria":"SECURITY","lang":"en"},{"fonte":"JeuxVideo.com","pais":"France","titulo":"Xbox Launches Crucial Technology Before GTA 6: Understand Why FSR 4.1 Changes Everything","resumo":"Microsoft's gaming division has started rolling out FSR 4.1 technology to optimize graphic performance on Xbox consoles. The image upscaling feature promises to deliver extremely high visual fidelity without compromising the frames-per-second rate. The update is seen as a crucial strategic move to prepare the platform for demanding releases like GTA 6. Gamers and experts celebrate the technical advance that elevates the gaming experience.","link":"https://www.jeuxvideo.com/news/2112491/xbox-deploie-une-technologie-majeure-avant-la-sortie-de-gta-6-pourquoi-le-fsr-4-1-change-tout.htm","categoria":"GAMING","lang":"en"},{"fonte":"Financial Times","pais":"England","titulo":"US Economy Beats Forecasts by Adding 165,000 Jobs in October","resumo":"The North American labor market showed surprising strength last month by surpassing projections made by economists. Job creation in strategic sectors signals resistance against global inflationary pressures. The result positively impacted international financial markets and global investment prospects.","link":"https://www.ft.com/content/f84c722c-99a9-4628-84dc-c42a192cb35c?syn-25a6b1a6=1","categoria":"TRENDS","lang":"en"},{"fonte":"Industria Química","pais":"Spain","titulo":"Eastman Recovers 375 Million Dollar Subsidy to Expand Molecular Recycling Technology","resumo":"Eastman secured a crucial 375 million dollar funding aimed at advancing its sustainable industrial recycling operations. The project uses molecular recycling technology to break down difficult-to-process plastics into their primary components. The initiative boosts the circular economy and represents an important breakthrough in the fight against global plastic pollution.","link":"https://www.industriaquimica.es/noticias/20261107/eastman-recupera-una-ayuda-375-millones-dolares-ampliar-su-tecnologia-reciclaje-molecular","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"DW.com","pais":"Germany","titulo":"German Chancellor Says State Should Minimize Intervention in Economy","resumo":"In a recent speech, Germany's chancellor argued that the government should minimize direct interference in the country's economic activities as much as possible. The statement aims to encourage free enterprise, attract private capital, and cut red tape in the national productive environment. The stance comes amid intense debates over the need to accelerate Germany's industrial recovery. Critics and supporters discuss how the balance between regulation and market freedom will affect the nation's competitiveness.","link":"https://www.dw.com/zh/%E5%BE%B7%E5%9B%BD%E6%80%BB%E7%90%86%E5%9B%BD%E5%AE%B6%E5%BA%94%E5%B0%BD%E5%8F%AF%E8%83%BD%E5%87%8F%E5%B0%91%E5%AF%B9%E7%BB%8F%E6%B5%8E%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%B9%B2%E9%A2%84/a-79867314","categoria":"ECONOMY","lang":"en"},{"fonte":"21财经","pais":"China","titulo":"Former World Bank Vice President Warns AI Could Increase Disparity Between Countries Over Next Decade","resumo":"Economist Ian Goldin warned that artificial intelligence could significantly expand the socioeconomic development gap between rich and developing nations over the next five to ten years. The disparity in access to technological infrastructure and cutting-edge computing resources puts developing countries at a competitive disadvantage. The warning emphasizes the urgent need for global policies and international cooperation to ensure that the benefits of the digital revolution are distributed equitably.","link":"https://www.21jingji.com/article/20261107/herald/f13e791c8bbe23bf6fc57e5df19fcbd7.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"The new Honda Avancier will feature Honda Hybrid technology","resumo":"Honda has announced that the new version of the Avancier SUV will be equipped with advanced Honda Hybrid powertrain technology. The system aims to combine high energy efficiency, lower pollutant emissions, and enhanced dynamic performance. This move reinforces the automaker's commitment to the transition toward low-carbon mobility. The innovation meets the growing market demand for more sustainable and technological vehicles.","link":"https://sapo.pt/artigo/o-novo-honda-avancier-tera-a-tecnologia-hibrida-honda-hybrid-6aedfbceecae781d736b2575","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"UOL Economia","pais":"Brazil","titulo":"Global stock markets face sharp decline driven by slump in tech shares","resumo":"Financial markets worldwide recorded significant drops, dragged down by the steep decline in shares of major technology companies. The instability stems from skepticism regarding the immediate profitability of massive new investments in the innovation sector. This domino effect impacted global stock markets and caused anxiety among investors across various economic segments. The movement highlights the heavyweight role of the technology sector in global macroeconomic stability.","link":"https://economia.uol.com.br/cotacoes/noticias/redacao/2026/11/06/bolsas-globais-6-de-novembro-de-2026.ghtm","categoria":"BUSINESS","lang":"en"},{"fonte":"Yahoo Finance Singapore","pais":"United States","titulo":"Microchip Technology adds AI and space chips with $1.621 billion in Q2 revenue","resumo":"Microchip Technology reported robust financial results driven by the expansion of its portfolio for artificial intelligence and space exploration applications. The company managed to overcome supply chain challenges by focusing on high-value-added components. This growth reinforces global demand for specialized semiconductors in strategic sectors.","link":"https://sg.finance.yahoo.com/news/microchip-technology-mchp-added-ai-042513167.html","categoria":"HARDWARE","lang":"en"},{"fonte":"Futura, le média qui explore le monde","pais":"France","titulo":"Is urine really sterile? Science's answer might surprise you","resumo":"A widely spread myth in popular medicine mistakenly claims that human urine is completely free of microorganisms. Recent scientific studies have proven that the bladder possesses its own microbiome composed of various beneficial bacteria. This discovery changes our understanding of urinary tract infections and renal health. Advancements in microbiology continue to debunk long-standing beliefs about the human body.","link":"https://www.futura-sciences.com/pt/saude/a-urina-e-realmente-esteril-a-resposta-da-ciencia-pode-surpreende-lo_24153/","categoria":"SCIENCE","lang":"en"},{"fonte":"Sky News","pais":"England","titulo":"Monument Technology in talks over £20m funding round","resumo":"Banking technology firm Monument Technology is in advanced negotiations to secure investments aimed at expanding its operations. The funds will be allocated to enhancing its digital platforms and hiring new technical talent. This move reflects the continued vigor of the fintech sector in the British market.","link":"https://news.sky.com/story/monument-technology-in-talks-about-20m-funding-round-13608823","categoria":"TECHNOLOGY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
