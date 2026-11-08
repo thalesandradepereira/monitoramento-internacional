@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-8kAiR4gnjiwn8e0Dnxs11Uzx'; script-src 'nonce-8kAiR4gnjiwn8e0Dnxs11Uzx'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="8kAiR4gnjiwn8e0Dnxs11Uzx">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">08/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="8kAiR4gnjiwn8e0Dnxs11Uzx">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"Walkman da Sony está de volta com inteligência artificial e preço de R$ 32 mil","resumo":"A Sony surpreendeu o mercado de tecnologia ao relançar o clássico Walkman em uma versão de luxo focada em audiófilos exigentes. O novo dispositivo conta com recursos avançados de inteligência artificial para aprimorar o áudio compactado, além de acabamento refinado com peças banhadas a ouro. Com preço estimado em 32 mil reais, o lançamento combina a nostalgia dos anos 80 com as principais inovações da engenharia moderna. A novidade reflete a forte tendência de produtos retrô repaginados para o mercado de altíssimo padrão.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/07/walkman-da-sony-esta-de-volta-com-ia-pecas-em-ouro-e-preco-de-r-32-mil.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"Foto Astronômica do Dia: Meteoro Bola de Fogo Excepcional","resumo":"A Fotografia Astronômica do Dia da NASA destaca a impressionante passagem de um meteoro do tipo bola de fogo cortando o céu noturno. O evento chamou a atenção de astrônomos e entusiastas devido ao seu brilho intenso e à raridade da trajetória registrada. Observações como essa ajudam os cientistas a entender melhor a composição e a origem dos fragmentos espaciais que adentram a atmosfera terrestre. A imagem serve tanto para divulgar a ciência astronômica quanto para monitorar a frequência de grandes bólidos.","link":"https://science.nasa.gov/image-article/apod-2026-november-8-major-fireball-meteor/","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"RFI","pais":"França","titulo":"Até onde vai a ciência? - Medição mundial do tempo: o fim do segundo intercalar","resumo":"Cientistas e metrologistas de todo o mundo decidiram eliminar o segundo intercalar até o ano de 2035 para evitar falhas em sistemas de navegação e redes de computadores. A medida visa harmonizar a medição global do tempo sem as interrupções periódicas causadas pelas variações da rotação terrestre. A decisão representa uma mudança histórica na metrologia moderna e garante maior estabilidade para infraestruturas tecnológicas críticas.","link":"http://www.rfi.fr/fr/podcasts/jusqu-o%C3%B9-va-la-science/20261108-mesure-mondiale-du-temps-fin-de-la-seconde-intercalaire","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Oxford Mail","pais":"Inglaterra","titulo":"Empresa britânica de tecnologia com clientes globais entra em colapso de £4 milhões","resumo":"Uma fabricante de tecnologia do Reino Unido que atendia clientes globais declarou falência após um colapso financeiro de 4 milhões de libras. O encerramento das atividades gera preocupação no setor industrial britânico e destaca os crescentes desafios econômicos enfrentados pela cadeia de suprimentos de hardware. A crise reflete a pressão contínua sobre as empresas de tecnologia em meio à volatilidade do mercado global. Investidores e clientes buscam agora alternativas para mitigar eventuais impactos contratuais e operacionais.","link":"https://www.oxfordmail.co.uk/news/26708470.uk-tech-business-global-customers-4m-collapse/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"Google consegue executar IA em órbita para escrever um poema: o primeiro passo para centros de dados espaciais","resumo":"A Google alcançou um marco histórico ao rodar com sucesso um modelo de inteligência artificial a bordo de um satélite em órbita terrestre. O experimento culminou na criação de um poema gerado diretamente no espaço, demonstrando a capacidade de processamento fora da Terra. Essa conquista abre caminho para a criação de centros de dados espaciais capazes de processar informações de satélites em tempo real. A inovação promete revolucionar a infraestrutura de dados global e reduzir a dependência de estações terrenas.","link":"https://www.eldebate.com/ciencia/20261108/google-logra-ejecutar-ia-orbita-escribir-poema-primer-paso-tener-centros-datos-espaciales_476850.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Zeitungsverlag Waiblingen","pais":"Alemanha","titulo":"Análise capilar: Cannabis já era consumida há 2.800 anos?","resumo":"Estudos recentes baseados em análises capilares detalhadas indicam que o uso de cannabis por seres humanos pode remontar a pelo menos 2.800 anos atrás. A descoberta arqueológica traz novas evidências sobre as práticas medicinais, rituais e sociais de populações antigas. Pesquisadores destacam como a ciência moderna permite rastrear substâncias orgânicas preservadas em vestígios humanos ao longo dos milênios. O achado amplia significativamente a compreensão histórica sobre a evolução do consumo da planta pela humanidade.","link":"https://www.zvw.de/mehr-nachrichten/wissenschaft/haaranalyse-cannabis-schon-vor-2-800-jahren-konsumiert_arid-1104483","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"中国新闻网","pais":"China","titulo":"Apenas 3,43 milissegundos para mil quilômetros: China alcança avanço na tecnologia de redes de comunicação de nova geração","resumo":"A China registrou um avanço significativo em infraestrutura de telecomunicações ao atingir uma latência ultra-baixa de 3,43 milissegundos em distâncias de mil quilômetros. A inovação promete revolucionar o processamento de dados e a eficiência de redes de alta velocidade em todo o país. Essa conquista técnica estabelece novas diretrizes para o desenvolvimento da economia digital e aplicações industriais avançadas.","link":"https://www.chinanews.com.cn/gn/2026/11-07/10728184.shtml","categoria":"TELECOMUNICAÇÕES","lang":"pt"},{"fonte":"The Indian Express","pais":"Índia","titulo":"Restrições de autocompletar da Apple incluem 'Ditador Trump' e 'Joe Sono', descobre pesquisador","resumo":"Um pesquisador de segurança descobriu que o sistema de autocompletar da Apple possui restrições para termos políticos específicos. Entre as frases bloqueadas ou evitadas pelo teclado inteligente estão termos pejorativos direcionados a figuras públicas conhecidas. A descoberta gera discussões sobre como grandes empresas de tecnologia moderam a linguagem e influenciam a experiência do usuário em seus dispositivos.","link":"https://indianexpress.com/article/technology/tech-news-technology/apples-autocomplete-restrictions-include-dictator-trump-and-sleepy-joe-researcher-finds-10955333/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Administração Pública abre portas para testes de inteligência artificial antes de investir","resumo":"A Administração Pública de Portugal iniciou uma nova fase de avaliação ao permitir testes com soluções de inteligência artificial antes de realizar investimentos financeiros substanciais. Essa iniciativa visa garantir maior eficiência e segurança na adoção de tecnologias emergentes pelo setor público. Ao validar a eficácia dos sistemas em cenários reais, o governo reduz riscos orçamentários e promove a modernização dos serviços prestados aos cidadãos.","link":"https://sapo.pt/artigo/administracao-publica-abre-portas-a-testes-de-ia-antes-de-investir-6aefa32659d2c559791d0f04","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Vietnam.vn","pais":"Brasil","titulo":"A tecnologia quântica representa novas ameaças à segurança da informação e dos dados","resumo":"O avanço acelerado da computação quântica está trazendo desafios inéditos para o ecossistema global de cibersegurança e proteção de dados. Especialistas alertam que os algoritmos tradicionais de criptografia poderão ser facilmente quebrados por essa nova geração de processadores. Diante desse cenário, governos e grandes empresas já correm contra o tempo para desenvolver e implementar padrões de criptografia pós-quântica. A transição para sistemas mais seguros é considerada crucial para evitar vazamentos massivos de dados nos próximos anos.","link":"https://www.vietnam.vn/pt/cong-nghe-luong-tu-dat-an-ninh-thong-tin-du-lieu-truoc-nguy-co-moi","categoria":"SEGURANÇA","lang":"pt"},{"fonte":"aviationtoday.in","pais":"Estados Unidos","titulo":"NASA Revela Aeronave Experimental X-70 Fractal Para Avançar Tecnologias de Controle de Voo","resumo":"A NASA revelou oficialmente a nova aeronave experimental X-70 Fractal, projetada para revolucionar o controle de voo e a engenharia aeroespacial. O modelo utiliza geometria fractal inovadora em sua estrutura para otimizar o fluxo de ar e a eficiência do combustível. Pesquisadores esperam que os testes práticos forneçam dados valiosos para o desenvolvimento das próximas gerações de jatos supersônicos e comerciais. Esse avanço reforça a posição da agência na liderança da inovação e sustentabilidade na aviação moderna.","link":"https://aviationtoday.in/space/nasa-reveals-x-70-fractal-experimental-aircraft-to-advance-flight-control-technology/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"magazine GEO","pais":"França","titulo":"Coleira conectada, GPS e caixa de areia inteligente: a tecnologia entra na vida dos gatos","resumo":"O mercado de produtos tecnológicos voltados para animais de estimação está em expansão, oferecendo soluções inovadoras para a saúde e bem-estar dos felinos. Dispositivos como coleiras com GPS, monitores de atividade e caixas de areia automatizadas permitem acompanhar a rotina dos pets em tempo real. Essas inovações ajudam no diagnóstico precoce de doenças e facilitam os cuidados diários de tutores modernos.","link":"https://www.geo.fr/animaux/collier-connecte-gps-litiere-intelligente-la-technologie-sinvite-dans-la-vie-des-chats-234348","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"OkDiario","pais":"Espanha","titulo":"Uma turbina girando a 26.000 rotações por minuto no fundo do oceano: assim é a central experimental","resumo":"Engenheiros testam uma nova tecnologia revolucionária de geração de energia limpa instalada no leito marinho. O sistema utiliza uma turbina de alta velocidade capaz de girar a 26.000 rotações por minuto para aproveitar as correntes subaquáticas. A iniciativa busca criar uma fonte constante e ininterrupta de energia renovável para alimentar áreas costeiras. Os testes preliminares indicam um avanço significativo na eficiência e durabilidade de usinas oceânicas.","link":"https://okdiario.com/ciencia/turbina-girando-26-000-revoluciones-minuto-fondo-del-oceano-asi-central-experimental-que-logrado-sacar-electricidad-volcan-submarino-activo-mas-1-500-metros-pro-20689665","categoria":"ENERGIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"CEO da Nvidia teria tido relacionamento com espiã chinesa","resumo":"Relatórios recentes sugerem um suposto envolvimento entre o líder da Nvidia e uma pessoa apontada como espiã a serviço da China. As alegações geraram forte repercussão no setor de tecnologia e nos mercados financeiros globais devido ao papel central da empresa na revolução da inteligência artificial. O caso levanta preocupações crescentes sobre segurança corporativa, espionagem industrial e tensões geopolíticas envolvendo grandes corporações tech. Autoridades e especialistas acompanham o desdobramento do caso para avaliar possíveis impactos.","link":"https://www.sueddeutsche.de/wirtschaft/jensen-huang-nvidia-affaere-china-spionin-li.3576581","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Pplware","pais":"China","titulo":"China bate recorde de temperatura mais baixa alguma vez alcançada no espaço","resumo":"Cientistas chineses alcançaram um marco histórico na física espacial ao registrar a temperatura mais baixa já obtida no espaço durante experimentos orbitais. O feito tecnológico permite o estudo aprofundado da matéria sob condições quânticas extremas e abre portas para o desenvolvimento de sensores ultraprecisos. A conquista reforça a posição de liderança da China no setor de pesquisa científica espacial.","link":"https://pplware.sapo.pt/ciencia/china-bate-recorde-de-temperatura-mais-baixa-alguma-vez-alcancada-no-espaco/","categoria":"CIÊNCIA ESPACIAL","lang":"pt"},{"fonte":"Echo Boomer","pais":"Portugal","titulo":"Motorola lança Motorollers, uma nova rede social dedicada à tecnologia","resumo":"A Motorola anunciou o lançamento da Motorollers, uma plataforma de rede social desenvolvida especificamente para entusiastas de tecnologia e inovação. O objetivo é criar uma comunidade engajada onde os usuários possam compartilhar experiências, análises de dispositivos e tendências do setor tecnológico. Essa estratégia busca reforçar a presença digital da marca e aproximar os consumidores do ecossistema de produtos da empresa.","link":"https://echoboomer.pt/motorola-lanca-motorollers/","categoria":"REDES SOCIAIS","lang":"pt"},{"fonte":"Midiamax","pais":"Brasil","titulo":"Exame de alta tecnologia revela que fóssil de réptil voador era osso de tartaruga","resumo":"Uma análise detalhada conduzida com tecnologias avançadas de imagem desmentiu uma importante classificação paleontológica mantida por anos. O fóssil que era considerado um exemplar raro de réptil voador foi reavaliado e identificado como parte da estrutura óssea de uma tartaruga pré-histórica. A descoberta evidencia o papel fundamental da tecnologia moderna na correção de equívocos históricos na ciência. O estudo reacende o debate sobre a importância de reanalisar acervos antigos com ferramentas de última geração.","link":"https://midiamax.com.br/trends/2026/11/08/exame-de-alta-tecnologia-revela-que-fossil-aclamado-como-reptil-voador-era-na-verdade-osso-de-tartaruga/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"NASA (.gov)","pais":"Estados Unidos","titulo":"NASA Concede Prêmios Para Projetos de Transporte, Tecnologia e Ciência para Base Lunar","resumo":"A NASA anunciou a concessão de contratos e financiamentos estratégicos voltados ao desenvolvimento de tecnologias cruciais para a futura base lunar. Os projetos contemplados abrangem sistemas de transporte de carga, soluções de energia sustentável e instrumentos científicos avançados. A iniciativa visa preparar a infraestrutura necessária para a presença humana contínua na Lua por meio do programa Artemis. Espera-se que essas parcerias com o setor privado acelerem a inovação tecnológica no ambiente de gravidade reduzida.","link":"https://www.nasa.gov/news-release/nasa-awards-moon-base-transportation-technology-science-projects/","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Malária: guardada no congelador de um laboratório por décadas, bactéria é capaz de matar o parasita em 5 horas e abre nova via de tratamento","resumo":"Uma bactéria mantida congelada por décadas revelou um potencial impressionante na luta contra a malária ao eliminar o parasita responsável em apenas cinco horas. A descoberta inesperada oferece uma alternativa promissora para o desenvolvimento de novos tratamentos contra a doença que afeta milhões de pessoas globalmente. Pesquisadores agora investigam como sintetizar os compostos ativos para criar medicamentos mais eficazes e acessíveis.","link":"https://www.science-et-vie.com/corps-et-sante/paludisme-alors-quelle-dormait-dans-le-congelateur-dun-laboratoire-depuis-des-decennies-cette-bacterie-est-capable-de-tuer-le-parasite-en-5-heures-et-offre-une-nouvelle-piste-de-traiteme-265293.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"20Minutos","pais":"Espanha","titulo":"A ciência consegue desvendar o mistério da 'Dama das Tranças' do Egito 3.000 anos depois","resumo":"Pesquisadores utilizaram técnicas científicas avançadas de imagem e análise biomolecular para examinar a múmia egípcia conhecida como Dama das Tranças. O estudo revelou detalhes inéditos sobre sua origem, estilo de vida e os métodos de embalsamamento utilizados há mais de três milênios. A descoberta encerra um mistério histórico de décadas e lança novas luzes sobre as práticas funerárias da elite egípcia. Este avanço demonstra a importância da tecnologia moderna na preservação e compreensão do patrimônio histórico mundial.","link":"https://www.20minutos.es/ciencia/ciencia-logra-desvelar-misterio-dama-trenzas-egipto-anos-despues_7058590_0.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"中国江苏网","pais":"China","titulo":"Pioneirismo mundial: Nova tecnologia da Universidade de Mineração da China utiliza cavidades de lajes para exaustão de fumaça","resumo":"Pesquisadores da China desenvolveram uma estrutura inovadora que utiliza as cavidades internas das lajes dos edifícios como sistema integrado de exaustão de fumaça. Essa abordagem de engenharia elimina a necessidade de dutos tradicionais, permitindo um ganho de meio metro na altura útil de cada andar. A tecnologia promete transformar os padrões da construção civil moderna ao otimizar o espaço e aumentar a segurança contra incêndios.","link":"https://jsnews.jschina.com.cn/jsyw/202611/t20261108_s6aefdcb0e4b0f1ee38a854cf.shtml","categoria":"ENGENHARIA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Volkswagen ID. Up chega em 2027 por cerca de 20 mil euros com tecnologia inédita","resumo":"A Volkswagen confirmou o lançamento do ID. Up para o ano de 2027, posicionado com um preço acessível na faixa dos 20 mil euros. O veículo elétrico compacto promete estrear uma arquitetura tecnológica inédita dentro da fabricante alemã. Com essa novidade, a marca reforça sua estratégia de democratização da mobilidade elétrica no mercado europeu através de soluções mais econômicas.","link":"https://sapo.pt/artigo/volkswagen-id-up-chega-em-2027-por-cerca-de-20-mil-euros-e-estreia-tecnologia-inedita-na-marca-6aef12efecae781d738373c1","categoria":"AUTOMOBILISMO","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Trepadeira invasora vira aposta da ciência para tratamento do abuso de álcool","resumo":"Pesquisadores identificaram propriedades promissoras em uma planta trepadeira invasora para auxiliar no combate ao consumo compulsivo de álcool. Estudos científicos preliminares indicam que compostos extraídos da vegetação atuam no sistema nervoso reduzindo a fissura pela substância. A descoberta abre caminho para o desenvolvimento de novas opções terapêuticas mais acessíveis e eficientes para pacientes em reabilitação. A iniciativa demonstra como a biodiversidade pode ser chave na busca por soluções médicas inovadoras.","link":"https://oglobo.globo.com/saude/noticia/2026/11/07/planta-invasora-e-a-nova-aposta-da-ciencia-para-tratar-abuso-de-alcool-veja-o-que-diz-estudo.ghtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Estados Unidos","titulo":"Boom das Criptomoedas nos EUA, Impulsionado por Trump, Chega à Sua Fase Decisiva","resumo":"O mercado de criptomoedas nos Estados Unidos atinge um momento crucial de consolidação impulsionado pelas recentes sinalizações e políticas de Donald Trump. Investidores e grandes instituições acompanham atentos os desdobramentos regulatórios que podem definir o futuro dos ativos digitais no país. A forte volatilidade e a liquidez do setor continuam atraindo bilhões de dólares em novas aplicações. Especialistas preveem que o resultado desta fase decisiva ditará os rumos do ecossistema financeiro global nos próximos anos.","link":"https://oglobo.globo.com/economia/noticia/2026/11/07/boom-das-criptomoedas-nos-eua-impulsionado-por-trump-chega-a-sua-fase-decisiva.ghtml","categoria":"CRIPTOMOEDAS","lang":"pt"},{"fonte":"Yahoo","pais":"Espanha","titulo":"A NFL toma Madri e esta é a tecnologia que analisa cada jogada e responde às dúvidas dos fãs ao vivo","resumo":"A liga de futebol americano trouxe para Madri uma impressionante infraestrutura tecnológica para transformar a experiência dos torcedores. Sistemas de inteligência artificial e sensores avançados acompanham e analisam cada movimento no campo em tempo real. Além disso, assistentes virtuais respondem às dúvidas do público instantaneamente durante a partida. A iniciativa posiciona os eventos esportivos na vanguarda da interatividade e da análise de dados esportivos.","link":"https://es-us.noticias.yahoo.com/nfl-toma-madrid-tecnolog%C3%ADa-analiza-020000576.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"生物通","pais":"China","titulo":"Tecnologia de transcriptômica espacial e de célula única no desenvolvimento cardiovascular: Implicações para doenças cardíacas e medicina regenerativa","resumo":"Um novo estudo científico destaca a aplicação de transcriptômica espacial e de célula única no mapeamento do desenvolvimento cardiovascular. A pesquisa oferece visões inéditas sobre as causas de doenças cardíacas congênitas e abre caminhos inovadores para a medicina regenerativa. O avanço tecnológico promete acelerar o desenvolvimento de terapias celulares personalizadas e tratamentos de alta precisão.","link":"https://www.ebiotrade.com/newsf/2026-11/20261108083403556.htm","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"TechBit","pais":"Portugal","titulo":"Web Summit gerou 2,5 bilhões de euros para a economia portuguesa em uma década","resumo":"Ao longo de dez anos de realização em Portugal, a Web Summit movimentou aproximadamente 2,5 bilhões de euros na economia do país. O evento impulsionou setores vitais como turismo, hotelaria, restauração e o ecossistema de startups locais. O balanço destaca a consolidação de Lisboa como um dos principais hubs de tecnologia e investimento da Europa.","link":"https://techbit.pt/web-summit-25-mil-milhoes-euros-economia-portuguesa/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Nubank retoma saques e depósitos de criptomoedas após suspensão temporária","resumo":"A fintech Nubank restabeleceu as funcionalidades de transferência de criptomoedas para seus clientes após resolver instabilidades operacionais. A paralisação temporária dos serviços de saque e depósito visava aprimorar os protocolos de segurança e a estabilidade da plataforma. Com a normalização, investidores voltam a transacionar seus ativos digitais diretamente pelo aplicativo com total integração. A medida reforça o compromisso da instituição financeira com a segurança e a transparência no mercado cripto.","link":"https://www1.folha.uol.com.br/mercado/2026/11/nubank-retoma-saques-e-depositos-de-criptomoedas-apos-suspensao.shtml","categoria":"CRIPTOMOEDAS","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"Tecnologia avançada e melhores hábitos para frear o câncer","resumo":"Especialistas apontam que a combinação de novas ferramentas tecnológicas de diagnóstico precoce com hábitos de vida saudáveis é fundamental para combater o câncer. Inovações em rastreamento genético e inteligência artificial aplicada à medicina têm permitido identificar tumores em estágios extremamente iniciais. Paralelamente, dados reforçam o impacto positivo da prevenção primária no prognóstico dos pacientes. O avanço integrado promete aumentar significativamente as taxas de sobrevivência e melhorar a qualidade de vida.","link":"https://elpais.com/extra/eventos/2026-11-08/tecnologia-avanzada-y-mejores-habitos-para-frenar-el-cancer.html","categoria":"SAÚDE","lang":"pt"},{"fonte":"21财经","pais":"China","titulo":"Entrevista com o presidente da Siemens China: Inteligência Artificial industrial acelera com quatro grandes vantagens do país","resumo":"Em entrevista exclusiva, a liderança da Siemens China analisa o avanço acelerado da Inteligência Artificial aplicada ao setor industrial no país. A China apresenta vantagens competitivas determinantes no ecossistema de inovação, incluindo escala de mercado, velocidade de implementação e forte infraestrutura digital. O cenário consolida a automação inteligente como o principal motor de transformação das fábricas no país.","link":"https://m.21jingji.com/article/20261107/herald/66febc4213236e100d1d9b53806ab506_zaker.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Expresso","pais":"Portugal","titulo":"Joana Gonçalves de Sá: \"A ciência é um ato de criação para honrar o espírito humano\"","resumo":"Em entrevista, a cientista Joana Gonçalves de Sá refletiu sobre a natureza fundamental da pesquisa científica e sua relação com a sociedade contemporânea. A especialista defende que a produção de conhecimento não deve ser avaliada exclusivamente por sua utilidade prática imediata. Segundo ela, a ciência possui um valor intrínseco equivalente ao das artes como manifestação do intelecto humano.","link":"https://expresso.pt/podcasts/a-beleza-das-pequenas-coisas/2026-11-07-joana-goncalves-de-sa--parte-2--a-ciencia-como-as-artes-nao-tem-de-servir-para-nada.-e-um-ato-de-criacao-para-honrar-o-espirito-humano-ad22001f","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Valor Econômico","pais":"Brasil","titulo":"Diretor da Localiza alerta para a necessidade de desconfiar das respostas da inteligência artificial","resumo":"Em debate sobre a adoção corporativa de novas ferramentas digitais, o diretor da Localiza destacou que saber formular perguntas para a inteligência artificial não é suficiente. Segundo o executivo, o grande diferencial das equipes de tecnologia e negócios está na capacidade crítica de checar e validar as respostas geradas. A proliferação de erros e alucinações de modelos de linguagem exige maior rigor analítico por parte dos profissionais. A postura cautelosa é apontada como essencial para garantir a eficiência e a segurança nas tomadas de decisão.","link":"https://valor.globo.com/empresas/noticia/2026/11/07/mais-do-que-saber-formular-problema-com-ia-preciso-desconfiar-da-resposta-diz-diretor-da-localiza.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Faro de Vigo","pais":"Espanha","titulo":"Sandra, cega total que se auxilia da tecnologia para suprir sua deficiência","resumo":"A história de Sandra exemplifica como as ferramentas tecnológicas modernas podem transformar radicalmente a autonomia de pessoas com deficiência visual severa. Utilizando aplicativos de reconhecimento de imagem por IA e dispositivos assistivos inteligentes, ela consegue realizar tarefas diárias e navegar pelo ambiente com segurança. A inovação tecnológica atua como uma ponte fundamental para a inclusão social e acessibilidade universal. O relato reforça o papel social do desenvolvimento tecnológico voltado para o bem-estar humano.","link":"https://www.farodevigo.es/videos/galicia/2026/11/08/sandra-ciega-total-ayuda-tecnologia-135939930.html","categoria":"ACESSIBILIDADE","lang":"pt"},{"fonte":"Mezha.net","pais":"China","titulo":"Como a expansão da indústria de tecnologia limpa da China está remodelando o financiamento climático global","resumo":"O rápido crescimento do setor de tecnologia limpa na China está alterando profundamente as dinâmicas globais de investimento em transição energética. Com produção em escala de painéis solares, baterias e veículos elétricos, o país impulsiona a redução de custos de tecnologias sustentáveis em todo o mundo. Essa expansão industrial atrai significativos aportes de capital e redefine as estratégias globais de financiamento climático.","link":"https://mezha.net/ch/news/mezha-016606c82ea71cc5e5e35e31_how-china-s-clean-tech-push/","categoria":"TECNOLOGIA VERDE","lang":"pt"},{"fonte":"Público","pais":"Portugal","titulo":"Native Scientists lança programas educativos para aproximar crianças da ciência","resumo":"A organização Native Scientists apresentou novos programas educacionais voltados para promover a literacia científica entre o público infantil. A iniciativa conecta pesquisadores a salas de aula para realizar atividades práticas e inspirar novas gerações de estudantes. O projeto visa reduzir desigualdades no acesso ao conhecimento científico e incentivar carreiras no setor desde a infância.","link":"https://www.publico.pt/2026/11/07/ciencia/noticia/native-scientists-lanca-programas-educativos-aproximar-criancas-ciencia-2194017","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"Vietnam.vn","pais":"Brasil","titulo":"Dominando a tecnologia de robótica integrada passo a passo","resumo":"O avanço da automação industrial tem exigido uma capacitação cada vez mais aprofundada no desenvolvimento e aplicação da robótica integrada. O domínio dessas tecnologias permite otimizar linhas de produção complexas através do uso conjunto de sensores, inteligência de software e atuadores mecânicos. Especialistas reforçam que a implementação bem-sucedida requer um planejamento estruturado por etapas operacionais. A tendência consolidada promete transformar significativamente a competitividade das indústrias modernas nos próximos anos.","link":"https://www.vietnam.vn/pt/tung-buoc-lam-chu-cong-nghe-tich-hop-robot","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Faro de Vigo","pais":"Espanha","titulo":"A tecnologia que quer prolongar a vida","resumo":"O avanço da biotecnologia e da engenharia genética está impulsionando pesquisas focadas em retardar o envelhecimento celular e estender a longevidade humana. Cientistas exploram desde a edição genética até terapias moleculares para prevenir doenças degenerativas associadas à idade avançada. Essas inovações levantam debates éticos e econômicos importantes sobre o futuro da sociedade e da medicina. O objetivo final é não apenas aumentar a expectativa de vida, mas garantir anos adicionais com plena saúde.","link":"https://www.farodevigo.es/estela/opinion/2026/11/08/opinion-francisco-yanez-la-tecnologia-que-quiere-prolongar-la-vida-136120231.html","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"经济参考报","pais":"China","titulo":"Na Cúpula Mundial de Mídia, Pequim apresenta seu novo cartão de visitas baseado em Inteligência Artificial","resumo":"Durante a Cúpula Mundial de Mídia, Pequim demonstrou suas mais recentes inovações em Inteligência Artificial voltadas à geração e distribuição de conteúdo. As tecnologias apresentadas destacam soluções automatizadas de tradução, síntese de mídia e processamento avançado de dados em tempo real. O evento reforçou o papel central da capital chinesa como um polo de inovação em tecnologias de mídia digital.","link":"http://jjckb.xinhuanet.com/20261108/ff19a35023af46f58193e3915cccb20e/c.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Observador","pais":"Portugal","titulo":"O Futuro das Experiências: e se a tecnologia por si só não for a resposta que procuramos?","resumo":"O debate sobre a evolução das experiências humanas questiona a dependência excessiva de soluções puramente tecnológicas no cotidiano. A reflexão aponta para a necessidade de equilibrar inovação digital com fatores emocionais, empáticos e relacionais. Especialistas enfatizam que as ferramentas tecnológicas devem servir como suporte e não substituir a essência do contato e da sensibilidade humana.","link":"https://observador.pt/opiniao/the-future-of-experiences-e-se-a-tecnologia-por-si-so-nao-for-a-resposta-que-procuramos/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Diário do Litoral","pais":"Brasil","titulo":"Clássico som do caminhão de gás usou tecnologia de chip e música erudita, revela compositor","resumo":"Uma revelação curiosa sobre a cultura popular brasileira detalhou como a famosa vinheta do caminhão de gás foi criada utilizando tecnologia de chips de som. O compositor responsável explicou que utilizou arranjos inspirados em técnicas da música erudita para simular o som do botijão de metal através de síntese digital. A solução tecnológica da época contornou limitações de memória e criou um dos sons mais reconhecíveis do cotidiano do país. A história destaca a intersecção criativa entre inovação tecnológica e identidade cultural.","link":"https://www.diariodolitoral.com.br/entretenimento/classico-do-caminhao-de-gas-usou-tecnologia-de-chip-e-tecnica-de-musica-erudita-para-simular-botijao-de-metal-revela-compositor/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"El Salto","pais":"Espanha","titulo":"A tecnologia nos salvará do deserto?","resumo":"Diante do avanço da desertificação em diversas regiões, inovações tecnológicas surgem como aliadas estratégicas para a restauração ambiental. Projetos utilizam desde sensores de umidade no solo e irrigação de alta precisão até técnicas avançadas de dessalinização de água. A aplicação dessas ferramentas visa recuperar ecossistemas degradados e garantir a segurança alimentar de populações vulneráveis. Especialistas ressaltam que o sucesso depende da combinação entre tecnologia moderna e gestão sustentável dos recursos.","link":"https://www.elsaltodiario.com/cambio-climatico/tecnologia-nos-salvara-del-desierto","categoria":"MEIO AMBIENTE","lang":"pt"},{"fonte":"新华网江苏频道","pais":"China","titulo":"Dados espaço-temporais impulsionam a economia de baixa altitude durante competição de geoinformação em Jiangsu","resumo":"A província de Jiangsu sediou a primeira competição de habilidades profissionais em geoinformação, destacando o papel estratégico dos dados espaço-temporais. A tecnologia de mapeamento e análise geográfica é fundamental para viabilizar a crescente economia de baixa altitude, incluindo logística por drones e mobilidade aérea urbana. O evento enfatizou a integração entre dados espaciais avançados e novas aplicações industriais.","link":"http://js.news.cn/20261108/fd33aa5251114f759e06e4ed067ab1a0/c.html","categoria":"GEOTECNOLOGIA","lang":"pt"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Peugeot E-208 GTi: Diversão elétrica na nova era automobilística","resumo":"A Peugeot traz uma nova interpretação para a emblemática sigla GTi com o lançamento do modelo 100% elétrico E-208 GTi. O veículo combina o apelo esportivo e a dinâmica tradicional da marca com a eficiência da propulsão elétrica moderna. A novidade sinaliza a transformação dos carros esportivos compactos para atender às exigências de sustentabilidade sem abrir mão da performance.","link":"https://www.cmjornal.pt/desporto/detalhe/20261106-213222-peugeot-e-208-gti-diversao-eletrica","categoria":"TECNOLOGIA AUTO","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Walkman is back with artificial intelligence and a price of R$32,000","resumo":"Sony surprised the technology market by relaunching the classic Walkman in a luxury version aimed at demanding audiophiles. The new device has advanced artificial intelligence features to improve compressed audio, as well as a refined finish with gold-plated parts. With an estimated price of R$32,000, the launch combines 80s nostalgia with the main innovations of modern engineering. The novelty reflects the strong trend of retro products redesigned for the very high-end market.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/07/walkman-da-sony-esta-de-volta-com-ia-pecas-em-ouro-e-preco-de-r-32-mil.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"Astronomical Photo of the Day: Exceptional Fireball Meteor","resumo":"NASA's Astronomy Photo of the Day highlights the stunning passage of a fireball meteor streaking across the night sky. The event caught the attention of astronomers and enthusiasts due to its intense brightness and the rarity of the recorded trajectory. Observations like this help scientists better understand the composition and origin of space fragments that enter the Earth's atmosphere. The image serves both to disseminate astronomical science and to monitor the frequency of large bolides.","link":"https://science.nasa.gov/image-article/apod-2026-november-8-major-fireball-meteor/","categoria":"ASTRONOMY","lang":"en"},{"fonte":"RFI","pais":"France","titulo":"How far does science go? - Worldwide measurement of time: the end of the leap second","resumo":"Scientists and metrologists around the world have decided to eliminate the intercalary second by the year 2035 to prevent failures in navigation systems and computer networks. The measure aims to harmonize the global measurement of time without the periodic interruptions caused by variations in the Earth's rotation. The decision represents a historic change in modern metrology and guarantees greater stability for critical technological infrastructures.","link":"http://www.rfi.fr/fr/podcasts/jusqu-o%C3%B9-va-la-science/20261108-mesure-mondiale-du-temps-fin-de-la-seconde-intercalaire","categoria":"SCIENCE","lang":"en"},{"fonte":"Oxford Mail","pais":"England","titulo":"British technology company with global customers collapses for £4m","resumo":"A UK technology manufacturer serving global customers has declared bankruptcy following a £4m financial collapse. The shutdown raises concern in the British industrial sector and highlights the growing economic challenges facing the hardware supply chain. The crisis reflects continued pressure on technology companies amid global market volatility. Investors and customers are now looking for alternatives to mitigate possible contractual and operational impacts.","link":"https://www.oxfordmail.co.uk/news/26708470.uk-tech-business-global-customers-4m-collapse/","categoria":"BUSINESS","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"Google can run AI in orbit to write a poem: the first step towards space data centers","resumo":"Google has achieved a historic milestone by successfully running an artificial intelligence model on board an Earth-orbiting satellite. The experiment culminated in the creation of a poem generated directly in space, demonstrating the capacity for processing outside of Earth. This achievement paves the way for the creation of space data centers capable of processing information from satellites in real time. The innovation promises to revolutionize global data infrastructure and reduce dependence on earth stations.","link":"https://www.eldebate.com/ciencia/20261108/google-logra-ejecutar-ia-orbita-escribir-poema-primer-paso-tener-centros-datos-espaciales_476850.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Zeitungsverlag Waiblingen","pais":"Germany","titulo":"Hair analysis: Was cannabis already consumed 2,800 years ago?","resumo":"Recent studies based on detailed hair analysis indicate that the use of cannabis by humans may date back to at least 2,800 years ago. The archaeological discovery brings new evidence about the medicinal, ritual and social practices of ancient populations. Researchers highlight how modern science makes it possible to trace organic substances preserved in human remains over the millennia. The find significantly expands the historical understanding of the evolution of plant consumption by humanity.","link":"https://www.zvw.de/mehr-nachrichten/wissenschaft/haaranalyse-cannabis-schon-vor-2-800-jahren-konsumiert_arid-1104483","categoria":"SCIENCE","lang":"en"},{"fonte":"中国新闻网","pais":"China","titulo":"Just 3.43 milliseconds for a thousand kilometers: China achieves breakthrough in next-generation communication network technology","resumo":"China has made significant progress in telecommunications infrastructure by achieving an ultra-low latency of 3.43 milliseconds over distances of a thousand kilometers. The innovation promises to revolutionize data processing and the efficiency of high-speed networks across the country. This technical achievement establishes new guidelines for the development of the digital economy and advanced industrial applications.","link":"https://www.chinanews.com.cn/gn/2026/11-07/10728184.shtml","categoria":"TELECOMMUNICATIONS","lang":"en"},{"fonte":"The Indian Express","pais":"India","titulo":"Apple's autocomplete restrictions include 'Dictator Trump' and 'Joe Sono,' researcher finds","resumo":"A security researcher discovered that Apple's autocomplete system has restrictions on specific political terms. Among the phrases blocked or avoided by the smart keyboard are derogatory terms aimed at well-known public figures. The discovery sparks discussions about how large technology companies moderate language and influence the user experience on their devices.","link":"https://indianexpress.com/article/technology/tech-news-technology/apples-autocomplete-restrictions-include-dictator-trump-and-sleepy-joe-researcher-finds-10955333/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Public Administration opens doors to artificial intelligence testing before investing","resumo":"The Portuguese Public Administration has started a new evaluation phase by allowing tests with artificial intelligence solutions before making substantial financial investments. This initiative aims to ensure greater efficiency and security in the adoption of emerging technologies by the public sector. By validating the effectiveness of systems in real scenarios, the government reduces budgetary risks and promotes the modernization of services provided to citizens.","link":"https://sapo.pt/artigo/administracao-publica-abre-portas-a-testes-de-ia-antes-de-investir-6aefa32659d2c559791d0f04","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Vietnam.vn","pais":"Brazil","titulo":"Quantum technology poses new threats to information and data security","resumo":"The accelerating advancement of quantum computing is bringing unprecedented challenges to the global cybersecurity and data protection ecosystem. Experts warn that traditional encryption algorithms could be easily broken by this new generation of processors. Faced with this scenario, governments and large companies are already racing against time to develop and implement post-quantum encryption standards. The transition to more secure systems is considered crucial to prevent massive data leaks in the coming years.","link":"https://www.vietnam.vn/pt/cong-nghe-luong-tu-dat-an-ninh-thong-tin-du-lieu-truoc-nguy-co-moi","categoria":"SECURITY","lang":"en"},{"fonte":"aviationtoday.in","pais":"United States","titulo":"NASA Unveils Experimental X-70 Fractal Aircraft to Advance Flight Control Technologies","resumo":"NASA has officially unveiled the new X-70 Fractal experimental aircraft, designed to revolutionize flight control and aerospace engineering. The model uses innovative fractal geometry in its structure to optimize airflow and fuel efficiency. Researchers hope the practical tests will provide valuable data for the development of the next generations of supersonic and commercial jets. This advancement reinforces the agency's position in leading innovation and sustainability in modern aviation.","link":"https://aviationtoday.in/space/nasa-reveals-x-70-fractal-experimental-aircraft-to-advance-flight-control-technology/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"magazine GEO","pais":"France","titulo":"Connected collar, GPS and smart litter box: technology enters the lives of cats","resumo":"The market for technological products aimed at pets is expanding, offering innovative solutions for the health and well-being of felines. Devices such as GPS collars, activity monitors and automated litter boxes allow you to monitor your pets' routine in real time. These innovations help with the early diagnosis of diseases and facilitate the daily care of modern owners.","link":"https://www.geo.fr/animaux/collier-connecte-gps-litiere-intelligente-la-technologie-sinvite-dans-la-vie-des-chats-234348","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"OkDiario","pais":"Spain","titulo":"A turbine rotating at 26,000 revolutions per minute at the bottom of the ocean: this is what the experimental plant looks like","resumo":"Engineers test a revolutionary new technology for generating clean energy installed on the seabed. The system uses a high-speed turbine capable of spinning at 26,000 revolutions per minute to take advantage of underwater currents. The initiative seeks to create a constant and uninterrupted source of renewable energy to power coastal areas. Preliminary tests indicate a significant advance in the efficiency and durability of ocean plants.","link":"https://okdiario.com/ciencia/turbina-girando-26-000-revoluciones-minuto-fondo-del-oceano-asi-central-experimental-que-logrado-sacar-electricidad-volcan-submarino-activo-mas-1-500-metros-pro-20689665","categoria":"ENERGY","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Nvidia CEO allegedly had a relationship with a Chinese spy","resumo":"Recent reports suggest an alleged involvement between the leader of Nvidia and a person identified as a spy working for China. The allegations generated strong repercussions in the technology sector and global financial markets due to the company's central role in the artificial intelligence revolution. The case raises growing concerns about corporate security, industrial espionage and geopolitical tensions involving large tech corporations. Authorities and experts are monitoring the development of the case to assess possible impacts.","link":"https://www.sueddeutsche.de/wirtschaft/jensen-huang-nvidia-affaere-china-spionin-li.3576581","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Pplware","pais":"China","titulo":"China breaks record for lowest temperature ever reached in space","resumo":"Chinese scientists have achieved a historic milestone in space physics by recording the lowest temperature ever obtained in space during orbital experiments. The technological feat allows the in-depth study of matter under extreme quantum conditions and opens the door to the development of ultra-precise sensors. The achievement reinforces China's leadership position in the space scientific research sector.","link":"https://pplware.sapo.pt/ciencia/china-bate-recorde-de-temperatura-mais-baixa-alguma-vez-alcancada-no-espaco/","categoria":"SPACE SCIENCE","lang":"en"},{"fonte":"Echo Boomer","pais":"Portugal","titulo":"Motorola launches Motorollers, a new tech-focused social network","resumo":"Motorola has announced the launch of Motorollers, a social media platform developed specifically for technology and innovation enthusiasts. The goal is to create an engaged community where users can share experiences, device reviews, and tech industry trends. This strategy aims to strengthen the brand's digital presence and bring consumers closer to the company's product ecosystem.","link":"https://echoboomer.pt/motorola-lanca-motorollers/","categoria":"SOCIAL MEDIA","lang":"en"},{"fonte":"Midiamax","pais":"Brazil","titulo":"High-tech scan reveals flying reptile fossil was actually turtle bone","resumo":"A detailed analysis conducted with advanced imaging technologies has disproven an important paleontological classification held for years. The fossil, previously considered a rare specimen of a flying reptile, was re-evaluated and identified as part of the bone structure of a prehistoric turtle. This discovery highlights the crucial role of modern technology in correcting historical scientific errors. The study reignites the debate on the importance of re-analyzing ancient collections with cutting-edge tools.","link":"https://midiamax.com.br/trends/2026/11/08/exame-de-alta-tecnologia-revela-que-fossil-aclamado-como-reptil-voador-era-na-verdade-osso-de-tartaruga/","categoria":"SCIENCE","lang":"en"},{"fonte":"NASA (.gov)","pais":"United States","titulo":"NASA Awards Moon Base Transportation, Technology, and Science Projects","resumo":"NASA has announced the award of strategic contracts and funding aimed at developing crucial technologies for the future lunar base. The selected projects cover cargo transportation systems, sustainable energy solutions, and advanced scientific instruments. The initiative aims to prepare the necessary infrastructure for a continuous human presence on the Moon through the Artemis program. These private-sector partnerships are expected to accelerate technological innovation in a reduced-gravity environment.","link":"https://www.nasa.gov/news-release/nasa-awards-moon-base-transportation-technology-science-projects/","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"Malaria: Kept in a lab freezer for decades, bacteria can kill the parasite in 5 hours, opening a new treatment path","resumo":"A bacterium kept frozen for decades has revealed impressive potential in the fight against malaria by eliminating the responsible parasite in just five hours. This unexpected discovery offers a promising alternative for developing new treatments against the disease that affects millions of people globally. Researchers are now investigating how to synthesize the active compounds to create more effective and accessible drugs.","link":"https://www.science-et-vie.com/corps-et-sante/paludisme-alors-quelle-dormait-dans-le-congelateur-dun-laboratoire-depuis-des-decennies-cette-bacterie-est-capable-de-tuer-le-parasite-en-5-heures-et-offre-une-nouvelle-piste-de-traiteme-265293.html","categoria":"SCIENCE","lang":"en"},{"fonte":"20Minutos","pais":"Spain","titulo":"Science unravels the mystery of Egypt's 'Lady of the Braids' 3,000 years later","resumo":"Researchers used advanced scientific imaging and biomolecular analysis techniques to examine the Egyptian mummy known as the Lady of the Braids. The study revealed unprecedented details about her origin, lifestyle, and the embalming methods used more than three millennia ago. The discovery closes a decades-old historical mystery and sheds new light on the funerary practices of the Egyptian elite. This breakthrough demonstrates the importance of modern technology in preserving and understanding world historical heritage.","link":"https://www.20minutos.es/ciencia/ciencia-logra-desvelar-misterio-dama-trenzas-egipto-anos-despues_7058590_0.html","categoria":"SCIENCE","lang":"en"},{"fonte":"中国江苏网","pais":"China","titulo":"World first: China University of Mining technology uses slab cavities for smoke exhaustion","resumo":"Researchers in China have developed an innovative structure that uses the internal cavities of building floor slabs as an integrated smoke exhaustion system. This engineering approach eliminates the need for traditional ducts, allowing for a half-meter gain in the usable height of each floor. The technology promises to transform modern construction standards by optimizing space and increasing fire safety.","link":"https://jsnews.jschina.com.cn/jsyw/202611/t20261108_s6aefdcb0e4b0f1ee38a854cf.shtml","categoria":"ENGINEERING","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Volkswagen ID. Up arrives in 2027 for around 20,000 euros with unprecedented technology","resumo":"Volkswagen has confirmed the launch of the ID. Up for 2027, positioned at an affordable price around 20,000 euros. The compact electric vehicle promises to debut a novel technological architecture for the German manufacturer. With this new addition, the brand reinforces its strategy to democratize electric mobility in the European market through more economical solutions.","link":"https://sapo.pt/artigo/volkswagen-id-up-chega-em-2027-por-cerca-de-20-mil-euros-e-estreia-tecnologia-inedita-na-marca-6aef12efecae781d738373c1","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Invasive climbing plant becomes science's new bet for treating alcohol abuse","resumo":"Researchers have identified promising properties in an invasive climbing plant to help combat compulsive alcohol consumption. Preliminary scientific studies indicate that compounds extracted from the vegetation act on the nervous system, reducing cravings for the substance. The discovery paves the way for the development of new, more accessible, and efficient therapeutic options for patients in rehabilitation. The initiative demonstrates how biodiversity can be key in the search for innovative medical solutions.","link":"https://oglobo.globo.com/saude/noticia/2026/11/07/planta-invasora-e-a-nova-aposta-da-ciencia-para-tratar-abuso-de-alcool-veja-o-que-diz-estudo.ghtml","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"United States","titulo":"US Crypto Boom, Boosted by Trump, Reaches Its Decisive Phase","resumo":"The cryptocurrency market in the United States is reaching a crucial moment of consolidation driven by Donald Trump's recent signals and policies. Investors and major institutions are closely monitoring regulatory developments that could define the future of digital assets in the country. The sector's high volatility and liquidity continue to attract billions of dollars in new investments. Experts predict that the outcome of this decisive phase will dictate the direction of the global financial ecosystem in the coming years.","link":"https://oglobo.globo.com/economia/noticia/2026/11/07/boom-das-criptomoedas-nos-eua-impulsionado-por-trump-chega-a-sua-fase-decisiva.ghtml","categoria":"CRYPTOCURRENCY","lang":"en"},{"fonte":"Yahoo","pais":"Spain","titulo":"The NFL takes over Madrid with technology that analyzes every play and answers fan questions live","resumo":"The American football league has brought an impressive technological infrastructure to Madrid to transform the fan experience. Artificial intelligence systems and advanced sensors track and analyze every movement on the field in real time. Additionally, virtual assistants answer the public's questions instantly during the game. The initiative places sporting events at the forefront of interactivity and sports data analysis.","link":"https://es-us.noticias.yahoo.com/nfl-toma-madrid-tecnolog%C3%ADa-analiza-020000576.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"生物通","pais":"China","titulo":"Spatial transcriptomics and single-cell technology in cardiovascular development: Implications for heart disease and regenerative medicine","resumo":"A new scientific study highlights the application of spatial transcriptomics and single-cell technology in mapping cardiovascular development. The research offers unprecedented insights into the causes of congenital heart disease and opens innovative paths for regenerative medicine. This technological advancement promises to accelerate the development of personalized cellular therapies and high-precision treatments.","link":"https://www.ebiotrade.com/newsf/2026-11/20261108083403556.htm","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"TechBit","pais":"Portugal","titulo":"Web Summit generated 2.5 billion euros for the Portuguese economy in a decade","resumo":"Over ten years of being held in Portugal, the Web Summit has generated approximately 2.5 billion euros for the country's economy. The event has boosted vital sectors such as tourism, hospitality, food service, and the local startup ecosystem. The balance sheet highlights Lisbon's consolidation as one of Europe's main technology and investment hubs.","link":"https://techbit.pt/web-summit-25-mil-milhoes-euros-economia-portuguesa/","categoria":"INNOVATION","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"Nubank resumes cryptocurrency withdrawals and deposits after temporary suspension","resumo":"Fintech Nubank has restored cryptocurrency transfer functionalities for its clients after resolving operational instabilities. The temporary suspension of withdrawal and deposit services aimed to improve security protocols and platform stability. With normalization returned, investors are once again able to trade their digital assets directly through the app with full integration. The measure reinforces the financial institution's commitment to security and transparency in the crypto market.","link":"https://www1.folha.uol.com.br/mercado/2026/11/nubank-retoma-saques-e-depositos-de-criptomoedas-apos-suspensao.shtml","categoria":"CRYPTOCURRENCY","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"Advanced technology and better habits to curb cancer","resumo":"Experts point out that the combination of new early-diagnosis tech tools and healthy lifestyle habits is essential to combat cancer. Innovations in genetic screening and artificial intelligence applied to medicine have allowed tumors to be identified at extremely early stages. At the same time, data reinforces the positive impact of primary prevention on patient prognosis. This integrated advancement promises to significantly increase survival rates and improve quality of life.","link":"https://elpais.com/extra/eventos/2026-11-08/tecnologia-avanzada-y-mejores-habitos-para-frenar-el-cancer.html","categoria":"HEALTH","lang":"en"},{"fonte":"21财经","pais":"China","titulo":"Interview with Siemens China President: Industrial Artificial Intelligence accelerates with the country's four major advantages","resumo":"In an exclusive interview, Siemens China leadership analyzes the accelerated advancement of Artificial Intelligence applied to the industrial sector in the country. China presents decisive competitive advantages in the innovation ecosystem, including market scale, implementation speed, and strong digital infrastructure. This scenario solidifies intelligent automation as the main driver of factory transformation in the country.","link":"https://m.21jingji.com/article/20261107/herald/66febc4213236e100d1d9b53806ab506_zaker.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Expresso","pais":"Portugal","titulo":"Joana Gonçalves de Sá: \"Science is an act of creation to honor the human spirit\"","resumo":"In an interview, scientist Joana Gonçalves de Sá reflected on the fundamental nature of scientific research and its relationship with contemporary society. The expert argues that the production of knowledge should not be evaluated exclusively by its immediate practical utility. According to her, science possesses an intrinsic value equivalent to that of the arts as a manifestation of the human intellect.","link":"https://expresso.pt/podcasts/a-beleza-das-pequenas-coisas/2026-11-07-joana-goncalves-de-sa--parte-2--a-ciencia-como-as-artes-nao-tem-de-servir-para-nada.-e-um-ato-de-criacao-para-honrar-o-espirito-humano-ad22001f","categoria":"SCIENCE","lang":"en"},{"fonte":"Valor Econômico","pais":"Brazil","titulo":"Localiza Director warns of the need to mistrust artificial intelligence responses","resumo":"In a debate on the corporate adoption of new digital tools, the director of Localiza highlighted that knowing how to formulate prompts for artificial intelligence is not enough. According to the executive, the great differentiator for technology and business teams lies in the critical ability to check and validate generated responses. The proliferation of errors and hallucinations from language models demands greater analytical rigor from professionals. This cautious stance is pointed out as essential to guarantee efficiency and security in decision-making.","link":"https://valor.globo.com/empresas/noticia/2026/11/07/mais-do-que-saber-formular-problema-com-ia-preciso-desconfiar-da-resposta-diz-diretor-da-localiza.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Faro de Vigo","pais":"Spain","titulo":"Sandra, totally blind, uses technology to overcome her disability","resumo":"Sandra's story exemplifies how modern technological tools can radically transform the autonomy of people with severe visual impairments. Using AI-based image recognition apps and smart assistive devices, she is able to perform daily tasks and navigate her environment safely. Technological innovation acts as a fundamental bridge for social inclusion and universal accessibility. The account reinforces the social role of technological development focused on human well-being.","link":"https://www.farodevigo.es/videos/galicia/2026/11/08/sandra-ciega-total-ayuda-tecnologia-135939930.html","categoria":"ACCESSIBILITY","lang":"en"},{"fonte":"Mezha.net","pais":"China","titulo":"How the expansion of China's clean tech industry is reshaping global climate finance","resumo":"The rapid growth of China's clean technology sector is profoundly altering global energy transition investment dynamics. With scale production of solar panels, batteries, and electric vehicles, the country is driving down the costs of sustainable technologies worldwide. This industrial expansion attracts significant capital inflows and redefines global climate finance strategies.","link":"https://mezha.net/ch/news/mezha-016606c82ea71cc5e5e35e31_how-china-s-clean-tech-push/","categoria":"GREEN TECHNOLOGY","lang":"en"},{"fonte":"Público","pais":"Portugal","titulo":"Native Scientists launches educational programs to bring children closer to science","resumo":"The organization Native Scientists has presented new educational programs aimed at promoting scientific literacy among children. The initiative connects researchers to classrooms to conduct hands-on activities and inspire new generations of students. The project aims to reduce inequalities in access to scientific knowledge and encourage careers in the sector from childhood.","link":"https://www.publico.pt/2026/11/07/ciencia/noticia/native-scientists-lanca-programas-educativos-aproximar-criancas-ciencia-2194017","categoria":"EDUCATION","lang":"en"},{"fonte":"Vietnam.vn","pais":"Brazil","titulo":"Mastering integrated robotics technology step by step","resumo":"The advancement of industrial automation has demanded increasingly deep training in the development and application of integrated robotics. Mastering these technologies makes it possible to optimize complex production lines through the combined use of sensors, software intelligence, and mechanical actuators. Experts emphasize that successful implementation requires structured planning by operational stages. The consolidated trend promises to significantly transform the competitiveness of modern industries in the coming years.","link":"https://www.vietnam.vn/pt/tung-buoc-lam-chu-cong-nghe-tich-hop-robot","categoria":"ROBOTICS","lang":"en"},{"fonte":"Faro de Vigo","pais":"Spain","titulo":"The technology aiming to extend life","resumo":"The advancement of biotechnology and genetic engineering is driving research focused on slowing down cellular aging and extending human longevity. Scientists are exploring everything from gene editing to molecular therapies to prevent degenerative diseases associated with advanced age. These innovations raise important ethical and economic debates about the future of society and medicine. The ultimate goal is not only to increase life expectancy, but to guarantee additional years in full health.","link":"https://www.farodevigo.es/estela/opinion/2026/11/08/opinion-francisco-yanez-la-tecnologia-que-quiere-prolongar-la-vida-136120231.html","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"经济参考报","pais":"China","titulo":"At the World Media Summit, Beijing unveils its new Artificial Intelligence-based calling card","resumo":"During the World Media Summit, Beijing demonstrated its latest Artificial Intelligence innovations aimed at content generation and distribution. The showcased technologies highlight automated translation solutions, media synthesis, and advanced real-time data processing. The event reinforced the Chinese capital's central role as an innovation hub in digital media technologies.","link":"http://jjckb.xinhuanet.com/20261108/ff19a35023af46f58193e3915cccb20e/c.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Observador","pais":"Portugal","titulo":"The Future of Experiences: What if technology alone isn't the answer we are looking for?","resumo":"The debate on the evolution of human experiences questions the excessive reliance on purely technological solutions in daily life. This reflection points to the need to balance digital innovation with emotional, empathetic, and relational factors. Experts emphasize that technological tools should serve as support rather than replace the essence of human contact and sensitivity.","link":"https://observador.pt/opiniao/the-future-of-experiences-e-se-a-tecnologia-por-si-so-nao-for-a-resposta-que-procuramos/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Diário do Litoral","pais":"Brazil","titulo":"Classic gas truck jingle used chip technology and classical music, composer reveals","resumo":"A curious revelation about Brazilian popular culture detailed how the famous gas truck jingle was created using sound chip technology. The responsible composer explained that he used arrangements inspired by classical music techniques to simulate the sound of the metal gas cylinder through digital synthesis. The technological solution of the time bypassed memory limitations and created one of the most recognizable everyday sounds in the country. The story highlights the creative intersection between technological innovation and cultural identity.","link":"https://www.diariodolitoral.com.br/entretenimento/classico-do-caminhao-de-gas-usou-tecnologia-de-chip-e-tecnica-de-musica-erudita-para-simular-botijao-de-metal-revela-compositor/","categoria":"INNOVATION","lang":"en"},{"fonte":"El Salto","pais":"Spain","titulo":"Will technology save us from the desert?","resumo":"Faced with advancing desertification in various regions, technological innovations are emerging as strategic allies for environmental restoration. Projects utilize everything from soil moisture sensors and high-precision irrigation to advanced water desalination techniques. The application of these tools aims to recover degraded ecosystems and ensure food security for vulnerable populations. Experts stress that success depends on a combination of modern technology and sustainable resource management.","link":"https://www.elsaltodiario.com/cambio-climatico/tecnologia-nos-salvara-del-desierto","categoria":"ENVIRONMENT","lang":"en"},{"fonte":"新华网江苏频道","pais":"China","titulo":"Spatiotemporal data boosts low-altitude economy during geoinformation competition in Jiangsu","resumo":"Jiangsu province hosted the first professional skills competition in geoinformation, highlighting the strategic role of spatiotemporal data. Mapping and geographic analysis technology are essential to enabling the growing low-altitude economy, including drone logistics and urban air mobility. The event emphasized the integration between advanced spatial data and new industrial applications.","link":"http://js.news.cn/20261108/fd33aa5251114f759e06e4ed067ab1a0/c.html","categoria":"GEOTECHNOLOGY","lang":"en"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Peugeot E-208 GTi: Electric fun in the new automotive era","resumo":"Peugeot brings a new interpretation to the emblematic GTi acronym with the launch of the 100% electric E-208 GTi model. The vehicle combines the brand's traditional sporting appeal and driving dynamics with the efficiency of modern electric propulsion. The novelty signals the transformation of compact sports cars to meet sustainability demands without sacrificing performance.","link":"https://www.cmjornal.pt/desporto/detalhe/20261106-213222-peugeot-e-208-gti-diversao-eletrica","categoria":"AUTO TECH","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
