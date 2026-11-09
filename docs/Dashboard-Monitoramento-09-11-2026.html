@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-IM57gGzITjX8mPxrBaEYFVnK'; script-src 'nonce-IM57gGzITjX8mPxrBaEYFVnK'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="IM57gGzITjX8mPxrBaEYFVnK">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">09/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="IM57gGzITjX8mPxrBaEYFVnK">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"DeepSeek chega a 1,5 milhão de usuários por dia e acirra disputa com ChatGPT e Claude","resumo":"A plataforma chinesa de inteligência artificial DeepSeek alcançou a marca de 1,5 milhão de usuários ativos por dia, intensificando a concorrência global no mercado de modelos de linguagem. O rápido crescimento da ferramenta tem chamado a atenção de especialistas e investidores ao rivalizar diretamente com gigantes consolidadas como ChatGPT e Claude. Essa expansão reflete a aceleração da disputa internacional por dominância tecnológica e eficiência computacional.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/08/deepseek-chega-a-15-milhao-de-usuarios-por-dia-e-acirra-disputa-com-chatgpt-e-claude.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The GW Hatchet","pais":"Estados Unidos","titulo":"Departamento de Ciência da Computação reformula currículo para combater queda de matrículas na era da IA","resumo":"Diante do avanço acelerado da inteligência artificial generativa, departamentos universitários de ciência da computação estão atualizando seus programas acadêmicos. A iniciativa busca reestruturar o ensino de programação e focar em habilidades estratégicas para manter o interesse dos estudantes. Essa transformação reflete as novas exigências do mercado de trabalho global.","link":"https://gwhatchet.com/2026/11/09/computer-science-department-revamps-curriculum-to-combat-falling-enrollment-in-the-age-of-ai/","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"Electroniques","pais":"França","titulo":"Imageadores industriais veem a chegada de um novo fabricante chinês","resumo":"Um novo fabricante chinês de sistemas de imagem industrial está entrando no mercado global, prometendo acirrar a concorrência na área de automação e inspeção de qualidade. A chegada desta empresa traz desafios para os atores consolidados, ao mesmo tempo em que pode reduzir custos de produção para indústrias automatizadas. O movimento reflete o avanço contínuo da China em setores tecnológicos de alta precisão.","link":"https://www.electroniques.biz/technologie/capteurs/les-imageurs-industriels-voient-arriver-un-nouveau-fabricant-chinois/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Retail Technology Innovation Hub","pais":"Inglaterra","titulo":"M\u0026S garante conexão com parceria Vusion: as maiores jogadas de tecnologia no varejo da última semana","resumo":"A varejista M\u0026S firmou uma parceria estratégica com a VusionGroup para modernizar suas operações de loja com etiquetas eletrônicas inteligentes. Essa iniciativa visa otimizar a gestão de estoque, melhorar a experiência do cliente e aumentar a eficiência operacional. O movimento reflete a crescente transformação digital no setor varejista britânico, impulsionada por soluções de Internet das Coisas e automação comercial.","link":"https://retailtechinnovationhub.com/home/2026/11/9/mands-makes-sure-its-connected-with-vusion-partnership-last-weeks-biggest-retail-technology-plays","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Computer Hoy","pais":"Espanha","titulo":"O especialista em tecnologia Jordi García Castillón: \"O grande erro das empresas com a IA é implantá-la antes de saber como protegê-la\"","resumo":"O especialista em tecnologia Jordi García Castillón alerta sobre a pressa das organizações em adotar a inteligência artificial sem priorizar a cibersegurança. Segundo ele, implementar modelos avançados sem a devida proteção expõe vulnerabilidades críticas de dados e sistemas corporativos. A conscientização e o planejamento prévio de mitigação de riscos são essenciais para uma transformação digital verdadeiramente segura e sustentável.","link":"https://computerhoy.20minutos.es/ciberseguridad/experto-tecnologia-jordi-garcia-castillon-gran-error-las-empresas-con-ia-es-implantarla-antes-saber-protegerla_7057370_0.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"ダイヤモンド・オンライン","pais":"Japão","titulo":"A IA Generativa Acelera a Inovação em Infraestrutura Óptica e Revela a Vantagem Competitiva do Japão","resumo":"O avanço rápido da inteligência artificial generativa exige uma capacidade sem precedentes de processamento e transmissão de dados em alta velocidade. Nesse cenário, o desenvolvimento de novas tecnologias de infraestrutura de rede óptica ganha destaque central no mercado global. O setor tecnológico japonês enxerga uma oportunidade estratégica para liderar o segmento e impulsionar inovações de alto impacto.","link":"https://diamond.jp/articles/-/401892","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"华尔街日报中文网","pais":"China","titulo":"A IA pode quebrar a criptografia antes dos computadores quânticos","resumo":"Pesquisadores alertam que avanços recentes em inteligência artificial podem desmantelar algoritmos de criptografia tradicionais antes da chegada da computação quântica prática. A descoberta reforça a necessidade urgente de migração para sistemas de segurança pós-quânticos e baseados em IA. Especialistas enfatizam que a proteção de dados globais exige novas estratégias defensivas imediatas.","link":"https://cn.wsj.com/articles/ai%E5%8F%AF%E8%83%BD%E5%85%88%E4%BA%8E%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%94%BB%E7%A0%B4%E5%8A%A0%E5%AF%86%E6%8A%80%E6%9C%AF-265379f4","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"India Today","pais":"Índia","titulo":"IA pode acelerar a descoberta de medicamentos, mas também viabilizar armas biológicas, alerta chefe de IA da Tencent","resumo":"O chefe da divisão de inteligência artificial da Tencent alertou sobre os riscos do uso dual da tecnologia na área da saúde. Embora a IA possa acelerar drasticamente a descoberta de novos medicamentos e tratamentos, há uma preocupação com a sua aplicação maliciosa no desenvolvimento de armas biológicas. O executivo reforça a necessidade urgente de governança e regulamentação global para mitigar ameaças à biossegurança sem sufocar a inovação.","link":"https://www.indiatoday.in/amp/technology/news/story/ai-could-accelerate-drug-discovery-but-also-enable-bioweapons-warns-tencent-ai-chief-3035134-2026-11-09","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Universidade de Lisboa","pais":"Portugal","titulo":"Desigualdades Urbanas, Mobilidade Pedestre e Bem-Estar Mental: uma Abordagem em Ciência da Informação Geográfica","resumo":"Um novo estudo em Ciência da Informação Geográfica analisa como o planejamento urbano afeta diretamente a saúde mental dos cidadãos. A pesquisa investiga a relação entre mobilidade pedestre, desigualdades socioespaciais e o acesso a áreas verdes nas cidades. Os resultados reforçam a importância de utilizar dados de geolocalização para promover políticas públicas mais inclusivas. Essa abordagem inovadora visa transformar a gestão urbana e melhorar o bem-estar populacional a longo prazo.","link":"https://www.ulisboa.pt/evento/desigualdades-urbanas-mobilidade-pedonal-e-bem-estar-mental-uma-abordagem-em-ciencia-da","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"'Efeito tsunami azul': OpenAI vai mudar tratamento a locais que abrigam data centers","resumo":"A OpenAI anunciou novas diretrizes para mitigar os impactos ambientais e socioeconômicos causados pela instalação de seus massivos data centers de inteligência artificial. Batizada internamente no setor de efeito tsunami azul, a iniciativa busca melhorar a convivência e a infraestrutura das comunidades locais que hospedam essas centrais de dados. A medida surge em resposta a crescentes pressões públicas e regulatórias sobre o consumo energético desmedido das tecnologias emergentes.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/08/efeito-tsunami-azul-openai-vai-mudar-tratamento-a-locais-que-abrigam-data-centers.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"APOD: Rigel e a Nebulosa da Cabeça de Bruxa","resumo":"A imagem astronômica do dia destaca a intrincada relação entre a brilhante estrela Rigel e a imensa Nebulosa da Cabeça de Bruxa. A luz azulada refletida pela poeira cósmica revela detalhes impressionantes do meio interestelar na constelação de Órion. O registro ajuda astrônomos a compreender melhor a composição dos gases e a formação estelar na região.","link":"https://science.nasa.gov/image-article/apod-2026-november-9-rigel-and-the-witch-head-nebula/","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Durante obras, operários descobrem casco de barco medieval de 3,2 metros que reescreve nosso conhecimento sobre o comércio da época","resumo":"Uma descoberta arqueológica surpreendente ocorreu durante trabalhos de escavação, revelando o casco bem conservado de uma embarcação medieval com mais de três metros de comprimento. O achado fornece novas pistas cruciais sobre as rotas de transporte marítimo e as técnicas de construção naval daquele período histórico. Especialistas afirmam que o artefato amplia significativamente a compreensão sobre as trocas comerciais na Europa medieval.","link":"https://www.science-et-vie.com/science-et-culture/en-faisant-des-travaux-des-ouvriers-decouvrent-une-coque-de-bateau-medievale-de-32-metres-de-long-qui-reecrit-nos-connaissances-du-commerce-a-cette-epoque-231583.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Conversation","pais":"Inglaterra","titulo":"Powerhouse Parramatta: um museu de ciência, design e tecnologia turbinado por arte espetacular","resumo":"O Powerhouse Parramatta se destaca como um novo marco cultural focado na interseção entre ciência, tecnologia e arte contemporânea. O projeto arquitetônico e as exposições visam inspirar futuras gerações através da inovação e da criatividade multifacetada. O impacto dessa instituição reflete o avanço na forma como museus integram tecnologia avançada e expressões artísticas para engajar o público.","link":"https://theconversation.com/powerhouse-parramatta-a-museum-of-science-design-and-technology-supercharged-by-spectacular-art-295745","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Infodefensa","pais":"Espanha","titulo":"A espanhola Fossa Systems leva sua tecnologia de conexão via satélite para sensores de vigilância à Letônia","resumo":"A empresa espanhola Fossa Systems expandiu a sua atuação internacional ao implementar sua tecnologia de comunicação via satélite na Letônia. A solução visa otimizar a transmissão de dados de sensores de vigilância situados em áreas remotas ou de difícil acesso. A iniciativa reforça a presença da indústria espacial e IoT da Espanha no cenário europeu de segurança e infraestrutura.","link":"https://www.infodefensa.com/texto-diario/mostrar/6081290/fossa-systems-proyecta-constelacion-140-nanosatelites-comunicaciones-e-inteligencia","categoria":"TECNOLOGIA ESPACIAL","lang":"pt"},{"fonte":"トラックニュース","pais":"Japão","titulo":"Ministério da Economia do Japão Oferece Subsídios para Serviços de Proteção contra Acessos Não Autorizados em PMEs","resumo":"O Ministério da Economia, Comércio e Indústria do Japão anunciou a concessão de subsídios focados em apoiar pequenas e médias empresas na adoção de serviços de segurança cibernética. A iniciativa visa mitigar os crescentes riscos de invasões digitais e vazamentos de dados estratégicos nas corporações locais. Com esse incentivo, o governo busca fortalecer a resiliência tecnológica do setor produtivo e proteger a economia nacional.","link":"https://www.trucknews.biz/article/s110930/","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"中国科学院","pais":"China","titulo":"Estação Espacial da China produz a matéria mais fria já registrada","resumo":"Cientistas a bordo da estação espacial chinesa alcançaram um marco histórico ao produzir a matéria mais fria conhecida até o momento no espaço. O experimento utiliza tecnologias avançadas de resfriamento a laser em ambiente de microgravidade para estudar estados quânticos da matéria. A conquista abre novas fronteiras para a física fundamental e o desenvolvimento de sensores quânticos ultrassensíveis.","link":"https://www.cas.cn/cm/202611/t20261109_5123760.shtml","categoria":"CIÊNCIA ESPACIAL","lang":"pt"},{"fonte":"Construction World","pais":"Índia","titulo":"NPCI cria unidade para impulsionar tecnologias de IA e Blockchain","resumo":"A National Payments Corporation of India (NPCI) anunciou a criação de uma nova unidade especializada para liderar avanços em inteligência artificial e blockchain. A iniciativa visa modernizar ainda mais a infraestrutura de pagamentos digitais do país, promovendo segurança, eficiência e inovação em larga escala. Com essa estratégia, a entidade busca manter a Índia na vanguarda das tecnologias financeiras e da digitalização econômica.","link":"https://www.constructionworld.in/energy-infrastructure/power-and-renewable-energy/npci-forms-unit-to-advance-ai-and-blockchain-technology/100065","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Facebook","pais":"Portugal","titulo":"O Crime Acompanha a Evolução Tecnológica: Transição Elétrica Abre Caminho para Novos Roubos Rentáveis","resumo":"A modernização tecnológica e a rápida expansão dos veículos elétricos criaram novas oportunidades para ações criminosas especializadas. Criminosos estão migrando de furtos tradicionais para alvos de maior valor agregado vinculados à infraestrutura de mobilidade elétrica. A ausência de ferramentas pesadas facilita essas operações clandestinas e gera grandes prejuízos financeiros ao setor. O cenário exige atualizações urgentes nas estratégias de segurança e proteção de equipamentos urbanos.","link":"https://www.facebook.com/ObservadorOnTime/posts/o-crime-est%C3%A1-a-acompanhar-a-evolu%C3%A7%C3%A3o-da-tecnologia-e-a-transi%C3%A7%C3%A3o-el%C3%A9ctrica-abriu/1532587688972509/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Estadão","pais":"Brasil","titulo":"Nvidia abre investigação sobre o relacionamento de Jensen Huang com uma espiã chinesa","resumo":"A Nvidia iniciou uma investigação interna rigorosa para apurar alegações envolvendo o CEO Jensen Huang e seu suposto contato com uma agente de inteligência chinesa. O caso gera forte repercussão no setor de alta tecnologia e levanta preocupações sobre segurança corporativa e espionagem industrial em um momento de tensões geopolíticas. A empresa busca esclarecer eventuais vazamentos de informações confidenciais relativas ao desenvolvimento de chips e semicondutores de ponta.","link":"https://www.estadao.com.br/economia/negocios/nvidia-abre-investigacao-sobre-o-relacionamento-de-jensen-huang-com-uma-espia-chinesa/","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"American Council on Science and Health","pais":"Estados Unidos","titulo":"A IA não precisa descobrir a ciência para torná-la melhor","resumo":"A inteligência artificial está transformando a pesquisa científica ao otimizar processos de análise de dados e simulações complexas. Mesmo sem criar novas teorias de forma autônoma, a tecnologia acelera a validação de hipóteses e a automação de experimentos laboratoriais. O impacto é significativo no aumento da eficiência da comunidade científica mundial.","link":"https://www.acsh.org/news/2026/11/09/ai-doesnt-have-discover-science-make-science-better-50440","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Bury Times","pais":"Inglaterra","titulo":"Sobrevivente de câncer apoia IA que ajuda médicos a focarem nos pacientes","resumo":"Um paciente sobrevivente de câncer celebrou a recente implementação de inteligência artificial no prestigiado hospital The Christie. A tecnologia auxilia a equipe médica na análise célere e precisa de exames, otimizando significativamente o fluxo de trabalho diário. Com a automação de tarefas burocráticas, os profissionais de saúde conseguem dedicar mais tempo ao atendimento humanizado.","link":"https://www.burytimes.co.uk/news/26702323.ramsbottom-cancer-survivor-welcomed-christie-ai-technology/","categoria":"SAÚDE TECH","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"Nanomáquinas, adesivos contra a psoríase e equações para entender o cérebro: três ideias vencedoras de cientistas espanhóis","resumo":"Pesquisadores espanhóis foram premiados por projetos inovadores que unem ciência de ponta e aplicação prática para a sociedade. As iniciativas abrangem desde nanomáquinas focadas em tratamentos médicos até novas abordagens matemáticas para desvendar processos cerebrais. Os avanços destacam o potencial da pesquisa científica da Espanha em revolucionar a saúde e a biotecnologia nos próximos anos.","link":"https://elpais.com/ciencia/2026-11-09/nanomaquinas-pegamentos-contra-la-psoriasis-y-ecuaciones-para-entender-el-cerebro-tres-ideas-ganadoras-de-cientificos-espanoles.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"JTEKT Apresentará Tecnologia Steer-by-Wire Synca Steer e Inovações na Messe Nagoya","resumo":"A fabricante JTEKT revelou que apresentará seus mais recentes avanços tecnológicos voltados ao setor automotivo durante a feira Messe Nagoya. O principal destaque da exibição será o sistema steer-by-wire batizado de Synca Steer, que elimina conexões mecânicas diretas no esterçamento. A inovação promete revolucionar o controle veicular, trazendo maior eficiência, segurança e flexibilidade para a mobilidade do futuro.","link":"https://news.yahoo.co.jp/articles/6ce14b6c0d05d80c73f43d07e7fd2d042c6a4343","categoria":"TECNOLOGIA AUTOMOTIVA","lang":"pt"},{"fonte":"财联社","pais":"China","titulo":"Apenas 3,43 milissegundos por mil quilômetros: China alcança novo avanço em rede de comunicação","resumo":"A China anunciou um marco tecnológico significativo com sua nova geração de rede de comunicação, atingindo uma latência ultra-baixa de 3,43 milissegundos a cada mil quilômetros. A inovação promete revolucionar transmissões de dados em larga escala e infraestruturas críticas no país. O avanço impulsiona aplicações em tempo real, como computação em nuvem industrial e veículos autônomos.","link":"https://www.cls.cn/detail/2528242","categoria":"TELECOMUNICAÇÕES","lang":"pt"},{"fonte":"TecheNet","pais":"Portugal","titulo":"Novo Moto Watch 2 Fit, com Tecnologia Polar, Custa 99 Euros","resumo":"A Motorola lançou o novo relógio inteligente Moto Watch 2 Fit integrando algoritmos avançados de monitoramento da marca Polar. O dispositivo chega ao mercado europeu com um preço acessível focado em usuários que buscam acompanhar atividades físicas diárias. Além de métricas de saúde detalhadas, o smartwatch oferece bateria de longa duração e design resistente. Essa novidade fortalece a competição no segmento de vestíveis de entrada e média gama.","link":"https://www.techenet.com/2026/11/novo-moto-watch-2-fit-custa-99-euros/","categoria":"LANÇAMENTO","lang":"pt"},{"fonte":"Crescer","pais":"Brasil","titulo":"'Bebês de IA' nascem de formas antes impossíveis: entenda a nova tecnologia que revoluciona a FIV","resumo":"A integração de algoritmos de inteligência artificial nos procedimentos de fertilização in vitro está permitindo o nascimento de bebês com taxas de sucesso antes inalcançáveis. A tecnologia auxilia especialistas a selecionar os embriões mais saudáveis com precisão microscópica e predizer o desenvolvimento genético de forma otimizada. A inovação promete transformar a medicina reprodutiva, oferecendo novas esperanças para casais com dificuldades de fertilidade em todo o mundo.","link":"https://revistacrescer.globo.com/fique-por-dentro/noticia/2026/11/bebes-de-ia-nascem-de-formas-antes-impossiveis-entenda-a-nova-tecnologia-que-revoluciona-a-fiv.ghtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Bloomberg.com","pais":"Estados Unidos","titulo":"Conselho da Nvidia investiga caso de espionagem após CEO admitir caso extraconjugal","resumo":"O conselho de administração da Nvidia iniciou uma investigação interna após o diretor executivo admitir um envolvimento pessoal controverso. O caso ganhou contornos mais graves devido a preocupações relacionadas à segurança da informação e espionagem corporativa. A situação gera incertezas sobre a governança e o impacto nas ações da gigante dos semicondutores.","link":"https://www.bloomberg.com/news/articles/2026-11-08/nvidia-board-to-probe-spying-case-after-ceo-jensen-huang-admits-infidelity","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"The Star","pais":"Inglaterra","titulo":"Como a IA acabou de quebrar um princípio fundamental da ciência da computação","resumo":"Recentes avanços em modelos de inteligência artificial estão desafiando dogmas e teorias estabelecidas há décadas na ciência da computação. Algoritmos modernos estão resolvendo problemas complexos de maneiras imprevisíveis, redefinindo conceitos clássicos de eficiência e lógica. Esse impacto força pesquisadores a repensarem as bases teóricas do desenvolvimento de software e algoritmos.","link":"https://www.thestar.com.my/tech/tech-news/2026/11/09/how-ai-just-blew-up-a-key-tenet-of-computer-science","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Objective","pais":"Espanha","titulo":"Os grandes bancos espanhóis cortam pela raiz seu risco com tecnologia por medo de um colapso","resumo":"As principais instituições financeiras da Espanha estão reforçando significativamente a gestão de riscos e atualizando sistemas legados de tecnologia para evitar falhas graves. A medida surge em resposta a ameaças crescentes de interrupções operacionais e ataques cibernéticos em grande escala. O movimento visa garantir a estabilidade do sistema bancário diante da rápida digitalização e das exigências regulatórias rigorosas.","link":"https://theobjective.com/economia/2026-11-09/gran-banca-espanola-riesgo-tecnologia-hundimiento/","categoria":"NEGÓCIOS E TECH","lang":"pt"},{"fonte":"カー・アンド・ドライバー","pais":"Japão","titulo":"Porsche Revela o Modelo Mission S, Indicando o Futuro dos Superesportivos de Motor Central","resumo":"A Porsche apresentou publicamente o modelo conceitual Mission S, vislumbrando os próximos passos para a linha de veículos superesportivos de alta performance. O conceito antecipa soluções de design aerodinâmico e tecnologias de propulsão avançadas voltadas para o desempenho de ponta. A novidade sinaliza a visão estratégica da marca na transição tecnológica da indústria automotiva global.","link":"https://www.caranddriver.co.jp/newcar/127438/","categoria":"AUTOMOTIVO","lang":"pt"},{"fonte":"新浪网","pais":"China","titulo":"Kakao Mobility assina acordo com a NVIDIA para desenvolvimento de condução autônoma Nível 4","resumo":"A Kakao Mobility firmou um memorando de entendimento com a NVIDIA para cooperar no desenvolvimento de tecnologia de condução autônoma de Nível 4. A parceria busca integrar as plataformas de inteligência artificial da NVIDIA aos serviços de mobilidade da empresa. A iniciativa visa acelerar a comercialização de veículos totalmente autônomos em ambientes urbanos complexos.","link":"https://wap.cj.sina.cn/7x24/5202566","categoria":"VEÍCULOS AUTÔNOMOS","lang":"pt"},{"fonte":"Agência Incomparáveis","pais":"Portugal","titulo":"Web Summit 2026 Reúne Lisboa e o Mundo da Tecnologia com Destaque para Inteligência Artificial e Participação Lusófona","resumo":"A conferência Web Summit 2026 volta a transformar Lisboa no epicentro global da inovação tecnológica e do empreendedorismo. O evento destaca avanços recentes em inteligência artificial, transformação digital e ecossistemas de startups. A presença marcante da comunidade lusófona ganha relevância para conectar investidores e talentos de países de língua portuguesa. O encontro projeta debates decisivos sobre o impacto socioeconômico das emergentes ferramentas de IA.","link":"https://www.agenciaincomparaveis.com/web-summit-2026-reune-lisboa-e-o-mundo-da-tecnologia-com-destaque-para-inteligencia-artificial-e-participacao-lusofona/","categoria":"EVENTOS","lang":"pt"},{"fonte":"Diário Campineiro","pais":"Brasil","titulo":"Escola de Ciência do CNPEM ganha microscópio eletrônico para pesquisas avançadas","resumo":"O Centro Nacional de Pesquisa em Energia e Materiais adquiriu um novo microscópio eletrônico de última geração voltado para fortalecer a pesquisa científica no Brasil. O equipamento de alta precisão permitirá a análise detalhada de estruturas celulares e materiais inovadores em escala nanométrica por estudantes e pesquisadores. A aquisição consolida a instituição como um polo de excelência e inovação tecnológica no cenário científico sul-americano.","link":"https://diariocampineiro.com.br/escola-de-ciencia-do-cnpem-ganha-microscopio-eletronico-para-pesquisas-avancadas/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"东方财富","pais":"Estados Unidos","titulo":"Jensen Huang admite caso, pede desculpas e Nvidia abre investigação independente","resumo":"O executivo principal da Nvidia pediu desculpas públicas à família e aos acionistas após a revelação de um escândalo pessoal. O evento provocou o cancelamento urgente de viagens oficiais e o início imediato de uma auditoria independente na empresa. O caso repercutiu amplamente nos mercados financeiros internacionais gerando fortes incertezas.","link":"https://wap.eastmoney.com/a/202611093925768466.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"'Engarrafamento de IA': órgãos públicos do Reino Unido enfrentam enxurrada de reclamações por chatbots","resumo":"Instituições públicas no Reino Unido estão enfrentando um volume sem precedentes de reclamações formais geradas automaticamente por ferramentas de IA. A automação permitiu que cidadãos criem textos jurídicos e administrativos complexos em massa, sobrecarregando os servidores. O fenômeno traz debates urgentes sobre a regulação do uso de inteligência artificial nos serviços públicos.","link":"https://www.theguardian.com/technology/2026/nov/08/ai-clog-public-bodies-local-authorities-onslaught-chatbot-generated-correspondence","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"Revista Emprendedores","pais":"Espanha","titulo":"Kreios Space: a tecnologia espanhola que conquista o espaço","resumo":"A startup Kreios Space vem se destacando no setor aeroespacial ao desenvolver sistemas de propulsão elétrica para satélites operarem em órbitas extremamente baixas. Essa inovação reduz os custos das missões e amplia drasticamente as capacidades de observação terrestre. O avanço impulsiona a competitividade da indústria tecnológica espanhola no concorrido mercado espacial internacional.","link":"https://emprendedores.es/casos-de-exito/kreios-space-la-tecnologia-espanola-que-conquista-el-espacio/","categoria":"AEROESPACIAL","lang":"pt"},{"fonte":"TradingView","pais":"Japão","titulo":"Índice Nikkei do Japão Recupera 2% Após Queda Liderada pelo Setor de Tecnologia","resumo":"O principal índice da Bolsa de Tóquio, o Nikkei, registrou uma recuperação de aproximadamente 2% após uma forte liquidação acionária concentrada em empresas de tecnologia. A volatilidade recente reflete ajustes de expectativas dos investidores em relação às taxas de juros globais e ao desempenho corporativo do setor. O movimento de alta demonstra a resiliência do mercado japonês diante de oscilações internacionais no segmento de alta tecnologia.","link":"https://br.tradingview.com/news/reuters.com,2026:newsml_L2N46Q00U:0/","categoria":"MERCADO FINANCEIRO","lang":"pt"},{"fonte":"金融界","pais":"China","titulo":"Tecnologias de robôs humanoides alcançam avanço significativo","resumo":"O setor de robótica humanoide registrou novos avanços técnicos expressivos no desenvolvimento de controle de movimento e autonomia. O progresso impulsionou forte interesse do mercado financeiro e atração contínua de capital para fundos de tecnologia. Especialistas apontam que a prontidão industrial dos robôs está cada vez mais próxima de aplicações comerciais em larga escala.","link":"https://m.jrj.com.cn/madapter/fund/2026/11/09131159067247.shtml","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"lifestyle","pais":"Portugal","titulo":"Pedras nos Rins: Especialista Explica Como a Tecnologia Está Revolucionando os Tratamentos","resumo":"O avanço das tecnologias médicas está transformando radicalmente o diagnóstico e a intervenção cirúrgica de cálculos renais. Procedimentos minimamente invasivos e equipamentos a laser de alta precisão garantem uma recuperação muito mais rápida aos pacientes. Especialistas destacam que soluções tecnológicas reduzem complicações hospitalares e aumentam a taxa de sucesso dos tratamentos. A inovação na urologia reforça a eficiência no atendimento à saúde e no conforto do paciente.","link":"https://versa.iol.pt/videos/pedras-nos-rins-especialista-explica-como-a-tecnologia-esta-a-revolucionar-os-tratamentos/6ae8aaa70cf2051820fb0257","categoria":"SAÚDE","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Por que o corpo humano pode estar esfriando","resumo":"Estudos científicos recentes indicam que a temperatura corporal média do ser humano tem apresentado uma tendência de queda constante nas últimas décadas em comparação aos padrões históricos. Pesquisadores apontam que melhorias nas condições de saúde pública, controle de infecções e avanços na medicina moderna reduziram o estado metabólico inflamatório geral da população. Essa transformação fisiológica levanta novas questões sobre como o organismo humano continua a se adaptar ao estilo de vida contemporâneo.","link":"https://www1.folha.uol.com.br/ciencia/2026/11/por-que-o-corpo-humano-pode-estar-esfriando.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BBC","pais":"Estados Unidos","titulo":"Nvidia lança investigação sobre caso do CEO com suspeita de espionagem chinesa","resumo":"A gigante dos chips Nvidia abriu uma apuração formal para avaliar os desdobramentos do relacionamento do seu executivo com uma suspeita de espionagem. Autoridades e acionistas pressionam por esclarecimentos sobre o possível vazamento de tecnologias críticas e segredos industriais. A crise afeta a reputação da empresa em um momento crucial para o setor de tecnologia.","link":"https://www.bbc.com/news/articles/c3dxw10rjn9no","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"Einstein não era perfeito: um experimento nas profundezas do Mediterrâneo desafia os limites de sua teoria","resumo":"Um ambicioso experimento científico realizado nas profundezas do Mar Mediterrâneo está testando os limites da Teoria da Relatividade Geral de Albert Einstein. Utilizando detectores subaquáticos de alta precisão para analisar partículas cósmicas, os físicos buscam eventuais desvios nas leis fundamentais da física. Os resultados podem abrir portas para novas teorias sobre a física quântica e a composição do universo.","link":"https://www.eldebate.com/ciencia/20261109/einstein-no-perfecto-experimento-profundidades-mediterraneo-desafia-limites-teoria_456094.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"国立大学法人 岡山大学","pais":"Japão","titulo":"Ministério da Educação e JST Realizam Kickoff do Projeto de Renovação da Infraestrutura de Pesquisa Avançada","resumo":"O Ministério da Educação, Cultura, Esportes, Ciência e Tecnologia do Japão e a JST deram início oficial ao projeto EPOCH dentro das universidades japonesas. A iniciativa foca na modernização profunda e na renovação dos equipamentos científicos essenciais para pesquisas de ponta no país. Espera-se que a melhoria na infraestrutura acadêmica impulsione descobertas científicas e reforce a posição competitiva do Japão na inovação global.","link":"https://www.okayama-u.ac.jp/tp/news/news_id15815.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ThePaper.cn","pais":"China","titulo":"A fórmula de inovação de Musk: acelerar a iteração exponencialmente impulsiona o progresso técnico","resumo":"Análises sobre os métodos de engenharia de Elon Musk destacam como aumentar a velocidade de iteração em uma ordem de grandeza acelera drasticamente o avanço tecnológico. O conceito tem sido aplicado com sucesso no desenvolvimento de foguetes, veículos elétricos e inteligência artificial. A abordagem desafia os modelos tradicionais de pesquisa e desenvolvimento industrial.","link":"https://www.thepaper.cn/newsDetail_forward_34437525","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Notícias ao Minuto","pais":"Portugal","titulo":"Mercedes Prepara Tecnologia que Transforma o Para-brisa em Tela","resumo":"A montadora alemã Mercedes-Benz está desenvolvendo um sistema que converte todo o para-brisa do veículo em uma grande tela interativa. A tecnologia promete exibir informações de navegação em realidade aumentada sem distrair o motorista. Além disso, o sistema integrará conectividade com assistentes virtuais para personalizar a experiência na cabine. Essa inovação redefine a interface entre o condutor e o automóvel, sinalizando o futuro da condução inteligente.","link":"https://www.noticiasaominuto.com/auto/3078446/mercedes-prepara-tecnologia-que-torna-o-para-brisas-num-ecra","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Midiamax","pais":"Brasil","titulo":"CG Tech Day 2026 debate inteligência artificial e oportunidades na área de tecnologia","resumo":"O evento CG Tech Day 2026 reuniu especialistas, desenvolvedores e líderes do mercado para discutir os avanços recentes em inteligência artificial e suas aplicações práticas. As palestras abordaram o impacto da automação no mercado de trabalho, a demanda por novas habilidades técnicas e as oportunidades emergentes de carreira na área de tecnologia. O fórum destacou a necessidade urgente de qualificação profissional contínua para acompanhar o ritmo acelerado de inovações no setor.","link":"https://midiamax.com.br/cotidiano/2026/cg-tech-day-2026-debate-inteligencia-artificial-oportunidades-area-tecnologia/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The New York Times","pais":"Estados Unidos","titulo":"Rubio alertou autoridades sobre envolvimento do chefe da Nvidia com espiã chinesa","resumo":"O senador Marco Rubio expressou preocupações oficiais quanto às implicações de segurança nacional decorrentes das relações do executivo da Nvidia. Os alertas sublinham o risco de transferência indevida de dados estratégicos e semicondutores avançados para entidades estrangeiras. O episódio intensifica a fiscalização governamental sobre líderes de grandes empresas de tecnologia.","link":"https://www.nytimes.com/2026/11/08/us/politics/rubio-nvidia-ceo-chinese-spy.html","categoria":"SEGURANÇA","lang":"pt"},{"fonte":"ABC","pais":"Espanha","titulo":"O 'milagre' de dois centímetros que salvou Amira: uma história de amor entre a medicina e a tecnologia","resumo":"Um procedimento cirúrgico altamente complexo demonstrou o poder da união entre diagnósticos avançados e tecnologias médicas de ponta ao salvar a vida da pequena Amira. A intervenção de extrema precisão permitiu corrigir uma malformação de apenas dois centímetros com sucesso absoluto. O caso exemplifica o impacto direto da inovação tecnológica na qualidade de vida e no salvamento de pacientes graves.","link":"https://www.abc.es/salud/milagro-dos-centimetros-rescato-amira-historia-amor-20261005010716-nt.html","categoria":"SAÚDE E TECNOLOGIA","lang":"pt"},{"fonte":"Digital PR Platform","pais":"Japão","titulo":"Universidade de Kanagawa Lança Creme Hidratante Utilizando Tecnologia de Emulsão de Três Fases","resumo":"A Universidade de Kanagawa firmou uma colaboração com a empresa Catalog House para lançar um novo produto cosmético para cuidados com a pele. O produto utiliza a patenteada Tecnologia de Emulsão de Três Fases desenvolvida pelos pesquisadores da instituição de ensino. A iniciativa exemplifica a aplicação prática de pesquisas científicas acadêmicas no desenvolvimento de produtos comerciais de alto valor agregado.","link":"https://digitalpr.jp/r/147895","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"电子工程专辑EE Times China","pais":"China","titulo":"Análise técnica da arquitetura off-road Geely Thor EM-T","resumo":"A fabricante chinesa Geely apresentou detalhes técnicos de sua nova arquitetura veicular híbrida Thor EM-T voltada para terrenos severos. O sistema combina alta eficiência energética com desempenho robusto e gerenciamento inteligente de tração integral. A tecnologia visa estabelecer novos padrões para veículos elétricos e híbridos no segmento off-road.","link":"https://www.eet-china.com/mp/a537832.html","categoria":"TECNOLOGIA AUTOMOTIVA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"DeepSeek reaches 1.5 million users per day, intensifying rivalry with ChatGPT and Claude","resumo":"The Chinese artificial intelligence platform DeepSeek has reached a milestone of 1.5 million active users per day, intensifying global competition in the language model market. The tool's rapid growth has captured the attention of experts and investors as it directly rivals established giants like ChatGPT and Claude. This expansion reflects the acceleration of the international race for technological dominance and computational efficiency.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/08/deepseek-chega-a-15-milhao-de-usuarios-por-dia-e-acirra-disputa-com-chatgpt-e-claude.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The GW Hatchet","pais":"United States","titulo":"Computer Science Department revamps curriculum to combat falling enrollment in the age of AI","resumo":"Facing the rapid advancement of generative artificial intelligence, university computer science departments are updating their academic programs. The initiative seeks to restructure programming education and focus on strategic skills to maintain student interest. This transformation reflects the new demands of the global job market.","link":"https://gwhatchet.com/2026/11/09/computer-science-department-revamps-curriculum-to-combat-falling-enrollment-in-the-age-of-ai/","categoria":"EDUCATION","lang":"en"},{"fonte":"Electroniques","pais":"France","titulo":"Industrial imagers see the arrival of a new Chinese manufacturer","resumo":"A new Chinese manufacturer of industrial imaging systems is entering the global market, promising to intensify competition in the automation and quality inspection fields. The arrival of this company brings challenges for established players while potentially reducing production costs for automated industries. The move reflects China's continuous advancement in high-precision technology sectors.","link":"https://www.electroniques.biz/technologie/capteurs/les-imageurs-industriels-voient-arriver-un-nouveau-fabricant-chinois/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Retail Technology Innovation Hub","pais":"United Kingdom","titulo":"M\u0026S secures connection with Vusion partnership: last week's biggest retail tech plays","resumo":"Retailer M\u0026S has forged a strategic partnership with VusionGroup to modernize its store operations with smart electronic shelf labels. This initiative aims to optimize inventory management, improve the customer experience, and increase operational efficiency. The move reflects the growing digital transformation in the British retail sector, driven by Internet of Things and commercial automation solutions.","link":"https://retailtechinnovationhub.com/home/2026/11/9/mands-makes-sure-its-connected-with-vusion-partnership-last-weeks-biggest-retail-technology-plays","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Computer Hoy","pais":"Spain","titulo":"Tech expert Jordi García Castillón: \"Companies' biggest mistake with AI is deploying it before knowing how to secure it\"","resumo":"Tech expert Jordi García Castillón warns about organizations' rush to adopt artificial intelligence without prioritizing cybersecurity. According to him, implementing advanced models without proper protection exposes critical vulnerabilities in corporate data and systems. Awareness and prior risk mitigation planning are essential for a truly secure and sustainable digital transformation.","link":"https://computerhoy.20minutos.es/ciberseguridad/experto-tecnologia-jordi-garcia-castillon-gran-error-las-empresas-con-ia-es-implantarla-antes-saber-protegerla_7057370_0.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"ダイヤモンド・オンライン","pais":"Japan","titulo":"Generative AI accelerates innovation in optical infrastructure and reveals Japan's competitive advantage","resumo":"The rapid advancement of generative artificial intelligence demands unprecedented high-speed data processing and transmission capacity. In this scenario, the development of new optical network infrastructure technologies takes center stage in the global market. Japan's technology sector sees a strategic opportunity to lead the segment and drive high-impact innovations.","link":"https://diamond.jp/articles/-/401892","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"华尔街日报中文网","pais":"China","titulo":"AI could crack encryption before quantum computers","resumo":"Researchers warn that recent advances in artificial intelligence could dismantle traditional encryption algorithms ahead of practical quantum computing. The discovery reinforces the urgent need to migrate to post-quantum and AI-driven security systems. Experts emphasize that the protection of global data requires immediate new defensive strategies.","link":"https://cn.wsj.com/articles/ai%E5%8F%AF%E8%83%BD%E5%85%88%E4%BA%8E%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%94%BB%E7%A0%B4%E5%8A%A0%E5%AF%86%E6%8A%80%E6%9C%AF-265379f4","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"India Today","pais":"India","titulo":"AI could accelerate drug discovery but also enable bioweapons, warns Tencent AI chief","resumo":"The head of Tencent's artificial intelligence division has warned about the risks of the technology's dual-use in healthcare. Although AI can drastically accelerate the discovery of new drugs and treatments, there is concern regarding its malicious application in the development of biological weapons. The executive reinforces the urgent need for global governance and regulation to mitigate biosafety threats without stifling innovation.","link":"https://www.indiatoday.in/amp/technology/news/story/ai-could-accelerate-drug-discovery-but-also-enable-bioweapons-warns-tencent-ai-chief-3035134-2026-11-09","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Universidade de Lisboa","pais":"Portugal","titulo":"Urban inequalities, pedestrian mobility, and mental well-being: A geographic information science approach","resumo":"A new study in Geographic Information Science analyzes how urban planning directly affects citizens' mental health. The research investigates the relationship between pedestrian mobility, socio-spatial inequalities, and access to green areas in cities. The results reinforce the importance of using geolocation data to promote more inclusive public policies. This innovative approach aims to transform urban management and improve long-term population well-being.","link":"https://www.ulisboa.pt/evento/desigualdades-urbanas-mobilidade-pedonal-e-bem-estar-mental-uma-abordagem-em-ciencia-da","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"'Blue tsunami effect': OpenAI to change treatment of towns hosting data centers","resumo":"OpenAI has announced new guidelines to mitigate the environmental and socioeconomic impacts caused by the installation of its massive artificial intelligence data centers. Coded internally within the sector as the blue tsunami effect, the initiative seeks to improve coexistence and infrastructure in local communities hosting these data hubs. The measure comes in response to growing public and regulatory pressures over the unbridled energy consumption of emerging technologies.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/08/efeito-tsunami-azul-openai-vai-mudar-tratamento-a-locais-que-abrigam-data-centers.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"APOD: Rigel and the Witch Head Nebula","resumo":"The astronomical image of the day highlights the intricate relationship between the bright star Rigel and the immense Witch Head Nebula. The bluish light reflected by cosmic dust reveals impressive details of the interstellar medium in the constellation Orion. The record helps astronomers better understand gas composition and star formation in the region.","link":"https://science.nasa.gov/image-article/apod-2026-november-9-rigel-and-the-witch-head-nebula/","categoria":"ASTRONOMY","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"During construction, workers discover a 3.2-meter medieval boat hull that rewrites our knowledge of period trade","resumo":"A surprising archaeological discovery occurred during excavation work, revealing the well-preserved hull of a medieval watercraft over three meters long. The find provides crucial new clues about maritime transportation routes and shipbuilding techniques of that historical period. Experts state that the artifact significantly expands the understanding of trade exchanges in medieval Europe.","link":"https://www.science-et-vie.com/science-et-culture/en-faisant-des-travaux-des-ouvriers-decouvrent-une-coque-de-bateau-medievale-de-32-metres-de-long-qui-reecrit-nos-connaissances-du-commerce-a-cette-epoque-231583.html","categoria":"SCIENCE","lang":"en"},{"fonte":"The Conversation","pais":"United Kingdom","titulo":"Powerhouse Parramatta: A science, design, and technology museum supercharged by spectacular art","resumo":"Powerhouse Parramatta stands out as a new cultural landmark focused on the intersection of science, technology, and contemporary art. The architectural design and exhibitions aim to inspire future generations through innovation and multifaceted creativity. The impact of this institution reflects the advancement in how museums integrate advanced technology and artistic expression to engage the public.","link":"https://theconversation.com/powerhouse-parramatta-a-museum-of-science-design-and-technology-supercharged-by-spectacular-art-295745","categoria":"SCIENCE","lang":"en"},{"fonte":"Infodefensa","pais":"Spain","titulo":"Spain's Fossa Systems takes its satellite connection tech for surveillance sensors to Latvia","resumo":"Spanish company Fossa Systems has expanded its international footprint by deploying its satellite communication technology in Latvia. The solution aims to optimize data transmission from surveillance sensors located in remote or hard-to-reach areas. The initiative reinforces the presence of Spain's space and IoT industry in the European security and infrastructure landscape.","link":"https://www.infodefensa.com/texto-diario/mostrar/6081290/fossa-systems-proyecta-constelacion-140-nanosatelites-comunicaciones-e-inteligencia","categoria":"SPACE TECHNOLOGY","lang":"en"},{"fonte":"トラックニュース","pais":"Japan","titulo":"Japan's Ministry of Economy offers subsidies for unauthorized access protection services in SMEs","resumo":"Japan's Ministry of Economy, Trade and Industry has announced the awarding of subsidies focused on supporting small and medium-sized enterprises in adopting cybersecurity services. The initiative aims to mitigate the growing risks of digital break-ins and strategic data leaks in local corporations. With this incentive, the government seeks to strengthen the productive sector's technological resilience and protect the national economy.","link":"https://www.trucknews.biz/article/s110930/","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"中国科学院","pais":"China","titulo":"China Space Station Produces the Coldest Matter Ever Recorded","resumo":"Scientists aboard the Chinese space station achieved a historic milestone by producing the coldest matter known to date in space. The experiment utilizes advanced laser cooling technologies in a microgravity environment to study quantum states of matter. This achievement opens new frontiers for fundamental physics and the development of ultrasensitive quantum sensors.","link":"https://www.cas.cn/cm/202611/t20261109_5123760.shtml","categoria":"SPACE SCIENCE","lang":"en"},{"fonte":"Construction World","pais":"India","titulo":"NPCI Creates Unit to Boost AI and Blockchain Technologies","resumo":"The National Payments Corporation of India (NPCI) has announced the creation of a new specialized unit to lead advancements in artificial intelligence and blockchain. The initiative aims to further modernize the country's digital payments infrastructure, promoting security, efficiency, and innovation on a large scale. Through this strategy, the entity seeks to keep India at the forefront of financial technologies and economic digitization.","link":"https://www.constructionworld.in/energy-infrastructure/power-and-renewable-energy/npci-forms-unit-to-advance-ai-and-blockchain-technology/100065","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Facebook","pais":"Portugal","titulo":"Crime Follows Technological Evolution: Electric Transition Paves the Way for New Profitable Thefts","resumo":"Technological modernization and the rapid expansion of electric vehicles have created new opportunities for specialized criminal activities. Criminals are shifting from traditional thefts to higher-value targets linked to electric mobility infrastructure. The lack of heavy tools facilitates these clandestine operations and causes major financial losses to the sector. This scenario demands urgent updates to security strategies and the protection of urban equipment.","link":"https://www.facebook.com/ObservadorOnTime/posts/o-crime-est%C3%A1-a-acompanhar-a-evolu%C3%A7%C3%A3o-da-tecnologia-e-a-transi%C3%A7%C3%A3o-el%C3%A9ctrica-abriu/1532587688972509/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Estadão","pais":"Brazil","titulo":"Nvidia Opens Investigation into Jensen Huang's Relationship with a Chinese Spy","resumo":"Nvidia has launched a rigorous internal investigation to look into allegations involving CEO Jensen Huang and his alleged contact with a Chinese intelligence agent. The case has generated strong repercussions in the high-tech sector and raised concerns about corporate security and industrial espionage amid geopolitical tensions. The company seeks to clarify any leaks of confidential information regarding the development of cutting-edge chips and semiconductors.","link":"https://www.estadao.com.br/economia/negocios/nvidia-abre-investigacao-sobre-o-relacionamento-de-jensen-huang-com-uma-espia-chinesa/","categoria":"TRENDS","lang":"en"},{"fonte":"American Council on Science and Health","pais":"United States","titulo":"AI Doesn't Have to Discover Science to Make Science Better","resumo":"Artificial intelligence is transforming scientific research by optimizing data analysis processes and complex simulations. Even without autonomously creating new theories, the technology accelerates hypothesis validation and the automation of laboratory experiments. The impact is significant in increasing the overall efficiency of the global scientific community.","link":"https://www.acsh.org/news/2026/11/09/ai-doesnt-have-discover-science-make-science-better-50440","categoria":"SCIENCE","lang":"en"},{"fonte":"The Bury Times","pais":"England","titulo":"Cancer Survivor Supports AI That Helps Doctors Focus on Patients","resumo":"A cancer survivor has celebrated the recent implementation of artificial intelligence at the prestigious Christie hospital. The technology assists the medical team in the fast and precise analysis of medical exams, significantly optimizing daily workflow. With the automation of bureaucratic tasks, healthcare professionals are able to dedicate more time to personalized care.","link":"https://www.burytimes.co.uk/news/26702323.ramsbottom-cancer-survivor-welcomed-christie-ai-technology/","categoria":"HEALTH TECH","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"Nanomachines, Psoriasis Patches, and Equations to Understand the Brain: Three Winning Ideas by Spanish Scientists","resumo":"Spanish researchers have been awarded for innovative projects that combine cutting-edge science with practical applications for society. The initiatives range from nanomachines focused on medical treatments to new mathematical approaches to unravel brain processes. These advancements highlight the potential of Spanish scientific research to revolutionize health and biotechnology in the coming years.","link":"https://elpais.com/ciencia/2026-11-09/nanomaquinas-pegamentos-contra-la-psoriasis-y-ecuaciones-para-entender-el-cerebro-tres-ideas-ganadoras-de-cientificos-espanoles.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"JTEKT to Showcase Synca Steer Steer-by-Wire Technology and Innovations at Messe Nagoya","resumo":"Manufacturer JTEKT has revealed that it will present its latest technological advancements aimed at the automotive sector during the Messe Nagoya trade show. The main highlight of the exhibition will be the steer-by-wire system named Synca Steer, which eliminates direct mechanical connections in steering. The innovation promises to revolutionize vehicle control, bringing greater efficiency, safety, and flexibility to the mobility of the future.","link":"https://news.yahoo.co.jp/articles/6ce14b6c0d05d80c73f43d07e7fd2d042c6a4343","categoria":"AUTOMOTIVE TECHNOLOGY","lang":"en"},{"fonte":"财联社","pais":"China","titulo":"Just 3.43 Milliseconds per Thousand Kilometers: China Achieves New Breakthrough in Communication Network","resumo":"China has announced a significant technological milestone with its new generation communication network, achieving an ultra-low latency of 3.43 milliseconds per thousand kilometers. The innovation promises to revolutionize large-scale data transmissions and critical infrastructures in the country. The breakthrough boosts real-time applications such as industrial cloud computing and autonomous vehicles.","link":"https://www.cls.cn/detail/2528242","categoria":"TELECOMMUNICATIONS","lang":"en"},{"fonte":"TecheNet","pais":"Portugal","titulo":"New Moto Watch 2 Fit, Featuring Polar Technology, Costs 99 Euros","resumo":"Motorola has launched the new Moto Watch 2 Fit smart watch, integrating advanced monitoring algorithms from the Polar brand. The device hits the European market with an affordable price tag aimed at users looking to track daily physical activities. In addition to detailed health metrics, the smartwatch offers long battery life and a rugged design. This new release strengthens competition in the entry-level and mid-range wearable segment.","link":"https://www.techenet.com/2026/11/novo-moto-watch-2-fit-custa-99-euros/","categoria":"LAUNCHES","lang":"en"},{"fonte":"Crescer","pais":"Brazil","titulo":"'AI Babies' Are Born in Previously Impossible Ways: Understand the New Technology Revolutionizing IVF","resumo":"The integration of artificial intelligence algorithms into in vitro fertilization procedures is enabling the birth of babies with previously unattainable success rates. The technology helps specialists select the healthiest embryos with microscopic precision and predictably optimize genetic development. The innovation promises to transform reproductive medicine, offering new hope for couples with fertility difficulties worldwide.","link":"https://revistacrescer.globo.com/fique-por-dentro/noticia/2026/11/bebes-de-ia-nascem-de-formas-antes-impossiveis-entenda-a-nova-tecnologia-que-revoluciona-a-fiv.ghtml","categoria":"SCIENCE","lang":"en"},{"fonte":"Bloomberg.com","pais":"United States","titulo":"Nvidia Board Probes Spying Case After CEO Admits Extramarital Affair","resumo":"Nvidia's board of directors has launched an internal investigation after the chief executive officer admitted to a controversial personal involvement. The case has taken on more serious dimensions due to concerns related to information security and corporate espionage. The situation creates uncertainties regarding governance and the impact on the shares of the semiconductor giant.","link":"https://www.bloomberg.com/news/articles/2026-11-08/nvidia-board-to-probe-spying-case-after-ceo-jensen-huang-admits-infidelity","categoria":"BUSINESS","lang":"en"},{"fonte":"The Star","pais":"England","titulo":"How AI Just Blew Up a Key Tenet of Computer Science","resumo":"Recent advancements in artificial intelligence models are challenging decades-old dogmas and established theories in computer science. Modern algorithms are solving complex problems in unpredictable ways, redefining classic concepts of efficiency and logic. This impact forces researchers to rethink the theoretical foundations of software and algorithm development.","link":"https://www.thestar.com.my/tech/tech-news/2026/11/09/how-ai-just-blew-up-a-key-tenet-of-computer-science","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Objective","pais":"Spain","titulo":"Major Spanish Banks Root Out Technology Risk for Fear of a Collapse","resumo":"Major financial institutions in Spain are significantly strengthening risk management and upgrading legacy technology systems to prevent severe failures. The measure comes in response to growing threats of operational disruptions and large-scale cyberattacks. The move aims to ensure the stability of the banking system in the face of rapid digitalization and rigorous regulatory requirements.","link":"https://theobjective.com/economia/2026-11-09/gran-banca-espanola-riesgo-tecnologia-hundimiento/","categoria":"BUSINESS AND TECH","lang":"en"},{"fonte":"カー・アンド・ドライバー","pais":"Japan","titulo":"Porsche Reveals Mission S Model, Signaling the Future of Mid-Engine Supercars","resumo":"Porsche has publicly unveiled the Mission S concept model, previewing the next steps for its high-performance supercar lineup. The concept anticipates aerodynamic design solutions and advanced propulsion technologies aimed at top-tier performance. The new release signals the brand's strategic vision in the technological transition of the global automotive industry.","link":"https://www.caranddriver.co.jp/newcar/127438/","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"新浪网","pais":"China","titulo":"Kakao Mobility Signs Agreement with NVIDIA for Level 4 Autonomous Driving Development","resumo":"Kakao Mobility has signed a memorandum of understanding with NVIDIA to cooperate on the development of Level 4 autonomous driving technology. The partnership seeks to integrate NVIDIA's artificial intelligence platforms into the company's mobility services. The initiative aims to accelerate the commercialization of fully autonomous vehicles in complex urban environments.","link":"https://wap.cj.sina.cn/7x24/5202566","categoria":"AUTONOMOUS VEHICLES","lang":"en"},{"fonte":"Agência Incomparáveis","pais":"Portugal","titulo":"Web Summit 2026 Brings Together Lisbon and the Tech World with a Focus on Artificial Intelligence and Lusophone Participation","resumo":"The Web Summit 2026 conference once again transforms Lisbon into the global epicenter of technological innovation and entrepreneurship. The event highlights recent advancements in artificial intelligence, digital transformation, and startup ecosystems. The prominent presence of the Lusophone community gains relevance in connecting investors and talent from Portuguese-speaking countries. The gathering projects decisive debates on the socioeconomic impact of emerging AI tools.","link":"https://www.agenciaincomparaveis.com/web-summit-2026-reune-lisboa-e-o-mundo-da-tecnologia-com-destaque-para-inteligencia-artificial-e-participacao-lusofona/","categoria":"EVENTS","lang":"en"},{"fonte":"Diário Campineiro","pais":"Brazil","titulo":"CNPEM Science School Acquires Electron Microscope for Advanced Research","resumo":"The Brazilian Center for Research in Energy and Materials has acquired a new state-of-the-art electron microscope aimed at strengthening scientific research in Brazil. The high-precision equipment will allow for the detailed analysis of cellular structures and innovative materials at the nanometric scale by students and researchers. The acquisition consolidates the institution as a hub of excellence and technological innovation in the South American scientific scene.","link":"https://diariocampineiro.com.br/escola-de-ciencia-do-cnpem-ganha-microscopio-eletronico-para-pesquisas-avancadas/","categoria":"SCIENCE","lang":"en"},{"fonte":"东方财富","pais":"United States","titulo":"Jensen Huang Admits Affair, Apologizes, and Nvidia Launches Independent Investigation","resumo":"Nvidia's chief executive issued a public apology to his family and shareholders following the revelation of a personal scandal. The event prompted the urgent cancellation of official trips and the immediate launch of an independent audit at the company. The case reverberated widely across international financial markets, generating strong uncertainties.","link":"https://wap.eastmoney.com/a/202611093925768466.html","categoria":"BUSINESS","lang":"en"},{"fonte":"The Guardian","pais":"United Kingdom","titulo":"'AI Traffic Jam': UK Public Bodies Face Onslaught of Chatbot Complaints","resumo":"Public institutions in the UK are facing an unprecedented volume of formal complaints automatically generated by AI tools. Automation has allowed citizens to create complex legal and administrative texts in bulk, overloading servers. The phenomenon brings urgent debates regarding the regulation of artificial intelligence use in public services.","link":"https://www.theguardian.com/technology/2026/nov/08/ai-clog-public-bodies-local-authorities-onslaught-chatbot-generated-correspondence","categoria":"TRENDS","lang":"en"},{"fonte":"Revista Emprendedores","pais":"Spain","titulo":"Kreios Space: The Spanish Technology Conquering Space","resumo":"Startup Kreios Space has been standing out in the aerospace sector by developing electric propulsion systems for satellites to operate in extremely low orbits. This innovation reduces mission costs and drastically expands earth observation capabilities. The advance boosts the competitiveness of the Spanish technology industry in the competitive international space market.","link":"https://emprendedores.es/casos-de-exito/kreios-space-la-tecnologia-espanola-que-conquista-el-espacio/","categoria":"AEROSPACE","lang":"en"},{"fonte":"TradingView","pais":"Japan","titulo":"Japan's Nikkei Index Rebounds 2% Following Tech-Led Decline","resumo":"The main index of the Tokyo Stock Exchange, the Nikkei, recorded a recovery of approximately 2% after a sharp stock sell-off concentrated in technology companies. Recent volatility reflects adjustments in investor expectations regarding global interest rates and the sector's corporate performance. The upward movement demonstrates the resilience of the Japanese market in the face of international fluctuations in the high-tech segment.","link":"https://br.tradingview.com/news/reuters.com,2026:newsml_L2N46Q00U:0/","categoria":"FINANCIAL MARKET","lang":"en"},{"fonte":"金融界","pais":"China","titulo":"Humanoid Robot Technologies Achieve Significant Breakthrough","resumo":"The humanoid robotics sector has recorded expressive new technical advancements in the development of motion control and autonomy. The progress has driven strong financial market interest and continuous capital attraction for tech funds. Experts point out that the industrial readiness of robots is increasingly close to large-scale commercial applications.","link":"https://m.jrj.com.cn/madapter/fund/2026/11/09131159067247.shtml","categoria":"ROBOTICS","lang":"en"},{"fonte":"lifestyle","pais":"Portugal","titulo":"Kidney Stones: Specialist Explains How Technology is Revolutionizing Treatments","resumo":"The advancement of medical technologies is radically transforming the diagnosis and surgical intervention of kidney stones. Minimally invasive procedures and high-precision laser equipment guarantee a much faster recovery for patients. Specialists emphasize that technological solutions reduce hospital complications and increase the success rate of treatments. Innovation in urology reinforces efficiency in healthcare delivery and patient comfort.","link":"https://versa.iol.pt/videos/pedras-nos-rins-especialista-explica-como-a-tecnologia-esta-a-revolucionar-os-tratamentos/6ae8aaa70cf2051820fb0257","categoria":"HEALTH","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"Why the Human Body May Be Cooling Down","resumo":"Recent scientific studies indicate that the average human body temperature has shown a steady downward trend over recent decades compared to historical standards. Researchers point out that improvements in public health conditions, infection control, and advancements in modern medicine have reduced the overall inflammatory metabolic state of the population. This physiological transformation raises new questions about how the human organism continues to adapt to contemporary lifestyles.","link":"https://www1.folha.uol.com.br/ciencia/2026/11/por-que-o-corpo-humano-pode-estar-esfriando.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"BBC","pais":"United States","titulo":"Nvidia Launches Investigation into CEO's Case with Suspected Chinese Espionage","resumo":"Chip giant Nvidia has opened a formal inquiry to assess the developments of its executive's relationship with a suspected espionage case. Authorities and shareholders are pressing for clarifications regarding the potential leakage of critical technologies and industrial secrets. The crisis impacts the company's reputation at a crucial moment for the technology sector.","link":"https://www.bbc.com/news/articles/c3dxw10rjn9no","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"Einstein Was Not Perfect: An Experiment in the Depths of the Mediterranean Challenges the Limits of His Theory","resumo":"An ambitious scientific experiment carried out in the depths of the Mediterranean Sea is testing the limits of Albert Einstein's Theory of General Relativity. Using high-precision underwater detectors to analyze cosmic particles, physicists are searching for eventual deviations in the fundamental laws of physics. The results could open doors to new theories about quantum physics and the composition of the universe.","link":"https://www.eldebate.com/ciencia/20261109/einstein-no-perfecto-experimento-profundidades-mediterraneo-desafia-limites-teoria_456094.html","categoria":"SCIENCE","lang":"en"},{"fonte":"国立大学法人 岡山大学","pais":"Japan","titulo":"Ministry of Education and JST Hold Kickoff for Advanced Research Infrastructure Renovation Project","resumo":"Japan's Ministry of Education, Culture, Sports, Science and Technology and the JST have officially kicked off the EPOCH project within Japanese universities. The initiative focuses on the deep modernization and renewal of essential scientific equipment for cutting-edge research in the country. It is expected that the improvement in academic infrastructure will drive scientific discoveries and reinforce Japan's competitive position in global innovation.","link":"https://www.okayama-u.ac.jp/tp/news/news_id15815.html","categoria":"SCIENCE","lang":"en"},{"fonte":"ThePaper.cn","pais":"China","titulo":"Musk's Innovation Formula: Accelerating Iteration Exponentially Drives Technical Progress","resumo":"Analyses of Elon Musk's engineering methods highlight how increasing the speed of iteration by an order of magnitude drastically accelerates technological progress. The concept has been successfully applied in the development of rockets, electric vehicles, and artificial intelligence. The approach challenges traditional industrial research and development models.","link":"https://www.thepaper.cn/newsDetail_forward_34437525","categoria":"INNOVATION","lang":"en"},{"fonte":"Notícias ao Minuto","pais":"Portugal","titulo":"Mercedes Prepares Technology That Turns the Windshield into a Screen","resumo":"German automaker Mercedes-Benz is developing a system that converts the vehicle's entire windshield into a large interactive screen. The technology promises to display navigation information in augmented reality without distracting the driver. Furthermore, the system will integrate connectivity with virtual assistants to personalize the cabin experience. This innovation redefines the interface between the driver and the automobile, signaling the future of smart driving.","link":"https://www.noticiasaominuto.com/auto/3078446/mercedes-prepara-tecnologia-que-torna-o-para-brisas-num-ecra","categoria":"INNOVATION","lang":"en"},{"fonte":"Midiamax","pais":"Brazil","titulo":"CG Tech Day 2026 debates artificial intelligence and opportunities in the tech sector","resumo":"The CG Tech Day 2026 event gathered experts, developers, and market leaders to discuss recent advances in artificial intelligence and their practical applications. The presentations addressed the impact of automation on the job market, the demand for new technical skills, and emerging career opportunities in technology. The forum highlighted the urgent need for continuous professional training to keep pace with the sector's rapid rate of innovation.","link":"https://midiamax.com.br/cotidiano/2026/cg-tech-day-2026-debate-inteligencia-artificial-oportunidades-area-tecnologia/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The New York Times","pais":"United States","titulo":"Rubio warned officials about Nvidia chief's involvement with Chinese spy","resumo":"Senator Marco Rubio expressed official concerns regarding the national security implications arising from the Nvidia executive's relationships. The warnings underscore the risk of undue transfer of strategic data and advanced semiconductors to foreign entities. The episode intensifies government scrutiny over leaders of major technology companies.","link":"https://www.nytimes.com/2026/11/08/us/politics/rubio-nvidia-ceo-chinese-spy.html","categoria":"SECURITY","lang":"en"},{"fonte":"ABC","pais":"Spain","titulo":"The two-centimeter 'miracle' that saved Amira: a love story between medicine and technology","resumo":"A highly complex surgical procedure demonstrated the power of the union between advanced diagnostics and cutting-edge medical technologies by saving the life of young Amira. The extremely precise intervention successfully corrected a malformation of just two centimeters. The case exemplifies the direct impact of technological innovation on the quality of life and the survival of critical patients.","link":"https://www.abc.es/salud/milagro-dos-centimetros-rescato-amira-historia-amor-20261005010716-nt.html","categoria":"HEALTH AND TECHNOLOGY","lang":"en"},{"fonte":"Digital PR Platform","pais":"Japan","titulo":"Kanagawa University Launches Moisturizing Cream Utilizing Three-Phase Emulsion Technology","resumo":"Kanagawa University has partnered with Catalog House to launch a new skin care cosmetic product. The product utilizes the patented Three-Phase Emulsion Technology developed by the institution's researchers. The initiative exemplifies the practical application of academic scientific research in the development of high-value commercial products.","link":"https://digitalpr.jp/r/147895","categoria":"INNOVATION","lang":"en"},{"fonte":"电子工程专辑EE Times China","pais":"China","titulo":"Technical analysis of the Geely Thor EM-T off-road architecture","resumo":"Chinese manufacturer Geely presented technical details of its new Thor EM-T hybrid vehicle architecture designed for severe terrains. The system combines high energy efficiency with robust performance and intelligent all-wheel-drive management. The technology aims to set new standards for electric and hybrid vehicles in the off-road segment.","link":"https://www.eet-china.com/mp/a537832.html","categoria":"AUTOMOTIVE TECHNOLOGY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
