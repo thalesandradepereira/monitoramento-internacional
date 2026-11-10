@@ -40,7 +40,7 @@ A arquitetura opera com três princípios centrais:
 
 **Correções:** até 90 verificações de 10 segundos por recurso público (dashboard datado e alias /hoje); timeout do job social ampliado para 35 minutos; permanecem obrigatórias resposta HTTP 200, HTML e data correta. Falhas transitórias do Gemini, como HTTP 503 após retries, acionam modelo reserva no **mesmo país**, sem classificar quota não esgotada como vencida; erro de autenticação não aciona fallback. Os controles fail-closed e de idempotência foram preservados.
 
-**QA e operação:** testes regressivos para demora Pages superior a 2 minutos, 404 permanente, alias antigo, 503 com fallback, 401 sem fallback, CI, auditoria npm, TypeScript, relay e gate de release. Verificar efeitos externos por estado autoritativo, sem tomar workflow verde como prova absoluta. Serviços externos não oferecem garantia de disponibilidade de 100%.
+**QA e operação:** regressões em `tests/socialDispatch.test.mjs`, `tests/summarizeFallback.test.ts` e `tests/workflows/monitoramento-production.test.mjs` para demora Pages superior a 2 minutos, 404 permanente, alias antigo, 503 com fallback e 401 sem fallback; CI, auditoria npm, TypeScript, relay e gate de release. Verificar efeitos externos por estado autoritativo, sem tomar workflow verde como prova absoluta. Serviços externos não oferecem garantia de disponibilidade de 100%.
 
 **Atenção independente:** o token do Instagram renovado em setembro possuía renovação preventiva indicada para 12/11/2026; o token não causou o HTTP 404. Confirmar a validade por diagnóstico sem expor segredos.
 
