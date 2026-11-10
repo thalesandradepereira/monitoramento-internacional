@@ -125,3 +125,36 @@ test('dispatchPrivatePublisher envia somente metadados, sem expor o token no cor
     client_payload: { monitoring_date: '2026-07-18' },
   })
 })
+
+test('GitHub Pages delay beyond two minutes retries without dispatching stale content', async () => {
+  let calls = 0
+  const fetchImpl = async () => {
+    calls += 1
+    if (calls <= 40) return new Response('not yet deployed', { status: 404 })
+    return new Response(`<html><body>${'x'.repeat(600)}10/11/2026</body></html>`, {
+      status: 200,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    })
+  }
+  const result = await waitForPublishedDashboard({
+    dashboardUrl: 'https://example.test/Dashboard-Monitoramento-10-11-2026.html',
+    displayDate: '10/11/2026',
+    fetchImpl,
+    sleepImpl: async () => {},
+  })
+  assert.equal(calls, 41)
+  assert.equal(result.attempts, 41)
+})
+
+test('GitHub Pages remains fail-closed when all readiness attempts return HTTP 404', async () => {
+  let calls = 0
+  await assert.rejects(waitForPublishedDashboard({
+    dashboardUrl: 'https://example.test/missing.html',
+    displayDate: '10/11/2026',
+    maxAttempts: 3,
+    retryDelayMs: 0,
+    fetchImpl: async () => { calls++; return new Response('missing', { status: 404 }) },
+    sleepImpl: async () => {},
+  }), /não ficou disponível após 3 tentativas: HTTP 404/)
+  assert.equal(calls, 3)
+})
