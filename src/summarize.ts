@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { config } from './config'
 import { Noticia } from './fetchNews'
-import { cleanGeminiJson, generateContentWithRetry, isGeminiQuotaExhausted } from './geminiHelper'
+import { cleanGeminiJson, generateContentWithRetry, isGeminiQuotaExhausted, isRetryableGeminiError } from './geminiHelper'
 
 export interface Topico {
   fonte: string
@@ -201,15 +201,18 @@ ${JSON.stringify(lote.map(n => ({ id: n.id, titulo: n.titulo, fonte: n.fonte }))
         return result.text || '[]'
       } catch (err) {
         ultimoErro = err
-        if (!isGeminiQuotaExhausted(err)) throw err
+        const semQuota = isGeminiQuotaExhausted(err)
+        // A temporary 503 may survive the helper retries. Try the independent
+        // fallback for this country, but do not mark the primary model as exhausted.
+        if (!semQuota && !isRetryableGeminiError(err)) throw err
 
-        modelosSemQuota.add(model)
-        const fallback = modelos.find(candidate => candidate !== model && !modelosSemQuota.has(candidate))
+        if (semQuota) modelosSemQuota.add(model)
+        const fallback = modelos.slice(i + 1).find(candidate => !modelosSemQuota.has(candidate))
         if (fallback) {
-          console.warn(`[summarize] modelo editorial ${model} sem quota; acionando fallback ${fallback}.`)
+          console.warn(`[summarize] modelo editorial ${model} ${semQuota ? 'sem quota' : 'temporariamente indisponível'}; acionando fallback ${fallback}.`)
           continue
         }
-        console.error(`[summarize] quota esgotada também no fallback; interrompendo novas chamadas de resumo.`)
+        if (semQuota) console.error('[summarize] quota esgotada também no fallback; interrompendo novas chamadas de resumo.')
       }
     }
 
