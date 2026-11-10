@@ -228,7 +228,9 @@ O gate de release também valida YAML, whitespace, artefatos do dia, GitHub Page
 
 | Versão | Data | Destaque |
 |---|---|---|
-| **v1.1.13** | **10/11/2026** | espera Pages, fallback Gemini 503 e validação de publicação |\n| **v1.1.11** | **03/10/2026** | reconhecimento da mensagem genérica 429, fallback do mesmo país e regressão fail-closed |
+| **v1.1.13** | **10/11/2026** | espera Pages, fallback Gemini 503 e validação de publicação |
+| **v1.1.12** | **11/10/2026** | Bing RSS de contingência e correção proxy-addr |
+| **v1.1.11** | **03/10/2026** | reconhecimento da mensagem genérica 429, fallback do mesmo país e regressão fail-closed |
 | v1.1.7 | 03/09/2026 | circuit breaker/fallback Gemini e recuperação conservadora de stale `in_progress` |
 | v1.1.8 | 04/09/2026 | validação operacional diária e prova do failsafe externo anterior |
 | **v1.1.10** | **24/09/2026** | quota Gemini corrigida, fallback efetivo, fail-closed editorial, MAX_TOPICOS global e Nodemailer saneado |
