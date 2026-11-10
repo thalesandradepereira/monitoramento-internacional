@@ -8,7 +8,7 @@
 ![Cloudflare D1](https://img.shields.io/badge/Cloudflare-D1-F38020?logo=cloudflare&logoColor=white)
 ![Google Cloud Scheduler](https://img.shields.io/badge/Google%20Cloud-Scheduler-4285F4?logo=googlecloud&logoColor=white)
 
-> **Versão / Version:** 1.1.12
+> **Versão / Version:** 1.1.13
 >
 > **Fuso operacional / Operational timezone:** `America/Sao_Paulo`
 >
@@ -29,6 +29,20 @@ A arquitetura opera com três princípios centrais:
 - **fail-closed:** estado incerto ou entrega parcial nunca autoriza retry cego;
 - **idempotência diária:** uma data já concluída não gera novo e-mail ou nova Story;
 - **múltiplos relógios:** GitHub principal, watchdog e Google Cloud Scheduler podem acordar o pipeline de forma redundante.
+
+### Release v1.1.13 — resiliência GitHub Pages e Gemini em 10/11/2026
+
+**Diagnóstico pelos logs:**
+
+- [Execução #793](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/42766819621): Gemini 3.6 Flash retornou HTTP 503 (alta demanda) em Estados Unidos, além de limite diário HTTP 429. O bloqueio de publicação editorial incompleta funcionou.
+- [Execução #794](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/42770169196): a edição foi concluída, mas o job social encontrou HTTP 404 por 12 tentativas (10 segundos cada) e terminou às 03h52 BRT, antes do deployment Pages concluir às 03h56 BRT.
+- Em 10/11 o registro operacional mostra 9/9 aceites SMTP, zero falhas e publicação Instagram completed com identificador de plataforma. Não reenviar e-mails nem Story para recuperar alertas históricos.
+
+**Correções:** até 90 verificações de 10 segundos por recurso público (dashboard datado e alias /hoje); timeout do job social ampliado para 35 minutos; permanecem obrigatórias resposta HTTP 200, HTML e data correta. Falhas transitórias do Gemini, como HTTP 503 após retries, acionam modelo reserva no **mesmo país**, sem classificar quota não esgotada como vencida; erro de autenticação não aciona fallback. Os controles fail-closed e de idempotência foram preservados.
+
+**QA e operação:** testes regressivos para demora Pages superior a 2 minutos, 404 permanente, alias antigo, 503 com fallback, 401 sem fallback, CI, auditoria npm, TypeScript, relay e gate de release. Verificar efeitos externos por estado autoritativo, sem tomar workflow verde como prova absoluta. Serviços externos não oferecem garantia de disponibilidade de 100%.
+
+**Atenção independente:** o token do Instagram renovado em setembro possuía renovação preventiva indicada para 12/11/2026; o token não causou o HTTP 404. Confirmar a validade por diagnóstico sem expor segredos.
 
 ### Release v1.1.12 — contingência RSS e segurança em 11/10/2026
 
@@ -214,6 +228,8 @@ O gate de release também valida YAML, whitespace, artefatos do dia, GitHub Page
 
 | Versão | Data | Destaque |
 |---|---|---|
+| **v1.1.13** | **10/11/2026** | espera Pages, fallback Gemini 503 e validação de publicação |
+| **v1.1.12** | **11/10/2026** | Bing RSS de contingência e correção proxy-addr |
 | **v1.1.11** | **03/10/2026** | reconhecimento da mensagem genérica 429, fallback do mesmo país e regressão fail-closed |
 | v1.1.7 | 03/09/2026 | circuit breaker/fallback Gemini e recuperação conservadora de stale `in_progress` |
 | v1.1.8 | 04/09/2026 | validação operacional diária e prova do failsafe externo anterior |
@@ -233,6 +249,16 @@ O Google Cloud Scheduler remove o **scheduler do GitHub** como relógio único, 
 **Global Media Monitoring** is an automated pipeline that collects and deduplicates international news, uses Google Gemini for editorial triage and summarization, generates **PT-BR** and **EN-US** output, publishes a daily HTML dashboard, sends individualized e-mails, and wakes the private social publisher.
 
 The system is built around **fail-closed behavior**, **daily idempotency**, and **multiple clocks**.
+
+### v1.1.13 — GitHub Pages readiness and Gemini resilience (2026-11-10)
+
+**Root causes:** [run #793](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/42766819621) hit Gemini HTTP 503 high-demand and HTTP 429 daily-quota responses; editorial fail-closed behavior protected incomplete country coverage. [run #794](https://github.com/thalesandradepereira/monitoramento-internacional/actions/runs/42770169196) exhausted 12 GitHub Pages HTTP 404 retries and failed at about 03:52 BRT; Pages deployment finished at about 03:56 BRT.
+
+**Fix:** each Pages resource (dated dashboard and /hoje alias) now allows up to 90 checks at ten-second intervals, with a 35-minute job timeout for sequential checks. The dispatcher still requires HTTP 200, valid HTML and current operational date. Gemini HTTP 503 after retry exhaustion can fall back for the **same country**; authentication errors do not. No partial editorial or duplicate delivery is authorized.
+
+**Observed downstream state:** 9/9 accepted SMTP sends and private Instagram completed record with platform ID on 2026-11-10. Do not replay production solely to clear a historical alert. Regression, CI, dependency audit, type checks, relay tests and release validation are required. No 100% future uptime guarantee is possible for external services.
+
+**Separate token reminder:** the Instagram token renewed in September had a proactive renewal recommendation by 2026-11-12; it did not cause the Pages HTTP 404.
 
 ### v1.1.12 — independent RSS fallback and security patch (2026-10-11)
 

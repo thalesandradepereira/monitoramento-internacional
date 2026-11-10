@@ -5,7 +5,9 @@ import { pathToFileURL } from 'node:url'
 
 const DEFAULT_TIMEZONE = 'America/Sao_Paulo'
 const DEFAULT_PAGES_BASE_URL = 'https://thalesandradepereira.github.io/monitoramento-internacional'
-const DEFAULT_MAX_ATTEMPTS = 12
+// GitHub Pages deploys may finish minutes after the dashboard commit (2026-11-10: 5m+).
+// Keep fail-closed validation, but allow up to ~15 minutes per public resource.
+const DEFAULT_MAX_ATTEMPTS = 90
 const DEFAULT_RETRY_DELAY_MS = 10_000
 
 export function selectLatestCompletedExecution(log, timezone = DEFAULT_TIMEZONE) {

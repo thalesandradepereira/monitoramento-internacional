@@ -57,3 +57,10 @@ test('production workflow exposes a guarded recovery push trigger', () => {
   assert.match(workflow, /if: github\.event_name == 'push'/)
   assert.match(workflow, /run: node scripts\/validate-recovery-marker\.mjs/)
 })
+
+test('social readiness job has enough time for delayed GitHub Pages deployment', () => {
+  const job = workflow.split('  disparar-publicacao-social:')[1]
+  assert.ok(job, 'social job missing')
+  assert.match(job, /timeout-minutes: 35/)
+  assert.match(job, /run: node scripts\/dispatch-social-publisher\.mjs/)
+})

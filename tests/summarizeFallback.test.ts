@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { isGeminiQuotaExhausted } from '../src/geminiHelper'
+import { isGeminiQuotaExhausted, isRetryableGeminiError } from '../src/geminiHelper'
 
 // Injeção de dependências em memória: nenhum token, rede, e-mail ou arquivo de produção.
 function loadSummarizerWithGeminiMock(
@@ -18,6 +18,7 @@ function loadSummarizerWithGeminiMock(
 
   fake(helperId, {
     isGeminiQuotaExhausted,
+    isRetryableGeminiError,
     cleanGeminiJson: (value: string) => value,
     generateContentWithRetry: generate,
   })
@@ -87,6 +88,44 @@ test('quota esgotada nos dois modelos bloqueia edição inteira, sem omitir Bras
   try {
     await assert.rejects(resumirNoticias(news), /Cobertura editorial incompleta: falha em Brasil, Estados Unidos/)
     assert.deepEqual(models, ['triage-mock', 'summary-mock', 'fallback-mock'])
+  } finally {
+    restore()
+  }
+})
+
+test('503 high demand no modelo principal aciona fallback do mesmo país após retries', async () => {
+  const calls: Array<{ model: string; us: boolean }> = []
+  const { resumirNoticias, restore } = loadSummarizerWithGeminiMock(async (model, prompt) => {
+    const us = prompt.includes('CANDIDATOS PARA ESTADOS UNIDOS')
+    calls.push({ model, us })
+    if (model === 'triage-mock') return { text: '[{"id":"0","pais":"Brasil"},{"id":"1","pais":"Estados Unidos"}]' }
+    if (model === 'summary-mock' && us) {
+      throw Object.assign(new Error('503 gemini-3.6-flash is currently experiencing high demand'), { status: 503 })
+    }
+    return { text: responseForCountry(prompt) }
+  })
+  try {
+    const topics = await resumirNoticias(news)
+    assert.deepEqual(topics.map(item => item.pais), ['Brasil', 'Estados Unidos'])
+    assert.deepEqual(calls.map(c => c.model), ['triage-mock', 'summary-mock', 'summary-mock', 'fallback-mock'])
+  } finally {
+    restore()
+  }
+})
+
+test('falha 401 não pode acionar fallback e bloqueia publicação editorial parcial', async () => {
+  const models: string[] = []
+  const { resumirNoticias, restore } = loadSummarizerWithGeminiMock(async (model, prompt) => {
+    models.push(model)
+    if (model === 'triage-mock') return { text: '[{"id":"0","pais":"Brasil"},{"id":"1","pais":"Estados Unidos"}]' }
+    if (prompt.includes('CANDIDATOS PARA ESTADOS UNIDOS')) {
+      throw Object.assign(new Error('401 invalid API key'), { status: 401 })
+    }
+    return { text: responseForCountry(prompt) }
+  })
+  try {
+    await assert.rejects(resumirNoticias(news), /Cobertura editorial incompleta: falha em Estados Unidos/)
+    assert.deepEqual(models, ['triage-mock', 'summary-mock', 'summary-mock'])
   } finally {
     restore()
   }

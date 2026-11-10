@@ -1,4 +1,4 @@
-name: Publicar v1.1.12
+name: Publicar v1.1.13
 
 on:
   push:
@@ -6,14 +6,14 @@ on:
       - main
     paths:
       - '.github/workflows/release.yml'
-      - 'scripts/prepare-release-v1.1.12.mjs'
+      - 'scripts/prepare-release-v1.1.13.mjs'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-v1.1.12
+  group: release-v1.1.13
   cancel-in-progress: false
 
 jobs:
@@ -37,21 +37,21 @@ jobs:
           node-version: '22'
           cache: npm
 
-      - name: Preparar metadados v1.1.12 em memória
-        run: node scripts/prepare-release-v1.1.12.mjs
+      - name: Preparar metadados v1.1.13 em memória
+        run: node scripts/prepare-release-v1.1.13.mjs
 
       - name: Validar metadados e artefatos de produção
         shell: bash
         run: |
           set -euo pipefail
-          node -e "const p=require('./package.json'); if (p.version !== '1.1.12') process.exit(1)"
-          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.12' || p.packages[''].version !== '1.1.12') process.exit(1)"
-          grep -Fq '**Versão / Version:** 1.1.12' README.md
-          grep -Fq '### Release v1.1.12 — contingência RSS e segurança em 11/10/2026' README.md
-          grep -Fq '### v1.1.12 — independent RSS fallback and security patch (2026-10-11)' README.md
-          grep -Fq '38117234171' README.md
-          grep -Fq '38118864188' README.md
-          grep -Fq 'tests/rssFallback.test.ts' README.md
+          node -e "const p=require('./package.json'); if (p.version !== '1.1.13') process.exit(1)"
+          node -e "const p=require('./package-lock.json'); if (p.version !== '1.1.13' || p.packages[''].version !== '1.1.13') process.exit(1)"
+          grep -Fq '**Versão / Version:** 1.1.13' README.md
+          grep -Fq '### Release v1.1.13 — resiliência GitHub Pages e Gemini em 10/11/2026' README.md
+          grep -Fq '### v1.1.13 — GitHub Pages readiness and Gemini resilience (2026-11-10)' README.md
+          grep -Fq '42766819621' README.md
+          grep -Fq '42770169196' README.md
+          grep -Fq 'tests/socialDispatch.test.mjs' README.md
           test ! -f recipients.txt
           RELEASE_DATE="$(TZ=America/Sao_Paulo date +%d-%m-%Y)"
           ISO_DATE="$(TZ=America/Sao_Paulo date +%Y-%m-%d)"
@@ -84,7 +84,7 @@ jobs:
         run: npm --prefix infra/gcp-scheduler-relay test
 
       - name: Build do relay
-        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.12 infra/gcp-scheduler-relay
+        run: docker build --tag tap-gcp-scheduler-relay:release-v1.1.13 infra/gcp-scheduler-relay
 
       - name: Validar YAML e whitespace
         shell: bash
@@ -97,7 +97,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4 v1.1.5 v1.1.6 v1.1.7 v1.1.8 v1.1.9 v1.1.10 v1.1.11; do
+          for tag in v1.0.0 v1.1.0 v1.1.1 v1.1.2 v1.1.3 v1.1.4 v1.1.5 v1.1.6 v1.1.7 v1.1.8 v1.1.9 v1.1.10 v1.1.11 v1.1.12; do
             gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null
             git cat-file -e "$tag^{commit}"
             if git ls-tree -r --name-only "$tag" | grep -Eq '(^|/)recipients\.txt$'; then
@@ -140,7 +140,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           if ! git diff --quiet -- package.json package-lock.json README.md; then
             git add package.json package-lock.json README.md
-            git commit -m 'chore: preparar release v1.1.12'
+            git commit -m 'chore: preparar release v1.1.13'
             pushed=false
             for attempt in 1 2 3; do
               if git push origin HEAD:main; then
@@ -153,33 +153,34 @@ jobs:
           fi
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Criar release v1.1.12
+      - name: Criar release v1.1.13
         shell: bash
         env:
           RELEASE_SHA: ${{ steps.persist.outputs.sha }}
         run: |
           set -euo pipefail
-          if gh release view v1.1.12 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo 'Release v1.1.12 já existe; nenhuma duplicação será criada.'
+          if gh release view v1.1.13 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'Release v1.1.13 já existe; nenhuma duplicação será criada.'
             exit 0
           fi
           cat > /tmp/release-notes.md <<'EOF'
-          ## Monitoramento Internacional v1.1.12 — 11/10/2026
+          ## Monitoramento Internacional v1.1.13 — 10/11/2026
 
-          ### Incidente e recuperação
-          - Run 38117234171: 10/10 RSS Google News responderam HTTP 503; fail-closed impediu edição parcial.
-          - Run 38118864188: recuperou 897 notícias únicas, dashboard, 8/8 aceites SMTP e 0 falhas.
-          - Publicador social concluiu; não há reenvio artificial ou repetição do disparo real.
+          ### Incidentes confirmados
+          - Execução 42766819621: Gemini HTTP 503 e quota HTTP 429; fail-closed editorial impediu cobertura parcial.
+          - Execução 42770169196: dashboard gerado, mas GitHub Pages retornou 404 até 03h52 BRT; deploy só terminou às 03h56 BRT.
+          - Estado do dia: 9/9 aceites SMTP, zero falhas e Instagram completed com platform_id; sem replay real.
 
-          ### Correção
-          - Fallback independente para Bing News RSS por país quando Google News está indisponível, malformado ou sem itens.
-          - URLs de rastreamento Bing são convertidas a URLs HTTP(S) originais quando possível.
-          - Preservado o guard MIN_SUCCESSFUL_SOURCES=7, janela de 24h e deduplicação.
-          - Correção de segurança CRITICAL GHSA-jqcg-44mw-7w3h: proxy-addr@2.0.8 via lockfile com SHA512.
+          ### Correções e segurança
+          - Espera de publicação Pages até 90 verificações por recurso; timeout de 35 minutos para job social.
+          - Exige HTML da data correta em dashboard e alias antes do repository_dispatch.
+          - Gemini 503 transitório após retries aciona fallback no mesmo país, sem confundir quota esgotada.
+          - Erros de autenticação não acionam fallback; sem mudanças em segredos, permissão ou destinatários.
 
-          ### Gates
-          - Testes regressivos RSS e suíte completa; npm audit, TypeScript, relay, Docker, YAML, whitespace, privacidade histórica,
-            dashboard do dia e publicação social.
-          - Nenhuma alteração em secrets, SMTP, Cloudflare D1, cron ou acionamento social.
+          ### Quality Gates
+          - Regressões para 404 prolongado/definitivo, 503, 401, alias antigo.
+          - npm audit, npm test, TypeScript, Worker, relay GCP, Docker, YAML e whitespace.
+          - Gate de publicação: estado operacional, Pages do dia e status privado com platform_id.
+
           EOF
-          gh release create v1.1.12 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.12' --notes-file /tmp/release-notes.md
+          gh release create v1.1.13 --repo "$GITHUB_REPOSITORY" --target "$RELEASE_SHA" --title 'Monitoramento Internacional v1.1.13' --notes-file /tmp/release-notes.md
