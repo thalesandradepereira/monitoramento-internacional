@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-phyY4Vhm2TtDLl4MeNf+6iXT'; script-src 'nonce-phyY4Vhm2TtDLl4MeNf+6iXT'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="phyY4Vhm2TtDLl4MeNf+6iXT">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">14/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="phyY4Vhm2TtDLl4MeNf+6iXT">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"TudoCelular.com","pais":"Brasil","titulo":"PlayStation 5 recebe tecnologia de IA QSSR para melhorar gráficos em Spider-Man 2 e novos jogos","resumo":"A Sony anunciou a implementação da tecnologia de inteligência artificial QSSR para o PlayStation 5. A inovação visa aprimorar significativamente o desempenho gráfico e a taxa de quadros em títulos populares como Spider-Man 2. Essa atualização representa um avanço importante na renderização por IA em consoles de mesa. A novidade promete transformar a experiência visual dos jogadores nos próximos lançamentos.","link":"https://www.tudocelular.com/software/noticias/n267174/ps5-recebe-qssr-spider-man-2-novos-jogos.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Technology Org","pais":"Estados Unidos","titulo":"Nova impressão 3D combina velocidade, precisão e ampla gama de materiais","resumo":"Cientistas e engenheiros desenvolveram um novo método de impressão 3D que promete revolucionar a fabricação industrial ao unir altíssima velocidade e precisão milimétrica. A inovação permite trabalhar com uma gama sem precedentes de materiais flexíveis e rígidos na mesma peça. O avanço tecnológico abre caminho para a criação mais eficiente de componentes médicos e microeletrônicos complexos. Isso reduz custos operacionais e acelera significativamente o tempo de produção no mercado global.","link":"https://www.technology.org/2026/11/14/new-3d-printing-combines-speed-precision-and-broad-material-range/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"BFM","pais":"França","titulo":"CEO da Mistral afirma que a Europa tem tecnologia para liderar a corrida da inteligência artificial","resumo":"O líder da startup francesa Mistral instou os dirigentes dos países membros da União Europeia a tomarem atitudes imediatas para garantir a soberania tecnológica do continente. Segundo ele, a região possui todos os talentos e infraestruturas necessários para competir de igual para igual com as potências mundiais. O apelo destaca a urgência de investimentos estratégicos e regulação favorável ao avanço da inovação em IA antes que a lacuna global se torne irreversível.","link":"https://www.bfmtv.com/tech/intelligence-artificielle/l-europe-dispose-de-toute-la-technologie-et-des-talents-necessaires-pour-prendre-la-tete-de-la-course-a-l-intelligence-artificielle-le-patron-de-mistral-appelle-l-europe-a-un-sursaut-et-a-agir-des-maintenant_AD-202611130592.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Al Majalla","pais":"Inglaterra","titulo":"Eugene Vodolazkin: a tecnologia avançou, mas o espírito humano não","resumo":"O renomado autor Eugene Vodolazkin reflete sobre o contraste entre o rápido avanço tecnológico e a estagnação moral da humanidade. Ele argumenta que, embora tenhamos ferramentas incrivelmente avançadas, os dilemas éticos e a natureza humana permanecem inalterados desde a antiguidade. Essa perspectiva convida a uma reflexão profunda sobre o verdadeiro progresso da sociedade moderna.","link":"https://en.majalla.com/node/334165/culture-social-affairs/eugene-vodolazkin-technology-has-advanced-human-spirit-has-not","categoria":"SOCIEDADE","lang":"pt"},{"fonte":"Linares28","pais":"Espanha","titulo":"«A IA já não é uma promessa, é a tecnologia mais determinante da nossa era»: a contundente advertência da UJA","resumo":"A Universidade de Jaén destacou o papel transformador e inevitável da inteligência artificial na sociedade atual. Especialistas alertaram para a necessidade urgente de adaptação e regulação em múltiplos setores profissionais. O impacto dessa transformação digital redefinirá a economia e a produtividade global nos próximos anos.","link":"https://www.linares28.es/2026/11/14/la-ia-ya-no-es-una-promesa-es-la-tecnologia-mas-determinante-de-nuestra-era-la-rotunda-advertencia-desde-la-uja/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"FOCUS online","pais":"Alemanha","titulo":"Subvenções em vez de cortes de impostos: Alemanha adota política de incentivo para motoristas de carros elétricos","resumo":"O governo alemão está priorizando a concessão de subvenções diretas em vez de aplicar cortes de impostos para impulsionar a frota de veículos elétricos. Essa medida busca acelerar a transição energética e a sustentabilidade no setor automotivo nacional. Contudo, a iniciativa enfrenta críticas de economistas que questionam a eficácia e os custos desse modelo de incentivo público a longo prazo. O setor automotivo local acompanha atentamente os desdobramentos econômicos dessa medida.","link":"https://www.focus.de/auto/subventionen-statt-steuersenkungen-deutschland-betreibt-moevenpick-politik-fuer-e-auto-fahrer_98ed3314-ea80-4a1e-a843-4166d3bae3c7.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"毎日新聞","pais":"Japão","titulo":"Tecnologia patenteada que gera piconanobolhas aumenta a penetração de loção na pele em cerca de 2,5 vezes","resumo":"Uma nova tecnologia patenteada capaz de gerar piconanobolhas promete revolucionar a indústria de cosméticos ao aumentar em cerca de 2,5 vezes a capacidade de penetração de loções na pele. A inovação permite que os ingredientes ativos alcancem camadas mais profundas do tecido cutâneo de forma extremamente eficaz. Esse avanço científico destaca a aplicação prática da nanotecnologia no mercado de cuidados pessoais e beleza.","link":"https://mainichi.jp/articles/20261114/pr2/00m/020/066000c","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"求是","pais":"China","titulo":"O desenvolvimento futuro das interfaces cérebro-computador exige esforço conjunto","resumo":"O avanço das interfaces cérebro-computador representa uma das fronteiras mais promissoras da ciência e tecnologia moderna na China. Para consolidar essa inovação, especialistas defendem a colaboração multidisciplinar e a integração entre institutos de pesquisa, indústrias e hospitais. O objetivo central é acelerar a aplicação clínica dessas tecnologias para responder às necessidades vitais dos pacientes. Esse esforço conjunto promete transformar diagnósticos e tratamentos médicos nos próximos anos.","link":"https://www.qstheory.cn/20261114/1ff84b3e36c04d69be8aa7771cccdd23/c.html","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"India Education Diary","pais":"Índia","titulo":"Mais de 10.000 jovens participam da Exposição de Medicina e Ciência 2026 da Gulf Medical University","resumo":"A Gulf Medical University realizou sua Exposição de Medicina e Ciência 2026, atraindo mais de 10 mil estudantes interessados em inovação médica e saúde. O evento proporcionou aos participantes uma visão aprofundada sobre as mais recentes pesquisas científicas, avanços tecnológicos no setor biomédico e carreiras do futuro. A iniciativa reforça a importância da educação em ciência e da formação de novos talentos para impulsionar a transformação da medicina.","link":"https://indiaeducationdiary.in/over-10000-young-minds-attend-gulf-medical-universitys-medical-and-science-exhibition-2026/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Apagão da Microsoft expõe a dependência tecnológica global","resumo":"O recente apagão global nos sistemas da Microsoft revelou a grande vulnerabilidade das infraestruturas dependentes de poucas empresas de tecnologia. O incidente paralisou serviços essenciais em diversos setores, como aviação, saúde e bancos em vários países. Especialistas apontam para a necessidade urgente de diversificação e estratégias de contingência para evitar colapsos sistêmicos no futuro. A crise acendeu o alerta mundial sobre a resiliência das redes de informação.","link":"https://www.cmjornal.pt/tecnologia/detalhe/apagao-da-microsoft-deixa-a-vista-dependencia-tecnologica","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"UOL Economia","pais":"Brasil","titulo":"Bancos tentam atrair investidores para IPO recorde da Anthropic","resumo":"Grandes instituições financeiras estão ativamente trabalhando para atrair investidores para a oferta pública inicial da Anthropic. A startup de inteligência artificial busca alcançar uma avaliação histórica no mercado global. O movimento reflete a forte demanda do setor financeiro por empresas líderes em IA generativa. O IPO promete ser um dos marcos mais relevantes do ecossistema de tecnologia recente.","link":"https://economia.uol.com.br/noticias/redacao/2026/11/13/bancos-tentam-atrair-investidores-para-ipo-recorde-da-anthropic.ghtm","categoria":"MERCADO","lang":"pt"},{"fonte":"Yahoo Finance","pais":"Estados Unidos","titulo":"CVS Health ganha sete prêmios Stevie por inovação em IA e tecnologia","resumo":"A CVS Health foi reconhecida com sete prêmios Stevie por suas recentes implementações de inteligência artificial e soluções tecnológicas no setor de saúde. As ferramentas premiadas otimizaram o atendimento aos pacientes e a eficiência operacional das redes de farmácias e cuidados médicos. A conquista destaca a crescente integração entre saúde pública e transformação digital para melhorar a experiência do usuário. O reconhecimento consolida a empresa como referência na adoção de tecnologias emergentes para a medicina.","link":"https://finance.yahoo.com/healthcare/articles/cvs-health-cvs-wins-seven-051257782.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"RFI","pais":"França","titulo":"Uma em cada três crianças de 13 anos afirma ter uma IA como melhor amiga","resumo":"A declaração feita por Sarah El Haïry traz à tona debates profundos sobre o impacto ético e psicológico das novas tecnologias no desenvolvimento social dos jovens. O uso crescente de robôs conversacionais por adolescentes reforça a necessidade de regulação e acompanhamento parental no ambiente virtual. Especialistas e políticos alertam para a busca de conexões emocionais artificiais em detrimento das relações humanas interpessoais.","link":"https://www.rfi.fr/fr/podcasts/l-atelier-politique/20261114-sarah-el-ha%C3%AFry-un-enfant-de-13-ans-sur-trois-dit-avoir-une-ia-pour-meilleur-ami?GJlXzGgqHj","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Como a interrupção da Microsoft afetou serviços públicos essenciais no Reino Unido","resumo":"Uma grande falha nos sistemas da Microsoft causou sérios transtornos em diversos serviços públicos fundamentais no Reino Unido, incluindo hospitais e transporte. O incidente expôs a extrema vulnerabilidade da infraestrutura britânica diante de instabilidades em plataformas digitais globais. Autoridades agora avaliam medidas para reforçar a resiliência cibernética do país e evitar novas paralisias.","link":"https://www.theguardian.com/technology/2026/nov/13/how-microsoft-outage-has-affected-key-public-services-in-the-uk","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Rebelion","pais":"Espanha","titulo":"A astronavega que estuda a menstruação no espaço: «A ciência sempre foi muito patriarcal»","resumo":"Pesquisas espaciais recentes começaram a focar na saúde reprodutiva feminina e em seus impactos durante missões de longa duração. A iniciativa busca quebrar tabus históricos e preencher lacunas científicas deixadas pela liderança predominantemente masculina na exploração espacial. Os resultados prometem melhorar a preparação e o bem-estar de futuras astronautas em missões à Lua e Marte.","link":"https://rebelion.org/la-astronauta-que-estudia-la-menstruacion-en-el-espacio-la-ciencia-siempre-ha-sido-muy-patriarcal/","categoria":"CIÊNCIA ESPACIAL","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Tesla permite que clientes selecionados façam pré-encomenda de Robotaxis","resumo":"A Tesla começou a permitir que um grupo selecionado de clientes faça a pré-encomenda dos seus novos Robotaxis. A iniciativa representa um avanço significativo no desenvolvimento de veículos autônomos e na expansão do modelo de transporte robótico da empresa. A novidade gera grandes expectativas na indústria de tecnologia sobre o futuro da mobilidade urbana global. O movimento reforça a competição no mercado de automação veicular.","link":"https://www.sueddeutsche.de/wirtschaft/musks-autobauer-tesla-laesst-ausgewaehlte-kaeufer-robotaxis-vorbestellen-dpa.urn-newsml-dpa-com-20090101-261114-930-993996","categoria":"MOBILIDADE","lang":"pt"},{"fonte":"BigGo ファイナンス","pais":"Japão","titulo":"IA realiza experimentos em ciências da vida de forma autônoma, gerando preocupação com uso indevido de Auto-DNA e debates sobre regras internacionais","resumo":"O avanço de inteligências artificiais capazes de executar experimentos de ciências da vida de maneira autônoma trouxe novos alertas à comunidade científica mundial. A tecnologia conhecida como Auto-DNA levanta preocupações sobre o uso indevido para a criação de elementos biológicos perigosos sem supervisão humana. Diante desse cenário crítico, especialistas e autoridades internacionais debatem com urgência a criação de regras e diretrizes globais de segurança.","link":"https://finance.biggo.jp/news/ab9393bc-2848-47e9-97e7-21ff6821c811","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"China","titulo":"Laboratórios chineses automatizam experimentos em ciências da vida com IA e robótica","resumo":"Pesquisadores na China estão integrando sistemas de inteligência artificial e robótica para automatizar experimentos complexos na área de ciências da vida. A inovação aumenta significativamente a eficiência e a precisão das pesquisas científicas no país. No entanto, o avanço rápido levanta intensos debates sobre segurança biológica e os riscos éticos envolvidos na automação total. A comunidade internacional acompanha de perto os impactos dessa nova abordagem tecnológica.","link":"https://news.yahoo.co.jp/articles/67ca15802ed75d81c839c105646594691f4400e3","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Moneycontrol.com","pais":"Índia","titulo":"KPMG lança hub de tecnologia esportiva em Bengaluru visando mercado de US$ 40 bilhões até 2030","resumo":"A consultoria KPMG anunciou a abertura de um Hub de Tecnologia Esportiva em Bengaluru para impulsionar a inovação no setor esportivo indiano. O objetivo é capitalizar o crescimento vertiginoso do mercado de esportes no país, projetado para atingir US$ 40 bilhões até o ano de 2030. O hub atuará como um ecossistema integrador para startups, investidores e organizações, promovendo o desenvolvimento de soluções tecnológicas avançadas.","link":"https://www.moneycontrol.com/technology/kpmg-launches-sports-tech-hub-in-bengaluru-eyes-40-billion-indian-sports-industry-by-2030-article-14080072.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"Sinal de rádio repetitivo a cada oito minutos tem sua origem descoberta por astrônomos","resumo":"Astrônomos identificaram a fonte de um intrigante sinal de rádio que se repete pontualmente a cada oito minutos no espaço profundo. A descoberta abre novas janelas para a compreensão de fenômenos astrofísicos raros e corpos celestes de alta densidade. O achado desafia teorias anteriores sobre a emissão de pulsos de rádio no universo. A pesquisa impulsiona novos estudos sobre os mistérios da dinâmica cósmica.","link":"https://pplware.sapo.pt/ciencia/sinal-radio-oito-minutos-origem-ana-branca/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Ciência no Rádio explica o que são as Rajadas Rápidas de Rádio e como ajudam a mapear a matéria no Universo","resumo":"O programa Ciência no Rádio abordou o fenômeno das Rajadas Rápidas de Rádio, impulsos cósmicos de alta energia e curta duração. Os pesquisadores detalharam como a observação desses sinais permite mapear a distribuição da matéria entre as galáxias. A técnica auxilia os astrônomos a compreenderem a estrutura invisível do Universo. O avanço abre novas fronteiras para a astrofísica moderna.","link":"https://www.gov.br/observatorio/pt-br/assuntos/noticias/ciencia-no-radio-explica-como-as-rajadas-rapidas-de-radio-ajudam-a-mapear-a-materia-no-universo","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"The Guardian","pais":"Estados Unidos","titulo":"Apagão da Microsoft afeta empresas, escolas e governos locais nos EUA","resumo":"Uma falha massiva nos sistemas da Microsoft provocou interrupções em grande escala em diversos setores essenciais nos Estados Unidos. Serviços governamentais, redes de ensino e operações comerciais enfrentaram paralisações inesperadas ao longo do dia. Especialistas em TI trabalham para conter os impactos e restaurar a estabilidade dos servidores afetados. O incidente acendeu um alerta global sobre a extrema dependência de infraestruturas tecnológicas centralizadas.","link":"https://www.theguardian.com/technology/2026/nov/13/microsoft-outage-shakes-up-companies-local-governments","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"RFI","pais":"França","titulo":"Made in France: empresas francesas de tecnologia buscam independência de gigantes digitais","resumo":"Organizações do setor de tecnologia da França estão intensificando iniciativas locais para reduzir a dependência das grandes corporações americanas e asiáticas. O movimento visa fortalecer a soberania de dados, a segurança cibernética e incentivar o ecossistema europeu de startups. A estratégia reflete uma mudança geopolítica crucial no ecossistema digital global em busca de autonomia operacional.","link":"https://www.rfi.fr/br/fran%C3%A7a/20261113-made-in-france-empresas-francesas-de-tecnologia-buscam-independ%C3%AAncia-de-gigantes-digitais","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Sky News","pais":"Inglaterra","titulo":"Propulsor do Starship da SpaceX explode, encerrando esperanças de avanço","resumo":"Um teste crucial do novo propulsor do Starship da SpaceX terminou em uma explosão inesperada durante os testes de solo. O incidente representa um revés significativo para os planos da empresa de realizar voos orbitais de longa distância no curto prazo. Engenheiros da SpaceX já iniciaram investigações detalhadas para identificar a causa da falha e redefinir o cronograma do projeto.","link":"https://news.sky.com/video/spacex-starship-booster-explodes-ending-hopes-of-breakthrough-13612101","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"El Periódico de Aragón","pais":"Espanha","titulo":"Buscam-se voluntários montanhistas contra a mudança climática: \"As montanhas são um observatório ideal do aquecimento global\"","resumo":"Um novo projeto ambiental convoca voluntários para coletar dados científicos sobre os efeitos do aquecimento global em altas altitudes. As montanhas funcionam como ecossistemas sensíveis que revelam rapidamente as transformações do clima do planeta. As informações reunidas ajudarão pesquisadores a elaborar estratégias de preservação e mitigação ecológica.","link":"https://www.elperiodicodearagon.com/deportes/2026/11/14/buscan-voluntarios-montaneros-cambio-climatico-136421265.html","categoria":"MUDANÇA CLIMÁTICA","lang":"pt"},{"fonte":"FAZ","pais":"Alemanha","titulo":"Voo de teste da SpaceX: Propulsor da Starship falha em tentativa de captura","resumo":"Durante um voo de teste, o propulsor Super Heavy da nave Starship da SpaceX não conseguiu realizar o pouso guiado na torre de captura. O imprevisto forçou a equipe a direcionar o foguete para um impacto controlado na água para garantir a segurança. Apesar de a tentativa de captura ter falhado, o teste forneceu dados essenciais para o aprimoramento de sistemas reutilizáveis. A empresa continuará analisando as métricas para as próximas missões.","link":"https://www.faz.net/aktuell/wirtschaft/unternehmen/spacex-testflug-starship-booster-verfehlt-fangversuch-accg-201682589.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Tecnologia de ponta é testada em Mito para que pessoas com deficiência aproveitem jogos do Ibaraki Robots","resumo":"Um experimento de demonstração realizado na cidade de Mito utilizou tecnologias de última geração para proporcionar uma experiência inclusiva em eventos esportivos. A iniciativa visa permitir que pessoas com deficiência assistam aos jogos do time de basquete Ibaraki Robots de forma interativa e sem barreiras. O projeto piloto demonstra como a inovação tecnológica pode promover a acessibilidade social e transformar o entretenimento esportivo.","link":"https://news.yahoo.co.jp/articles/246fed3d90f1fe57bb30e83b17b0ed4fcf42db81","categoria":"INOVAÇÃO SOCIAL","lang":"pt"},{"fonte":"Sohu","pais":"China","titulo":"Foco no 6G: Criado Centro de Inovação em Tecnologias de Comunicação Semântica","resumo":"O Laboratório Tianfu Jiangxi anunciou a criação do seu Centro de Inovação em Tecnologia de Comunicação Semântica voltado para a era 6G. A nova estrutura busca viabilizar a Internet de Todas as Coisas com Inteligência, revolucionando a transmissão de dados. Essa tecnologia visa otimizar a eficiência de redes móveis de última geração, reduzindo a latência e o consumo de largura de banda. O projeto consolida a liderança da China no desenvolvimento de padrões de comunicação do futuro.","link":"https://m.sohu.com/a/1101468998_355475?scm=10001.325_13-325_13.0.0-0-0-0-0.5_1334","categoria":"TELECOMUNICAÇÕES","lang":"pt"},{"fonte":"ANI News","pais":"Índia","titulo":"Fixtra constrói cadeia de suprimentos nacional de peças para a economia de reparos na Índia","resumo":"A startup Fixtra está estruturando uma cadeia de suprimentos abrangente em toda a Índia focada no fornecimento de peças de reposição. A iniciativa busca formalizar e otimizar o mercado de manutenção no país, oferecendo logística eficiente e componentes de qualidade para assistências técnicas. Com essa infraestrutura, a empresa atende à crescente demanda da economia de reparo e sustentabilidade tecnológica na região.","link":"https://www.aninews.in/news/business/8220fixtra-builds-a-nationwide-spare-parts-supply-chain-for-indias-repair-economy8221-anmol-gupta-founder-fixtra20261114103139","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"A Terra capturou uma nova minilua, mas sua permanência será breve","resumo":"A Terra capturou temporariamente um pequeno asteroide que passou a orbitar o planeta como uma minilua. Cientistas confirmaram que o objeto permanecerá na órbita terrestre apenas por algumas semanas antes de seguir seu caminho pelo espaço. A observação desses corpos fornece valiosas informações sobre a dinâmica do sistema solar e asteroides próximos. O fenômeno atrai a atenção de astrônomos em todo o mundo.","link":"https://pplware.sapo.pt/ciencia/terra-nova-minilua-2026-qq8/","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Brasil apresenta na COP31 o sistema IndicaClima para monitorar ações da política climática nacional","resumo":"Durante a COP31, o governo brasileiro apresentou a plataforma IndicaClima, desenvolvida para acompanhar metas ambientais. O sistema utiliza dados tecnológicos para avaliar a eficácia das políticas climáticas implementadas no país. A iniciativa reforça o compromisso nacional com a transparência e sustentabilidade global. A ferramenta será fundamental para orientar estratégias de mitigação dos impactos climáticos.","link":"https://www.gov.br/secom/pt-br/acompanhe-a-secom/noticias/2026/11/brasil-apresenta-na-COP31-sistema-indicaclima-para-monitorar-acoes-da-politica-climatica-nacional-na-cop31","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"BBC","pais":"Estados Unidos","titulo":"Revés no teste de captura dupla do foguete Starship da SpaceX","resumo":"A SpaceX enfrentou contratempos técnicos durante o mais recente teste de voo do foguete Starship, projetado para missões espaciais de longa distância. O objetivo de realizar a captura dupla dos propulsores não alcançou o resultado esperado devido a anomalias no procedimento. Apesar das dificuldades, a equipe de engenharia coletou dados valiosos para aperfeiçoar os próximos lançamentos. A empresa reafirma seu compromisso de acelerar o desenvolvimento de viagens interplanetárias reutilizáveis.","link":"https://www.bbc.co.uk/news/articles/ckregdgnl0xpo","categoria":"ESPAÇO","lang":"pt"},{"fonte":"RFI","pais":"França","titulo":"Inteligência artificial: a União Europeia ainda tem como recuperar o atraso?","resumo":"Um debate abrangente analisa se o bloco europeu conseguirá equilibrar uma regulação rigorosa com a promoção da inovação tecnológica no setor de inteligência artificial. Diante do avanço acelerado dos Estados Unidos e da China, a Europa busca estratégias para capacitar suas indústrias e reter talentos locais. A corrida tecnológica exige investimentos bilionários em infraestrutura e o fortalecimento do mercado único digital.","link":"https://www.rfi.fr/br/europa/20261113-intelig%C3%AAncia-artificial-a-uni%C3%A3o-europeia-ainda-tem-como-recuperar-o-atraso","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"TVI Player","pais":"Inglaterra","titulo":"Se os EUA desligarem a tecnologia, a Europa pode ficar às escuras?","resumo":"Especialistas em geopolítica e tecnologia alertam para a profunda dependência europeia em relação às infraestruturas de TI e serviços em nuvem norte-americanos. Caso ocorra uma interrupção massiva ou bloqueio no fornecimento dessas tecnologias pelos EUA, a Europa enfrentaria graves paralisações econômicas e operacionais. O debate impulsiona discussões urgentes sobre a busca pela soberania digital no continente europeu.","link":"https://tviplayer.iol.pt/programa/jornal-nacional/63e6588b0cf2665294d4f012/video/6af77c2f0cf2aafa0453e800","categoria":"GEOPOLÍTICA","lang":"pt"},{"fonte":"El Confidencial","pais":"Espanha","titulo":"Valladolid entra na onda dos videogames: tecnologia de ponta em busca de talento","resumo":"A cidade de Valladolid está investindo fortemente na indústria de desenvolvimento de jogos digitais e tecnologia avançada. A iniciativa visa atrair talentos e novas empresas para impulsionar a economia criativa local. O setor promete gerar empregos qualificados e posicionar a região como um hub tecnológico de relevância.","link":"https://www.elconfidencial.com/espana/castilla-y-leon/2026-11-14/valladolid-se-sube-a-la-ola-del-videojuego-tecnologia-puntera-en-busca-de-talento_4464613/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Yahoo","pais":"Alemanha","titulo":"Apagão da Microsoft afetará significativamente a economia alemã, afirma governo","resumo":"Uma falha massiva nos sistemas da Microsoft provocou paralisações e impactos profundos em diversos setores da economia alemã. O governo do país confirmou que os desdobramentos da interrupção digital serão significativos para o comércio e serviços locais. O incidente acendeu alertas internacionais sobre os riscos da dependência de poucas infraestruturas tecnológicas. Especialistas agora debatem a urgência de planos de resiliência cibernética.","link":"https://es.finance.yahoo.com/noticias/corte-microsoft-afectar%C3%A1-significativamente-econom%C3%ADa-123456673.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"北羽新報社","pais":"Japão","titulo":"Pesquisador de Noshiro ganha prêmio de ciência e tecnologia por desenvolver nova variedade de rabanete para processamento","resumo":"O pesquisador Miyakoshi, natural da cidade de Noshiro, foi contemplado com o prestigiado Prêmio Akita Wakasugi de Incentivo à Ciência e Tecnologia. A honraria foi concedida pelo desenvolvimento bem-sucedido de uma nova cultivar de rabanete japonês voltada especificamente para o processamento industrial. A inovação na biotecnologia agrícola promete otimizar a cadeia de produção de alimentos e fortalecer a economia da região.","link":"https://www.hokuu.co.jp/?p=46531","categoria":"CIÊNCIA AGRÍCOLA","lang":"pt"},{"fonte":"新浪财经","pais":"China","titulo":"Robin Li: A energia impulsiona o avanço da IA e a capacidade organizacional define o sucesso","resumo":"O fundador da Baidu, Robin Li, destacou que a infraestrutura de energia elétrica é o principal gargalo para o desenvolvimento da inteligência artificial. Segundo o executivo, o valor prático da IA depende diretamente da capacidade de adaptação organizacional das empresas. Ele reforçou que a corrida tecnológica exige soluções eficientes em matriz energética sustentável para alimentar os grandes modelos de linguagem. O posicionamento sinaliza novos rumos estratégicos para a indústria de tecnologia na China.","link":"https://cj.sina.cn/articles/view/2137950223/7f6e880f01902usa6","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Indian Council Of Agricultural Research","pais":"Índia","titulo":"Tecnologia de água quente do ICAR-IIHR impulsionará exportação de mangas do sul da Índia","resumo":"O Instituto Indiano de Pesquisa Agrícola desenvolveu um tratamento de tratamento térmico com água quente para prolongar a vida útil das mangas cultivadas no sul do país. A tecnologia visa sanitizar os frutos contra pragas e doenças sem o uso de agroquímicos, atendendo aos rigorosos padrões internacionais de segurança alimentar. A aplicação do método promete reduzir perdas pós-colheita e alavancar expressivamente as exportações agrícolas.","link":"https://icar.org.in/en/icar-iihrs-hot-water-technology-boost-export-south-indian-mangoes","categoria":"AGRONEGÓCIO","lang":"pt"},{"fonte":"Expresso","pais":"Portugal","titulo":"Geladeiras, TVs e aspiradores: qualquer dispositivo conectado pode sofrer ataques cibernéticos","resumo":"A expansão da Internet das Coisas trouxe comodidade, mas também novos riscos de segurança para as residências. Especialistas alertam que eletrodomésticos inteligentes conectados à rede podem ser explorados por cibercriminosos para invasões de privacidade ou ataques em massa. A conscientização e a atualização contínua dos dispositivos são fundamentais para conter as vulnerabilidades. A segurança digital tornou-se indispensável no cotidiano moderno.","link":"https://expresso.pt/sociedade/tecnologia/2026-11-13-frigorificos-televisoes-aspiradores-qualquer-dispositivo-ligado-a-uma-rede-pode-ser-alvo-de-um-ataque-informatico-3c80c7eb","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"Migalhas","pais":"Brasil","titulo":"EPD lança centro de inovação jurídica com foco em IA e tecnologia","resumo":"A Escola Paulista de Direito anunciou a criação de um centro de inovação voltado às transformações tecnológicas no setor jurídico. A estrutura focará em inteligência artificial, automação de processos e análise de dados para o Direito. O objetivo é capacitar profissionais para as novas demandas do mercado jurídico moderno. A iniciativa marca uma importante ponte entre o ensino superior e a tecnologia aplicada.","link":"https://www.migalhas.com.br/quentes/468597/epd-lanca-centro-de-inovacao-juridica-com-foco-em-ia-e-tecnologia","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"Instrumentos do Telescópio Espacial Roman da NASA entram em sintonia para a ciência","resumo":"Os instrumentos científicos do Telescópio Espacial Nancy Grace Roman da NASA alcançaram o alinhamento e sincronização necessários para iniciar suas operações. O avanço representa um marco fundamental para a missão, que visa mapear o universo e investigar a energia escura. Com os sistemas totalmente integrados, os pesquisadores se preparam para capturar imagens de altíssima resolução de galáxias distantes. A expectativa é que o observatório traga descobertas inéditas sobre a expansão do cosmos.","link":"https://science.nasa.gov/blogs/roman/2026/11/13/instruments-on-nasas-roman-space-telescope-get-in-sync-for-science/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"RTP","pais":"França","titulo":"TEKEVER inaugura fábrica na França e prepara entrega dos primeiros 15 drones às Forças Armadas","resumo":"A empresa de tecnologia de defesa expandiu sua capacidade fabril em solo francês para atender às crescentes demandas do setor militar europeu. O fornecimento das primeiras unidades de veículos aéreos não tripulados representa um marco estratégico no fortalecimento da defesa e vigilância do país. A iniciativa impulsiona empregos de alta qualificação técnica na região e consolida o ecossistema industrial local.","link":"https://www.rtp.pt/noticias/economia/tekever-inaugura-fabrica-em-franca-e-prepara-entrega-dos-primeiros-15-drones-as-forcas-armadas_n1778881","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Apagão da Microsoft é um 'alerta contundente' de nossa dependência da tecnologia","resumo":"A recente interrupção nos serviços globais da Microsoft serviu como um lembrete severo de como a sociedade moderna se tornou dependente de poucas corporações de tecnologia. O apagão afetou voos, serviços bancários e operações de empresas em todo o mundo, paralisando atividades rotineiras. Especialistas destacam a necessidade urgente de diversificação de sistemas e estratégias de plano de contingência.","link":"https://www.bbc.com/news/articles/cxzd9171m51qo","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Vozpopuli","pais":"Espanha","titulo":"Biotecnologia, IA e 'economia prateada': o mapa do BBVA AM para rentabilizar a megatendência da longevidade","resumo":"O BBVA Asset Management apresentou uma estratégia de investimento focada no envelhecimento populacional e no avanço da medicina. A integração entre biotecnologia e inteligência artificial surge como motor para soluções inovadoras de saúde. Essa convergência impulsiona um novo mercado financeiro focado na qualidade de vida e na longevidade humana.","link":"https://www.vozpopuli.com/economia/fondos/biotecnologia-ia-y-economia-plateada-el-mapa-piramidal-de-bbva-am-para-rentabilizar-la-megatendencia-de-la-longevidad.html","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Link To Leaders","pais":"Alemanha","titulo":"Berlim acolhe comunidade de portugueses das áreas de tecnologia, inovação e empreendedorismo","resumo":"Berlim tornou-se um grande ponto de encontro para profissionais e empreendedores portugueses das áreas de tecnologia e inovação. A cidade oferece um ecossistema dinâmico de startups que favorece o desenvolvimento de novos projetos e o intercâmbio internacional de talentos. Essa presença fortalece a comunidade tecnológica europeia e impulsiona o crescimento de novos negócios na região. A integração cultural e econômica reforça o hub de inovação alemão.","link":"https://linktoleaders.com/berlim-acolhe-comunidade-de-portugueses-das-areas-da-tecnologia-inovacao-e-empreendedorismo/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Base de eSports Ekinoba é inaugurada na Estação Matsubashi na cidade de Uki","resumo":"A cidade de Uki inaugurou o Ekinoba, um novo centro voltado para a prática e desenvolvimento de eSports localizado na Estação Matsubashi. O espaço surge como uma instalação de substituição para a infraestrutura anterior que foi severamente afetada por desastres naturais na região. A iniciativa busca revitalizar a comunidade local por meio da tecnologia e dos esportes eletrônicos, atraindo jovens e promovendo a inclusão digital.","link":"https://news.yahoo.co.jp/articles/47494f4b7cf5b277f1a06dac665dd58906654788","categoria":"ESPORTES ELETRÔNICOS","lang":"pt"},{"fonte":"科学网—新闻","pais":"China","titulo":"Do oxigênio ao flúor: Baterias de lítio ganham nova composição para maior eficiência","resumo":"Pesquisadores alcançaram um avanço significativo na química de baterias de lítio ao substituir componentes de oxigênio por compostos fluorados. Essa alteração estrutural melhora drasticamente a estabilidade térmica e a densidade de energia dos dispositivos de armazenamento. A nova tecnologia promete estender a vida útil e aumentar a segurança das baterias usadas em veículos elétricos. Trata-se de um passo fundamental para o avanço da indústria de energia limpa.","link":"https://news.sciencenet.cn/htmlnews/2026/11/574724.shtm","categoria":"INOVAÇÃO ENERGÉTICA","lang":"pt"},{"fonte":"TVI","pais":"Portugal","titulo":"CNN International Summit: como a inteligência artificial está revolucionando a economia","resumo":"O evento abordou as profundas transformações econômicas impulsionadas pela adoção acelerada da inteligência artificial. Líderes globais e especialistas debateram o aumento da produtividade, a automação de processos e os novos modelos de negócios. Além dos benefícios, ressaltou-se a urgência de regulamentações éticas e de adaptação do mercado de trabalho. A IA consolida-se como o principal motor do desenvolvimento econômico atual.","link":"https://tvi.iol.pt/noticias/videos/cnn-international-summit-como-a-ia-esta-a-revolucionar-a-economia/6af754ac0cf235b99ef50eb4","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"UFSM","pais":"Brasil","titulo":"Da pesquisa ao mercado: tecnologia da UFSM ajuda a testar a segurança de sistemas solares","resumo":"Pesquisadores da Universidade Federal de Santa Maria desenvolveram uma tecnologia inovadora para testar painéis solares. A solução garante maior eficiência e segurança no diagnóstico de falhas em sistemas de energia fotovoltaica. O projeto consolida a transferência de conhecimento acadêmico diretamente para o setor produtivo. A ferramenta impulsiona o avanço da transição energética renovável no Brasil.","link":"https://www.ufsm.br/unidades-universitarias/ct/2026/11/13/tecnologia-ufsm-testa-seguranca-sistemas-solares","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"TudoCelular.com","pais":"Brazil","titulo":"PlayStation 5 Receives QSSR AI Technology to Improve Graphics in Spider-Man 2 and New Games","resumo":"Sony has announced the implementation of QSSR artificial intelligence technology for the PlayStation 5. The innovation aims to significantly enhance graphical performance and frame rates in popular titles like Spider-Man 2. This update represents a major milestone in AI-based rendering for home consoles. The new feature promises to transform players' visual experiences in upcoming releases.","link":"https://www.tudocelular.com/software/noticias/n267174/ps5-recebe-qssr-spider-man-2-novos-jogos.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Technology Org","pais":"United States","titulo":"New 3D Printing Combines Speed, Precision, and Broad Material Range","resumo":"Scientists and engineers have developed a new 3D printing method that promises to revolutionize industrial manufacturing by combining ultra-high speed with millimetric precision. The innovation makes it possible to work with an unprecedented range of flexible and rigid materials in the same part. This technological breakthrough paves the way for the more efficient creation of complex medical components and microelectronics. This reduces operating costs and significantly accelerates production time in the global market.","link":"https://www.technology.org/2026/11/14/new-3d-printing-combines-speed-precision-and-broad-material-range/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"BFM","pais":"France","titulo":"Mistral CEO States Europe Has the Technology to Lead the Artificial Intelligence Race","resumo":"The head of French startup Mistral has urged leaders of European Union member states to take immediate action to ensure the continent's technological sovereignty. According to him, the region possesses all the talent and infrastructure necessary to compete on equal terms with global superpowers. The appeal highlights the urgent need for strategic investments and favorable regulation to advance AI innovation before the global gap becomes irreversible.","link":"https://www.bfmtv.com/tech/intelligence-artificielle/l-europe-dispose-de-toute-la-technologie-et-des-talents-necessaires-pour-prendre-la-tete-de-la-course-a-l-intelligence-artificielle-le-patron-de-mistral-appelle-l-europe-a-un-sursaut-et-a-agir-des-maintenant_AD-202611130592.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Al Majalla","pais":"England","titulo":"Eugene Vodolazkin: Technology Has Advanced, but the Human Spirit Has Not","resumo":"Renowned author Eugene Vodolazkin reflects on the contrast between rapid technological advancement and humanity's moral stagnation. He argues that although we have incredibly advanced tools, ethical dilemmas and human nature have remained unchanged since antiquity. This perspective invites deep reflection on the true progress of modern society.","link":"https://en.majalla.com/node/334165/culture-social-affairs/eugene-vodolazkin-technology-has-advanced-human-spirit-has-not","categoria":"SOCIETY","lang":"en"},{"fonte":"Linares28","pais":"Spain","titulo":"\"AI Is No Longer a Promise, It Is the Most Decisive Technology of Our Era\": A Blunt Warning from UJA","resumo":"The University of Jaén has highlighted the transformative and inevitable role of artificial intelligence in today's society. Experts have warned of the urgent need for adaptation and regulation across multiple professional sectors. The impact of this digital transformation will redefine the global economy and productivity in the coming years.","link":"https://www.linares28.es/2026/11/14/la-ia-ya-no-es-una-promesa-es-la-tecnologia-mas-determinante-de-nuestra-era-la-rotunda-advertencia-desde-la-uja/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"FOCUS online","pais":"Germany","titulo":"Subsidies Instead of Tax Cuts: Germany Adopts Incentive Policy for Electric Car Drivers","resumo":"The German government is prioritizing direct subsidies over tax cuts to boost the electric vehicle fleet. This measure aims to accelerate the energy transition and sustainability in the domestic automotive sector. However, the initiative faces criticism from economists who question the effectiveness and long-term costs of this public incentive model. The local automotive industry is closely monitoring the economic developments of this measure.","link":"https://www.focus.de/auto/subventionen-statt-steuersenkungen-deutschland-betreibt-moevenpick-politik-fuer-e-auto-fahrer_98ed3314-ea80-4a1e-a843-4166d3bae3c7.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"毎日新聞","pais":"Japan","titulo":"Patented Technology Generating Piconanobubbles Increases Lotion Skin Penetration by About 2.5 Times","resumo":"A new patented technology capable of generating piconanobubbles promises to revolutionize the cosmetics industry by increasing the skin penetration capacity of lotions by about 2.5 times. The innovation allows active ingredients to reach deeper layers of skin tissue extremely effectively. This scientific breakthrough highlights the practical application of nanotechnology in the personal care and beauty market.","link":"https://mainichi.jp/articles/20261114/pr2/00m/020/066000c","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"求是","pais":"China","titulo":"The Future Development of Brain-Computer Interfaces Requires Joint Effort","resumo":"The advancement of brain-computer interfaces represents one of the most promising frontiers of modern science and technology in China. To consolidate this innovation, experts advocate for multidisciplinary collaboration and integration among research institutes, industries, and hospitals. The core objective is to accelerate the clinical application of these technologies to meet patients' vital needs. This joint effort promises to transform medical diagnoses and treatments in the coming years.","link":"https://www.qstheory.cn/20261114/1ff84b3e36c04d69be8aa7771cccdd23/c.html","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"India Education Diary","pais":"India","titulo":"Over 10,000 Young Minds Attend Gulf Medical University's Medical and Science Exhibition 2026","resumo":"Gulf Medical University held its Medical and Science Exhibition 2026, drawing over 10,000 students interested in medical innovation and healthcare. The event provided attendees with an in-depth look at the latest scientific research, technological advancements in the biomedical sector, and future careers. The initiative reinforces the importance of science education and training new talent to drive the transformation of medicine.","link":"https://indiaeducationdiary.in/over-10000-young-minds-attend-gulf-medical-universitys-medical-and-science-exhibition-2026/","categoria":"SCIENCE","lang":"en"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Microsoft Outage Exposes Global Technological Dependency","resumo":"The recent global outage in Microsoft systems revealed the severe vulnerability of infrastructures dependent on a few technology companies. The incident paralyzed essential services across various sectors, such as aviation, healthcare, and banking in multiple countries. Experts point to the urgent need for diversification and contingency strategies to prevent systemic collapses in the future. The crisis triggered a global alert regarding the resilience of information networks.","link":"https://www.cmjornal.pt/tecnologia/detalhe/apagao-da-microsoft-deixa-a-vista-dependencia-tecnologica","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"UOL Economia","pais":"Brazil","titulo":"Banks Try to Attract Investors for Anthropic's Record IPO","resumo":"Major financial institutions are actively working to attract investors for Anthropic's initial public offering. The artificial intelligence startup is aiming for a historic valuation in the global market. The move reflects strong demand from the financial sector for leading generative AI companies. The IPO promises to be one of the most relevant milestones in the recent technology ecosystem.","link":"https://economia.uol.com.br/noticias/redacao/2026/11/13/bancos-tentam-atrair-investidores-para-ipo-recorde-da-anthropic.ghtm","categoria":"MARKET","lang":"en"},{"fonte":"Yahoo Finance","pais":"United States","titulo":"CVS Health Wins Seven Stevie Awards for AI and Technology Innovation","resumo":"CVS Health has been recognized with seven Stevie Awards for its recent implementations of artificial intelligence and technological solutions in the healthcare sector. The award-winning tools optimized patient care and the operational efficiency of pharmacy and medical care networks. The achievement highlights the growing integration between public health and digital transformation to improve user experience. The recognition consolidates the company as a benchmark in adopting emerging technologies for medicine.","link":"https://finance.yahoo.com/healthcare/articles/cvs-health-cvs-wins-seven-051257782.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"RFI","pais":"France","titulo":"One in Three 13-Year-Olds Claims to Have an AI as a Best Friend","resumo":"The statement made by Sarah El Haïry brings up profound debates regarding the ethical and psychological impact of new technologies on the social development of youth. The growing use of conversational bots by teenagers reinforces the need for regulation and parental supervision in the virtual environment. Experts and politicians warn about the pursuit of artificial emotional connections at the expense of interpersonal human relationships.","link":"https://www.rfi.fr/fr/podcasts/l-atelier-politique/20261114-sarah-el-ha%C3%AFry-un-enfant-de-13-ans-sur-trois-dit-avoir-une-ia-pour-meilleur-ami?GJlXzGgqHj","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"How the Microsoft Outage Affected Key Public Services in the UK","resumo":"A major failure in Microsoft systems caused serious disruptions across several fundamental public services in the UK, including hospitals and transportation. The incident exposed the extreme vulnerability of British infrastructure to instabilities in global digital platforms. Authorities are now evaluating measures to strengthen the country's cyber resilience and prevent new paralyses.","link":"https://www.theguardian.com/technology/2026/nov/13/how-microsoft-outage-has-affected-key-public-services-in-the-uk","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Rebelion","pais":"Spain","titulo":"The Spacecraft Studying Menstruation in Space: \"Science Has Always Been Very Patriarchal\"","resumo":"Recent space research has begun to focus on female reproductive health and its impacts during long-duration missions. The initiative seeks to break historical taboos and fill scientific gaps left by male-dominated leadership in space exploration. The results promise to improve the preparation and well-being of future female astronauts on missions to the Moon and Mars.","link":"https://rebelion.org/la-astronauta-que-estudia-la-menstruacion-en-el-espacio-la-ciencia-siempre-ha-sido-muy-patriarcal/","categoria":"SPACE SCIENCE","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Tesla allows selected customers to pre-order Robotaxis","resumo":"Tesla has started allowing a selected group of customers to pre-order its new Robotaxis. The initiative represents a significant breakthrough in the development of autonomous vehicles and the expansion of the company's robotic transportation model. The news generates high expectations in the tech industry regarding the future of global urban mobility. The move reinforces competition in the vehicular automation market.","link":"https://www.sueddeutsche.de/wirtschaft/musks-autobauer-tesla-laesst-ausgewaehlte-kaeufer-robotaxis-vorbestellen-dpa.urn-newsml-dpa-com-20090101-261114-930-993996","categoria":"MOBILITY","lang":"en"},{"fonte":"BigGo ファイナンス","pais":"Japan","titulo":"AI autonomously performs life science experiments, sparking concern over Auto-DNA misuse and debate over international rules","resumo":"The advancement of artificial intelligences capable of executing life science experiments autonomously has raised new warnings for the global scientific community. The technology known as Auto-DNA raises concerns regarding its misuse for creating dangerous biological elements without human supervision. Faced with this critical scenario, international experts and authorities are urgently debating the creation of global safety rules and guidelines.","link":"https://finance.biggo.jp/news/ab9393bc-2848-47e9-97e7-21ff6821c811","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"China","titulo":"Chinese labs automate life science experiments with AI and robotics","resumo":"Researchers in China are integrating artificial intelligence and robotics systems to automate complex experiments in the life sciences field. The innovation significantly increases the efficiency and precision of scientific research in the country. However, rapid advancement raises intense debates regarding biological safety and the ethical risks involved in total automation. The international community is closely monitoring the impacts of this new technological approach.","link":"https://news.yahoo.co.jp/articles/67ca15802ed75d81c839c105646594691f4400e3","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Moneycontrol.com","pais":"India","titulo":"KPMG launches sports tech hub in Bengaluru eyeing $40 billion market by 2030","resumo":"Consultancy KPMG announced the opening of a Sports Technology Hub in Bengaluru to drive innovation in the Indian sports sector. The goal is to capitalize on the soaring growth of the country's sports market, projected to reach $40 billion by the year 2030. The hub will act as an integrating ecosystem for startups, investors, and organizations, promoting the development of advanced technological solutions.","link":"https://www.moneycontrol.com/technology/kpmg-launches-sports-tech-hub-in-bengaluru-eyes-40-billion-indian-sports-industry-by-2030-article-14080072.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"Origin of repetitive radio signal every eight minutes discovered by astronomers","resumo":"Astronomers have identified the source of an intriguing radio signal that repeats precisely every eight minutes in deep space. The discovery opens new windows for understanding rare astrophysical phenomena and high-density celestial bodies. The finding challenges previous theories regarding the emission of radio pulses in the universe. The research drives new studies on the mysteries of cosmic dynamics.","link":"https://pplware.sapo.pt/ciencia/sinal-radio-oito-minutos-origem-ana-branca/","categoria":"SCIENCE","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"Science on Radio explains what Fast Radio Bursts are and how they help map matter in the Universe","resumo":"The Science on Radio program addressed the phenomenon of Fast Radio Bursts, high-energy and short-duration cosmic pulses. Researchers detailed how the observation of these signals allows mapping the distribution of matter between galaxies. The technique helps astronomers understand the invisible structure of the Universe. The breakthrough opens new frontiers for modern astrophysics.","link":"https://www.gov.br/observatorio/pt-br/assuntos/noticias/ciencia-no-radio-explica-como-as-rajadas-rapidas-de-radio-ajudam-a-mapear-a-materia-no-universo","categoria":"SCIENCE","lang":"en"},{"fonte":"The Guardian","pais":"United States","titulo":"Microsoft outage hits businesses, schools, and local governments across the US","resumo":"A massive failure in Microsoft systems caused large-scale disruptions across various essential sectors in the United States. Government services, educational networks, and business operations faced unexpected shutdowns throughout the day. IT specialists are working to contain the impacts and restore the stability of affected servers. The incident triggered a global alert regarding extreme dependence on centralized technological infrastructure.","link":"https://www.theguardian.com/technology/2026/nov/13/microsoft-outage-shakes-up-companies-local-governments","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"RFI","pais":"France","titulo":"Made in France: French tech companies seek independence from digital giants","resumo":"Organizations in France's technology sector are intensifying local initiatives to reduce dependence on major American and Asian corporations. The movement aims to strengthen data sovereignty, cybersecurity, and encourage the European startup ecosystem. The strategy reflects a crucial geopolitical shift in the global digital ecosystem in search of operational autonomy.","link":"https://www.rfi.fr/br/fran%C3%A7a/20261113-made-in-france-empresas-francesas-de-tecnologia-buscam-independ%C3%AAncia-de-gigantes-digitais","categoria":"INNOVATION","lang":"en"},{"fonte":"Sky News","pais":"England","titulo":"SpaceX Starship booster explodes, ending breakthrough hopes","resumo":"A crucial test of SpaceX's new Starship booster ended in an unexpected explosion during ground tests. The incident represents a significant setback for the company's plans to conduct long-distance orbital flights in the short term. SpaceX engineers have already initiated detailed investigations to identify the cause of the failure and redefine the project schedule.","link":"https://news.sky.com/video/spacex-starship-booster-explodes-ending-hopes-of-breakthrough-13612101","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"El Periódico de Aragón","pais":"Spain","titulo":"Mountaineer volunteers sought against climate change: \"Mountains are an ideal observatory for global warming\"","resumo":"A new environmental project calls for volunteers to collect scientific data on the effects of global warming at high altitudes. Mountains function as sensitive ecosystems that rapidly reveal the transformations of the planet's climate. The gathered information will help researchers formulate preservation strategies and ecological mitigation.","link":"https://www.elperiodicodearagon.com/deportes/2026/11/14/buscan-voluntarios-montaneros-cambio-climatico-136421265.html","categoria":"CLIMATE CHANGE","lang":"en"},{"fonte":"FAZ","pais":"Germany","titulo":"SpaceX test flight: Starship booster fails capture attempt","resumo":"During a test flight, the Super Heavy booster of SpaceX's Starship spacecraft failed to perform the guided landing on the catch tower. The unforeseen event forced the team to direct the rocket for a controlled impact in the water to ensure safety. Although the capture attempt failed, the test provided essential data for improving reusable systems. The company will continue analyzing metrics for upcoming missions.","link":"https://www.faz.net/aktuell/wirtschaft/unternehmen/spacex-testflug-starship-booster-verfehlt-fangversuch-accg-201682589.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Cutting-edge technology tested in Mito to let people with disabilities enjoy Ibaraki Robots games","resumo":"A demonstration experiment held in the city of Mito utilized state-of-the-art technologies to provide an inclusive experience at sporting events. The initiative aims to allow people with disabilities to watch Ibaraki Robots basketball team games interactively and barrier-free. The pilot project demonstrates how technological innovation can promote social accessibility and transform sports entertainment.","link":"https://news.yahoo.co.jp/articles/246fed3d90f1fe57bb30e83b17b0ed4fcf42db81","categoria":"SOCIAL INNOVATION","lang":"en"},{"fonte":"Sohu","pais":"China","titulo":"Focus on 6G: Semantic Communication Technology Innovation Center established","resumo":"The Tianfu Jiangxi Laboratory announced the creation of its Semantic Communication Technology Innovation Center geared toward the 6G era. The new structure seeks to enable the Internet of Everything with Intelligence, revolutionizing data transmission. This technology aims to optimize the efficiency of next-generation mobile networks, reducing latency and bandwidth consumption. The project consolidates China's leadership in developing future communication standards.","link":"https://m.sohu.com/a/1101468998_355475?scm=10001.325_13-325_13.0.0-0-0-0-0.5_1334","categoria":"TELECOMMUNICATIONS","lang":"en"},{"fonte":"ANI News","pais":"India","titulo":"Fixtra builds nationwide spare parts supply chain for India's repair economy","resumo":"Startup Fixtra is structuring a comprehensive supply chain across India focused on providing replacement parts. The initiative seeks to formalize and optimize the maintenance market in the country, offering efficient logistics and quality components for technical support. With this infrastructure, the company meets the growing demand of the repair economy and technological sustainability in the region.","link":"https://www.aninews.in/news/business/8220fixtra-builds-a-nationwide-spare-parts-supply-chain-for-indias-repair-economy8221-anmol-gupta-founder-fixtra20261114103139","categoria":"INNOVATION","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"Earth has captured a new mini-moon, but its stay will be brief","resumo":"Earth has temporarily captured a small asteroid that has begun orbiting the planet as a mini-moon. Scientists confirmed that the object will remain in Earth's orbit for only a few weeks before continuing its journey through space. The observation of these bodies provides valuable information about solar system dynamics and near-Earth asteroids. The phenomenon attracts the attention of astronomers worldwide.","link":"https://pplware.sapo.pt/ciencia/terra-nova-minilua-2026-qq8/","categoria":"ASTRONOMY","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"Brazil unveils IndicaClima system at COP31 to monitor national climate policy actions","resumo":"During COP31, the Brazilian government presented the IndicaClima platform, developed to track environmental targets. The system uses technological data to evaluate the effectiveness of climate policies implemented across the country. The initiative reinforces the national commitment to transparency and global sustainability. The tool will be fundamental in guiding strategies to mitigate climate impacts.","link":"https://www.gov.br/secom/pt-br/acompanhe-a-secom/noticias/2026/11/brasil-apresenta-na-COP31-sistema-indicaclima-para-monitorar-acoes-da-politica-climatica-nacional-na-cop31","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"BBC","pais":"United States","titulo":"Setback in SpaceX Starship rocket double-catch test","resumo":"SpaceX faced technical hurdles during the latest flight test of the Starship rocket, designed for long-distance space missions. The goal of executing a double booster catch fell short of expectations due to anomalies in the procedure. Despite the difficulties, the engineering team gathered valuable data to refine upcoming launches. The company reaffirms its commitment to accelerating the development of reusable interplanetary travel.","link":"https://www.bbc.co.uk/news/articles/ckregdgnl0xpo","categoria":"SPACE","lang":"en"},{"fonte":"RFI","pais":"France","titulo":"Artificial intelligence: Can the European Union still catch up?","resumo":"A comprehensive debate examines whether the European bloc can balance strict regulation with the promotion of technological innovation in the artificial intelligence sector. Faced with the rapid progress of the United States and China, Europe is seeking strategies to upskill its industries and retain local talent. The tech race requires billions in infrastructure investments and the strengthening of the digital single market.","link":"https://www.rfi.fr/br/europa/20261113-intelig%C3%AAncia-artificial-a-uni%C3%A3o-europeia-ainda-tem-como-recuperar-o-atraso","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"TVI Player","pais":"England","titulo":"If the US shuts off the tech, could Europe go dark?","resumo":"Geopolitics and technology experts are warning about Europe's deep reliance on North American IT infrastructure and cloud services. Should a massive disruption or blockade in the supply of these technologies occur from the US, Europe would face severe economic and operational shutdowns. The debate is driving urgent discussions on the pursuit of digital sovereignty across the European continent.","link":"https://tviplayer.iol.pt/programa/jornal-nacional/63e6588b0cf2665294d4f012/video/6af77c2f0cf2aafa0453e800","categoria":"GEOPOLITICS","lang":"en"},{"fonte":"El Confidencial","pais":"Spain","titulo":"Valladolid joins the video game wave: Cutting-edge technology in search of talent","resumo":"The city of Valladolid is making heavy investments in the digital game development industry and advanced technology. The initiative aims to attract talent and new companies to boost the local creative economy. The sector promises to generate skilled jobs and position the region as a relevant technology hub.","link":"https://www.elconfidencial.com/espana/castilla-y-leon/2026-11-14/valladolid-se-sube-a-la-ola-del-videojuego-tecnologia-puntera-en-busca-de-talento_4464613/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Yahoo","pais":"Germany","titulo":"Microsoft outage will significantly impact the German economy, government says","resumo":"A massive failure in Microsoft systems caused shutdowns and deep impacts across various sectors of the German economy. The country's government confirmed that the fallout from the digital disruption will be significant for local commerce and services. The incident has raised international alarms over the risks of depending on a few tech infrastructures. Experts are now debating the urgency of cyber resilience plans.","link":"https://es.finance.yahoo.com/noticias/corte-microsoft-afectar%C3%A1-significativamente-econom%C3%ADa-123456673.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"北羽新報社","pais":"Japan","titulo":"Noshiro researcher wins science and technology award for developing new radish variety for processing","resumo":"Researcher Miyakoshi, a native of Noshiro, has been awarded the prestigious Akita Wakasugi Science and Technology Encouragement Prize. The honor was granted for the successful development of a new Japanese radish cultivar specifically geared toward industrial processing. Agricultural biotechnology innovation promises to optimize the food production chain and strengthen the regional economy.","link":"https://www.hokuu.co.jp/?p=46531","categoria":"AGRICULTURAL SCIENCE","lang":"en"},{"fonte":"新浪财经","pais":"China","titulo":"Robin Li: Energy drives AI advancement and organizational capability defines success","resumo":"Baidu founder Robin Li pointed out that electric power infrastructure is the primary bottleneck for the development of artificial intelligence. According to the executive, the practical value of AI depends directly on companies' organizational adaptability. He reinforced that the tech race demands efficient solutions in sustainable energy matrices to power large language models. This stance signals new strategic directions for China's technology industry.","link":"https://cj.sina.cn/articles/view/2137950223/7f6e880f01902usa6","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Indian Council Of Agricultural Research","pais":"India","titulo":"ICAR-IIHR hot water technology to boost exports of South Indian mangoes","resumo":"The Indian Institute of Horticultural Research has developed a hot water heat treatment to extend the shelf life of mangoes cultivated in the country's south. The technology aims to sanitize fruits against pests and diseases without the use of agrochemicals, meeting rigorous international food safety standards. Applying this method promises to reduce post-harvest losses and significantly leverage agricultural exports.","link":"https://icar.org.in/en/icar-iihrs-hot-water-technology-boost-export-south-indian-mangoes","categoria":"AGRIBUSINESS","lang":"en"},{"fonte":"Expresso","pais":"Portugal","titulo":"Fridges, TVs, and vacuums: Any connected device can suffer cyberattacks","resumo":"The expansion of the Internet of Things has brought convenience, but also new security risks to households. Experts warn that smart home appliances connected to the network can be exploited by cybercriminals for privacy intrusions or mass attacks. Awareness and continuous device updates are fundamental to curbing vulnerabilities. Digital security has become indispensable in modern daily life.","link":"https://expresso.pt/sociedade/tecnologia/2026-11-13-frigorificos-televisoes-aspiradores-qualquer-dispositivo-ligado-a-uma-rede-pode-ser-alvo-de-um-ataque-informatico-3c80c7eb","categoria":"DIGITAL SECURITY","lang":"en"},{"fonte":"Migalhas","pais":"Brazil","titulo":"EPD launches legal innovation center focused on AI and technology","resumo":"The Paulista School of Law announced the creation of an innovation center focused on technological transformations in the legal sector. The structure will target artificial intelligence, process automation, and data analysis for Law. The goal is to train professionals for the new demands of the modern legal market. The initiative marks an important bridge between higher education and applied technology.","link":"https://www.migalhas.com.br/quentes/468597/epd-lanca-centro-de-inovacao-juridica-com-foco-em-ia-e-tecnologia","categoria":"INNOVATION","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"Instruments on NASA's Roman Space Telescope get in sync for science","resumo":"The scientific instruments of NASA's Nancy Grace Roman Space Telescope have achieved the alignment and synchronization needed to begin operations. This breakthrough marks a fundamental milestone for the mission, which aims to map the universe and investigate dark energy. With fully integrated systems, researchers are preparing to capture ultra-high-resolution images of distant galaxies. The observatory is expected to yield unprecedented discoveries regarding the expansion of the cosmos.","link":"https://science.nasa.gov/blogs/roman/2026/11/13/instruments-on-nasas-roman-space-telescope-get-in-sync-for-science/","categoria":"SCIENCE","lang":"en"},{"fonte":"RTP","pais":"France","titulo":"TEKEVER opens factory in France and prepares delivery of first 15 drones to the Armed Forces","resumo":"The defense technology company has expanded its manufacturing capacity on French soil to meet the growing demands of the European military sector. Delivering the first units of uncrewed aerial vehicles represents a strategic milestone in strengthening the country's defense and surveillance. The initiative boosts high-tech skilled jobs in the region and consolidates the local industrial ecosystem.","link":"https://www.rtp.pt/noticias/economia/tekever-inaugura-fabrica-em-franca-e-prepara-entrega-dos-primeiros-15-drones-as-forcas-armadas_n1778881","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"Microsoft outage is a 'stark warning' of our reliance on technology","resumo":"The recent disruption in global Microsoft services served as a severe reminder of how modern society has become dependent on a handful of tech corporations. The outage impacted flights, banking services, and business operations worldwide, paralyzing routine activities. Experts highlight the urgent need for system diversification and contingency planning strategies.","link":"https://www.bbc.com/news/articles/cxzd9171m51qo","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Vozpopuli","pais":"Spain","titulo":"Biotechnology, AI, and the 'silver economy': BBVA AM's roadmap to monetize the longevity megatrend","resumo":"BBVA Asset Management has presented an investment strategy focused on population aging and advancements in medicine. The integration of biotechnology and artificial intelligence emerges as an engine for innovative healthcare solutions. This convergence is driving a new financial market focused on quality of life and human longevity.","link":"https://www.vozpopuli.com/economia/fondos/biotecnologia-ia-y-economia-plateada-el-mapa-piramidal-de-bbva-am-para-rentabilizar-la-megatendencia-de-la-longevidad.html","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Link To Leaders","pais":"Germany","titulo":"Berlin welcomes community of Portuguese professionals in technology, innovation, and entrepreneurship","resumo":"Berlin has become a major meeting point for Portuguese professionals and entrepreneurs in the fields of technology and innovation. The city offers a dynamic startup ecosystem that fosters the development of new projects and the international exchange of talent. This presence strengthens the European tech community and drives the growth of new businesses in the region. Cultural and economic integration reinforces the German innovation hub.","link":"https://linktoleaders.com/berlim-acolhe-comunidade-de-portugueses-das-areas-da-tecnologia-inovacao-e-empreendedorismo/","categoria":"INNOVATION","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Ekinoba eSports base opens at Matsubashi Station in Uki city","resumo":"The city of Uki has inaugurated Ekinoba, a new hub focused on the practice and development of eSports located at Matsubashi Station. The space emerges as a replacement facility for the previous infrastructure that was severely impacted by natural disasters in the region. The initiative seeks to revitalize the local community through technology and electronic sports, attracting youth and promoting digital inclusion.","link":"https://news.yahoo.co.jp/articles/47494f4b7cf5b277f1a06dac665dd58906654788","categoria":"ESPORTS","lang":"en"},{"fonte":"科学网—新闻","pais":"China","titulo":"From oxygen to fluorine: Lithium batteries gain new composition for greater efficiency","resumo":"Researchers have achieved a significant breakthrough in lithium battery chemistry by replacing oxygen components with fluorinated compounds. This structural alteration drastically improves the thermal stability and energy density of storage devices. The new technology promises to extend the lifespan and increase the safety of batteries used in electric vehicles. This is a fundamental step forward for the clean energy industry.","link":"https://news.sciencenet.cn/htmlnews/2026/11/574724.shtm","categoria":"ENERGY INNOVATION","lang":"en"},{"fonte":"TVI","pais":"Portugal","titulo":"CNN International Summit: how artificial intelligence is revolutionizing the economy","resumo":"The event addressed the profound economic transformations driven by the accelerated adoption of artificial intelligence. Global leaders and experts debated increased productivity, process automation, and new business models. Beyond the benefits, the urgency of ethical regulations and labor market adaptation was highlighted. AI is consolidating itself as the main driver of current economic development.","link":"https://tvi.iol.pt/noticias/videos/cnn-international-summit-como-a-ia-esta-a-revolucionar-a-economia/6af754ac0cf235b99ef50eb4","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"UFSM","pais":"Brazil","titulo":"From research to market: UFSM technology helps test the safety of solar systems","resumo":"Researchers from the Federal University of Santa Maria have developed an innovative technology to test solar panels. The solution ensures greater efficiency and safety in diagnosing failures in photovoltaic energy systems. The project consolidates the transfer of academic knowledge directly to the productive sector. The tool drives the advancement of the renewable energy transition in Brazil.","link":"https://www.ufsm.br/unidades-universitarias/ct/2026/11/13/tecnologia-ufsm-testa-seguranca-sistemas-solares","categoria":"TECHNOLOGY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
