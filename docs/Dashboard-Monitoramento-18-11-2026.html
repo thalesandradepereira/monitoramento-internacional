@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-Wt53ie1S/vPaogroa9ytxOiT'; script-src 'nonce-Wt53ie1S/vPaogroa9ytxOiT'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="Wt53ie1S/vPaogroa9ytxOiT">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">18/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="Wt53ie1S/vPaogroa9ytxOiT">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"OpenAI lança o novo Astra, seu modelo mais avançado de IA que teve versão anterior cancelada por segurança","resumo":"A OpenAI apresentou publicamente o Astra, considerado seu modelo de inteligência artificial mais poderoso até o momento. A versão anterior do projeto havia sido interrompida temporariamente devido a preocupações com segurança e alinhamento de dados. A nova versão traz aprimoramentos significativos em capacidade de raciocínio e sistemas de salvaguarda reforçados. O lançamento marca um momento decisivo na corrida global do desenvolvimento de soluções avançadas de IA.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/17/openai-lanca-o-novo-astra-seu-modelo-mais-avancado-de-ia-que-teve-versao-anterior-cancelada-por-seguranca.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"SiliconANGLE","pais":"Estados Unidos","titulo":"Startup de implantes cerebrais Science Corp capta US$ 400 milhões para lançar dispositivos no mercado","resumo":"A startup de tecnologia de implantes cerebrais Science Corp captou US$ 400 milhões em novos investimentos para acelerar a comercialização de seus dispositivos médicos avançados. O financiamento ajudará a empresa a realizar ensaios clínicos e obter aprovações regulatórias decisivas. A inovação promete transformar o tratamento de condições neurológicas graves e a restauração de funções motoras e visuais. Este avanço posiciona a empresa como uma forte concorrente no setor de interfaces cérebro-computador.","link":"https://siliconangle.com/2026/11/17/brain-implant-technology-startup-science-corp-raises-400m-to-bring-its-medical-devices-to-market/","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Sud Ouest","pais":"França","titulo":"IA: Mistral, destaque francês, defende que não é 'um projeto pessoal de Macron' diante da elite do Vale do Silício","resumo":"A startup francesa de inteligência artificial Mistral se apresentou a investidores e líderes do Vale do Silício buscando consolidar sua posição global. Durante o evento, seus executivos rebateram críticas sobre uma suposta dependência ou favorecimento pelo governo de Emmanuel Macron. O movimento busca atrair capital internacional e demonstrar independência estratégica no competitivo mercado de IA. A empresa reafirma seu compromisso em desenvolver modelos abertos e competitivos para o mercado global.","link":"https://www.sudouest.fr/sciences-et-technologie/intelligence-artificielle/ia-le-fleuron-francais-mistral-ai-se-defend-d-etre-un-projet-personnel-de-macron-devant-le-gotha-de-la-silicon-valley-31572044.php","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Valencia Plaza","pais":"Inglaterra","titulo":"Drones da Amazon com tecnologia da Embention recebem luz verde para expandir entregas no Reino Unido","resumo":"A Amazon obteve autorização regulatória no Reino Unido para ampliar suas operações de entrega utilizando drones equipados com sistemas de segurança da Embention. A iniciativa visa acelerar as entregas de pequenos pacotes e reduzir as emissões de carbono nos centros urbanos. A expansão representa um marco crucial para a viabilidade comercial do transporte autônomo de mercadorias no país.","link":"https://valenciaplaza.com/valenciaplaza/empresas1/los-drones-de-amazon-con-tecnologia-de-embention-reciben-luz-verde-para-ampliar-sus-repartos-en-reino-unido","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Redacción Médica","pais":"Espanha","titulo":"Ciência espanhola resolve uma década de incógnitas para combater um linfoma agressivo","resumo":"Pesquisadores espanhóis alcançaram um marco científico ao desvendar os mecanismos genéticos envolvidos em um tipo agressivo de linfoma. A descoberta promete abrir caminhos inéditos para tratamentos mais eficazes e personalizados contra a doença. O avanço destaca o papel fundamental da pesquisa científica na busca por soluções para desafios de saúde complexos.","link":"https://www.redaccionmedica.com/innovacion/20261118/la-ciencia-espanola-resuelve-una-decada-de-incognitas-para-combatir-un-linfoma-agresivo/365503_0.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"BILD","pais":"Alemanha","titulo":"Nvidia: Números recordes e arquitetura Vera Rubin fortalecem o boom da IA","resumo":"A Nvidia apresentou resultados financeiros impressionantes impulsionados pela forte demanda global por soluções de inteligência artificial. O anúncio da nova arquitetura Vera Rubin reforça a posição de liderança da empresa no mercado de semicondutores. Especialistas apontam que esses avanços garantem a sustentabilidade do crescimento do setor de tecnologia nos próximos anos. Esse cenário consolida a infraestrutura de IA como um pilar central da economia digital moderna.","link":"https://www.bild.de/politik/ausland-und-internationales/nvidia-rekordzahlen-und-vera-rubin-staerken-den-ki-boom-6afcdb43bb7e7a6679f91fb4","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"ZDNET Japan","pais":"Japão","titulo":"Hitachi desenvolve tecnologia para comprovar delegação a agentes de IA auditando transações","resumo":"A Hitachi criou uma tecnologia inovadora capaz de verificar e comprovar a delegação de tarefas a agentes de inteligência artificial. O sistema realiza a auditoria rigorosa do histórico de transações e das procurações digitais emitidas. Essa solução visa aumentar a segurança e a confiabilidade em processos automatizados corporativos. A novidade representa um passo crucial para a adoção em larga escala de automação inteligente em setores regulados.","link":"https://japan.zdnet.com/article/35255078/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"观点网","pais":"China","titulo":"Executivo do Kling AI e Ex-Vice-Presidente de Tecnologia da Kuaishou Deixa a Empresa","resumo":"Informações do setor apontam para a saída de Li Han, ex-vice-presidente de tecnologia da Kuaishou e executivo sênior responsável pelo modelo de inteligência artificial de geração de vídeo Kling AI. A movimentação acende discussões sobre reestruturações internas e o futuro das estratégias de inteligência artificial da empresa. O executivo teve papel crucial no desenvolvimento de ferramentas inovadoras de IA generativa na China.","link":"https://www.guandian.cn/m/show/629328","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Entrackr","pais":"Índia","titulo":"Startup de economia circular Recove Ventures capta 56,25 crores via equity e dívida","resumo":"A startup de economia circular Recove Ventures anunciou a captação de 56,25 crores de rúpias indianas por meio de equity e dívida. Esse investimento estratégico visa expandir a capacidade operacional da empresa na reciclagem e reaproveitamento de materiais. A iniciativa reforça a crescente atração de capital para soluções sustentáveis e tecnologia verde no país. Com esses recursos, a empresa pretende acelerar sua expansão no mercado e aprimorar suas tecnologias.","link":"https://entrackr.com/snippets/circular-economy-startup-recove-ventures-raises-rs-5625-cr-through-equity-and-debt-12818941","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Diário de Notícias","pais":"Portugal","titulo":"Bruxelas: investimento em Portugal está se concentrando em centros de dados","resumo":"A União Europeia alerta que os investimentos diretos estrangeiros em Portugal estão cada vez mais direcionados ao setor de infraestrutura de dados. Esse movimento reflete o avanço da transformação digital e a crescente procura por capacidade de processamento na região. O cenário traz oportunidades econômicas significativas, mas também impõe desafios para a sustentabilidade e a matriz energética do país.","link":"https://www.dn.pt/economia/bruxelas-investimento-em-portugal-est-a-ficar-concentrado-nos-centros-de-dados","categoria":"INFRAESTRUTURA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Anthropic define hoje preço de oferta histórica de ações: veja 5 pontos a observar no IPO da empresa de IA","resumo":"A Anthropic está definindo a precificação de sua oferta pública inicial de ações, em um dos eventos financeiros mais aguardados do setor de tecnologia. Investidores acompanham de perto os indicadores de valuation, governança, projeções de receita e a rivalidade com a OpenAI. A listagem reflete a crescente demanda do mercado de capitais por empresas pioneiras em inteligência artificial. O movimento pode redefinir os parâmetros de investimentos para o segmento tecnológico internacional.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/18/anthropic-define-hoje-preco-de-oferta-historica-de-acoes-veja-5-pontos-a-observar-no-ipo-da-empresa-de-ia.ghtml","categoria":"MERCADO FINANCEIRO","lang":"pt"},{"fonte":"WSJ","pais":"Estados Unidos","titulo":"Google adota tecnologia geotérmica inovadora para vaporizar rochas e gerar energia limpa","resumo":"O Google está expandindo seus esforços em sustentabilidade ao investir em uma tecnologia geotérmica revolucionária capaz de vaporizar rochas para capturar energia térmica profunda. A iniciativa visa fornecer energia limpa ininterrupta para seus data centers de inteligência artificial em crescimento constante. Essa abordagem inovadora pode transformar o setor energético global e reduzir drasticamente as emissões de carbono. O projeto reflete a crescente demanda da indústria de tecnologia por fontes de energia renováveis e confiáveis.","link":"https://www.wsj.com/business/energy-oil/google-embraces-geothermal-technology-to-vaporize-rock-for-clean-power-dbd66d05","categoria":"ENERGIA E TECNOLOGIA","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Jovem pesquisador de 15 anos conquista doutorado e quer prolongar a vida usando física quântica","resumo":"Um prodígio de apenas 15 anos concluiu seu doutorado e atraiu atenção da comunidade científica internacional. O jovem cientista pretende aplicar conceitos avançados de física quântica para investigar mecanismos celulares e retardar o envelhecimento humano. Sua pesquisa inovadora promete abrir novas fronteiras no tratamento de doenças degenerativas e na medicina de longevidade. O feito extraordinário destaca o potencial de novas abordagens interdisciplinares no campo da saúde.","link":"https://www.science-et-vie.com/corps-et-sante/ce-jeune-chercheur-de-15-ans-decroche-un-doctorat-et-veut-prolonger-la-vie-grace-a-la-physique-quantique-222245.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Moneycontrol.com","pais":"Inglaterra","titulo":"Cognizant supera concorrentes e conquista contrato de centro de dados de US$ 175 milhões no Reino Unido","resumo":"A gigante de TI Cognizant superou rivais como TCS e HCLTech ao garantir um grande contrato de infraestrutura de dados no Reino Unido. O acordo prevê a modernização de serviços de nuvem e a otimização do processamento de dados em escala nacional. O movimento fortalece a posição da empresa no mercado europeu e evidencia a crescente demanda por transformação digital corporativa.","link":"https://www.moneycontrol.com/news/business/information-technology/cognizant-beats-tcs-hcltech-and-two-global-rivals-to-win-175-million-uk-data-centre-deal-14083029.html","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Onda Cero","pais":"Espanha","titulo":"A sonda Voyager 1 supera a distância de 1 dia-luz da Terra","resumo":"A icônica sonda Voyager 1 alcançou uma marca histórica ao se distanciar o equivalente a um dia-luz do nosso planeta. Este feito simboliza os limites extremos já atingidos pela exploração espacial feita pela humanidade. Mesmo enfrentando desafios técnicos e a passagem do tempo, a missão continua a enviar dados valiosos sobre o espaço interestelar.","link":"https://www.ondacero.es/podcast/programas/la-brujula/brujula-ciencia/brujula-ciencia-sonda-voyager-1-supera-distancia-1-dia-luz-tierra_202611186afce1b27335ad00073add9b.html","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"Mindener Tageblatt","pais":"Alemanha","titulo":"O que resultou do impacto? Missão Hera fornece novas imagens","resumo":"A missão espacial Hera começou a transmitir as primeiras imagens detalhadas do asteroide atingido pela sonda DART da NASA. Os dados coletados pela Agência Espacial Europeia ajudam a analisar as consequências exatas do impacto cinético na órbita do corpo celeste. As descobertas fornecem insights cruciais para o desenvolvimento de futuros sistemas de defesa planetária contra asteroides. A conquista marca um avanço significativo na exploração científica e na proteção da Terra.","link":"https://www.mt.de/weltnews/wissenschaft/Was-brachte-der-Einschlag-Mission-Hera-liefert-Bilder-24465310.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"NEC e IBM Japão realizam teste bem-sucedido de comunicação segura quântica híbrida","resumo":"A NEC e a IBM Japão anunciaram o sucesso na demonstração de uma tecnologia híbrida de comunicação quântica segura. O sistema combina a distribuição de chaves quânticas com a criptografia pós-quântica para proteger dados críticos. A iniciativa busca criar redes ultra-seguras preparadas para conter ameaças de computadores quânticos do futuro. O avanço fortalece a infraestrutura de cibersegurança do setor financeiro e governamental.","link":"https://news.google.com/rss/articles/CBMif0FVX3lxTE5USGdOTUd2ZzYzaXJwRm50VGpBSTFrLThtN0xlQmpMQzVvRlFMM1JrX2NXVEtqVDVrWVpaTHpnTVhTOGhJcWtkTWpaSG9WM1lFTm9fNFpfMjZ3Z2ZOeVlYRWRxQ1hKMW1OcXNHT2Zsb3EwRHdmQU5CWHlQdzQta2c?oc=5","categoria":"CIBERSEGURANÇA","lang":"pt"},{"fonte":"Motor16","pais":"China","titulo":"Yangwang Altior: 1.000 km de Autonomia e Tecnologia Futurista no Novo Luxo Chinês","resumo":"A marca de alto luxo da BYD apresentou novidades surpreendentes para o mercado global de veículos elétricos. O modelo Yangwang Altior promete autonomia superior a 1.000 quilômetros aliada a um pacote tecnológico considerado de ficção científica. A iniciativa consolida a China na vanguarda da mobilidade elétrica de alto padrão, rivalizando diretamente com montadoras tradicionais de superluxo.","link":"https://www.motor16.com/las-ultimas-noticias/yangwang-altior-1000-km-rolls/","categoria":"TECNOLOGIA AUTOMOTIVA","lang":"pt"},{"fonte":"pib.gov.in","pais":"Índia","titulo":"A Revolução dos Semicondutores e da Inteligência Artificial","resumo":"A interseção entre a indústria de semicondutores e a inteligência artificial está impulsionando uma grande transformação tecnológica. A Índia busca consolidar sua posição estratégica na fabricação de chips e no desenvolvimento de soluções avançadas de IA. Essa sinergia promete atrair novos investimentos globais e fortalecer a infraestrutura tecnológica do país. A iniciativa reforça a soberania digital e amplia o ecossistema de inovação indiano.","link":"https://www.pib.gov.in/FactsheetDetails.aspx?Id=150860\u0026reg=48\u0026lang=2","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Apple atribui interrupções em serviços a atualização interna","resumo":"A Apple confirmou que as recentes falhas no funcionamento de diversos de seus serviços online foram causadas por uma atualização do sistema interno. As interrupções afetaram usuários globalmente, impedindo o acesso temporário a plataformas essenciais da empresa. A gigante de tecnologia garantiu que as correções foram implementadas rapidamente e reforçou o compromisso com a estabilidade de suas plataformas.","link":"https://www.cmjornal.pt/tecnologia/detalhe/milhares-de-utilizadores-reportam-falhas-nos-servicos-da-apple","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Jornal do Comércio","pais":"Brasil","titulo":"Tecnologia brasileira verificará resultado de iniciativas para redução de lixo no mundo","resumo":"Uma solução tecnológica desenvolvida no Brasil foi selecionada para monitorar e auditar projetos internacionais voltados à gestão e redução de resíduos sólidos. A ferramenta utiliza análise avançada de dados para medir com precisão o impacto ecológico de programas de sustentabilidade em escala global. O reconhecimento destaca o papel inovador da engenharia nacional na busca por metas ambientais globais. Espera-se que a plataforma ajude governos e entidades a otimizarem políticas públicas para o meio ambiente.","link":"https://www.jornaldocomercio.com/geral/2026/11/1270900-tecnologia-brasileira-verificara-resultado-de-iniciativas-para-reducao-de-lixo-no-mundo.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The New York Times","pais":"Estados Unidos","titulo":"Inteligência Artificial ajuda a descobrir falha crítica de segurança no Java","resumo":"Ferramentas avançadas de inteligência artificial foram fundamentais para identificar uma grave vulnerabilidade de segurança na plataforma Java, essencial para a infraestrutura global da internet. A descoberta permitiu que os desenvolvedores criassem correções antes que cibercriminosos pudessem explorar a falha em grande escala. O feito destaca o papel vital que a IA está assumindo na defesa cibernética proativa e na análise automatizada de código. Especialistas celebram o avanço como um marco para a proteção da segurança digital corporativa.","link":"https://www.nytimes.com/2026/11/17/us/politics/ai-security-bug-java.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"France 24","pais":"França","titulo":"Economia: Nvidia dobra receita e lucros, superando as expectativas do mercado","resumo":"A gigante dos semicondutores Nvidia apresentou resultados financeiros impressionantes ao dobrar sua receita e lucros no último trimestre. O crescimento extraordinário foi impulsionado pela demanda avassaladora por chips voltados ao processamento de inteligência artificial. Com o resultado superando todas as previsões dos analistas, a empresa consolida seu protagonismo absoluto na revolução tecnológica atual. O desempenho reitera o otimismo dos investidores em relação ao ecossistema global de tecnologia.","link":"https://www.france24.com/es/programas/econom%C3%ADa/20261118-nvidia-duplic%C3%B3-sus-ingresos-y-ganancias-superando-las-expectativas-del-mercado","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Nvidia registra resultados recordes enquanto conselho afirma que não reconduzirá Jensen Huang","resumo":"A Nvidia apresentou resultados financeiros extraordinários impulsionados pela alta demanda global por chips de inteligência artificial. Apesar do desempenho financeiro sólido, declarações do conselho de administração indicam indefinições na liderança executiva da empresa. O cenário gera especulações no mercado financeiro e no setor tecnológico sobre os rumos estratégicos da fabricante de semicondutores.","link":"https://www.bbc.com/news/articles/cm2kl50vkwkdo","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"Nvidia supera previsões ao dobrar receitas e lucros e defende o poder de sua tecnologia","resumo":"A gigante da tecnologia Nvidia registrou resultados financeiros extraordinários ao dobrar seus lucros e receitas no último trimestre. O forte desempenho foi impulsionado pela alta demanda global por chips voltados para inteligência artificial. A empresa reafirma assim sua posição de liderança e a relevância de suas inovações no mercado global.","link":"https://elpais.com/economia/2026-11-17/nvidia-bate-previsiones-al-disparar-sus-ingresos-un-103-y-defiende-el-poder-de-su-tecnologia-y-su-remuneracion-a-los-accionistas.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Controvérsia dos chips: Nvidia mantém forte crescimento nos negócios","resumo":"Apesar das recentes controvérsias no setor de semicondutores e especulações operacionais, a Nvidia mantém um ritmo acelerado de expansão comercial. O forte desempenho financeiro demonstra a enorme resiliência da empresa em meio às dinâmicas do mercado global de tecnologia. O setor de chips continua registrando demandas elevadas impulsionadas pela corrida pela inteligência artificial. O crescimento sólido reflete a relevância estratégica e contínua da empresa.","link":"https://www.sueddeutsche.de/wirtschaft/chip-kontroverse-nvidia-huang-kommt-nicht-zurueck-geschaeft-waechst-stark-dpa.urn-newsml-dpa-com-20090101-261117-930-10897","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"Mitsubishi Electric lança aplicativo com IA generativa para suporte a engenheiros de manutenção","resumo":"A Mitsubishi Electric Building Solutions desenvolveu um aplicativo baseado em inteligência artificial generativa focado no suporte a engenheiros de campo. A ferramenta auxilia no diagnóstico e na manutenção preventiva de elevadores e escadas rolantes. A tecnologia analisa manuais e históricos para fornecer soluções rápidas em tempo real durante os atendimentos. A novidade otimiza o tempo de resposta e eleva os padrões de segurança operacional.","link":"https://www.nikkei.com/article/DGXZRSP715426_Y6A111C2000000/","categoria":"AUTOMAÇÃO","lang":"pt"},{"fonte":"新华网客户端","pais":"China","titulo":"Iniciativa de Computação Científica Inteligente Leva Pesquisa de Ponta às Escolas","resumo":"O projeto intitulado 'Computação Científica Inteligente + Educação' está integrando ferramentas avançadas de supercomputação e inteligência artificial no currículo de jovens estudantes na China. A proposta visa aproximar os alunos de pesquisas científicas de fronteira desde a educação básica. A ação busca capacitar novas gerações e fortalecer a formação de talentos nas áreas de ciência e tecnologia.","link":"https://app.xinhuanet.com/news/article.html?articleId=202611189b7e0741a4e04f8ba1fed300307d4c26","categoria":"EDUCAÇÃO E TECNOLOGIA","lang":"pt"},{"fonte":"Caras Portugal","pais":"Portugal","titulo":"Príncipe Alberto II conhece nova tecnologia revolucionária para apoiar astronautas","resumo":"Durante um evento focado em inovação espacial, o Príncipe Alberto II de Mônaco acompanhou a demonstração de uma nova tecnologia projetada para dar suporte a missões astronômicas. O recurso busca otimizar a segurança e o monitoramento da saúde das tripulações em ambientes de gravidade reduzida. A novidade representa um passo promissor no avanço da exploração espacial humana e na engenharia biomédica.","link":"https://caras.pt/realeza/2026-11-17-principe-alberto-ii-conhece-a-nova-tecnologia-revolucionaria-que-vai-apoiar-os-astronautas/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Capital Digital","pais":"Brasil","titulo":"ABC e SBPC propõem elevar investimento em ciência a 3% do PIB até 2040","resumo":"A Academia Brasileira de Ciências e a Sociedade Brasileira para o Progresso da Ciência apresentaram uma proposta conjunta para expandir os aportes no setor científico brasileiro. O plano visa atingir 3% do Produto Interno Bruto investidos em pesquisa e inovação de forma gradual até o ano de 2040. As entidades ressaltam que a estabilidade do financiamento é indispensável para conter a fuga de cérebros e garantir soberania tecnológica. A iniciativa busca sensibilizar formuladores de políticas públicas sobre a relevância estratégica da ciência.","link":"https://capitaldigital.com.br/abc-e-sbpc-propoem-elevar-investimento-em-ciencia-a-3-do-pib-ate-2040/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Battery Technology","pais":"Estados Unidos","titulo":"Addionics triplica a vida útil do ciclo de baterias de lítio com nova tecnologia","resumo":"A empresa Addionics revelou uma arquitetura de bateria inovadora capaz de triplicar a vida útil das células de íon de lítio convencionais. A tecnologia redesenha a estrutura interna dos eletrodos, permitindo maior eficiência, carregamento mais rápido e menor degradação ao longo do tempo. Esse avanço promete impactar significativamente o mercado de veículos elétricos e o armazenamento de energia renovável. A novidade representa um passo crucial para acelerar a transição energética global.","link":"https://www.batterytechonline.com/design-manufacturing/addionics-3d-current-collectors-triple-battery-cycle-life","categoria":"INOVAÇÃO TECNOLÓGICA","lang":"pt"},{"fonte":"Zonebourse Suisse","pais":"França","titulo":"Williams, do Fed, segue favorável a uma política monetária mais restritiva, mas diz que não é hora de 'agir de forma espetacular'","resumo":"O presidente do Federal Reserve de Nova York, John Williams, defendeu a manutenção de uma postura monetária cautelosa para conter a inflação. Apesar de apoiar juros em níveis restritivos, o dirigente ponderou que movimentos bruscos na taxa não são adequados no momento atual. As declarações sinalizam uma abordagem gradual na condução da política econômica norte-americana diante das incertezas globais. O mercado financeiro internacional acompanha atentamente as pistas sobre os próximos passos dos bancos centrais.","link":"https://ch.zonebourse.com/actualite-bourse/williams-de-la-reserve-federale-fed-reste-favorable-a-une-politique-monetaire-plus-restrictive-ce785edcdc88f025","categoria":"ECONOMIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Europa planeja liderar a próxima onda de chips de computador","resumo":"Países europeus estão unindo forças e investimentos para fortalecer a produção continental de semicondutores e reduzir a dependência de fornecedores asiáticos e americanos. A estratégia envolve incentivos bilionários para pesquisa, desenvolvimento e construção de novas fundições de chips avançados. A iniciativa visa garantir a soberania tecnológica da região em áreas críticas como inteligência artificial e carros autônomos.","link":"https://www.bbc.com/news/articles/cqglwjd450k0o","categoria":"SEMICONDUTORES","lang":"pt"},{"fonte":"Levante-EMV","pais":"Espanha","titulo":"Cabos submarinos de internet escondem tecnologia que pode salvar as baleias mais ameaçadas","resumo":"Uma nova aplicação para os cabos submarinos de fibra óptica está permitindo monitorar o som dos oceanos em tempo real. A tecnologia ajuda cientistas a rastrear a posição de baleias em risco de extinção para evitar colisões com navios. A iniciativa mostra como a infraestrutura de telecomunicações pode ser reutilizada para a conservação da vida marinha.","link":"https://www.levante-emv.com/tendencias21/2026/11/17/cables-submarinos-internet-esconden-tecnologia-136554636.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"FAZ","pais":"Alemanha","titulo":"Mudanças na Nvidia: Empresa aposta na liderança de Colette Kress","resumo":"A Nvidia passa por ajustes em sua estrutura executiva ao consolidar o papel de Colette Kress na condução financeira e operacional da empresa. A movimentação visa garantir estabilidade no momento em que a demanda por infraestrutura de inteligência artificial atinge recordes mundiais. A escolha reflete a busca por uma gestão focada na expansão sustentável e no alinhamento estratégico. Analistas do setor acompanham de perto os desdobramentos dessa transição no mercado.","link":"https://www.faz.net/aktuell/wirtschaft/kuenstliche-intelligenz/jensen-huang-scheitert-mit-comeback-nvidia-setzt-auf-colette-kress-201692999.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"Presidente da Sony destaca o potencial transformador da tecnologia de reprodução espacial","resumo":"Durante palestra comemorativa de 150 anos do Nikkei, o presidente da Sony ressaltou os avanços das tecnologias de reprodução espacial. O executivo enfatizou como a criação de experiências imersivas pode emocionar e transformar o entretenimento global. Os novos visores e telas 3D sem óculos estão redefinindo a produção de conteúdo e a visualização industrial. A Sony planeja expandir essas aplicações para diversos setores nos próximos anos.","link":"https://www.nikkei.com/article/DGXZQOUC183GP0Y6A111C2000000/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"中国科学院","pais":"China","titulo":"Jornal de Ciência da China Reúne 25 'Cientistas de IA' em Simpósio Interdisciplinar","resumo":"Uma iniciativa inovadora promovida pelo Jornal de Ciência da China reuniu 25 agentes e modelos avançados de inteligência artificial em um simpósio de pesquisa interdisciplinar. O evento explorou como sistemas autônomos podem colaborar na formulação de hipóteses e análises científicas complexas. A experiência representa um marco na aplicação prática da IA para acelerar descobertas no ecossistema científico chinês.","link":"https://www.cas.cn/cm/202611/t20261118_5124514.shtml","categoria":"CIÊNCIA E IA","lang":"pt"},{"fonte":"Marinha","pais":"Portugal","titulo":"Ciência e tecnologia em destaque no IH: SensorTech é inaugurado no Seixal","resumo":"O Seixal recebeu a inauguração do polo SensorTech no Instituto Hidrográfico, consolidando um espaço dedicado ao desenvolvimento de tecnologias de ponta. O projeto visa impulsionar a inovação em sensores e monitoramento aquático, fortalecendo a pesquisa científica aplicada. A iniciativa promete gerar impactos diretos na preservação marinha e na modernização tecnológica das indústrias do setor.","link":"https://www.marinha.pt/pt/media-center/Noticias/Paginas/Ciencia-e-tecnologia-em-destaque-no-IH-%E2%80%93-SensorTech-inaugurado-no-Seixal.aspx","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Prefeitura de Mogi das Cruzes -","pais":"Brasil","titulo":"Prefeita Mara Bertaiolli anuncia tecnologia para monitoramento cerebral de bebês prematuros","resumo":"Foi anunciada a incorporação de uma nova tecnologia hospitalar especializada na avaliação e monitoramento da atividade cerebral de recém-nascidos prematuros. O equipamento permite diagnósticos precoces de potenciais alterações neurológicas com maior precisão e rapidez. A medida promete melhorar significativamente os índices de recuperação e reduzir sequelas no desenvolvimento infantil em UTIs neonatais. A inovação reforça o uso de soluções tecnológicas avançadas na rede pública de saúde.","link":"https://www.mogidascruzes.sp.gov.br/noticia/prefeita-mara-bertaiolli-anuncia-tecnologia-para-monitoramento-cerebral-de-bebes-prematuros","categoria":"SAÚDE","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"Observatório Chandra da NASA lança novo álbum com sons de estrelas em formação","resumo":"O Observatório de Raios-X Chandra da NASA divulgou uma nova coleção de sonificações que traduzem dados astronômicos de estrelas em formação em frequências audíveis. A técnica inovadora permite que cientistas e o público em geral experimentem fenômenos cósmicos por meio do som. O projeto combina dados visuais e sonoros para enriquecer a divulgação científica e a pesquisa astrofísica. O lançamento celebra as descobertas contínuas do telescópio espacial sobre o nascimento de novos sistemas estelares.","link":"https://science.nasa.gov/missions/chandra/new-album-of-baby-star-sounds-shared-by-nasas-chandra/","categoria":"CIÊNCIA E ESPAÇO","lang":"pt"},{"fonte":"franceinfo","pais":"França","titulo":"Exército israelense usou tecnologia de reconhecimento facial da Amazon para monitorar palestinos, revela 'The Guardian'","resumo":"Segundo reportagem do jornal The Guardian, as forças armadas de Israel utilizaram ferramentas de reconhecimento facial desenvolvidas pela Amazon na Palestina. O sistema de vigilância foi empregado para rastrear e catalogar cidadãos locais, gerando fortes preocupações sobre privacidade e direitos humanos. A revelação intensifica o debate ético sobre o fornecimento de tecnologias avançadas de Big Techs para operações militares. Organizações internacionais cobram maior transparência e regulamentação no uso de IA para segurança.","link":"https://www.franceinfo.fr/monde/proche-orient/guerre/l-armee-israelienne-a-utilise-la-technologie-de-reconnaissance-faciale-d-amazon-pour-surveiller-les-palestiniens-selon-le-guardian_8286383.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Nvidia dobra receita enquanto conselho reitera que não pretende reconduzir Jensen Huang","resumo":"Em um novo balanço trimestral, a Nvidia reportou que sua receita dobrou em relação ao período anterior devido à explosão de tecnologias de IA. Contudo, o conselho da companhia manteve a posição de não reintegrar Jensen Huang ao cargo executivo principal. A contradição entre o sucesso operacional e as disputas de governança continua sob forte escrutínio de investidores internacionais.","link":"https://www.theguardian.com/technology/2026/nov/17/nvidia-third-quarter-revenue-jensen-huang","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Xataka","pais":"Espanha","titulo":"A ciência quer aposentar o IMC como medida da obesidade","resumo":"Especialistas e cientistas defendem a substituição do Índice de Massa Corporal por métodos mais precisos para avaliar a obesidade. O indicador tradicional apresenta limitações por não diferenciar massa muscular de gordura corporal. Contudo, adotar novas métricas simples e universais na prática médica ainda representa um desafio logístico.","link":"https://www.xataka.com/medicina-y-salud/ciencia-quiere-jubilar-imc-como-medida-obesidad-sustituirlo-cinta-metrica-tampoco-sencillo","categoria":"SAÚDE","lang":"pt"},{"fonte":"derStandard.de","pais":"Alemanha","titulo":"Nvidia dobra faturamento e lucros impulsionada pelo setor de IA","resumo":"A Nvidia registrou um marco financeiro histórico ao duplicar sua receita e seus lucros em relação ao período anterior. O crescimento expressivo é impulsionado pelo domínio expressivo no fornecimento de processadores para modelos de inteligência artificial. O resultado superou amplamente as expectativas de analistas e investidores do mercado financeiro global. O desempenho extraordinário reafirma o papel central da empresa na revolução tecnológica atual.","link":"https://www.derstandard.de/story/3000000349749/nvidia-verdoppelt-umsatz-und-gewinn","categoria":"MERCADO","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Nova integração entre Unreal Engine e câmeras impulsiona o mercado de produção virtual","resumo":"Durante a feira Inter BEE, foi apresentada uma tecnologia de ponta que conecta diretamente o Unreal Engine a câmeras profissionais. A inovação permite sincronização em tempo real para cenários virtuais complexos em produções cinematográficas e transmissões. Entusiastas e profissionais do setor celebraram os ganhos substanciais de eficiência e realismo visual. A solução promete baratear e popularizar a criação de conteúdo audiovisual imersivo.","link":"https://news.yahoo.co.jp/articles/ef405e6280297f2a43dc55ff7255ffd7a4e5fb0d","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Bloomberg","pais":"China","titulo":"Xi Jinping Destaca a China como um Superlaboratório de Testes para Tecnologias","resumo":"O presidente chinês Xi Jinping enfatizou que a China atua como um campo de testes em megasscala para a validação e expansão de novas tecnologias globais. A declaração reforça o compromisso do país em acelerar a infraestrutura digital e a inovação industrial contínua. O cenário fortalece a atração de investimentos em setores estratégicos como inteligência artificial, automação e energia limpa.","link":"https://www.bloomberg.com/news/videos/2026-11-18/china-a-supersized-testing-ground-for-technology-xi-video","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Semanário Alto Minho","pais":"Portugal","titulo":"Tecnologia da Universidade do Minho é selecionada para festival em Dubai","resumo":"Um projeto tecnológico desenvolvido por pesquisadores da Universidade do Minho foi selecionado para exibição em um prestigiado festival internacional em Dubai. A solução destaca a capacidade inovadora da academia portuguesa no cenário global de ciência e desenvolvimento. O reconhecimento internacional abre portas para novos investimentos, parcerias estratégicas e expansão do conhecimento científico produzido em Portugal.","link":"https://www.altominho.com.pt/2026/11/17/tecnologia-da-uminho-selecionada-para-festival-no-dubai/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Bloomberg Línea Brasil","pais":"Brasil","titulo":"Da aviação aos bancos: panes alimentam desconfiança e ‘paranoia’ com a tecnologia","resumo":"Falhas recentes em sistemas computacionais que afetaram desde serviços aeroportuários até operações bancárias acenderam um alerta global sobre a fragilidade da infraestrutura digital. Especialistas apontam que a dependência excessiva de poucas plataformas centralizadas amplia riscos sistêmicos em caso de interrupções. A sequência de incidentes gera desconfiança no público e pressiona corporações a revisarem seus planos de contingência e cibersegurança. O cenário impulsiona debates sobre a urgência de regulamentações mais rígidas para a resiliência tecnológica.","link":"https://www.bloomberglinea.com.br/tech/da-aviacao-aos-bancos-panes-alimentam-desconfianca-e-paranoia-com-a-tecnologia/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SZ.de","pais":"Estados Unidos","titulo":"Waymo suspende viagens autônomas em rodovias dos EUA após determinação regulatória","resumo":"A Waymo interrompeu suas operações de testes com veículos autônomos em rodovias norte-americanas seguindo instruções dos órgãos reguladores de trânsito. A decisão ocorreu após relatórios de segurança levantarem preocupações sobre o comportamento do sistema em altas velocidades. A empresa informou que trabalhará em atualizações de software para atender aos rigorosos critérios exigidos pelas autoridades. O contratempo ressalta os desafios regulatórios e técnicos que o setor de transporte autônomo enfrenta atualmente.","link":"https://news.google.com/rss/articles/CBMi8gFBVV95cUxOSTVtdEFXQnNzTm0yY0hRTHR4VnUzeEdXQlZhb2hTZW9vWGVlRmd2RnpURVNvQVAyVnJ6YXBSVV9PdnJWMVJzMFZZSDVjak02LWJxS19TcndBRXZzNHJ1c0JGLVdGaHBkNUFTWjN5UE5MVk1wRV9IRWJjTXJhY0xPMFNZSk43Umdkb3lHZURHSEFsdmhOZnd3Ul9zMUhiVmYxOWl0WGllSTV2U2lKLVRhX3NUZG5oY2xucmtPTUsweXVtN1RtWTdVaW5tNU9mZmNrNFY1dzVRZi1JajRDUDVnVWNPY1dPSndlbzJXOGt3aEdWdw?oc=5","categoria":"VEÍCULOS AUTÔNOMOS","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Jensen Huang declara que ficaria 'honrado' em retornar à Nvidia como CEO","resumo":"Em declarações recentes, Jensen Huang expressou publicamente seu interesse em reassumir o comando executivo da Nvidia, afirmando que seria uma honra liderar a empresa novamente. A declaração coloca pressão adicional sobre o conselho de administração no momento em que a empresa domina o mercado de processadores para IA. O desdobramento é acompanhado de perto pela indústria de tecnologia mundial.","link":"https://www.theguardian.com/technology/2026/nov/17/nvidia-jensen-huang-statement","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"OpenAI Launches New Astra, Its Most Advanced AI Model Whose Previous Version Was Canceled for Safety Reasons","resumo":"OpenAI has publicly introduced Astra, considered its most powerful artificial intelligence model to date. The previous version of the project had been temporarily halted due to safety and data alignment concerns. The new version brings significant improvements in reasoning capabilities and reinforced safeguard systems. The launch marks a decisive moment in the global race to develop advanced AI solutions.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/17/openai-lanca-o-novo-astra-seu-modelo-mais-avancado-de-ia-que-teve-versao-anterior-cancelada-por-seguranca.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"SiliconANGLE","pais":"United States","titulo":"Brain Implant Startup Science Corp Raises $400 Million to Bring Its Devices to Market","resumo":"Brain implant technology startup Science Corp has raised $400 million in new investments to accelerate the commercialization of its advanced medical devices. The funding will help the company conduct clinical trials and obtain decisive regulatory approvals. The innovation promises to transform the treatment of severe neurological conditions and the restoration of motor and visual functions. This breakthrough positions the company as a strong competitor in the brain-computer interface sector.","link":"https://siliconangle.com/2026/11/17/brain-implant-technology-startup-science-corp-raises-400m-to-bring-its-medical-devices-to-market/","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Sud Ouest","pais":"France","titulo":"AI: French Standout Mistral Argues It Is Not 'Macron's Personal Project' in Front of Silicon Valley Elite","resumo":"French artificial intelligence startup Mistral presented itself to Silicon Valley investors and leaders, seeking to consolidate its global position. During the event, its executives pushed back against criticism regarding alleged dependence on or favoritism by Emmanuel Macron's government. The move aims to attract international capital and demonstrate strategic independence in the competitive AI market. The company reaffirms its commitment to developing open and competitive models for the global market.","link":"https://www.sudouest.fr/sciences-et-technologie/intelligence-artificielle/ia-le-fleuron-francais-mistral-ai-se-defend-d-etre-un-projet-personnel-de-macron-devant-le-gotha-de-la-silicon-valley-31572044.php","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Valencia Plaza","pais":"England","titulo":"Amazon Drones Featuring Embention Technology Given Green Light to Expand Deliveries in the UK","resumo":"Amazon has obtained regulatory approval in the UK to expand its delivery operations using drones equipped with Embention safety systems. The initiative aims to accelerate small-package deliveries and reduce carbon emissions in urban centers. The expansion represents a crucial milestone for the commercial viability of autonomous goods transport in the country.","link":"https://valenciaplaza.com/valenciaplaza/empresas1/los-drones-de-amazon-con-tecnologia-de-embention-reciben-luz-verde-para-ampliar-sus-repartos-en-reino-unido","categoria":"INNOVATION","lang":"en"},{"fonte":"Redacción Médica","pais":"Spain","titulo":"Spanish Science Resolves a Decade of Unknowns to Fight an Aggressive Lymphoma","resumo":"Spanish researchers have achieved a scientific milestone by unraveling the genetic mechanisms involved in an aggressive type of lymphoma. The discovery promises to pave unprecedented ways for more effective and personalized treatments against the disease. The breakthrough highlights the fundamental role of scientific research in finding solutions to complex health challenges.","link":"https://www.redaccionmedica.com/innovacion/20261118/la-ciencia-espanola-resuelve-una-decada-de-incognitas-para-combatir-un-linfoma-agresivo/365503_0.html","categoria":"SCIENCE","lang":"en"},{"fonte":"BILD","pais":"Germany","titulo":"Nvidia: Record Numbers and Vera Rubin Architecture Strengthen the AI Boom","resumo":"Nvidia reported impressive financial results driven by strong global demand for artificial intelligence solutions. The announcement of the new Vera Rubin architecture reinforces the company's leading position in the semiconductor market. Experts point out that these advancements ensure the sustainability of the technology sector's growth in the coming years. This scenario consolidates AI infrastructure as a central pillar of the modern digital economy.","link":"https://www.bild.de/politik/ausland-und-internationales/nvidia-rekordzahlen-und-vera-rubin-staerken-den-ki-boom-6afcdb43bb7e7a6679f91fb4","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"ZDNET Japan","pais":"Japan","titulo":"Hitachi Develops Technology to Prove Delegation to AI Agents by Auditing Transactions","resumo":"Hitachi has created an innovative technology capable of verifying and proving the delegation of tasks to artificial intelligence agents. The system performs rigorous auditing of transaction histories and issued digital powers of attorney. This solution aims to increase security and reliability in automated corporate processes. The new development represents a crucial step toward the large-scale adoption of intelligent automation in regulated sectors.","link":"https://japan.zdnet.com/article/35255078/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"观点网","pais":"China","titulo":"Kling AI Executive and Former Kuaishou Technology Vice President Leaves the Company","resumo":"Industry reports indicate the departure of Li Han, former vice president of technology at Kuaishou and senior executive responsible for the Kling AI video-generation artificial intelligence model. The move sparks discussions about internal restructuring and the future of the company's artificial intelligence strategies. The executive played a crucial role in developing innovative generative AI tools in China.","link":"https://www.guandian.cn/m/show/629328","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Entrackr","pais":"India","titulo":"Circular Economy Startup Recove Ventures Raises 56.25 Crores via Equity and Debt","resumo":"Circular economy startup Recove Ventures has announced the raising of 56.25 Indian rupees crores through equity and debt. This strategic investment aims to expand the company's operational capacity in material recycling and repurposing. The initiative reinforces the growing capital attraction for sustainable solutions and green technology in the country. With these funds, the company intends to accelerate its market expansion and enhance its technologies.","link":"https://entrackr.com/snippets/circular-economy-startup-recove-ventures-raises-rs-5625-cr-through-equity-and-debt-12818941","categoria":"BUSINESS","lang":"en"},{"fonte":"Diário de Notícias","pais":"Portugal","titulo":"Brussels: Investment in Portugal Is Concentrating on Data Centers","resumo":"The European Union warns that foreign direct investments in Portugal are increasingly directed toward the data infrastructure sector. This movement reflects the advancement of digital transformation and the growing demand for processing capacity in the region. The scenario brings significant economic opportunities, but also imposes challenges for the country's sustainability and energy matrix.","link":"https://www.dn.pt/economia/bruxelas-investimento-em-portugal-est-a-ficar-concentrado-nos-centros-de-dados","categoria":"INFRASTRUCTURE","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Anthropic Sets Historic Share Offering Price Today: See 5 Things to Watch in the AI Company's IPO","resumo":"Anthropic is setting the pricing for its initial public offering in one of the tech sector's most anticipated financial events. Investors are closely monitoring valuation indicators, governance, revenue projections, and rivalry with OpenAI. The listing reflects growing capital market demand for pioneering artificial intelligence companies. The move could redefine investment parameters for the international tech segment.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/18/anthropic-define-hoje-preco-de-oferta-historica-de-acoes-veja-5-pontos-a-observar-no-ipo-da-empresa-de-ia.ghtml","categoria":"FINANCIAL MARKET","lang":"en"},{"fonte":"WSJ","pais":"United States","titulo":"Google Embraces Innovative Geothermal Technology to Vaporize Rocks and Generate Clean Energy","resumo":"Google is expanding its sustainability efforts by investing in a revolutionary geothermal technology capable of vaporizing rock to capture deep thermal energy. The initiative aims to provide uninterrupted clean energy for its constantly growing artificial intelligence data centers. This innovative approach could transform the global energy sector and drastically reduce carbon emissions. The project reflects the tech industry's growing demand for renewable and reliable energy sources.","link":"https://www.wsj.com/business/energy-oil/google-embraces-geothermal-technology-to-vaporize-rock-for-clean-power-dbd66d05","categoria":"ENERGY AND TECHNOLOGY","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"15-Year-Old Young Researcher Earns Ph.D. and Wants to Extend Life Using Quantum Physics","resumo":"A 15-year-old prodigy has completed his Ph.D. and drawn the attention of the international scientific community. The young scientist intends to apply advanced quantum physics concepts to investigate cellular mechanisms and delay human aging. His innovative research promises to open new frontiers in the treatment of degenerative diseases and longevity medicine. The extraordinary feat highlights the potential of new interdisciplinary approaches in the healthcare field.","link":"https://www.science-et-vie.com/corps-et-sante/ce-jeune-chercheur-de-15-ans-decroche-un-doctorat-et-veut-prolonger-la-vie-grace-a-la-physique-quantique-222245.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Moneycontrol.com","pais":"England","titulo":"Cognizant Beats Competitors and Wins $175 Million UK Data Center Contract","resumo":"IT giant Cognizant has beaten rivals like TCS and HCLTech by securing a major data infrastructure contract in the UK. The agreement provides for the modernization of cloud services and the optimization of data processing on a national scale. The move strengthens the company's position in the European market and highlights the growing demand for corporate digital transformation.","link":"https://www.moneycontrol.com/news/business/information-technology/cognizant-beats-tcs-hcltech-and-two-global-rivals-to-win-175-million-uk-data-centre-deal-14083029.html","categoria":"BUSINESS","lang":"en"},{"fonte":"Onda Cero","pais":"Spain","titulo":"Voyager 1 Spacecraft Exceeds 1 Light-Day Distance from Earth","resumo":"The iconic Voyager 1 spacecraft has reached a historic milestone by distancing itself the equivalent of one light-day from our planet. This feat symbolizes the extreme limits reached so far by human space exploration. Even facing technical challenges and the passage of time, the mission continues to send valuable data about interstellar space.","link":"https://www.ondacero.es/podcast/programas/la-brujula/brujula-ciencia/brujula-ciencia-sonda-voyager-1-supera-distancia-1-dia-luz-tierra_202611186afce1b27335ad00073add9b.html","categoria":"ASTRONOMY","lang":"en"},{"fonte":"Mindener Tageblatt","pais":"Germany","titulo":"What Was the Result of the Impact? Hera Mission Provides New Images","resumo":"The Hera space mission has begun transmitting the first detailed images of the asteroid struck by NASA's DART probe. Data collected by the European Space Agency helps analyze the exact consequences of the kinetic impact on the celestial body's orbit. The findings provide crucial insights for the development of future planetary defense systems against asteroids. This achievement marks a significant advance in scientific exploration and the protection of Earth.","link":"https://www.mt.de/weltnews/wissenschaft/Was-brachte-der-Einschlag-Mission-Hera-liefert-Bilder-24465310.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"NEC and IBM Japan Successfully Test Hybrid Quantum-Secure Communication","resumo":"NEC and IBM Japan announced the successful demonstration of a hybrid quantum-secure communication technology. The system combines quantum key distribution with post-quantum cryptography to protect critical data. The initiative aims to build ultra-secure networks prepared to counter threats from future quantum computers. This breakthrough strengthens the cybersecurity infrastructure of the financial and government sectors.","link":"https://news.google.com/rss/articles/CBMif0FVX3lxTE5USGdOTUd2ZzYzaXJwRm50VGpBSTFrLThtN0xlQmpMQzVvRlFMM1JrX2NXVEtqVDVrWVpaTHpnTVhTOGhJcWtkTWpaSG9WM1lFTm9fNFpfMjZ3Z2ZOeVlYRWRxQ1hKMW1OcXNHT2Zsb3EwRHdmQU5CWHlQdzQta2c?oc=5","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"Motor16","pais":"China","titulo":"Yangwang Altior: 1,000 km Range and Futuristic Technology in New Chinese Luxury","resumo":"BYD's high-end luxury brand has unveiled surprising developments for the global electric vehicle market. The Yangwang Altior model promises a range exceeding 1,000 kilometers coupled with a technology package considered science fiction. This initiative solidifies China at the forefront of high-end electric mobility, directly rivaling traditional ultra-luxury automakers.","link":"https://www.motor16.com/las-ultimas-noticias/yangwang-altior-1000-km-rolls/","categoria":"AUTOMOTIVE TECHNOLOGY","lang":"en"},{"fonte":"pib.gov.in","pais":"India","titulo":"The Semiconductor and Artificial Intelligence Revolution","resumo":"The intersection between the semiconductor industry and artificial intelligence is driving a major technological transformation. India seeks to consolidate its strategic position in chip manufacturing and the development of advanced AI solutions. This synergy promises to attract new global investments and strengthen the country's technological infrastructure. The initiative reinforces digital sovereignty and expands the Indian innovation ecosystem.","link":"https://www.pib.gov.in/FactsheetDetails.aspx?Id=150860\u0026reg=48\u0026lang=2","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Apple Attributes Service Outages to Internal Update","resumo":"Apple confirmed that recent malfunctions affecting several of its online services were caused by an internal system update. The outages impacted users globally, temporarily blocking access to the company's essential platforms. The tech giant ensured that fixes were implemented quickly and reinforced its commitment to platform stability.","link":"https://www.cmjornal.pt/tecnologia/detalhe/milhares-de-utilizadores-reportam-falhas-nos-servicos-da-apple","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Jornal do Comércio","pais":"Brazil","titulo":"Brazilian Technology to Verify Results of Global Waste Reduction Initiatives","resumo":"A technological solution developed in Brazil has been selected to monitor and audit international projects focused on solid waste management and reduction. The tool utilizes advanced data analysis to accurately measure the ecological impact of sustainability programs on a global scale. This recognition highlights the innovative role of domestic engineering in pursuing global environmental goals. The platform is expected to help governments and entities optimize public environmental policies.","link":"https://www.jornaldocomercio.com/geral/2026/11/1270900-tecnologia-brasileira-verificara-resultado-de-iniciativas-para-reducao-de-lixo-no-mundo.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The New York Times","pais":"United States","titulo":"Artificial Intelligence Helps Discover Critical Security Flaw in Java","resumo":"Advanced artificial intelligence tools were instrumental in identifying a severe security vulnerability in the Java platform, which is essential to the global internet infrastructure. The discovery allowed developers to create patches before cybercriminals could exploit the flaw on a large scale. This feat highlights the vital role AI is assuming in proactive cyber defense and automated code analysis. Experts celebrate the advancement as a milestone for protecting corporate digital security.","link":"https://www.nytimes.com/2026/11/17/us/politics/ai-security-bug-java.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"France 24","pais":"France","titulo":"Economy: Nvidia Doubles Revenue and Profits, Beating Market Expectations","resumo":"Semiconductor giant Nvidia posted impressive financial results by doubling its revenue and profits in the last quarter. This extraordinary growth was driven by overwhelming demand for chips geared toward artificial intelligence processing. With results surpassing all analyst forecasts, the company solidifies its absolute leadership in the current technological revolution. The performance reiterates investor optimism regarding the global technology ecosystem.","link":"https://www.france24.com/es/programas/econom%C3%ADa/20261118-nvidia-duplic%C3%B3-sus-ingresos-y-ganancias-superando-las-expectativas-del-mercado","categoria":"BUSINESS","lang":"en"},{"fonte":"BBC","pais":"United Kingdom","titulo":"Nvidia Reports Record Results While Board States It Will Not Reappoint Jensen Huang","resumo":"Nvidia posted extraordinary financial results driven by high global demand for artificial intelligence chips. Despite the solid financial performance, statements from the board of directors indicate uncertainty regarding the company's executive leadership. This scenario generates speculation in the financial market and technology sector about the semiconductor manufacturer's strategic direction.","link":"https://www.bbc.com/news/articles/cm2kl50vkwkdo","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"Nvidia Beats Forecasts by Doubling Revenue and Profits and Defends the Power of Its Technology","resumo":"Tech giant Nvidia posted extraordinary financial results by doubling its profits and revenue in the last quarter. The strong performance was driven by high global demand for chips focused on artificial intelligence. The company thus reaffirms its leading position and the relevance of its innovations in the global market.","link":"https://elpais.com/economia/2026-11-17/nvidia-bate-previsiones-al-disparar-sus-ingresos-un-103-y-defiende-el-poder-de-su-tecnologia-y-su-remuneracion-a-los-accionistas.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Chip Controversy: Nvidia Maintains Strong Business Growth","resumo":"Despite recent controversies in the semiconductor sector and operational speculations, Nvidia is maintaining an accelerated pace of commercial expansion. The strong financial performance demonstrates the company's immense resilience amid the dynamics of the global tech market. The chip sector continues to record high demands driven by the artificial intelligence race. This solid growth reflects the company's continuous strategic relevance.","link":"https://www.sueddeutsche.de/wirtschaft/chip-kontroverse-nvidia-huang-kommt-nicht-zurueck-geschaeft-waechst-stark-dpa.urn-newsml-dpa-com-20090101-261117-930-10897","categoria":"BUSINESS","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"Mitsubishi Electric Launches Generative AI App to Support Maintenance Engineers","resumo":"Mitsubishi Electric Building Solutions has developed a generative artificial intelligence-based application focused on supporting field engineers. The tool assists in the diagnostics and preventative maintenance of elevators and escalators. The technology analyzes manuals and historical data to provide quick solutions in real-time during service calls. This new feature optimizes response times and raises operational safety standards.","link":"https://www.nikkei.com/article/DGXZRSP715426_Y6A111C2000000/","categoria":"AUTOMATION","lang":"en"},{"fonte":"新华网客户端","pais":"China","titulo":"Intelligent Scientific Computing Initiative Brings Cutting-Edge Research to Schools","resumo":"The project titled 'Intelligent Scientific Computing + Education' is integrating advanced supercomputing and artificial intelligence tools into the curriculum of young students in China. The proposal aims to introduce students to frontier scientific research starting from basic education. The action seeks to empower new generations and strengthen talent development in science and technology fields.","link":"https://app.xinhuanet.com/news/article.html?articleId=202611189b7e0741a4e04f8ba1fed300307d4c26","categoria":"EDUCATION AND TECHNOLOGY","lang":"en"},{"fonte":"Caras Portugal","pais":"Portugal","titulo":"Prince Albert II Learns About Revolutionary New Technology to Support Astronauts","resumo":"During an event focused on space innovation, Prince Albert II of Monaco observed the demonstration of a new technology designed to support astronomical missions. The feature aims to optimize the safety and health monitoring of crews in reduced-gravity environments. This new development represents a promising step forward in human space exploration and biomedical engineering.","link":"https://caras.pt/realeza/2026-11-17-principe-alberto-ii-conhece-a-nova-tecnologia-revolucionaria-que-vai-apoiar-os-astronautas/","categoria":"INNOVATION","lang":"en"},{"fonte":"Capital Digital","pais":"Brazil","titulo":"ABC and SBPC Propose Raising Investment in Science to 3% of GDP by 2040","resumo":"The Brazilian Academy of Sciences and the Brazilian Society for the Progress of Science have presented a joint proposal to expand funding for the Brazilian scientific sector. The plan aims to gradually reach 3% of Gross Domestic Product invested in research and innovation by the year 2040. The entities emphasize that funding stability is essential to curb brain drain and guarantee technological sovereignty. The initiative seeks to raise awareness among public policymakers regarding the strategic relevance of science.","link":"https://capitaldigital.com.br/abc-e-sbpc-propoem-elevar-investimento-em-ciencia-a-3-do-pib-ate-2040/","categoria":"SCIENCE","lang":"en"},{"fonte":"Battery Technology","pais":"United States","titulo":"Addionics Triples Lithium Battery Cycle Life with New Technology","resumo":"The company Addionics has revealed an innovative battery architecture capable of tripling the lifespan of conventional lithium-ion cells. The technology redesigns the internal structure of the electrodes, allowing for greater efficiency, faster charging, and lower degradation over time. This breakthrough promises to significantly impact the electric vehicle market and renewable energy storage. The novelty represents a crucial step in accelerating the global energy transition.","link":"https://www.batterytechonline.com/design-manufacturing/addionics-3d-current-collectors-triple-battery-cycle-life","categoria":"TECHNOLOGICAL INNOVATION","lang":"en"},{"fonte":"Zonebourse Suisse","pais":"France","titulo":"Fed's Williams Remains Favorable to Tighter Monetary Policy, But Says It Is Not the Time to 'Act Spectacularly'","resumo":"New York Federal Reserve President John Williams defended maintaining a cautious monetary stance to curb inflation. Despite supporting interest rates at restrictive levels, the official noted that abrupt rate moves are not appropriate at the current time. The statements signal a gradual approach in conducting North American economic policy amid global uncertainties. The international financial market closely monitors clues regarding the central banks' next steps.","link":"https://ch.zonebourse.com/actualite-bourse/williams-de-la-reserve-federale-fed-reste-favorable-a-une-politique-monetaire-plus-restrictive-ce785edcdc88f025","categoria":"ECONOMY","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"Europe Plans to Lead the Next Wave of Computer Chips","resumo":"European countries are joining forces and investments to strengthen continental semiconductor production and reduce dependence on Asian and American suppliers. The strategy involves multibillion-dollar incentives for research, development, and the construction of new advanced chip foundries. The initiative aims to guarantee the region's technological sovereignty in critical areas such as artificial intelligence and autonomous cars.","link":"https://www.bbc.com/news/articles/cqglwjd450k0o","categoria":"SEMICONDUCTORS","lang":"en"},{"fonte":"Levante-EMV","pais":"Spain","titulo":"Submarine Internet Cables Hide Technology That Can Save Most Endangered Whales","resumo":"A new application for submarine fiber-optic cables is allowing ocean sound to be monitored in real time. The technology helps scientists track the position of whales at risk of extinction to avoid collisions with ships. The initiative shows how telecommunications infrastructure can be repurposed for marine wildlife conservation.","link":"https://www.levante-emv.com/tendencias21/2026/11/17/cables-submarinos-internet-esconden-tecnologia-136554636.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"FAZ","pais":"Germany","titulo":"Changes at Nvidia: Company Bets on Colette Kress's Leadership","resumo":"Nvidia is undergoing adjustments in its executive structure by consolidating Colette Kress's role in driving the company's financial and operational strategy. The move aims to ensure stability at a time when demand for artificial intelligence infrastructure is reaching global records. The choice reflects the search for management focused on sustainable expansion and strategic alignment. Industry analysts are closely following the developments of this transition in the market.","link":"https://www.faz.net/aktuell/wirtschaft/kuenstliche-intelligenz/jensen-huang-scheitert-mit-comeback-nvidia-setzt-auf-colette-kress-201692999.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"Sony President Highlights Transformative Potential of Spatial Reproduction Technology","resumo":"During a commemorative lecture for Nikkei's 150th anniversary, Sony's president highlighted advances in spatial reproduction technologies. The executive emphasized how creating immersive experiences can emotionally move and transform global entertainment. New headsets and glasses-free 3D displays are redefining content production and industrial visualization. Sony plans to expand these applications to various sectors in the coming years.","link":"https://www.nikkei.com/article/DGXZQOUC183GP0Y6A111C2000000/","categoria":"INNOVATION","lang":"en"},{"fonte":"中国科学院","pais":"China","titulo":"China Science Daily Gathers 25 'AI Scientists' in Interdisciplinary Symposium","resumo":"An innovative initiative promoted by the China Science Daily brought together 25 advanced artificial intelligence agents and models in an interdisciplinary research symposium. The event explored how autonomous systems can collaborate in formulating hypotheses and complex scientific analyses. The experiment represents a milestone in the practical application of AI to accelerate discoveries in the Chinese scientific ecosystem.","link":"https://www.cas.cn/cm/202611/t20261118_5124514.shtml","categoria":"SCIENCE AND AI","lang":"en"},{"fonte":"Marinha","pais":"Portugal","titulo":"Science and Technology in the Spotlight at IH: SensorTech Inaugurated in Seixal","resumo":"Seixal hosted the inauguration of the SensorTech hub at the Hydrographic Institute, consolidating a space dedicated to the development of cutting-edge technologies. The project aims to boost innovation in sensors and aquatic monitoring, strengthening applied scientific research. The initiative promises to generate direct impacts on marine preservation and the technological modernization of industries in the sector.","link":"https://www.marinha.pt/pt/media-center/Noticias/Paginas/Ciencia-e-tecnologia-em-destaque-no-IH-%E2%80%93-SensorTech-inaugurado-no-Seixal.aspx","categoria":"SCIENCE","lang":"en"},{"fonte":"Prefeitura de Mogi das Cruzes -","pais":"Brazil","titulo":"Mayor Mara Bertaiolli Announces Technology for Brain Monitoring of Premature Babies","resumo":"The incorporation of a new hospital technology specialized in evaluating and monitoring the brain activity of premature newborns was announced. The equipment allows early diagnoses of potential neurological alterations with greater precision and speed. The measure promises to significantly improve recovery rates and reduce developmental sequelae in children in neonatal ICUs. The innovation reinforces the use of advanced technological solutions in the public health network.","link":"https://www.mogidascruzes.sp.gov.br/noticia/prefeita-mara-bertaiolli-anuncia-tecnologia-para-monitoramento-cerebral-de-bebes-prematuros","categoria":"HEALTH","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"NASA's Chandra Observatory Releases New Album with Sounds of Forming Stars","resumo":"NASA's Chandra X-ray Observatory released a new collection of sonifications translating astronomical data of forming stars into audible frequencies. The innovative technique allows scientists and the general public to experience cosmic phenomena through sound. The project combines visual and audio data to enrich scientific outreach and astrophysical research. The release celebrates the space telescope's continuous discoveries regarding the birth of new stellar systems.","link":"https://science.nasa.gov/missions/chandra/new-album-of-baby-star-sounds-shared-by-nasas-chandra/","categoria":"SCIENCE AND SPACE","lang":"en"},{"fonte":"franceinfo","pais":"France","titulo":"Israeli Army Used Amazon Facial Recognition Technology to Monitor Palestinians, 'The Guardian' Reveals","resumo":"According to a report by The Guardian newspaper, the Israeli armed forces used facial recognition tools developed by Amazon in Palestine. The surveillance system was employed to track and catalog local citizens, raising strong concerns about privacy and human rights. The revelation intensifies the ethical debate over the supply of advanced Big Tech technologies for military operations. International organizations are demanding greater transparency and regulation in the use of AI for security.","link":"https://www.franceinfo.fr/monde/proche-orient/guerre/l-armee-israelienne-a-utilise-la-technologie-de-reconnaissance-faciale-d-amazon-pour-surveiller-les-palestiniens-selon-le-guardian_8286383.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Nvidia Doubles Revenue as Board Reiterates It Has No Plans to Reinstate Jensen Huang","resumo":"In a new quarterly earnings report, Nvidia reported that its revenue doubled compared to the previous period due to the explosion of AI technologies. However, the company's board maintained its position not to reinstate Jensen Huang to the top executive position. The contradiction between operational success and governance disputes remains under intense scrutiny from international investors.","link":"https://www.theguardian.com/technology/2026/nov/17/nvidia-third-quarter-revenue-jensen-huang","categoria":"BUSINESS","lang":"en"},{"fonte":"Xataka","pais":"Spain","titulo":"Science Wants to Retire BMI as a Measure of Obesity","resumo":"Experts and scientists are advocating for the replacement of the Body Mass Index with more precise methods to assess obesity. The traditional indicator has limitations because it does not differentiate muscle mass from body fat. However, adopting simple and universal new metrics in medical practice still represents a logistical challenge.","link":"https://www.xataka.com/medicina-y-salud/ciencia-quiere-jubilar-imc-como-medida-obesidad-sustituirlo-cinta-metrica-tampoco-sencillo","categoria":"HEALTH","lang":"en"},{"fonte":"derStandard.de","pais":"Germany","titulo":"Nvidia Doubles Revenue and Profits Boosted by AI Sector","resumo":"Nvidia registered a historic financial milestone by doubling its revenue and profits compared to the previous period. The expressive growth is driven by its dominant supply of processors for artificial intelligence models. The result widely surpassed the expectations of analysts and investors in the global financial market. The extraordinary performance reaffirms the company's central role in the current technological revolution.","link":"https://www.derstandard.de/story/3000000349749/nvidia-verdoppelt-umsatz-und-gewinn","categoria":"MARKET","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"New Integration Between Unreal Engine and Cameras Boosts Virtual Production Market","resumo":"During the Inter BEE fair, cutting-edge technology directly connecting Unreal Engine to professional cameras was presented. The innovation allows real-time synchronization for complex virtual sets in film productions and broadcasts. Enthusiasts and industry professionals celebrated the substantial gains in efficiency and visual realism. The solution promises to make the creation of immersive audiovisual content cheaper and more popular.","link":"https://news.yahoo.co.jp/articles/ef405e6280297f2a43dc55ff7255ffd7a4e5fb0d","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Bloomberg","pais":"China","titulo":"Xi Jinping Highlights China as a Super Testing Laboratory for Technologies","resumo":"Chinese President Xi Jinping has emphasized that China serves as a mega-scale testing ground for the validation and expansion of new global technologies. The declaration reinforces the country's commitment to accelerating digital infrastructure and continued industrial innovation. The scenario strengthens the attraction of investments in strategic sectors such as artificial intelligence, automation and clean energy.","link":"https://www.bloomberg.com/news/videos/2026-11-18/china-a-supersized-testing-ground-for-technology-xi-video","categoria":"INNOVATION","lang":"en"},{"fonte":"Semanário Alto Minho","pais":"Portugal","titulo":"Technology from the University of Minho is selected for festival in Dubai","resumo":"A technological project developed by researchers at the University of Minho was selected for exhibition at a prestigious international festival in Dubai. The solution highlights the innovative capacity of Portuguese academia in the global science and development scenario. International recognition opens doors for new investments, strategic partnerships and expansion of scientific knowledge produced in Portugal.","link":"https://www.altominho.com.pt/2026/11/17/tecnologia-da-uminho-selecionada-para-festival-no-dubai/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Bloomberg Línea Brasil","pais":"Brazil","titulo":"From aviation to banks: breakdowns fuel distrust and ‘paranoia’ with technology","resumo":"Recent failures in computer systems that affected everything from airport services to banking operations raised a global alert about the fragility of digital infrastructure. Experts point out that excessive dependence on a few centralized platforms increases systemic risks in the event of interruptions. The sequence of incidents generates public distrust and pressures corporations to review their contingency and cybersecurity plans. The scenario drives debates about the urgency of stricter regulations for technological resilience.","link":"https://www.bloomberglinea.com.br/tech/da-aviacao-aos-bancos-panes-alimentam-desconfianca-e-paranoia-com-a-tecnologia/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SZ.de","pais":"United States","titulo":"Waymo suspends autonomous travel on US highways after regulatory ruling","resumo":"Waymo halted its testing operations with autonomous vehicles on North American highways following instructions from traffic regulators. The decision came after safety reports raised concerns about the system's behavior at high speeds. The company said it will work on software updates to meet the strict criteria required by authorities. The setback highlights the regulatory and technical challenges the autonomous transportation sector currently faces.","link":"https://news.google.com/rss/articles/CBMi8gFBVV95cUxOSTVtdEFXQnNzTm0yY0hRTHR4VnUzeEdXQlZhb2hTZW9vWGVlRmd2RnpURVNvQVAyVnJ6YXBSVV9PdnJWMVJzMFZZSDVjak02LWJxS19TcndBRXZzNHJ1c0JGLVdGaHBkNUFTWjN5UE5MVk1wRV9IRWJjTXJhY0xPMFNZSk43Umdkb3lHZURHSEFsdmhOZnd3Ul9zMUhiVmYxOWl0WGllSTV2U2lKLVRhX3NUZG5oY2xucmtPTUsweXVtN1RtWTdVaW5tNU9mZmNrNFY1dzVRZi1JajRDUDVnVWNPY1dPSndlbzJXOGt3aEdWdw?oc=5","categoria":"AUTONOMOUS VEHICLES","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"Jensen Huang declares he would be 'honored' to return to Nvidia as CEO","resumo":"In recent statements, Jensen Huang publicly expressed his interest in resuming executive command at Nvidia, stating that it would be an honor to lead the company again. The statement puts additional pressure on the board of directors at a time when the company dominates the AI ​​processor market. The development is closely followed by the global technology industry.","link":"https://www.theguardian.com/technology/2026/nov/17/nvidia-jensen-huang-statement","categoria":"TECHNOLOGY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
