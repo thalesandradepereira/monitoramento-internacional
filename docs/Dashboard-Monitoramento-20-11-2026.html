@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-zcRqpgSx1t8hM6zfmZlJVVHe'; script-src 'nonce-zcRqpgSx1t8hM6zfmZlJVVHe'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="zcRqpgSx1t8hM6zfmZlJVVHe">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">20/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="zcRqpgSx1t8hM6zfmZlJVVHe">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"Meta Pode Abandonar Meta de Neutralidade de Carbono até 2030 para Expandir IA","resumo":"A Meta reconheceu que o avanço acelerado da inteligência artificial exige um consumo massivo de energia, o que pode comprometer suas metas ambientais para 2030. A construção de novos data centers e a alta demanda computacional têm pressionado os compromissos de sustentabilidade da empresa. O cenário evidencia a crescente tensão global entre a corrida pela expansão da IA e os impactos ambientais associados ao setor tecnológico.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/20/meta-admite-que-podera-abandonar-seu-objetivo-de-zerar-emissoes-de-carbono-ate-2030-para-avancar-ia.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Phys.org","pais":"Estados Unidos","titulo":"Tecnologia de célula virtual com IA pode revelar como alterações genéticas e medicamentos alteram células","resumo":"Cientistas estão desenvolvendo modelos virtuais de células baseados em inteligência artificial para simular o comportamento biológico humano em escala detalhada. A inovação promete revolucionar a descoberta de novos medicamentos e acelerar a compreensão de doenças complexas. Essa abordagem pode reduzir drasticamente o tempo e os custos associados aos testes de laboratório tradicionais.","link":"https://phys.org/news/2026-11-ai-virtual-cell-technology-reveal.html","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Techno-Science","pais":"França","titulo":"☄️ Bennu: moléculas extraterrestres ligadas à vida","resumo":"Análises das amostras coletadas do asteroide Bennu revelaram a presença de moléculas orgânicas complexas essenciais para a vida. As descobertas fornecem novas pistas valiosas sobre a origem dos componentes fundamentais do nosso planeta. A missão espacial continua demonstrando o papel crucial dos asteroides na entrega de água e compostos pré-bióticos à Terra primitiva.","link":"https://www.techno-science.net/fr/actualites/bennu-acides-amines-isotopes-origine-29768","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Financial Times","pais":"Inglaterra","titulo":"Bruxelas vai favorecer empresas da UE na corrida da tecnologia quântica","resumo":"A Comissão Europeia planeja priorizar empresas do bloco no desenvolvimento e na implantação de tecnologias quânticas estratégicas. Esta medida visa fortalecer a soberania tecnológica da União Europeia em relação a concorrentes globais como Estados Unidos e China. O plano inclui investimentos significativos em infraestrutura de computação e redes de comunicação ultra-seguras. A iniciativa reflete o empenho geopolítico do bloco em liderar a próxima revolução computacional e proteger dados sensíveis.","link":"https://www.ft.com/content/7966c474-a62f-4d90-9cff-66c02ca309bb?syn-25a6b1a6=1","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ConSalud","pais":"Espanha","titulo":"O que são os chips da Nvidia e por que se tornaram a peça-chave da inteligência artificial?","resumo":"Os processadores gráficos e aceleradores desenvolvidos pela Nvidia tornaram-se o pilar fundamental para o avanço global da inteligência artificial generativa. O artigo detalha a arquitetura dessa tecnologia e explica como a empresa conseguiu dominar o mercado de supercomputação. Esse ecossistema tecnológico posiciona a companhia no centro da nova revolução industrial e digital.","link":"https://www.consalud.es/salud35/analisis/chips-de-nvidia-la-tecnologia-que-impulsa-la-inteligencia-artificial-en-la-industria-farmaceutica.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Spiegel","pais":"Alemanha","titulo":"Chefe da Daimler Truck critica políticas da UE devido à regulamentação de CO₂","resumo":"A CEO da Daimler Truck expressou forte frustração em relação às atuais políticas de regulamentação de carbono implementadas pela União Europeia. A executiva argumenta que as metas impostas ao setor de veículos pesados não acompanham a infraestrutura de carregamento e abastecimento disponível no continente. Essa discrepância pode prejudicar a competitividade das fabricantes europeias frente ao mercado global de mobilidade sustentável. O setor cobra maior apoio governamental para acelerar a transição tecnológica sem inviabilizar as operações comerciais.","link":"https://www.spiegel.de/wirtschaft/unternehmen/daimler-truck-chefin-aergert-sich-wegen-co-regulierung-ueber-eu-politik-a-52369055-824f-4d98-80b2-30c618f56309","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"東京大学","pais":"Japão","titulo":"Robô quadrupede de código aberto MEVIUS recebe prêmio do Ministério da Ciência do Japão","resumo":"O robô quadrupede de código aberto denominado MEVIUS foi prestigiado com o prestigiado prêmio do Ministro da Educação, Cultura, Esportes, Ciência e Tecnologia do Japão. O projeto destaca-se por disponibilizar sua arquitetura de hardware e software para desenvolvedores globalmente, incentivando a inovação colaborativa. O reconhecimento sublinha a crescente importância de iniciativas de código aberto para o avanço da robótica moderna e para o desenvolvimento acadêmico.","link":"https://www.u-tokyo.ac.jp/focus/ja/articles/z0114_00028.html","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Sohu","pais":"China","titulo":"Prêmio de Ciência e Tecnologia de Pequim 2025 é concedido! Wang Zhonglin e Wang Yongjun recebem o Prêmio Zhongguancun de Contribuição de Destaque","resumo":"O Prêmio de Ciência e Tecnologia de Pequim de 2025 prestou homenagem aos principais pesquisadores da região por suas contribuições inovadoras. Os cientistas Wang Zhonglin e Wang Yongjun foram agraciados com o prestigiado Prêmio Zhongguancun de Contribuição de Destaque. Essa premiação reforça o papel estratégico de Pequim como um polo global de inovação científica e desenvolvimento tecnológico. O incentivo visa impulsionar novos avanços essenciais para a indústria e a pesquisa de ponta no país.","link":"https://m.sohu.com/a/1104075862_180220?scm=10001.325_13-325_13.0.0-0-0-0-0.5_1334","categoria":"CIÊNCIA E TECNOLOGIA","lang":"pt"},{"fonte":"Garhwal Post","pais":"Índia","titulo":"Tecnologia Nacional Fortalecerá as Capacidades de Defesa da Índia","resumo":"O incentivo ao desenvolvimento de tecnologias próprias surge como estratégia central para modernizar as forças armadas indianas. A iniciativa busca reduzir significativamente a dependência de fornecedores estrangeiros e impulsionar a indústria local. Com isso, o país pretende garantir maior autonomia estratégica e reforçar sua segurança territorial em um cenário geopolítico complexo.","link":"https://garhwalpost.in/indigenous-technology-will-strengthen-indias-defence-capabilities/","categoria":"DEFESA","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Uber expande o uso do ChatGPT para 30 mil funcionários","resumo":"A Uber anunciou a ampliação do acesso ao ChatGPT para cerca de 30 mil colaboradores em sua estrutura global. A medida visa otimizar processos internos, aumentar a produtividade e integrar ferramentas avançadas de inteligência artificial na rotina corporativa. A iniciativa reflete a crescente adesão de grandes empresas de tecnologia a soluções de IA generativa para automação de tarefas diárias.","link":"https://sapo.pt/artigo/uber-alarga-o-chatgpt-a-30-mil-trabalhadores-6aff8f99f92df73836f3a04e","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Apple Desenvolve Agente Próprio de IA para Controle de Dispositivos e Programação","resumo":"Uma oferta de emprego recente confirmou que a Apple está trabalhando em um agente de inteligência artificial capaz de controlar aplicativos, navegar pelo sistema e auxiliar em tarefas de programação. A iniciativa reforça a estratégia da empresa em competir diretamente no mercado de assistentes virtuais de nova geração. A novidade promete integrar a automação inteligente de forma mais profunda em todo o ecossistema de dispositivos da marca.","link":"https://oglobo.globo.com/economia/noticia/2026/11/19/anuncio-de-emprego-confirma-que-apple-prepara-agente-de-ia-proprio-para-controle-de-dispositivos-apps-navegacao-e-programacao.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Live Science","pais":"Estados Unidos","titulo":"Voyager 1 para de enviar dados científicos antes de marco histórico, mas NASA tem um plano","resumo":"A sonda espacial Voyager 1 encontrou uma nova falha de comunicação ao se aproximar de um marco histórico de distância da Terra. Engenheiros da NASA já estão elaborando estratégias técnicas para contornar o problema e restabelecer o envio de informações. A missão continua sendo uma das conquistas mais extraordinárias da exploração espacial humana.","link":"https://www.livescience.com/space/space-exploration/computer-glitch-prevents-voyager-1-from-sharing-science-data-on-its-light-day-milestone","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"France 24","pais":"França","titulo":"Economia - Anthropic estreia em Wall Street e atinge avaliação de mercado de US$ 2 trilhões","resumo":"A startup de inteligência artificial Anthropic fez sua estreia histórica no mercado de ações de Wall Street com números impressionantes. A empresa responsável pelo modelo Claude alcançou uma avaliação de mercado estimada em dois trilhões de dólares logo nas primeiras negociações. O movimento consolida a força e o apetite contínuo do setor financeiro por tecnologias baseadas em inteligência artificial generativa.","link":"https://www.france24.com/es/programas/econom%C3%ADa/20261120-anthropic-debuta-en-wall-street-y-alcanza-una-valoraci%C3%B3n-burs%C3%A1til-de-usd-2-billones","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"Nave espacial atinge Mercúrio na segunda missão da história a entrar em sua órbita","resumo":"Uma missão espacial conjunta alcançou Mercúrio com o objetivo de se tornar apenas a segunda a entrar na órbita do planeta. A sonda realizará uma série de sobrevoos e manobras complexas para desacelerar e ser capturada pela gravidade do planeta. Os cientistas esperam coletar dados inéditos sobre a composição mineral e a história geológica do astro. A missão promete revelar detalhes fundamentais sobre a formação e evolução do sistema solar interior.","link":"https://www.theguardian.com/science/2026/nov/20/spacecraft-mercury-second-ever-mission-orbit-bepicolombo","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"Infodefensa","pais":"Espanha","titulo":"A espanhola GMV exibe no evento NATO Edge sua tecnologia de inteligência militar já utilizada por nove países","resumo":"A multinacional espanhola GMV apresentou suas soluções avançadas de inteligência, vigilância e comando militar na conferência NATO Edge. Os sistemas desenvolvidos pela empresa já operam no apoio às forças armadas de nove nações parceiras da aliança. O avanço consolida a capacidade da indústria tecnológica da Espanha em fornecer inovação crítica para a defesa internacional.","link":"https://www.infodefensa.com/texto-diario/mostrar/6100435/espanola-gmv-exhibe-escaparate-nato-edge-tecnologia-inteligencia-militar-utilizan-nueve-paises","categoria":"TECNOLOGIA MILITAR","lang":"pt"},{"fonte":"FAZ","pais":"Alemanha","titulo":"IA na ciência: por que resultados corretos não são suficientes","resumo":"O uso de inteligência artificial na pesquisa científica está transformando a descoberta de novos conhecimentos, mas levanta questionamentos éticos e metodológicos. Especialistas alertam que obter respostas exatas não basta se o processo de raciocínio da máquina for opaco e imprevisível. A reprodutibilidade e a explicação dos modelos matemáticos são fundamentais para validar descobertas e manter a credibilidade científica. O desafio atual consiste em integrar ferramentas automatizadas sem comprometer o rigor e a transparência tradicionalmente exigidos na ciência.","link":"https://www.faz.net/aktuell/feuilleton/debatten/ki-in-der-wissenschaft-warum-richtige-ergebnisse-nicht-genuegen-accg-201674052.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"MRO Japan utiliza sucata de alumínio da manutenção aeronáutica para construir maquete do Castelo de Shuri","resumo":"A empresa MRO Japan utilizou técnicas especializadas de manutenção aeronáutica para criar uma maquete detalhada do Castelo de Shuri utilizando materiais reciclados de alumínio da aviação. A iniciativa combina tecnologia industrial e arte para simbolizar a reconstrução desse importante patrimônio cultural japonês. O modelo concluído será exibido publicamente no Aeroporto de Naha em 29 de novembro.","link":"https://news.yahoo.co.jp/articles/f74a58e6e27d9054f1e8ff669e3308dcbc84a04a","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"pib.gov.in","pais":"Índia","titulo":"Revolução dos Semicondutores e Inteligência Artificial","resumo":"A Índia acelera sua transição para se tornar um polo global na fabricação de semicondutores e desenvolvimento de inteligência artificial. Investimentos estratégicos e incentivos governamentais estão atraindo grandes empresas de tecnologia para o país. Essa movimentação promete transformar a infraestrutura digital indiana e impulsionar o crescimento econômico nos próximos anos.","link":"https://www.pib.gov.in/FactsheetDetails.aspx?Id=150860\u0026reg=48\u0026lang=2","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Expresso","pais":"Portugal","titulo":"Lançamento mundial de 'GTA VI' desperta debates sobre seu impacto na economia global","resumo":"O aguardado lançamento mundial do jogo 'GTA VI' promete movimentar bilhões de dólares na indústria do entretenimento e além. Especialistas destacam que a franquia transcende os games, gerando impactos significativos no consumo cultural e na economia digital. O título reforça o peso da indústria dos jogos como uma das forças econômicas mais influentes da atualidade.","link":"https://expresso.pt/podcasts/geracao-gamer/2026-11-19-nao-sei-ate-que-ponto-e-que-gta-nao-tera-uma-expressao-na-economia-mundial-chegou-o-dia-do-lancamento-mundial-de-gta-vi-be6b2177","categoria":"ENTRETENIMENTO","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Governo Trump Liberou Quase 900 Mil Chips Avançados de IA para Empresas Chinesas","resumo":"Um relatório emitido por um comitê dos Estados Unidos revelou a liberação do envio de quase 900 mil chips avançados de IA para o mercado chinês durante a gestão Trump. A decisão gera debates intensos sobre segurança nacional e competição geopolítica no setor de semicondutores. O episódio destaca as contradições nas restrições comerciais de tecnologia impostas entre as superpotências globais.","link":"https://g1.globo.com/tecnologia/noticia/2026/11/19/governo-trump-liberou-quase-900-mil-chips-avancados-de-ia-para-empresas-chinesas-diz-comite-dos-eua.ghtml","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"BBC","pais":"Estados Unidos","titulo":"Anthropic torna-se uma das empresas públicas mais valiosas do mundo em estreia na bolsa","resumo":"A startup de inteligência artificial Anthropic realizou sua aguardada estreia no mercado de ações atingindo uma avaliação bilionária expressiva. O movimento reflete o otimismo contínuo dos investidores no setor de inteligência artificial gerativa. A abertura de capital coloca a empresa no topo das corporações mais valiosas globalmente.","link":"https://www.bbc.co.uk/news/articles/c3x29ggenz12o","categoria":"MERCADO","lang":"pt"},{"fonte":"tv5monde","pais":"França","titulo":"'Não queremos morrer': sob chuva, manifestantes questionam o criador da IA Claude na estreia da empresa na Bolsa","resumo":"A entrada da Anthropic na Bolsa de Valores foi marcada por protestos intensos do lado de fora do edifício do mercado financeiro. Manifestantes se reuniram sob chuva para expressar preocupações sobre a segurança e os riscos existenciais do avanço descontrolado da inteligência artificial. O criador do assistente Claude foi diretamente abordado sobre a responsabilidade ética do setor tecnológico.","link":"https://information.tv5monde.com/economie/nous-ne-voulons-pas-mourir-sous-la-pluie-des-manifestants-interpellent-le-createur-de-lia-claude-qui-entre-en-bourse-2846438","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"London Evening Standard","pais":"Inglaterra","titulo":"Polícia Metropolitana testa tecnologia de reconhecimento facial em celulares para identificar suspeitos","resumo":"A Polícia Metropolitana de Londres iniciou um projeto piloto com tecnologia de reconhecimento facial instalada diretamente nos celulares dos oficiais. O sistema permite verificar a identidade de suspeitos em tempo real durante operações nas ruas da capital. A medida busca aumentar a eficiência do combate ao crime e otimizar o tempo das equipes policiais. No entanto, grupos de direitos civis expressam preocupações sobre privacidade e o potencial de falsos positivos.","link":"https://www.standard.co.uk/news/crime/phone-facial-recognition-technology-metropolitan-police-b1305602.html","categoria":"SEGURANÇA","lang":"pt"},{"fonte":"The New Barcelona Post","pais":"Espanha","titulo":"O escudo quântico de Barcelona contra a ciberameaça mundial","resumo":"Barcelona está desenvolvendo uma infraestrutura pioneira de criptografia e proteção quântica para blindar redes de comunicação e sistemas críticos. A iniciativa visa antecipar as ameaças digitais trazidas pelo surgimento de computadores quânticos de alta capacidade. O projeto posiciona a região da Catalunha na vanguarda da segurança cibernética do continente europeu.","link":"https://www.thenewbarcelonapost.com/escudo-cuantico-barcelona-ciberamenaza-mundial/","categoria":"CIBERSEGURANÇA","lang":"pt"},{"fonte":"科学技術振興機構（JST）","pais":"Japão","titulo":"Ensaio #32: Como assumiremos a responsabilidade pelo futuro da medicina regenerativa?","resumo":"O ensaio aborda os complexos dilemas éticos e sociais decorrentes do avanço acelerado das pesquisas em medicina regenerativa no Japão e no mundo. A publicação propõe uma análise profunda sobre os limites da manipulação biológica e o papel da comunidade científica e da sociedade na regulação dessas práticas. O debate é essencial para moldar políticas públicas e diretrizes morais diante do surgimento de novas terapias celulares.","link":"https://www.jst.go.jp/ristex/rinca/discours/essay/261120-1.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"BPI leva iniciativa de inteligência artificial para Coimbra focando em PMEs","resumo":"O banco BPI promoveu em Coimbra um evento focado na aplicação da inteligência artificial para pequenas e médias empresas. O objetivo é capacitar empreendedores locais e demonstrar como novas ferramentas tecnológicas podem otimizar operações e gerar competitividade. A iniciativa reforça a importância da democratização do acesso à tecnologia no setor produtivo regional.","link":"https://jornaleconomico.sapo.pt/noticias/bpi-leva-iniciativa-de-inteligencia-artificial-a-coimbra-com-foco-nas-pme/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"GOV.BR","pais":"Brasil","titulo":"Embrapii Lança Edital de R$ 81 Milhões para Tecnologias de Baixo Carbono na Indústria","resumo":"A Embrapii anunciou um edital voltado para financiar pesquisas e soluções tecnológicas focadas em diminuir as emissões de carbono nos setores de aço e cimento. A iniciativa busca impulsionar a sustentabilidade industrial e integrar startups e centros de pesquisa nacionais no desenvolvimento de tecnologias limpas. O investimento visa acelerar a transição ecológica da indústria de base no Brasil.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2026/11/embrapii-lanca-edital-de-ate-r-81-milhoes-para-apoiar-tecnologias-de-baixo-carbono-nos-setores-de-aco-e-cimento","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"Reuters","pais":"Estados Unidos","titulo":"Aumento no uso de IA pode sobrecarregar capacidade dos EUA e superaquecer economia, diz Goolsbee do Fed","resumo":"O presidente do Federal Reserve de Chicago alertou sobre os riscos econômicos associados à rápida expansão e adoção massiva de IA. O aumento drástico no consumo de energia e infraestrutura pode pressionar a capacidade produtiva norte-americana. A autoridade ressaltou a necessidade de monitorar de perto os impactos na inflação e no crescimento econômico.","link":"https://www.reuters.com/business/feds-goolsbee-says-ai-surge-could-strain-us-capacity-overheat-economy-2026-11-19/","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Pokaa","pais":"França","titulo":"« Zero Company », uma websérie de ficção científica cyberpunk gravada inteiramente na Alsácia","resumo":"Uma nova websérie de ficção científica com estética cyberpunk chamada Zero Company chama a atenção ao ser totalmente produzida na região da Alsácia. A produção independente combina efeitos visuais modernos com cenários locais para criar uma narrativa futurista envolvente. O projeto destaca o potencial criativo e técnico do cinema regional focado em temáticas tecnológicas.","link":"https://pokaa.fr/2026/11/19/zero-company-une-web-serie-de-science-fiction-cyber-punk-entierement-tournee-en-alsace/","categoria":"ENTRETENIMENTO","lang":"pt"},{"fonte":"LBC","pais":"Inglaterra","titulo":"Poderosa tecnologia de reconhecimento facial chega aos celulares da polícia","resumo":"Dispositivos móveis corporativos da polícia agora contam com recursos avançados de identificação biométrica facial para buscas imediatas no banco de dados. A ferramenta promete agilizar abordagens de campo e auxiliar na captura rápida de procurados pela justiça. As autoridades defendem que a novidade traz mais segurança pública e moderniza os métodos de investigação. Por outro lado, especialistas destacam a necessidade de regulamentação estrita sobre o uso dessa tecnologia.","link":"https://www.lbc.co.uk/article/facial-recognition-police-phones-crimes-5HjdnJz_2/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Confidencial","pais":"Espanha","titulo":"All4Zero e Eurecat validam tecnologia que reutiliza 90% da água residual de processos industriais de refrigeração","resumo":"Um projeto conjunto entre o hub All4Zero e o centro tecnológico Eurecat comprovou a eficácia de um novo sistema de tratamento de efluentes industriais. A tecnologia permite recuperar e reaproveitar até 90% da água utilizada em torres e circuitos de refrigeração de grandes fábricas. A solução promete reduzir de forma expressiva a pegada hídrica e os custos operacionais do setor produtivo.","link":"https://www.elconfidencial.com/empresas/2026-11-20/osmosis-inversa-recuperacion-agua-industrial-1hms-1svm_4468493/","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"Human Resources Portugal","pais":"Portugal","titulo":"Fidelidade financia laboratório de Ciência de Dados na ULisboa para 100 estudantes","resumo":"A seguradora Fidelidade firmou uma parceria para financiar um novo laboratório focado em Ciência de Dados na Universidade de Lisboa. O espaço acadêmico receberá cerca de 100 estudantes para desenvolver pesquisas aplicadas e projetos de alta tecnologia. O investimento visa aproximar o setor privado da academia e formar talentos qualificados na área de dados.","link":"https://hrportugal.sapo.pt/fidelidade-financia-laboratorio-de-ciencia-de-dados-na-ciencias-ulisboa-vai-receber-cerca-de-100-estudantes/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"TrendsCE","pais":"Brasil","titulo":"Pix e Investimentos Tecnológicos Aceleram a Digitalização dos Negócios no Brasil","resumo":"O uso massivo do Pix e a ampliação de investimentos em infraestrutura digital estão transformando a gestão e o atendimento em empresas brasileiras. A adoção de novas ferramentas tecnológicas tem otimizado processos operacionais e reduzido custos em diversos setores econômicos. Essa tendência consolida a maturidade do ecossistema digital do país e impulsiona a inclusão financeira.","link":"https://www.trendsce.com.br/2026/11/20/digitalizacao-negocios-pix-tecnologia-financeira/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Live Science","pais":"Estados Unidos","titulo":"Novo estudo reescreve livros de neurociência ao resolver mistério de 150 anos sobre área do cérebro ligada à fala","resumo":"Pesquisadores desvendaram um enigma secular relativo à organização funcional das regiões cerebrais responsáveis pela linguagem humana. A descoberta desafia modelos teóricos tradicionais mantidos desde o século XIX pela neurociência clássica. O avanço abre novas perspectivas para tratamentos de distúrbios da fala e recuperação de pacientes com lesões.","link":"https://www.livescience.com/health/neuroscience/new-study-rewrites-the-role-of-a-major-speech-hub-in-the-brain","categoria":"NEUROCIÊNCIA","lang":"pt"},{"fonte":"Le Figaro","pais":"França","titulo":"« Não cederemos a nenhuma pressão »: Anthropic, a irresistível ascensão política de um gigante da IA em missão","resumo":"A gigante da tecnologia Anthropic reafirma sua postura firme diante das crescentes pressões regulatórias e políticas globais. A empresa reafirma seu compromisso de desenvolver inteligência artificial de forma alinhada com princípios de segurança rigorosos. A trajetória reflete a complexa interação entre grandes corporações tecnológicas e governos na definição do futuro da IA.","link":"https://www.lefigaro.fr/secteur/high-tech/nous-ne-cederons-a-aucune-pression-anthropic-l-irresistible-ascension-politique-d-un-geant-de-l-ia-en-mission-20261119","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Universidade de Surrey inaugura novo centro de ciência bioanalítica","resumo":"A Universidade de Surrey abriu formalmente um centro avançado focado no desenvolvimento de pesquisas em ciências bioanalíticas. A nova estrutura é equipada com tecnologias de ponta para análise biomédica, química e ambiental de alta precisão. O objetivo principal é acelerar descobertas no diagnóstico de doenças e no desenvolvimento de novas terapias médicas. A iniciativa reforça a posição do Reino Unido como um polo global de inovação científica.","link":"https://www.bbc.co.uk/news/articles/c6kg7n13k41jo","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"El Mundo","pais":"Espanha","titulo":"Michael Short, especialista nuclear do MIT: \"Fechar as usinas da Espanha antes do tempo seria um erro colossal\"","resumo":"O professor de engenharia nuclear do MIT alertou sobre os riscos de antecipar o desligamento do parque nuclear espanhol durante a transição energética. Segundo o especialista, abrir mão dessa fonte limpa e contínua compromete a estabilidade da rede e aumenta os custos de eletricidade. O debate ganha força no momento em que o país busca equilibrar descarbonização e segurança energética.","link":"https://www.elmundo.es/ciencia/2026/11/19/6afeeabefdddffa6318b45c0.html","categoria":"ENERGIA","lang":"pt"},{"fonte":"Expresso","pais":"Portugal","titulo":"Ciência poética: Ada Lovelace e as origens da Inteligência Artificial","resumo":"Um artigo destaca o legado histórico de Ada Lovelace, considerada a primeira programadora do mundo, e suas contribuições para a computação. O texto reflete sobre o conceito de 'ciência poética' desenvolvido por ela, antecipando ideias fundamentais sobre o funcionamento dos algoritmos. A análise conecta a visão pioneira do século XIX aos avanços contemporâneos em inteligência artificial.","link":"https://expresso.pt/podcasts/tempo-ao-tempo/2026-11-19-ciencia-poetica-ada-lovelace-e-a-invencao-da-inteligencia-artificial-897a6dd4","categoria":"HISTÓRIA DA CIÊNCIA","lang":"pt"},{"fonte":"Brasil Mineral","pais":"Brasil","titulo":"Startup de Belém Testa Rastreamento Tecnológico de Bauxita no Pará","resumo":"Uma startup com sede em Belém iniciou testes de rastreabilidade de bauxita nas operações minerárias no estado do Pará. O projeto utiliza sensores e sistemas avançados de monitoramento para garantir a integridade e a sustentabilidade no manejo dos minérios. A solução reflete o fortalecimento do ecossistema de inovação da região Amazônica voltado para a indústria pesada.","link":"https://brasilmineral.com.br/noticias/startup-de-belem-testa-rastreio-da-bauxita-nas-pilhas-da-mrn-no-para","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Live Science","pais":"Estados Unidos","titulo":"Observatório Rubin descobre 2 asteroides ultrarraros da juventude do sistema solar orbitando Netuno","resumo":"O Observatório Rubin identificou dois corpos celestes extremamente raros compartilhando a órbita de Netuno ao redor do Sol. Os asteroides preservam características primordiais da época em que o sistema solar estava se formando. A descoberta fornece dados valiosos sobre a dinâmica dos planetas gigantes nos primórdios cósmicos.","link":"https://www.livescience.com/space/asteroids/rubin-observatory-finds-ultra-rare-asteroids-from-the-solar-systems-youth-trailing-neptune-around-the-sun","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"TF1 Info","pais":"França","titulo":"Na COP31, entenda por que o papel da ciência e o futuro do Painel do Clima também estão em jogo","resumo":"A conferência internacional sobre mudanças climáticas COP31 destaca debates decisivos a respeito da centralidade da ciência na tomada de decisões governamentais. O papel e a influência do Painel Intergovernamental sobre Mudanças Climáticas estão sob intensa discussão técnica e política. Especialistas enfatizam que a manutenção do rigor científico é indispensável para combater os impactos do aquecimento global.","link":"https://www.tf1info.fr/environnement-ecologie/a-la-cop31-pourquoi-c-est-aussi-la-place-de-la-science-et-le-role-du-giec-qui-se-jouent-2476940.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"TUC: Trades Union Congress","pais":"Inglaterra","titulo":"Trabalhadores devem estar no centro da revolução da IA e tecnologia do País de Gales, diz TUC Cymru","resumo":"A organização sindical TUC Cymru defendeu que os direitos dos trabalhadores devem ser priorizados na transição tecnológica e na adoção de inteligência artificial. O grupo alerta para os impactos da automação no mercado de trabalho e cobra investimentos em requalificação profissional. A entidade enfatiza a necessidade de um diálogo social para garantir que os ganhos de produtividade tragam benefícios para toda a sociedade. A declaração surge em meio à aceleração da transformação digital na região.","link":"https://www.tuc.org.uk/news/workers-must-be-heart-wales-ai-and-technology-revolution-says-tuc-cymru","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Junta de Andalucía","pais":"Espanha","titulo":"Governo regional aposta em inovação e tecnologia para melhorar a gestão de recursos hídricos","resumo":"A administração pública reforçou os investimentos em modernização tecnológica e monitoramento inteligente para otimizar o uso da água na região. O plano inclui a aplicação de sensores avançados e análise de dados para combater o desperdício em períodos de seca. A iniciativa busca garantir a sustentabilidade do abastecimento urbano, agrícola e industrial do território.","link":"https://www.juntadeandalucia.es/organismos/agriculturapescaaguaydesarrollorural/servicios/actualidad/noticias/detalle/694150.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Expresso","pais":"Portugal","titulo":"Mauro Figueiredo destaca a inteligência artificial como uma tecnologia inclusiva e acessível","resumo":"O especialista Mauro Figueiredo defende que a inteligência artificial possui um papel fundamental na união de pessoas e na inclusão social. Segundo ele, as ferramentas modernas de IA estão se tornando democratizadas, permitindo que diferentes camadas da sociedade se beneficiem do avanço tecnológico. A declaração reforça o debate sobre a ética e a acessibilidade no desenvolvimento de novas soluções digitais.","link":"https://expresso.pt/podcasts/o-tal-podcast/2026-11-19-mauro-figueiredo-a-tecnologia-une-nos.-a-inteligencia-artificial-e-uma-tecnologia-inclusiva-e-democratizada-acessivel-a-todos-4c79a0c2","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Prefeitura de Curitiba","pais":"Brasil","titulo":"Hub Saúde Curitiba Testa Tecnologia Inovadora de Exames Endoscópicos no SUS","resumo":"O Hub Saúde Curitiba estruturou uma parceria com startup focada no aperfeiçoamento de exames endoscópicos destinados à rede pública de saúde. A tecnologia busca aumentar a precisão dos diagnósticos e agilizar o atendimento de pacientes no SUS. A iniciativa demonstra como parcerias entre startups e o setor público podem democratizar a medicina de ponta.","link":"https://www.curitiba.pr.gov.br/noticias/hub-saude-curitiba-estuda-parceria-com-startup-para-testar-tecnologia-inovadora-de-exames-endoscopicos-no-sus/86022","categoria":"SAÚDE","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"Dados científicos da NASA impulsionam novo método para descobrir pulsares difíceis de encontrar","resumo":"Cientistas utilizaram a base de dados da NASA para criar uma metodologia inovadora voltada à detecção de púlsares ocultos no universo. A técnica combina algoritmos avançados com dados observacionais históricos acumulados ao longo de anos. Esse avanço permitirá mapear objetos estelares até então invisíveis para os telescópios convencionais.","link":"https://science.nasa.gov/open-science/fermi-data-pulsar-discovery/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Grenoble","pais":"França","titulo":"IA: entre a ciência e a ficção, o futuro já chegou!","resumo":"As fronteiras entre a ficção científica e as inovações tecnológicas reais estão cada vez mais difusas com os avanços recentes da inteligência artificial. Soluções que antes existiam apenas no imaginário popular agora fazem parte do cotidiano de empresas e indivíduos. O artigo analisa as implicações dessa transição acelerada e os cenários que se projetam para as próximas décadas.","link":"https://www.echosciences-grenoble.fr/articles/ia-le-futur-est-deja-la-sebastien","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Capacitação, habitação e avanço em IA lideram lista de desejos para a economia","resumo":"Representantes do setor produtivo apresentaram uma pauta de prioridades econômicas focada em investimento em inteligência artificial e qualificação de mão de obra. A proposta sugere ações integradas para resolver gargalos de infraestrutura, moradia e inovação tecnológica. O objetivo é criar um ambiente favorável ao crescimento sustentável e ao aumento da produtividade nacional. O setor espera que o governo incorpore essas demandas em seus planos estratégicos de desenvolvimento.","link":"https://www.bbc.com/news/articles/cw987ynj078mo","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"El Blog de CaixaBank","pais":"Espanha","titulo":"Mulheres STEM: quatro referências da tecnologia na Espanha","resumo":"O artigo apresenta o perfil e a trajetória profissional de quatro lideranças femininas que vêm impulsionando o setor de tecnologia no país. A publicação destaca o impacto de suas pesquisas e inovações em áreas cruciais como engenharia e ciência da computação. O exemplo dessas especialistas contribui para reduzir a lacuna de gênero e inspirar jovens a buscarem carreiras científicas.","link":"https://www.caixabank.com/es/esfera/content/mujeres-stem-referentes-tecnologia-espana","categoria":"CIÊNCIA E TECNOLOGIA","lang":"pt"},{"fonte":"FashionNetwork Portugal","pais":"Portugal","titulo":"Tinker Tailor é lançada como plataforma de moda personalizada impulsionada por IA","resumo":"A nova plataforma Tinker Tailor foi lançada trazendo uma proposta inovadora de moda customizada com suporte de inteligência artificial. A tecnologia permite que os clientes personalizem roupas e peças exclusivas de forma simples e intuitiva pela internet. O projeto combina inovação digital e sustentabilidade ao otimizar a produção de vestuário sob demanda.","link":"https://pt.fashionnetwork.com/news/Tinker-tailor-e-lancada-como-uma-plataforma-de-moda-personalizada-com-tecnologia-de-ia,1886945.html","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Meta May Abandon 2030 Carbon Neutrality Goal to Expand AI","resumo":"Meta has acknowledged that the accelerated advancement of artificial intelligence requires massive energy consumption, which could compromise its 2030 environmental targets. The construction of new data centers and high computational demand have put pressure on the company's sustainability commitments. The scenario highlights the growing global tension between the race for AI expansion and the environmental impacts associated with the technology sector.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/20/meta-admite-que-podera-abandonar-seu-objetivo-de-zerar-emissoes-de-carbono-ate-2030-para-avancar-ia.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Phys.org","pais":"United States","titulo":"AI-Powered Virtual Cell Technology Could Reveal How Genetic Changes and Drugs Alter Cells","resumo":"Scientists are developing AI-based virtual cell models to simulate human biological behavior on a detailed scale. The innovation promises to revolutionize drug discovery and accelerate the understanding of complex diseases. This approach could drastically reduce the time and costs associated with traditional laboratory testing.","link":"https://phys.org/news/2026-11-ai-virtual-cell-technology-reveal.html","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Techno-Science","pais":"France","titulo":"☄️ Bennu: Extraterrestrial Molecules Linked to Life","resumo":"Analysis of samples collected from the asteroid Bennu has revealed the presence of complex organic molecules essential for life. The discoveries provide valuable new clues about the origin of our planet's fundamental building blocks. The space mission continues to demonstrate the crucial role of asteroids in delivering water and prebiotic compounds to the early Earth.","link":"https://www.techno-science.net/fr/actualites/bennu-acides-amines-isotopes-origine-29768","categoria":"SCIENCE","lang":"en"},{"fonte":"Financial Times","pais":"United Kingdom","titulo":"Brussels to Favor EU Companies in the Quantum Technology Race","resumo":"The European Commission plans to prioritize bloc companies in the development and deployment of strategic quantum technologies. This measure aims to strengthen the European Union's technological sovereignty in relation to global competitors such as the United States and China. The plan includes significant investments in computing infrastructure and ultra-secure communication networks. The initiative reflects the bloc's geopolitical commitment to leading the next computational revolution and protecting sensitive data.","link":"https://www.ft.com/content/7966c474-a62f-4d90-9cff-66c02ca309bb?syn-25a6b1a6=1","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ConSalud","pais":"Spain","titulo":"What Are Nvidia Chips and Why Have They Become the Key Piece of Artificial Intelligence?","resumo":"The graphics processors and accelerators developed by Nvidia have become the fundamental pillar for the global advancement of generative artificial intelligence. The article details the architecture of this technology and explains how the company managed to dominate the supercomputing market. This technological ecosystem positions the company at the center of the new industrial and digital revolution.","link":"https://www.consalud.es/salud35/analisis/chips-de-nvidia-la-tecnologia-que-impulsa-la-inteligencia-artificial-en-la-industria-farmaceutica.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Spiegel","pais":"Germany","titulo":"Daimler Truck Boss Criticizes EU Policies Due to CO₂ Regulations","resumo":"The CEO of Daimler Truck has expressed strong frustration regarding current carbon regulation policies implemented by the European Union. The executive argues that the targets imposed on the heavy-duty vehicle sector do not keep pace with the charging and refueling infrastructure available on the continent. This discrepancy could undermine the competitiveness of European manufacturers against the global sustainable mobility market. The sector is demanding greater government support to accelerate the technological transition without jeopardizing commercial operations.","link":"https://www.spiegel.de/wirtschaft/unternehmen/daimler-truck-chefin-aergert-sich-wegen-co-regulierung-ueber-eu-politik-a-52369055-824f-4d98-80b2-30c618f56309","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"東京大学","pais":"Japan","titulo":"Open-Source Quadruped Robot MEVIUS Receives Award from Japan's Science Ministry","resumo":"The open-source quadruped robot named MEVIUS has been honored with the prestigious award from Japan's Minister of Education, Culture, Sports, Science and Technology. The project stands out for making its hardware and software architecture available to developers globally, encouraging collaborative innovation. The recognition underlines the growing importance of open-source initiatives for the advancement of modern robotics and academic development.","link":"https://www.u-tokyo.ac.jp/focus/ja/articles/z0114_00028.html","categoria":"ROBOTICS","lang":"en"},{"fonte":"Sohu","pais":"China","titulo":"2025 Beijing Science and Technology Award Granted! Wang Zhonglin and Wang Yongjun Receive Zhongguancun Outstanding Contribution Award","resumo":"The 2025 Beijing Science and Technology Award paid tribute to top researchers in the region for their innovative contributions. Scientists Wang Zhonglin and Wang Yongjun were awarded the prestigious Zhongguancun Outstanding Contribution Award. This recognition reinforces Beijing's strategic role as a global hub for scientific innovation and technological development. The incentive aims to drive new advances essential for industry and cutting-edge research in the country.","link":"https://m.sohu.com/a/1104075862_180220?scm=10001.325_13-325_13.0.0-0-0-0-0.5_1334","categoria":"SCIENCE AND TECHNOLOGY","lang":"en"},{"fonte":"Garhwal Post","pais":"India","titulo":"Indigenous Technology Will Strengthen India's Defense Capabilities","resumo":"The push to develop homegrown technologies has emerged as a central strategy to modernize the Indian armed forces. The initiative seeks to significantly reduce dependence on foreign suppliers and boost the local industry. By doing so, the country aims to ensure greater strategic autonomy and strengthen its territorial security in a complex geopolitical scenario.","link":"https://garhwalpost.in/indigenous-technology-will-strengthen-indias-defence-capabilities/","categoria":"DEFENSE","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Uber Expands ChatGPT Usage to 30,000 Employees","resumo":"Uber has announced the expansion of ChatGPT access to approximately 30,000 employees across its global structure. The measure aims to optimize internal processes, increase productivity, and integrate advanced artificial intelligence tools into the corporate routine. The initiative reflects the growing adoption of generative AI solutions for daily task automation by major tech companies.","link":"https://sapo.pt/artigo/uber-alarga-o-chatgpt-a-30-mil-trabalhadores-6aff8f99f92df73836f3a04e","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Apple Develops Proprietary AI Agent for Device Control and Programming","resumo":"A recent job posting has confirmed that Apple is working on an artificial intelligence agent capable of controlling apps, navigating the system, and assisting with programming tasks. The initiative reinforces the company's strategy to compete directly in the next-generation virtual assistant market. The novelty promises to integrate intelligent automation more deeply throughout the brand's device ecosystem.","link":"https://oglobo.globo.com/economia/noticia/2026/11/19/anuncio-de-emprego-confirma-que-apple-prepara-agente-de-ia-proprio-para-controle-de-dispositivos-apps-navegacao-e-programacao.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Live Science","pais":"United States","titulo":"Voyager 1 Stops Sending Science Data Ahead of Historic Milestone, But NASA Has a Plan","resumo":"The Voyager 1 space probe has encountered a new communication glitch as it approaches a historic distance milestone from Earth. NASA engineers are already drafting technical strategies to bypass the issue and reestablish the transmission of information. The mission continues to be one of the most extraordinary achievements of human space exploration.","link":"https://www.livescience.com/space/space-exploration/computer-glitch-prevents-voyager-1-from-sharing-science-data-on-its-light-day-milestone","categoria":"ASTRONOMY","lang":"en"},{"fonte":"France 24","pais":"France","titulo":"Economy - Anthropic Debuts on Wall Street and Reaches $2 Trillion Market Valuation","resumo":"Artificial intelligence startup Anthropic made its historic debut on the Wall Street stock market with impressive numbers. The company responsible for the Claude model achieved an estimated market valuation of two trillion dollars in early trading. The move consolidates the financial sector's strength and continuous appetite for technologies based on generative artificial intelligence.","link":"https://www.france24.com/es/programas/econom%C3%ADa/20261120-anthropic-debuta-en-wall-street-y-alcanza-una-valoraci%C3%B3n-burs%C3%A1til-de-usd-2-billones","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Guardian","pais":"United Kingdom","titulo":"Spacecraft Reaches Mercury in Only the Second Mission in History to Enter Its Orbit","resumo":"A joint space mission has reached Mercury with the goal of becoming only the second to enter the planet's orbit. The probe will perform a series of flybys and complex maneuvers to decelerate and be captured by the planet's gravity. Scientists hope to gather unprecedented data on the mineral composition and geological history of the celestial body. The mission promises to reveal fundamental details about the formation and evolution of the inner solar system.","link":"https://www.theguardian.com/science/2026/nov/20/spacecraft-mercury-second-ever-mission-orbit-bepicolombo","categoria":"ASTRONOMY","lang":"en"},{"fonte":"Infodefensa","pais":"Spain","titulo":"Spain's GMV Showcases Military Intelligence Technology Already Used by Nine Countries at NATO Edge Event","resumo":"Spanish multinational GMV presented its advanced intelligence, surveillance, and military command solutions at the NATO Edge conference. The systems developed by the company already operate in support of the armed forces of nine allied nations. The breakthrough solidifies the capability of Spain's technology industry to provide critical innovation for international defense.","link":"https://www.infodefensa.com/texto-diario/mostrar/6100435/espanola-gmv-exhibe-escaparate-nato-edge-tecnologia-inteligencia-militar-utilizan-nueve-paises","categoria":"MILITARY TECHNOLOGY","lang":"en"},{"fonte":"FAZ","pais":"Germany","titulo":"AI in Science: Why Correct Results Are Not Enough","resumo":"The use of artificial intelligence in scientific research is transforming the discovery of new knowledge, but it raises ethical and methodological questions. Experts warn that obtaining exact answers is not enough if the machine's reasoning process is opaque and unpredictable. The reproducibility and explanation of mathematical models are fundamental to validating discoveries and maintaining scientific credibility. The current challenge consists of integrating automated tools without compromising the rigor and transparency traditionally required in science.","link":"https://www.faz.net/aktuell/feuilleton/debatten/ki-in-der-wissenschaft-warum-richtige-ergebnisse-nicht-genuegen-accg-201674052.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"MRO Japan Uses Aluminum Scrap from Aeronautical Maintenance to Build Shuri Castle Model","resumo":"The company MRO Japan used specialized aeronautical maintenance techniques to create a detailed model of Shuri Castle using recycled aviation aluminum materials. The initiative combines industrial technology and art to symbolize the reconstruction of this important Japanese cultural heritage. The completed model will be publicly displayed at Naha Airport on November 29.","link":"https://news.yahoo.co.jp/articles/f74a58e6e27d9054f1e8ff669e3308dcbc84a04a","categoria":"INNOVATION","lang":"en"},{"fonte":"pib.gov.in","pais":"India","titulo":"Semiconductor and Artificial Intelligence Revolution","resumo":"India is accelerating its transition to become a global hub for semiconductor manufacturing and artificial intelligence development. Strategic investments and government incentives are attracting major technology companies to the country. This movement promises to transform India's digital infrastructure and boost economic growth in the coming years.","link":"https://www.pib.gov.in/FactsheetDetails.aspx?Id=150860\u0026reg=48\u0026lang=2","categoria":"INNOVATION","lang":"en"},{"fonte":"Expresso","pais":"Portugal","titulo":"Worldwide Launch of 'GTA VI' Sparks Debates on Its Impact on the Global Economy","resumo":"The highly anticipated worldwide launch of the game 'GTA VI' promises to generate billions of dollars in the entertainment industry and beyond. Experts highlight that the franchise transcends gaming, having significant impacts on cultural consumption and the digital economy. The title reinforces the weight of the gaming industry as one of the most influential economic forces today.","link":"https://expresso.pt/podcasts/geracao-gamer/2026-11-19-nao-sei-ate-que-ponto-e-que-gta-nao-tera-uma-expressao-na-economia-mundial-chegou-o-dia-do-lancamento-mundial-de-gta-vi-be6b2177","categoria":"ENTERTAINMENT","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Trump Administration Released Nearly 900,000 Advanced AI Chips to Chinese Companies","resumo":"A report issued by a United States committee revealed the release of shipments of nearly 900,000 advanced AI chips to the Chinese market during the Trump administration. The decision sparks intense debates on national security and geopolitical competition in the semiconductor sector. The episode highlights contradictions in the technology trade restrictions imposed between global superpowers.","link":"https://g1.globo.com/tecnologia/noticia/2026/11/19/governo-trump-liberou-quase-900-mil-chips-avancados-de-ia-para-empresas-chinesas-diz-comite-dos-eua.ghtml","categoria":"INNOVATION","lang":"en"},{"fonte":"BBC","pais":"United States","titulo":"Anthropic Becomes One of the World's Most Valuable Public Companies in Stock Market Debut","resumo":"Artificial intelligence startup Anthropic made its long-awaited stock market debut, reaching a massive multi-billion-dollar valuation. The move reflects continued investor optimism in the generative artificial intelligence sector. The initial public offering places the company at the top of the most valuable corporations globally.","link":"https://www.bbc.co.uk/news/articles/c3x29ggenz12o","categoria":"MARKET","lang":"en"},{"fonte":"tv5monde","pais":"France","titulo":"'We Don't Want to Die': In the Rain, Protesters Question the Creator of Claude AI at Company's Stock Market Debut","resumo":"Anthropic's entry into the Stock Exchange was marked by intense protests outside the financial market building. Demonstrators gathered in the rain to express concerns about the safety and existential risks of the uncontrolled advancement of artificial intelligence. The creator of the Claude assistant was directly questioned about the ethical responsibility of the tech sector.","link":"https://information.tv5monde.com/economie/nous-ne-voulons-pas-mourir-sous-la-pluie-des-manifestants-interpellent-le-createur-de-lia-claude-qui-entre-en-bourse-2846438","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"London Evening Standard","pais":"England","titulo":"Metropolitan Police Tests Facial Recognition Technology on Cell Phones to Identify Suspects","resumo":"The London Metropolitan Police has launched a pilot project featuring facial recognition technology installed directly on officers' cell phones. The system allows them to verify the identity of suspects in real time during operations on the capital's streets. The measure aims to increase the efficiency of crime fighting and optimize police teams' time. However, civil rights groups have expressed concerns about privacy and the potential for false positives.","link":"https://www.standard.co.uk/news/crime/phone-facial-recognition-technology-metropolitan-police-b1305602.html","categoria":"SECURITY","lang":"en"},{"fonte":"The New Barcelona Post","pais":"Spain","titulo":"Barcelona's Quantum Shield Against Global Cyberthreats","resumo":"Barcelona is developing a pioneering encryption and quantum protection infrastructure to shield communication networks and critical systems. The initiative aims to anticipate digital threats brought by the emergence of high-capacity quantum computers. The project positions the Catalonia region at the forefront of cybersecurity on the European continent.","link":"https://www.thenewbarcelonapost.com/escudo-cuantico-barcelona-ciberamenaza-mundial/","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"科学技術振興機構（JST）","pais":"Japan","titulo":"Essay #32: How Will We Take Responsibility for the Future of Regenerative Medicine?","resumo":"The essay addresses the complex ethical and social dilemmas arising from the accelerated advancement of regenerative medicine research in Japan and worldwide. The publication proposes a deep analysis of the limits of biological manipulation and the role of the scientific community and society in regulating these practices. The debate is essential to shaping public policies and moral guidelines in the face of emerging cell therapies.","link":"https://www.jst.go.jp/ristex/rinca/discours/essay/261120-1.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Jornal Económico","pais":"Portugal","titulo":"BPI Brings Artificial Intelligence Initiative to Coimbra Focusing on SMEs","resumo":"Banco BPI promoted an event in Coimbra focused on the application of artificial intelligence for small and medium-sized enterprises. The goal is to empower local entrepreneurs and demonstrate how new technological tools can optimize operations and generate competitiveness. The initiative reinforces the importance of democratizing access to technology in the regional productive sector.","link":"https://jornaleconomico.sapo.pt/noticias/bpi-leva-iniciativa-de-inteligencia-artificial-a-coimbra-com-foco-nas-pme/","categoria":"INNOVATION","lang":"en"},{"fonte":"GOV.BR","pais":"Brazil","titulo":"Embrapii Launches 81 Million Real Call for Proposals for Low-Carbon Technologies in Industry","resumo":"Embrapii announced a call for proposals aimed at funding research and technological solutions focused on reducing carbon emissions in the steel and cement sectors. The initiative seeks to boost industrial sustainability and integrate startups and national research centers into the development of clean technologies. The investment aims to accelerate the ecological transition of the base industry in Brazil.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2026/11/embrapii-lanca-edital-de-ate-r-81-milhoes-para-apoiar-tecnologias-de-baixo-carbono-nos-setores-de-aco-e-cimento","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"Reuters","pais":"United States","titulo":"Surge in AI Use Could Strain US Capacity and Overheat Economy, Says Fed's Goolsbee","resumo":"The president of the Chicago Federal Reserve warned of the economic risks associated with the rapid expansion and mass adoption of AI. The drastic increase in energy consumption and infrastructure demand could pressure North American productive capacity. The official stressed the need to closely monitor impacts on inflation and economic growth.","link":"https://www.reuters.com/business/feds-goolsbee-says-ai-surge-could-strain-us-capacity-overheat-economy-2026-11-19/","categoria":"ECONOMY","lang":"en"},{"fonte":"Pokaa","pais":"France","titulo":"\"Zero Company\", a Cyberpunk Sci-Fi Web Series Filmed Entirely in Alsace","resumo":"A new science fiction web series with a cyberpunk aesthetic called Zero Company is drawing attention by being entirely produced in the Alsace region. The independent production combines modern visual effects with local settings to create an engaging futuristic narrative. The project highlights the creative and technical potential of regional cinema focused on technological themes.","link":"https://pokaa.fr/2026/11/19/zero-company-une-web-serie-de-science-fiction-cyber-punk-entierement-tournee-en-alsace/","categoria":"ENTERTAINMENT","lang":"en"},{"fonte":"LBC","pais":"England","titulo":"Powerful Facial Recognition Technology Arrives on Police Phones","resumo":"Corporate mobile police devices now feature advanced facial biometric identification capabilities for immediate database searches. The tool promises to streamline field stops and assist in the rapid capture of individuals wanted by the justice system. Authorities argue that the novelty brings greater public safety and modernizes investigation methods. On the other hand, experts highlight the need for strict regulation on the use of this technology.","link":"https://www.lbc.co.uk/article/facial-recognition-police-phones-crimes-5HjdnJz_2/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Confidencial","pais":"Spain","titulo":"All4Zero and Eurecat Validate Technology That Reuses 90% of Wastewater from Industrial Cooling Processes","resumo":"A joint project between the All4Zero hub and the Eurecat technological center has proven the effectiveness of a new industrial wastewater treatment system. The technology makes it possible to recover and reuse up to 90% of the water used in cooling towers and circuits of large factories. The solution promises to significantly reduce the water footprint and operational costs of the productive sector.","link":"https://www.elconfidencial.com/empresas/2026-11-20/osmosis-inversa-recuperacion-agua-industrial-1hms-1svm_4468493/","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"Human Resources Portugal","pais":"Portugal","titulo":"Fidelidade Funds Data Science Laboratory at ULisboa for 100 Students","resumo":"Insurance company Fidelidade has signed a partnership to fund a new laboratory focused on Data Science at the University of Lisbon. The academic space will accommodate around 100 students to develop applied research and high-tech projects. The investment aims to bridge the gap between the private sector and academia while training qualified talent in the data field.","link":"https://hrportugal.sapo.pt/fidelidade-financia-laboratorio-de-ciencia-de-dados-na-ciencias-ulisboa-vai-receber-cerca-de-100-estudantes/","categoria":"SCIENCE","lang":"en"},{"fonte":"TrendsCE","pais":"Brazil","titulo":"Pix and Technological Investments Accelerate Business Digitalization in Brazil","resumo":"The massive use of Pix and the expansion of investments in digital infrastructure are transforming management and customer service in Brazilian companies. The adoption of new technological tools has optimized operational processes and reduced costs across various economic sectors. This trend consolidates the maturity of the country's digital ecosystem and drives financial inclusion.","link":"https://www.trendsce.com.br/2026/11/20/digitalizacao-negocios-pix-tecnologia-financeira/","categoria":"BUSINESS","lang":"en"},{"fonte":"Live Science","pais":"United States","titulo":"New Study Rewrites Neuroscience Textbooks by Solving 150-Year-Old Mystery of Brain Area Linked to Speech","resumo":"Researchers have unraveled a century-old enigma regarding the functional organization of the brain regions responsible for human language. The discovery challenges traditional theoretical models held since the 19th century by classical neuroscience. The breakthrough opens new perspectives for the treatment of speech disorders and the recovery of patients with injuries.","link":"https://www.livescience.com/health/neuroscience/new-study-rewrites-the-role-of-a-major-speech-hub-in-the-brain","categoria":"NEUROSCIENCE","lang":"en"},{"fonte":"Le Figaro","pais":"France","titulo":"\"We Will Yield to No Pressure\": Anthropic, the Irresistible Political Rise of an AI Giant on a Mission","resumo":"Tech giant Anthropic is reaffirming its firm stance in the face of growing global regulatory and political pressures. The company reiterates its commitment to developing artificial intelligence in alignment with rigorous safety principles. The trajectory reflects the complex interaction between large tech corporations and governments in defining the future of AI.","link":"https://www.lefigaro.fr/secteur/high-tech/nous-ne-cederons-a-aucune-pression-anthropic-l-irresistible-ascension-politique-d-un-geant-de-l-ia-en-mission-20261119","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"BBC","pais":"United Kingdom","titulo":"University of Surrey Opens New Bioanalytical Science Center","resumo":"The University of Surrey has formally opened an advanced center focused on developing research in bioanalytical sciences. The new facility is equipped with cutting-edge technologies for high-precision biomedical, chemical, and environmental analysis. The main objective is to accelerate discoveries in disease diagnosis and the development of new medical therapies. The initiative reinforces the UK's position as a global hub for scientific innovation.","link":"https://www.bbc.co.uk/news/articles/c6kg7n13k41jo","categoria":"SCIENCE","lang":"en"},{"fonte":"El Mundo","pais":"Spain","titulo":"Michael Short, MIT Nuclear Expert: \"Shutting Down Spain's Power Plants Ahead of Time Would Be a Colossal Mistake\"","resumo":"The MIT nuclear engineering professor warned about the risks of prematurely shutting down Spain's nuclear fleet during the energy transition. According to the expert, giving up this clean and continuous source compromises grid stability and drives up electricity costs. The debate is gaining momentum as the country seeks to balance decarbonization with energy security.","link":"https://www.elmundo.es/ciencia/2026/11/19/6afeeabefdddffa6318b45c0.html","categoria":"ENERGY","lang":"en"},{"fonte":"Expresso","pais":"Portugal","titulo":"Poetic Science: Ada Lovelace and the Origins of Artificial Intelligence","resumo":"An article highlights the historical legacy of Ada Lovelace, considered the world's first programmer, and her contributions to computing. The text reflects on the concept of 'poetic science' developed by her, anticipating fundamental ideas about how algorithms work. The analysis connects 19th-century pioneering vision to contemporary advances in artificial intelligence.","link":"https://expresso.pt/podcasts/tempo-ao-tempo/2026-11-19-ciencia-poetica-ada-lovelace-e-a-invencao-da-inteligencia-artificial-897a6dd4","categoria":"HISTORY OF SCIENCE","lang":"en"},{"fonte":"Brasil Mineral","pais":"Brazil","titulo":"Belem-Based Startup Tests Technological Tracking of Bauxite in Para","resumo":"A Belem-headquartered startup has initiated bauxite traceability tests in mining operations within the state of Para. The project utilizes advanced sensors and monitoring systems to ensure integrity and sustainability in ore management. The solution reflects the strengthening of the Amazon region's innovation ecosystem geared toward heavy industry.","link":"https://brasilmineral.com.br/noticias/startup-de-belem-testa-rastreio-da-bauxita-nas-pilhas-da-mrn-no-para","categoria":"INNOVATION","lang":"en"},{"fonte":"Live Science","pais":"United States","titulo":"Rubin Observatory Discovers 2 Ultra-Rare Asteroids from the Solar System's Youth Orbiting Neptune","resumo":"The Rubin Observatory has identified two extremely rare celestial bodies sharing Neptune's orbit around the Sun. The asteroids preserve primordial characteristics from the era when the solar system was forming. The discovery provides valuable data on the dynamics of giant planets during the cosmic dawn.","link":"https://www.livescience.com/space/asteroids/rubin-observatory-finds-ultra-rare-asteroids-from-the-solar-systems-youth-trailing-neptune-around-the-sun","categoria":"ASTRONOMY","lang":"en"},{"fonte":"TF1 Info","pais":"France","titulo":"At COP31, Understand Why the Role of Science and the Future of the Climate Panel Are Also at Stake","resumo":"The COP31 international climate change conference highlights decisive debates regarding the centrality of science in governmental decision-making. The role and influence of the Intergovernmental Panel on Climate Change are under intense technical and political discussion. Experts emphasize that maintaining scientific rigor is essential to combating the impacts of global warming.","link":"https://www.tf1info.fr/environnement-ecologie/a-la-cop31-pourquoi-c-est-aussi-la-place-de-la-science-et-le-role-du-giec-qui-se-jouent-2476940.html","categoria":"SCIENCE","lang":"en"},{"fonte":"TUC: Trades Union Congress","pais":"United Kingdom","titulo":"Workers Must Be at the Heart of Wales' AI and Technology Revolution, Says TUC Cymru","resumo":"Trade union organization TUC Cymru has argued that workers' rights must be prioritized in the technological transition and the adoption of artificial intelligence. The group warns of the impacts of automation on the job market and calls for investments in professional retraining. The entity emphasizes the need for social dialogue to ensure that productivity gains benefit society as a whole. The statement comes amid accelerating digital transformation in the region.","link":"https://www.tuc.org.uk/news/workers-must-be-heart-wales-ai-and-technology-revolution-says-tuc-cymru","categoria":"INNOVATION","lang":"en"},{"fonte":"Junta de Andalucía","pais":"Spain","titulo":"Regional Government Backs Innovation and Technology to Improve Water Resource Management","resumo":"The public administration has ramped up investments in technological modernization and smart monitoring to optimize water use in the region. The plan includes the application of advanced sensors and data analysis to combat waste during drought periods. The initiative seeks to guarantee the sustainability of the territory's urban, agricultural, and industrial water supply.","link":"https://www.juntadeandalucia.es/organismos/agriculturapescaaguaydesarrollorural/servicios/actualidad/noticias/detalle/694150.html","categoria":"INNOVATION","lang":"en"},{"fonte":"Expresso","pais":"Portugal","titulo":"Mauro Figueiredo Highlights Artificial Intelligence as an Inclusive and Accessible Technology","resumo":"Expert Mauro Figueiredo argues that artificial intelligence plays a fundamental role in bringing people together and driving social inclusion. According to him, modern AI tools are becoming democratized, allowing different segments of society to benefit from technological advancement. The statement reinforces the debate on ethics and accessibility in the development of new digital solutions.","link":"https://expresso.pt/podcasts/o-tal-podcast/2026-11-19-mauro-figueiredo-a-tecnologia-une-nos.-a-inteligencia-artificial-e-uma-tecnologia-inclusiva-e-democratizada-acessivel-a-todos-4c79a0c2","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Prefeitura de Curitiba","pais":"Brazil","titulo":"Curitiba Health Hub Tests Innovative Endoscopic Examination Technology in SUS","resumo":"The Curitiba Health Hub has established a partnership with a startup focused on improving endoscopic examinations intended for the public health network (SUS). The technology seeks to increase diagnostic accuracy and streamline patient care within SUS. The initiative demonstrates how partnerships between startups and the public sector can democratize cutting-edge medicine.","link":"https://www.curitiba.pr.gov.br/noticias/hub-saude-curitiba-estuda-parceria-com-startup-para-testar-tecnologia-inovadora-de-exames-endoscopicos-no-sus/86022","categoria":"HEALTHCARE","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"NASA scientific data drives new method to discover hard-to-find pulsars","resumo":"Scientists used NASA's database to create an innovative methodology aimed at detecting hidden pulsars in the universe. The technique combines advanced algorithms with historical observational data accumulated over years. This breakthrough will make it possible to map stellar objects previously invisible to conventional telescopes.","link":"https://science.nasa.gov/open-science/fermi-data-pulsar-discovery/","categoria":"SCIENCE","lang":"en"},{"fonte":"Grenoble","pais":"France","titulo":"AI: between science and fiction, the future is already here!","resumo":"The boundaries between science fiction and real technological innovations are increasingly blurred with recent advances in artificial intelligence. Solutions that once existed only in popular imagination are now part of the daily lives of businesses and individuals. The article analyzes the implications of this accelerated transition and the scenarios projected for coming decades.","link":"https://www.echosciences-grenoble.fr/articles/ia-le-futur-est-deja-la-sebastien","categoria":"TRENDS","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"Skills development, housing, and AI advancement top the economic wish list","resumo":"Representatives of the productive sector presented a list of economic priorities focused on investment in artificial intelligence and workforce training. The proposal suggests integrated actions to resolve infrastructure, housing, and technological innovation bottlenecks. The goal is to create an environment favorable to sustainable growth and increased national productivity. The sector expects the government to incorporate these demands into its strategic development plans.","link":"https://www.bbc.com/news/articles/cw987ynj078mo","categoria":"BUSINESS","lang":"en"},{"fonte":"El Blog de CaixaBank","pais":"Spain","titulo":"STEM Women: four technology role models in Spain","resumo":"The article presents the profile and professional journey of four female leaders who have been driving the technology sector in the country. The publication highlights the impact of their research and innovations in crucial areas such as engineering and computer science. The example of these specialists helps reduce the gender gap and inspires young people to pursue scientific careers.","link":"https://www.caixabank.com/es/esfera/content/mujeres-stem-referentes-tecnologia-espana","categoria":"SCIENCE AND TECHNOLOGY","lang":"en"},{"fonte":"FashionNetwork Portugal","pais":"Portugal","titulo":"Tinker Tailor launched as AI-powered personalized fashion platform","resumo":"The new Tinker Tailor platform has launched, bringing an innovative custom fashion proposal supported by artificial intelligence. The technology allows customers to personalize clothing and exclusive pieces simply and intuitively online. The project combines digital innovation and sustainability by optimizing on-demand apparel production.","link":"https://pt.fashionnetwork.com/news/Tinker-tailor-e-lancada-como-uma-plataforma-de-moda-personalizada-com-tecnologia-de-ia,1886945.html","categoria":"TRENDS","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
