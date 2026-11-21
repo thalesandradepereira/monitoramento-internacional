@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-wLlHgpG8ZXcSzXxecfuOAC/q'; script-src 'nonce-wLlHgpG8ZXcSzXxecfuOAC/q'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="wLlHgpG8ZXcSzXxecfuOAC/q">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">21/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="wLlHgpG8ZXcSzXxecfuOAC/q">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Brasil Inovador","pais":"Brasil","titulo":"BioStation recebe Prêmio JK de Inovação por tecnologia nacional de autenticação biométrica vascular palmar","resumo":"A tecnologia nacional de autenticação biométrica por leitura vascular palmar desenvolvida pela BioStation foi reconhecida com o prestigiado Prêmio JK de Inovação. Esse avanço representa um grande marco no setor de segurança e identificação digital no Brasil. O recurso se destaca pela elevada precisão e maior segurança no controle de acesso de usuários.","link":"https://brasilinovador.com.br/biostation-recebe-premio-jk-de-inovacao-por-tecnologia-nacional-de-autenticacao-biometrica-vascular-palmar/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"ScienceDaily","pais":"Estados Unidos","titulo":"Voyager 1 da NASA está agora tão distante que a luz leva 24 horas para alcançá-la","resumo":"A sonda espacial Voyager 1 da NASA atingiu um marco histórico de distância em relação à Terra. Lançada em 1977, a espaçonave continua viajando pelo espaço interestelar transmitindo dados valiosos. Atualmente, os sinais enviados por ela levam um dia inteiro na velocidade da luz para chegarem aos cientistas. Essa conquista reforça a longevidade impressionante e o legado duradouro da exploração espacial humana.","link":"https://www.sciencedaily.com/releases/2026/11/261120075554.htm","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Em um manuscrito inglês de 1.000 anos, pesquisadores descobriram o DNA de um vírus mortal para ovelhas","resumo":"Pesquisadores identificaram o DNA de um vírus mortal para ovelhas contido em um manuscrito inglês de mil anos atrás. A análise genética revelou que a história evolutiva deste patógeno remonta a cerca de 3.700 anos. A descoberta traz novas perspectivas sobre como os vírus agrícolas acompanharam o desenvolvimento da pecuária. Além disso, destaca a importância de documentos históricos como reservatórios para pesquisas biológicas.","link":"https://www.science-et-vie.com/nature-et-environnement/animaux/dans-un-manuscrit-vieux-de-1-000-ans-des-chercheurs-ont-decouvert-ladn-dun-virus-mortel-pour-les-moutons-dont-lhistoire-remonte-a-3-700-ans-266241.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"London School of Business and Research (LSBR)","pais":"Inglaterra","titulo":"'Toda essa tecnologia e IA me deixam louca': Charley Hull está se desconectando","resumo":"A golfista profissional Charley Hull decidiu se afastar das redes sociais e do uso excessivo de tecnologia no seu dia a dia. Ela relatou que a constante exposição a novidades tecnológicas e inteligência artificial tem causado estresse mental. A decisão reflete um movimento crescente de atletas que buscam proteger sua saúde mental desconectando-se do mundo digital.","link":"https://www.lsbr.uk/news/drives-me-bonkers-all-the-technology-and-ai-charley-hull-is-logging-off","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"OkDiario","pais":"Espanha","titulo":"Matt Damon já fez isso em Marte e agora a ciência prova que é possível cultivar batatas na Lua","resumo":"Um novo estudo científico comprovou a viabilidade técnica do cultivo de batatas em solo lunar simulado. A pesquisa abre caminho para a sustentabilidade alimentar de futuras missões espaciais de longa duração. Além de reduzir os custos de transporte de suprimentos a partir da Terra, a descoberta consolida avanços fundamentais na astrobiologia e na agricultura extraterrestre.","link":"https://okdiario.com/okgreen/matt-damon-ya-lo-hizo-marte-ahora-ciencia-prueba-que-pueden-cultivar-patatas-luna-21233148","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Desenvolvimento Consequente de IA - Regras para Robôs Assassinos: Conversas Terminam com Consenso Mínimo","resumo":"As negociações sobre a regulamentação do uso de inteligência artificial em sistemas de armas autônomas terminaram com apenas um consenso mínimo entre as nações. O debate reflete a dificuldade global em estabelecer limites éticos e jurídicos para a automação militar. Diante do rápido avanço tecnológico, especialistas alertam para os riscos da falta de regras claras para impedir abusos em conflitos futuros.","link":"https://www.sueddeutsche.de/politik/folgenreiche-ki-entwicklung-regeln-fuer-killerroboter-gespraeche-enden-mit-minimalkonsens-dpa.urn-newsml-dpa-com-20090101-261121-930-29006","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Nippon-Ham Fighters Girls e robôs performam juntos em perfeita sintonia","resumo":"Durante um evento esportivo recente no Japão, as dançarinas do grupo Fighters Girl realizaram uma apresentação inovadora em parceria com robôs avançados. A performance perfeitamente sincronizada destacou os avanços da engenharia robótica aplicada ao entretenimento de massas. O espetáculo demonstrou o potencial da integração entre tecnologia e cultura pop para engajar o público de maneiras inéditas.","link":"https://news.yahoo.co.jp/articles/98804221b42c7e366831b3a14b1539898cf119f7","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"科学网—新闻","pais":"China","titulo":"Visionox lança oficialmente a nova marca de tecnologia ViP Photolithography Screen","resumo":"A Visionox anunciou o lançamento de sua marca tecnológica ViP, que utiliza litografia para fabricação de telas AMOLED sem a necessidade de máscaras metálicas finas. Essa inovação promete elevar significativamente a precisão, o brilho e a vida útil dos displays em dispositivos eletrônicos. A iniciativa posiciona a empresa na vanguarda da indústria global de painéis avançados, impulsionando novos padrões para o mercado visual.","link":"https://news.sciencenet.cn/htmlnews/2026/11/575103.shtm","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ANI News","pais":"Índia","titulo":"Índia e Cingapura realizam conversas sobre tecnologia de defesa em Kochi com foco em conscientização de domínio subaquático e tecnologia quântica","resumo":"A Índia e Cingapura reuniram-se em Kochi para discutir avanços no setor de tecnologia de defesa, fortalecendo a cooperação estratégica bilateral. O encontro teve como foco principal o desenvolvimento de soluções para conscientização do domínio subaquático e o uso de tecnologias quânticas. A iniciativa visa aprimorar a segurança marítima regional e acelerar a inovação tecnológica conjunta entre as duas nações.","link":"https://www.aninews.in/news/world/asia/india-and-singapore-hold-defence-technology-talks-in-kochi-focus-on-underwater-domain-awareness-and-quantum-tech20261121110617","categoria":"TECNOLOGIA E DEFESA","lang":"pt"},{"fonte":"Dinheiro Vivo","pais":"Portugal","titulo":"Da IA ao 5G: NOS investe 287 milhões de euros em tecnologia desde 2023","resumo":"A operadora portuguesa NOS revelou um investimento expressivo de 287 milhões de euros em infraestrutura tecnológica e inovação desde o ano de 2023. Os aportes financeiros foram direcionados principalmente para a expansão da rede 5G e o desenvolvimento de soluções baseadas em inteligência artificial. Essa iniciativa visa fortalecer a competitividade digital da empresa e transformar os serviços oferecidos aos seus clientes no país.","link":"http://dinheirovivo.dn.pt/empresas/da-ia-ao-5g-nos-investe-287-milhes-de-euros-em-tecnologia-desde-2023","categoria":"INVESTIMENTO","lang":"pt"},{"fonte":"Folha PE","pais":"Brasil","titulo":"Dor crônica: tecnologia amplia possibilidades de tratamento","resumo":"O avanço de novas tecnologias tem revolucionado as opções de tratamento para pacientes com dor crônica no país. Dispositivos modernos e métodos inovadores estão permitindo um acompanhamento mais personalizado e eficaz. Essa evolução traz alívio contínuo e melhora significativa na qualidade de vida dos indivíduos afetados.","link":"https://www.folhape.com.br/colunistas/modo-fit/dor-cronica-tecnologia-amplia-possibilidades-de-tratamento/61102/","categoria":"SAÚDE","lang":"pt"},{"fonte":"The Economist","pais":"Estados Unidos","titulo":"Inteligência Artificial pode ter resolvido o problema mais importante da matemática","resumo":"Pesquisadores avançaram no uso de modelos de inteligência artificial para solucionar enigmas matemáticos complexos. A nova abordagem demonstra que sistemas avançados conseguem encontrar padrões inéditos em problemas seculares. Especialistas acreditam que essa descoberta pode revolucionar a forma como teorias científicas são desenvolvidas. O avanço destaca o papel fundamental da IA no progresso da ciência fundamental.","link":"https://www.economist.com/science-and-technology/2026/11/20/ai-may-have-solved-the-most-important-problem-in-mathematics","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"维度网","pais":"França","titulo":"Airborne da Holanda avalia aplicação de tecnologia de laminação automática na fábrica da Airbus Helicopters na França","resumo":"A empresa holandesa Airborne está avaliando a implementação de sua tecnologia de laminação automática na fábrica da Airbus Helicopters na França. Essa automação busca otimizar a fabricação de componentes compostos avançados na indústria aeroespacial. A iniciativa visa aumentar a eficiência e elevar o padrão de precisão na linha de produção. A colaboração reforça a tendência de automação industrial no setor aéreo europeu.","link":"https://www.wedoany.com/shortnews/521724.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Anthropic pode ter resolvido o grande problema matemático da Hipótese de Riemann","resumo":"A empresa de inteligência artificial Anthropic anunciou progressos significativos que podem ter levado à resolução da famosa Hipótese de Riemann, um dos maiores problemas em aberto da matemática. O avanço demonstra o potencial dos modelos de IA na aceleração de descobertas científicas e resolução de dilemas complexos. Se confirmado, o feito representará um marco histórico tanto para a matemática quanto para a computação.","link":"https://www.bbc.com/news/articles/c6pqr2g7w059o","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"El Confidencial","pais":"Espanha","titulo":"O sucesso da primeira missão europeia ao planeta mais inexplorado do sistema solar depende de uma peça basca","resumo":"A indústria tecnológica do País Basco desenvolveu um componente essencial para a próxima missão espacial europeia com destino a Mercúrio. O dispositivo precisa suportar variações extremas de temperatura e radiação para garantir a precisão dos equipamentos de medição. Esse projeto destaca a capacidade da engenharia espanhola no setor aeroespacial global e reforça a importância de alianças tecnológicas internacionais.","link":"https://www.elconfidencial.com/tecnologia/ciencia/2026-11-21/exito-primera-mision-europea-mercurio-bepicolombo-depende-pieza-vasca_4468919/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Augsburger Allgemeine","pais":"Alemanha","titulo":"Cidade dos Robôs: Como a Nova Tecnologia Deve Ajudar a Economia de Ingolstadt","resumo":"A cidade alemã de Ingolstadt está apostando na integração de robôs avançados e na automação para revitalizar e fortalecer sua economia local. A iniciativa visa modernizar os processos industriais tradicionais e aumentar a eficiência do setor produtivo da região. Essa transformação tecnológica busca posicionar o município como um polo de inovação e garantir a competitividade econômica a longo prazo.","link":"https://www.augsburger-allgemeine.de/neuburg/ki-robotik-zentrum-wie-humanoide-roboter-ingolstadts-wirtschaft-veraendern-sollen-1-115701397","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Sem base científica para '30 minutos de sono': Genética revela o tempo real necessário","resumo":"Pesquisas genéticas recentes desmistificaram a crença de que é possível manter a saúde dormindo apenas meia hora por dia. Cientistas analisaram pessoas com mutações genéticas para sono curto e determinaram as reais necessidades biológicas desses indivíduos. Os achados reforçam os riscos da privação extrema e alertam para a importância do descanso adequado fundamentado na ciência.","link":"https://news.yahoo.co.jp/articles/a6e49722c780e4fba8678c2f726cd44f3a1c60c5","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"潮新闻客户端","pais":"China","titulo":"China conclui obras terrestres do primeiro projeto de injeção de carbono e ampliação de gás offshore","resumo":"A construção em terra do primeiro projeto demonstrativo de injeção de dióxido de carbono para aumento da produção de gás em alto-mar foi totalmente concluída na China. A tecnologia pioneira permite capturar e armazenar carbono diretamente em reservatórios marítimos enquanto otimiza a extração de energia limpa. Este marco fortalece a estratégia do país para alcançar a neutralidade de carbono e impulsionar a transição energética sustentável.","link":"https://tidenews.com.cn/tmh_news.html?id=6b011d9ef0b17b0001b83bf6","categoria":"ENERGIA SUSTENTÁVEL","lang":"pt"},{"fonte":"Universidade de Lisboa","pais":"Portugal","titulo":"Henrique Leitão é homenageado com o Grande Prémio Ciência Viva 2026","resumo":"O historiador e pesquisador Henrique Leitão foi anunciado como o vencedor do prestigiado Grande Prémio Ciência Viva 2026. A honraria reconhece sua notável trajetória acadêmica e suas contribuições fundamentais para a divulgação científica e história da ciência. O prêmio destaca o impacto de suas pesquisas na valorização do conhecimento científico junto à sociedade.","link":"https://www.ulisboa.pt/noticia/henrique-leitao-distinguido-com-o-grande-premio-ciencia-viva-2026","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Times Brasil | CNBC","pais":"Brasil","titulo":"Marvell e Penguin apostam em tecnologia para ampliar memória de servidores","resumo":"As empresas Marvell e Penguin uniram forças para desenvolver soluções tecnológicas focadas na expansão de memória em servidores de alta performance. A iniciativa visa responder à crescente demanda por processamento de dados exigida por inteligência artificial e computação em nuvem. Essa inovação promete otimizar a infraestrutura dos centros de dados globais.","link":"https://timesbrasil.com.br/empresas-e-negocios/tecnologia-e-inovacao/feriado-marvell-e-penguin-apostam-em-tecnologia-para-ampliar-memoria-de-servidores/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"WTVM.com","pais":"Estados Unidos","titulo":"East Alabama Health utiliza tecnologia robótica para diagnosticar câncer de pulmão precoce","resumo":"O centro médico East Alabama Health adotou uma nova tecnologia robótica para exames pulmonares avançados. O sistema permite que médicos acessem áreas difíceis dos pulmões com alta precisão e segurança. Essa inovação possibilita a detecção de tumores em estágios iniciais, aumentando significativamente as chances de cura dos pacientes. A iniciativa representa um salto importante no tratamento médico assistido por tecnologia.","link":"https://www.wtvm.com/2026/11/21/east-alabama-health-uses-robotic-technology-diagnose-early-lung-cancer/","categoria":"MEDICINA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"Nove prisões foram efetuadas após o uso de tecnologia de reconhecimento facial em evento","resumo":"O uso de sistemas de reconhecimento facial pela polícia em um grande evento resultou na prisão de nove indivíduos procurados pela justiça. A tecnologia permitiu a identificação em tempo real de suspeitos no meio da multidão, demonstrando a eficácia desse tipo de monitoramento. No entanto, o caso reacende debates sobre o equilíbrio entre a segurança pública e a privacidade dos cidadãos.","link":"https://www.bbc.com/news/articles/ck5y1274x9z7o","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Periódico de la Energía","pais":"Espanha","titulo":"Ceres Power busca acelerar a fabricação industrial de suas células de óxido sólido com tecnologia voltada para data centers","resumo":"A empresa de energia Ceres Power está impulsionando a produção em escala industrial de suas células de combustível de óxido sólido para atender à crescente demanda de energia em centros de dados. A iniciativa visa fornecer energia limpa e de alta eficiência em meio ao boom do processamento de inteligência artificial. A tecnologia pode revolucionar a infraestrutura energética de data centers globalmente.","link":"https://elperiodicodelaenergia.com/ceres-power-busca-acelerar-la-fabricacion-industrial-de-sus-pilas-de-oxido-solido-con-una-tecnologia-orientada-a-los-centros-de-datos/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"DW.com","pais":"Alemanha","titulo":"Alemanha: Crise Automotiva e o Boom da Inteligência Artificial","resumo":"O cenário econômico alemão atravessa um momento de transição marcado por severas dificuldades na indústria automotiva e um forte crescimento no setor de inteligência artificial. A crise nos fabricantes tradicionais contrasta com os crescentes investimentos em soluções tecnológicas de ponta e automação digital. Essa dinâmica está redefinindo as prioridades de inovação e o futuro industrial da maior economia da Europa.","link":"https://www.dw.com/es/alemania-el-enfermo-de-europa-que-encontr%C3%B3-una-nueva-econom%C3%ADa/video-79927744","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"中国科技网","pais":"China","titulo":"Impressão 3D de medicamentos: China conquista a segunda aprovação global do setor","resumo":"A China obteve a segunda licença global para a fabricação e comercialização de medicamentos produzidos por meio da tecnologia de impressão 3D. Essa conquista inédita viabiliza a dosagem personalizada e a liberação controlada de substâncias ativas diretamente nos comprimidos impressos. O avanço representa uma revolução na medicina de precisão e consolida a capacidade de inovação do setor farmacêutico chinês.","link":"https://www.stdaily.com/web/gdxw/2026-11/21/content_616961.html","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"coimbra.pt","pais":"Portugal","titulo":"Coimbra e Reino Unido reforçam cooperação em inovação, investimento e ciência","resumo":"A cidade de Coimbra estabeleceu uma parceria estratégica reforçada com o Reino Unido para impulsionar o ecossistema regional. O acordo foca em alavancar projetos nas áreas de inovação tecnológica, atração de investimentos e desenvolvimento científico conjunto. Espera-se que essa cooperação internacional gere novas oportunidades de negócios e acelere a criação de conhecimento avançado.","link":"https://www.coimbra.pt/2026/11/coimbra-e-reino-unido-reforcam-cooperacao-nas-areas-da-inovacao-investimento-e-ciencia/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Nexo Jornal","pais":"Brasil","titulo":"O que a oferta pública recorde da Anthropic diz do mercado de IA","resumo":"A histórica oferta pública da Anthropic acendeu o debate sobre o valor real e a consolidação do mercado global de Inteligência Artificial. Investidores acompanham de perto os desdobramentos operacionais e o apetite do setor por supercomputação. O movimento reflete a alta expectativa e os desafios de rentabilidade do segmento.","link":"https://www.nexojornal.com.br/expresso/2026/11/20/anthropic-ipo-stock-acao-oferta-publica-claude-ia","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"MIT Technology Review","pais":"Estados Unidos","titulo":"O gráfico mais mal compreendido da Inteligência Artificial acaba de receber uma grande atualização","resumo":"Uma atualização recente trouxe novas interpretações sobre um dos gráficos mais debatidos no campo da inteligência artificial. O diagrama analisa a evolução e a eficiência dos modelos de aprendizado de máquina ao longo do tempo. Especialistas revisaram as métricas para corrigir concepções equivocadas da indústria sobre o ritmo de desenvolvimento da IA. A mudança promete alinhar as expectativas do setor com a real capacidade técnica atual.","link":"https://www.technologyreview.com/2026/11/20/1149399/the-most-misunderstood-graph-in-ai-just-got-a-major-update/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Ministerio de Ciencia, Innovación y Universidades","pais":"Espanha","titulo":"Governo aprova Real Decreto-Lei para reforçar a soberania científica e tecnológica da Espanha","resumo":"O governo espanhol aprovou uma nova legislação desenhada para fortalecer a autonomia estratégica do país em setores tecnológicos vitais. O decreto simplifica processos e destina recursos para acelerar a inovação em áreas críticas como inteligência artificial, semicondutores e energia renovável. A medida busca reduzir a dependência externa e impulsionar a competitividade da indústria nacional perante o mercado europeu.","link":"https://www.ciencia.gob.es/Noticias/2026/noviembre/Real-Decreto-ley-soberania-cientifica-tecnologica-Espana.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"FAZ","pais":"Alemanha","titulo":"Jair Bolsonaro no Hospital: Obstrução Intestinal Quase Completa","resumo":"O ex-presidente brasileiro Jair Bolsonaro deu entrada no hospital apresentando um quadro de obstrução intestinal quase completa. A internação decorre de complicações associadas a intervenções cirúrgicas anteriores na região abdominal. O estado de saúde do político atraiu atenção da imprensa internacional, que acompanha os desdobramentos e a evolução do tratamento médico.","link":"https://www.faz.net/aktuell/politik/ausland/jair-bolsonaro-im-krankenhaus-fast-vollstaendige-darmobstruktion-accg-201704017.html","categoria":"INTERNACIONAL","lang":"pt"},{"fonte":"手机新浪网","pais":"China","titulo":"Fábrica da Ford em Michigan inicia produção de células LFP licenciadas pela CATL","resumo":"A fábrica da Ford no estado de Michigan iniciou a montagem de células de bateria de lítio-ferro-fosfato utilizando o licenciamento tecnológico da chinesa CATL. A parceria estratégica permite à montadora americana reduzir custos de produção e acelerar sua transição para veículos elétricos. O movimento destaca a liderança e dependência global das tecnologias avançadas de baterias desenvolvidas na China.","link":"https://k.sina.com.cn/article_7879924061_m1d5ae195d03301q59k.html","categoria":"INOVAÇÃO AUTOMOTIVA","lang":"pt"},{"fonte":"Público","pais":"Portugal","titulo":"A galinha dos ovos de ouro pode sobreviver à lei da ciência: depende da regulamentação","resumo":"Um novo debate regulatório traz à tona a relação entre as leis da ciência e o crescimento econômico impulsionado pela tecnologia. Especialistas alertam que o sucesso contínuo de setores altamente lucrativos depende diretamente da criação de normas equilibradas. O desafio atual consiste em garantir um ambiente regulatório favorável que não sufoque a inovação científica.","link":"https://www.publico.pt/2026/11/20/ciencia/opiniao/galinha-ovos-ouro-sobreviver-lei-ciencia-depende-regulamento-2195584","categoria":"REGULAMENTAÇÃO","lang":"pt"},{"fonte":"Bem Paraná","pais":"Brasil","titulo":"Curitiba recebe simpósio de Inteligência Artificial que amplia debate sobre tecnologia e qualidade de vida","resumo":"A cidade de Curitiba sediou um simpósio focado em Inteligência Artificial para discutir os impactos das novas tecnologias no cotidiano da sociedade. Especialistas se reuniram para analisar aplicações éticas da IA voltadas ao bem-estar e ao desenvolvimento urbano sustentável. O evento fortalece a posição da região como polo de debate tecnológico no país.","link":"https://www.bemparana.com.br/noticias/economia/curitiba-recebe-simposio-de-inteligencia-artificial-que-amplia-debate-sobre-tecnologia-e-qualidade-de-vida/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"O GLOBO","pais":"Estados Unidos","titulo":"Ações da Anthropic caem quase 10% após IPO histórico em dia de liquidação no setor de tecnologia","resumo":"A startup de inteligência artificial Anthropic enfrentou uma forte queda nas bolsas de valores logo após sua oferta pública inicial. O movimento ocorreu durante um dia de retração generalizada nas ações de grandes empresas do setor tecnológico. A despeito do recuo inicial, o IPO foi considerado um evento histórico para o mercado de empresas emergentes de IA. Investidores continuam monitorando de perto o impacto financeiro dessa oscilação recente.","link":"https://oglobo.globo.com/economia/financas/noticia/2026/11/20/mercado-sexta-feira-bolsas-globais-anthropic.ghtml","categoria":"MERCADO FINANCEIRO","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"Governo elimina burocracia para a ciência estratégica: centros poderão pagar mais a pesquisadores e comprar com mais agilidade","resumo":"A nova regulamentação governamental busca desburocratizar a gestão dos centros de pesquisa de alto impacto na Espanha. A partir de agora, as instituições terão maior flexibilidade financeira para atrair e reter talentos com salários mais competitivos, além de agilizar a aquisição de insumos laboratoriais. A iniciativa pretende acelerar o desenvolvimento de projetos científicos prioritários no país.","link":"https://elpais.com/ciencia/2026-11-20/el-gobierno-elimina-la-asfixia-burocratica-para-la-ciencia-estrategica-los-centros-podran-pagar-mas-a-sus-investigadores-y-comprar-mas-rapido.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"中国新闻网","pais":"China","titulo":"Instituto de Ética em Inteligência Artificial e Ciências da Vida é fundado em Hong Kong","resumo":"Hong Kong oficializou a criação de um novo instituto focado no estudo ético da inteligência artificial aplicada às ciências da vida e medicina. A instituição busca estabelecer diretrizes regulatórias e padrões morais para o uso responsável de algoritmos em pesquisas biomédicas e cuidados de saúde. A medida visa equilibrar o rápido avanço científico com a segurança e os direitos da sociedade.","link":"https://www.chinanews.com.cn/dwq/2026/11-21/10735673.shtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Tek Notícias","pais":"Portugal","titulo":"Indústria eletrodigital cresce acima da economia e movimenta bilhões de euros","resumo":"O setor eletrodigital apresentou um ritmo de crescimento significativamente superior ao avanço geral da economia nacional. Atualmente, essa indústria já é responsável por movimentar bilhões de euros em receita, consolidando-se como um pilar essencial. Esse dinamismo reforça a relevância da transformação digital e do consumo de produtos tecnológicos no mercado atual.","link":"https://tek.sapo.pt/noticias/negocios/artigos/industria-eletrodigital-cresce-mais-do-que-a-economia-e-ja-movimenta-milhares-de-milhoes-de-euros/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Pesquisador diz que IA levou à solução de problema matemático de 1859","resumo":"Um cientista revelou que sistemas avançados de Inteligência Artificial foram fundamentais para resolver um problema matemático complexo que permaneceu em aberto desde 1859. A conquista evidencia o potencial analítico das máquinas no auxílio a descobertas científicas de alto nível. O feito abre caminho para novas fronteiras no campo da matemática pura e aplicada.","link":"https://www1.folha.uol.com.br/ciencia/2026/11/pesquisador-diz-que-com-ajuda-de-claude-teria-resolvido-mais-um-problema-do-milenio-da-matematica.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Al Jazeera","pais":"Estados Unidos","titulo":"Trump pede que a Nvidia reintegre o 'brilhante' Jensen Huang","resumo":"O ex-presidente dos Estados Unidos fez declarações públicas elogiando o líder da gigante de semicondutores Nvidia. As falas geraram repercussão entre investidores e especialistas do mercado de tecnologia e política. O executivo Jensen Huang é amplamente reconhecido por impulsionar a empresa na corrida global de chips para inteligência artificial. A manifestação destaca a forte ligação entre geopolítica e as grandes corporações de tecnologia.","link":"https://www.aljazeera.com/news/2026/11/21/trump-calls-for-nvidia-to-reinstate-brilliant-jensen-huang","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Ayuntamiento de Zaragoza","pais":"Espanha","titulo":"Zaragoza celebra a Capitalidade Europeia da Acessibilidade com a primeira jornada nacional de ciência e tecnologia aplicadas à deficiência","resumo":"Zaragoza sediou um evento inédito reunindo pesquisadores e desenvolvedores para discutir inovações focadas em acessibilidade e inclusão. Durante o encontro, foram apresentadas soluções robóticas, softwares assistivos e dispositivos inteligentes projetados para melhorar a autonomia de pessoas com deficiência. O evento consolida a cidade como um polo europeu em tecnologia assistiva e responsabilidade social.","link":"https://www.zaragoza.es/sede/servicio/noticia/366628","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"汽车之家","pais":"China","titulo":"Opel assina parceria com Leapmotor e adota tecnologia chinesa para acelerar transição","resumo":"A tradicional montadora europeia Opel assinou um acordo formal com a fabricante chinesa de veículos elétricos Leapmotor para integrar suas plataformas tecnológicas. A colaboração visa reduzir drasticamente o tempo de desenvolvimento e lançamento de novos modelos elétricos no mercado internacional. O acordo evidencia a inversão histórica no setor automotivo, com gigantes europeias recorrendo às inovações chinesas.","link":"https://chejiahao.autohome.com.cn/info/26932060","categoria":"NEGÓCIOS E TECNOLOGIA","lang":"pt"},{"fonte":"G1","pais":"Brasil","titulo":"Ações da Nvidia têm pior sequência de quedas na bolsa desde 2008","resumo":"As ações da gigante dos chips Nvidia enfrentam a sua pior sequência de desvalorização no mercado de ações desde a crise financeira de 2008. O movimento reflete temores dos investidores sobre o ritmo de retornos nos pesados investimentos em infraestrutura de IA. O cenário impacta diretamente todo o ecossistema das empresas de tecnologia global.","link":"https://g1.globo.com/tecnologia/noticia/2026/11/20/acoes-da-nvidia-tem-pior-sequencia-de-quedas-na-bolsa-desde-2008.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"G1","pais":"Estados Unidos","titulo":"Trump afirma que não permitirá que empresas construam data centers fora dos EUA","resumo":"Declarações recentes sinalizam intenções de restringir a expansão de infraestrutura de tecnologia fora do território americano. A medida visa focar os investimentos em inteligência artificial e processamento de dados dentro das fronteiras nacionais. Especialistas apontam potenciais impactos para gigantes da tecnologia e para o comércio internacional de serviços digitais. A proposta busca priorizar a soberania tecnológica e a criação de empregos locais no setor.","link":"https://g1.globo.com/mundo/noticia/2026/11/20/trump-diz-que-nao-permitira-que-empresas-construam-data-centers-fora-dos-eua.ghtml","categoria":"POLÍTICA","lang":"pt"},{"fonte":"El Correo Gallego","pais":"Espanha","titulo":"Pesquisador da USC Julián Bergueiro reforça o talento científico na Galícia: «Aqui se faz ciência de altíssimo nível»","resumo":"O cientista Julián Bergueiro destaca a excelência e a qualidade dos projetos de pesquisa desenvolvidos atualmente na Galícia. O retorno de talentos e o financiamento focado têm impulsionado descobertas relevantes em áreas estratégicas da ciência contemporânea. A trajetória do pesquisador exemplifica o fortalecimento dos polos acadêmicos espanhóis no cenário internacional.","link":"https://www.elcorreogallego.es/santiago/2026/11/21/investigador-usc-julian-bergueiro-refuerza-136656208.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"中华网","pais":"China","titulo":"Xingmang debate custos de desenvolvimento e o futuro da inovação em novas tecnologias de IA","resumo":"A empresa Xingmang respondeu publicamente às críticas sobre o elevado custo de suas soluções de inteligência artificial, destacando que a barateza não é o foco principal da inovação. A liderança enfatizou que a pesquisa de ponta em modelos avançados exige investimentos massivos para garantir avanços reais e sustentáveis. O debate evidencia o dilema entre a acessibilidade comercial e os altos custos do desenvolvimento tecnológico de fronteira.","link":"https://news.china.com/socialgd/10000169/20261121/49893520.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Tudo ok Notícias","pais":"Brasil","titulo":"Mulheres avançam na ciência brasileira e lideram pesquisas nos oceanos e na Antártica","resumo":"Cientistas brasileiras vêm conquistando espaço decisivo na liderança de pesquisas estratégicas nos oceanos e no continente antártico. Os estudos conduzidos por essas pesquisadoras contribuem para o avanço do conhecimento científico sobre mudanças climáticas globais. O protagonismo feminino fortalece e inspira a inovação e o desenvolvimento científico no país.","link":"https://tudooknoticias.com.br/brasil/mulheres-avancam-na-ciencia-brasileira-e-lideram-pesquisas-nos-oceanos-e-na-antartica/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Estados Unidos","titulo":"Representante comercial dos EUA minimiza restrições à venda de chips para países como o Brasil","resumo":"A autoridade de comércio norte-americana classificou as novas regras para exportação de semicondutores como o fechamento de uma brecha regulatória. A medida afeta o envio de componentes tecnológicos avançados para diversas nações globais, incluindo o Brasil. A justificativa governamental busca proteger tecnologias críticas e mitigar riscos de reexportação não autorizada. O posicionamento tenta tranquilizar o mercado internacional garantindo estabilidade nas relações diplomáticas.","link":"https://oglobo.globo.com/economia/noticia/2026/11/20/representante-comercial-dos-eua-minimiza-restricoes-a-venda-de-chips-a-paises-como-o-brasil-fechamento-de-uma-brecha.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Correo Gallego","pais":"Espanha","titulo":"Carmen Álvarez Lorenzo, Galega do Ano 2026 em Ciência e Investigação: «A ciência galega compete de igual para igual com a internacional»","resumo":"A pesquisadora Carmen Álvarez Lorenzo foi reconhecida pelo seu trabalho de destaque no avanço da investigação científica e farmacêutica na Espanha. Em sua declaração, ela ressaltou a capacidade dos laboratórios locais de gerar inovações de impacto global. O prêmio evidencia a consolidação da pesquisa regional como referência em excelência e desenvolvimento acadêmico.","link":"https://www.elcorreogallego.es/galicia/2026/11/21/carmen-alvarez-gallega-ano-2026-ciencia-puede-competir-internacional-usc-136561078.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"中国科学院","pais":"China","titulo":"Pesquisador Pan Shuheng recebe prestigiado prêmio de ciência de medição da APS","resumo":"O pesquisador chinês Pan Shuheng foi laureado com o maior prêmio de ciência de medição concedido pela American Physical Society. A honraria reconhece suas contribuições fundamentais para o desenvolvimento de instrumentos físicos de alta precisão e microscopia avançada. O prêmio reafirma o papel de destaque da comunidade científica chinesa na física experimental contemporânea.","link":"https://www.cas.cn/cm/202611/t20261120_5124715.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Brasil Inovador","pais":"Brazil","titulo":"BioStation Receives JK Innovation Award for National Palm Vascular Biometric Authentication Technology","resumo":"The national palm vascular reading biometric authentication technology developed by BioStation has been recognized with the prestigious JK Innovation Award. This breakthrough represents a major milestone in the digital security and identification sector in Brazil. The feature stands out for its high precision and enhanced security in user access control.","link":"https://brasilinovador.com.br/biostation-recebe-premio-jk-de-inovacao-por-tecnologia-nacional-de-autenticacao-biometrica-vascular-palmar/","categoria":"INNOVATION","lang":"en"},{"fonte":"ScienceDaily","pais":"United States","titulo":"NASA's Voyager 1 Is Now So Far Away That Light Takes 24 Hours to Reach It","resumo":"NASA's Voyager 1 space probe has reached a historic distance milestone relative to Earth. Launched in 1977, the spacecraft continues traveling through interstellar space, transmitting valuable data. Currently, signals sent by it take a full day at the speed of light to reach scientists. This achievement reinforces the impressive longevity and lasting legacy of human space exploration.","link":"https://www.sciencedaily.com/releases/2026/11/261120075554.htm","categoria":"ASTRONOMY","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"In a 1,000-Year-Old English Manuscript, Researchers Discovered the DNA of a Virus Deadly to Sheep","resumo":"Researchers have identified the DNA of a virus deadly to sheep contained within a thousand-year-old English manuscript. Genetic analysis revealed that the evolutionary history of this pathogen dates back about 3,700 years. The discovery sheds new light on how agricultural viruses accompanied the development of livestock farming. Furthermore, it highlights the importance of historical documents as reservoirs for biological research.","link":"https://www.science-et-vie.com/nature-et-environnement/animaux/dans-un-manuscrit-vieux-de-1-000-ans-des-chercheurs-ont-decouvert-ladn-dun-virus-mortel-pour-les-moutons-dont-lhistoire-remonte-a-3-700-ans-266241.html","categoria":"SCIENCE","lang":"en"},{"fonte":"London School of Business and Research (LSBR)","pais":"England","titulo":"'All This Technology and AI Drives Me Bonkers': Charley Hull Is Logging Off","resumo":"Professional golfer Charley Hull has decided to step away from social media and the excessive use of technology in her daily life. She reported that constant exposure to technological innovations and artificial intelligence has caused her mental stress. The decision reflects a growing movement of athletes seeking to protect their mental health by disconnecting from the digital world.","link":"https://www.lsbr.uk/news/drives-me-bonkers-all-the-technology-and-ai-charley-hull-is-logging-off","categoria":"TRENDS","lang":"en"},{"fonte":"OkDiario","pais":"Spain","titulo":"Matt Damon Already Did It on Mars and Now Science Proves It's Possible to Grow Potatoes on the Moon","resumo":"A new scientific study has proven the technical feasibility of growing potatoes in simulated lunar soil. The research paves the way for food sustainability in future long-duration space missions. In addition to reducing the costs of transporting supplies from Earth, the discovery consolidates fundamental advances in astrobiology and extraterrestrial agriculture.","link":"https://okdiario.com/okgreen/matt-damon-ya-lo-hizo-marte-ahora-ciencia-prueba-que-pueden-cultivar-patatas-luna-21233148","categoria":"SCIENCE","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Consistent AI Development - Rules for Killer Robots: Talks End with Minimal Consensus","resumo":"Negotiations on regulating the use of artificial intelligence in autonomous weapons systems have ended with only a minimal consensus among nations. The debate reflects the global difficulty in establishing ethical and legal limits for military automation. Faced with rapid technological advancement, experts warn of the risks of lacking clear rules to prevent abuses in future conflicts.","link":"https://www.sueddeutsche.de/politik/folgenreiche-ki-entwicklung-regeln-fuer-killerroboter-gespraeche-enden-mit-minimalkonsens-dpa.urn-newsml-dpa-com-20090101-261121-930-29006","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Nippon-Ham Fighters Girls and Robots Perform Together in Perfect Harmony","resumo":"During a recent sports event in Japan, the Fighters Girl dance team performed an innovative routine in partnership with advanced robots. The perfectly synchronized performance highlighted the advances of robotic engineering applied to mass entertainment. The spectacle demonstrated the potential of integrating technology and pop culture to engage audiences in unprecedented ways.","link":"https://news.yahoo.co.jp/articles/98804221b42c7e366831b3a14b1539898cf119f7","categoria":"ROBOTICS","lang":"en"},{"fonte":"科学网—新闻","pais":"China","titulo":"Visionox Officially Launches New ViP Photolithography Screen Technology Brand","resumo":"Visionox has announced the launch of its ViP technology brand, which uses photolithography to manufacture AMOLED displays without the need for fine metal masks. This innovation promises to significantly increase the precision, brightness, and lifespan of displays in electronic devices. The initiative positions the company at the forefront of the global advanced panel industry, driving new standards for the visual market.","link":"https://news.sciencenet.cn/htmlnews/2026/11/575103.shtm","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ANI News","pais":"India","titulo":"India and Singapore Hold Defence Technology Talks in Kochi, Focus on Underwater Domain Awareness and Quantum Tech","resumo":"India and Singapore met in Kochi to discuss advancements in the defense technology sector, strengthening bilateral strategic cooperation. The meeting focused primarily on developing solutions for underwater domain awareness and the use of quantum technologies. The initiative aims to enhance regional maritime security and accelerate joint technological innovation between the two nations.","link":"https://www.aninews.in/news/world/asia/india-and-singapore-hold-defence-technology-talks-in-kochi-focus-on-underwater-domain-awareness-and-quantum-tech20261121110617","categoria":"TECHNOLOGY AND DEFENSE","lang":"en"},{"fonte":"Dinheiro Vivo","pais":"Portugal","titulo":"From AI to 5G: NOS Invests 287 Million Euros in Technology Since 2023","resumo":"Portuguese telecom operator NOS has revealed a significant investment of 287 million euros in technological infrastructure and innovation since 2023. The financial contributions were directed primarily toward expanding the 5G network and developing artificial intelligence-based solutions. This initiative aims to strengthen the company's digital competitiveness and transform the services offered to its customers in the country.","link":"http://dinheirovivo.dn.pt/empresas/da-ia-ao-5g-nos-investe-287-milhes-de-euros-em-tecnologia-desde-2023","categoria":"INVESTMENT","lang":"en"},{"fonte":"Folha PE","pais":"Brazil","titulo":"Chronic Pain: Technology Expands Treatment Possibilities","resumo":"The advancement of new technologies has revolutionized treatment options for chronic pain patients in the country. Modern devices and innovative methods are enabling more personalized and effective monitoring. This evolution brings continuous relief and a significant improvement in the quality of life of affected individuals.","link":"https://www.folhape.com.br/colunistas/modo-fit/dor-cronica-tecnologia-amplia-possibilidades-de-tratamento/61102/","categoria":"HEALTH","lang":"en"},{"fonte":"The Economist","pais":"United States","titulo":"Artificial Intelligence May Have Solved Mathematics' Most Important Problem","resumo":"Researchers have advanced in the use of artificial intelligence models to solve complex mathematical puzzles. The new approach demonstrates that advanced systems are capable of finding unprecedented patterns in centuries-old problems. Experts believe this discovery could revolutionize the way scientific theories are developed. The breakthrough highlights AI's fundamental role in the progress of foundational science.","link":"https://www.economist.com/science-and-technology/2026/11/20/ai-may-have-solved-the-most-important-problem-in-mathematics","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"维度网","pais":"France","titulo":"Airborne from the Netherlands Evaluates Application of Automated Lamination Technology at Airbus Helicopters Factory in France","resumo":"Dutch company Airborne is evaluating the implementation of its automated lamination technology at the Airbus Helicopters factory in France. This automation seeks to optimize the manufacturing of advanced composite components in the aerospace industry. The initiative aims to increase efficiency and raise the precision standard on the production line. The collaboration reinforces the trend of industrial automation in the European aviation sector.","link":"https://www.wedoany.com/shortnews/521724.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"Anthropic May Have Solved the Great Mathematical Problem of the Riemann Hypothesis","resumo":"Artificial intelligence company Anthropic has announced significant progress that may have led to the resolution of the famous Riemann Hypothesis, one of mathematics' greatest open problems. The breakthrough demonstrates the potential of AI models in accelerating scientific discoveries and solving complex dilemmas. If confirmed, the feat will represent a historic milestone for both mathematics and computing.","link":"https://www.bbc.com/news/articles/c6pqr2g7w059o","categoria":"SCIENCE","lang":"en"},{"fonte":"El Confidencial","pais":"Spain","titulo":"The Success of Europe's First Mission to the Solar System's Most Unexplored Planet Relies on a Basque Part","resumo":"The Basque Country's technology industry has developed an essential component for the upcoming European space mission bound for Mercury. The device must withstand extreme temperature variations and radiation to ensure the precision of measurement equipment. This project highlights Spanish engineering's capability in the global aerospace sector and reinforces the importance of international technological alliances.","link":"https://www.elconfidencial.com/tecnologia/ciencia/2026-11-21/exito-primera-mision-europea-mercurio-bepicolombo-depende-pieza-vasca_4468919/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Augsburger Allgemeine","pais":"Germany","titulo":"Robot City: How New Technology is Expected to Help Ingolstadt's Economy","resumo":"The German city of Ingolstadt is betting on the integration of advanced robots and automation to revitalize and strengthen its local economy. The initiative aims to modernize traditional industrial processes and increase the efficiency of the region's productive sector. This technological transformation seeks to position the municipality as an innovation hub and ensure long-term economic competitiveness.","link":"https://www.augsburger-allgemeine.de/neuburg/ki-robotik-zentrum-wie-humanoide-roboter-ingolstadts-wirtschaft-veraendern-sollen-1-115701397","categoria":"ROBOTICS","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"No Scientific Basis for '30 Minutes of Sleep': Genetics Reveal the Real Time Needed","resumo":"Recent genetic research has debunked the belief that one can maintain health by sleeping only half an hour a day. Scientists analyzed people with genetic mutations for short sleep and determined the real biological needs of these individuals. The findings reinforce the risks of extreme deprivation and warn of the importance of adequate rest grounded in science.","link":"https://news.yahoo.co.jp/articles/a6e49722c780e4fba8678c2f726cd44f3a1c60c5","categoria":"SCIENCE","lang":"en"},{"fonte":"潮新闻客户端","pais":"China","titulo":"China Completes Onshore Construction of First Offshore Carbon Injection and Gas Expansion Project","resumo":"Onshore construction of China's first carbon dioxide injection demonstration project for enhanced offshore gas recovery has been fully completed. This pioneering technology allows carbon to be captured and stored directly in marine reservoirs while optimizing clean energy extraction. This milestone reinforces the country's strategy to achieve carbon neutrality and drive sustainable energy transition.","link":"https://tidenews.com.cn/tmh_news.html?id=6b011d9ef0b17b0001b83bf6","categoria":"SUSTAINABLE ENERGY","lang":"en"},{"fonte":"Universidade de Lisboa","pais":"Portugal","titulo":"Henrique Leitão Honored with the 2026 Grande Prémio Ciência Viva","resumo":"Historian and researcher Henrique Leitão was announced as the winner of the prestigious 2026 Grande Prémio Ciência Viva. The award recognizes his remarkable academic career and fundamental contributions to scientific dissemination and the history of science. The prize highlights the impact of his research in promoting scientific knowledge within society.","link":"https://www.ulisboa.pt/noticia/henrique-leitao-distinguido-com-o-grande-premio-ciencia-viva-2026","categoria":"SCIENCE","lang":"en"},{"fonte":"Times Brasil | CNBC","pais":"Brazil","titulo":"Marvell and Penguin Bet on Technology to Expand Server Memory","resumo":"Companies Marvell and Penguin have joined forces to develop technological solutions focused on memory expansion in high-performance servers. The initiative aims to respond to the growing demand for data processing driven by artificial intelligence and cloud computing. This innovation promises to optimize the infrastructure of global data centers.","link":"https://timesbrasil.com.br/empresas-e-negocios/tecnologia-e-inovacao/feriado-marvell-e-penguin-apostam-em-tecnologia-para-ampliar-memoria-de-servidores/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"WTVM.com","pais":"United States","titulo":"East Alabama Health Uses Robotic Technology to Diagnose Early Lung Cancer","resumo":"The East Alabama Health medical center has adopted new robotic technology for advanced pulmonary exams. The system allows doctors to access difficult areas of the lungs with high precision and safety. This innovation makes it possible to detect tumors in early stages, significantly increasing patients' chances of a cure. The initiative represents a major leap in technology-assisted medical treatment.","link":"https://www.wtvm.com/2026/11/21/east-alabama-health-uses-robotic-technology-diagnose-early-lung-cancer/","categoria":"MEDICINE","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"Nine Arrested After Facial Recognition Technology Used at Event","resumo":"The police use of facial recognition systems at a major event resulted in the arrest of nine individuals wanted by justice. The technology allowed the real-time identification of suspects amid the crowd, demonstrating the effectiveness of this type of monitoring. However, the case reignites debates over the balance between public safety and citizen privacy.","link":"https://www.bbc.com/news/articles/ck5y1274x9z7o","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Periódico de la Energía","pais":"Spain","titulo":"Ceres Power Seeks to Accelerate Industrial Manufacturing of Solid Oxide Cells with Data Center-Oriented Technology","resumo":"Energy company Ceres Power is driving the large-scale industrial production of its solid oxide fuel cells to meet growing power demand in data centers. The initiative aims to provide clean, high-efficiency energy amid the artificial intelligence processing boom. The technology could revolutionize data center energy infrastructure globally.","link":"https://elperiodicodelaenergia.com/ceres-power-busca-acelerar-la-fabricacion-industrial-de-sus-pilas-de-oxido-solido-con-una-tecnologia-orientada-a-los-centros-de-datos/","categoria":"INNOVATION","lang":"en"},{"fonte":"DW.com","pais":"Germany","titulo":"Germany: Automotive Crisis and the Artificial Intelligence Boom","resumo":"The German economic landscape is going through a transitional moment marked by severe difficulties in the automotive industry and strong growth in the artificial intelligence sector. The crisis among traditional manufacturers contrasts with rising investments in cutting-edge technological solutions and digital automation. This dynamic is redefining innovation priorities and the industrial future of Europe's largest economy.","link":"https://www.dw.com/es/alemania-el-enfermo-de-europa-que-encontr%C3%B3-una-nueva-econom%C3%ADa/video-79927744","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"中国科技网","pais":"China","titulo":"3D Drug Printing: China Secures Sector's Second Global Approval","resumo":"China has obtained the second global license for the manufacturing and commercialization of medications produced via 3D printing technology. This unprecedented achievement enables personalized dosing and the controlled release of active substances directly from printed tablets. The breakthrough represents a revolution in precision medicine and consolidates the innovation capacity of the Chinese pharmaceutical sector.","link":"https://www.stdaily.com/web/gdxw/2026-11/21/content_616961.html","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"coimbra.pt","pais":"Portugal","titulo":"Coimbra and United Kingdom Strengthen Cooperation in Innovation, Investment, and Science","resumo":"The city of Coimbra has established a strengthened strategic partnership with the United Kingdom to boost the regional ecosystem. The agreement focuses on leveraging projects in the areas of technological innovation, investment attraction, and joint scientific development. This international cooperation is expected to generate new business opportunities and accelerate the creation of advanced knowledge.","link":"https://www.coimbra.pt/2026/11/coimbra-e-reino-unido-reforcam-cooperacao-nas-areas-da-inovacao-investimento-e-ciencia/","categoria":"INNOVATION","lang":"en"},{"fonte":"Nexo Jornal","pais":"Brazil","titulo":"What Anthropic's Record Public Offering Says About the AI Market","resumo":"Anthropic's historic public offering has sparked debate over the real value and consolidation of the global Artificial Intelligence market. Investors are closely monitoring operational developments and the sector's appetite for supercomputing. The move reflects high expectations and profitability challenges within the segment.","link":"https://www.nexojornal.com.br/expresso/2026/11/20/anthropic-ipo-stock-acao-oferta-publica-claude-ia","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"MIT Technology Review","pais":"United States","titulo":"The Most Misunderstood Graph in Artificial Intelligence Just Got a Major Update","resumo":"A recent update has brought new interpretations to one of the most debated charts in the field of artificial intelligence. The diagram analyzes the evolution and efficiency of machine learning models over time. Experts have revised the metrics to correct industry misconceptions regarding the pace of AI development. The change promises to align industry expectations with current real technical capabilities.","link":"https://www.technologyreview.com/2026/11/20/1149399/the-most-misunderstood-graph-in-ai-just-got-a-major-update/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Ministerio de Ciencia, Innovación y Universidades","pais":"Spain","titulo":"Government Approves Royal Decree-Law to Reinforce Spain's Scientific and Technological Sovereignty","resumo":"The Spanish government has approved new legislation designed to strengthen the country's strategic autonomy in vital technology sectors. The decree streamlines processes and allocates resources to accelerate innovation in critical areas such as artificial intelligence, semiconductors, and renewable energy. The measure seeks to reduce external dependency and boost the competitiveness of domestic industry facing the European market.","link":"https://www.ciencia.gob.es/Noticias/2026/noviembre/Real-Decreto-ley-soberania-cientifica-tecnologica-Espana.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"FAZ","pais":"Germany","titulo":"Jair Bolsonaro in Hospital: Nearly Complete Intestinal Obstruction","resumo":"Former Brazilian president Jair Bolsonaro was admitted to the hospital presenting symptoms of a nearly complete intestinal obstruction. The hospitalization stems from complications associated with previous surgical interventions in the abdominal region. The politician's health status has drawn the attention of international press, which is following the developments and the evolution of his medical treatment.","link":"https://www.faz.net/aktuell/politik/ausland/jair-bolsonaro-im-krankenhaus-fast-vollstaendige-darmobstruktion-accg-201704017.html","categoria":"INTERNATIONAL","lang":"en"},{"fonte":"手机新浪网","pais":"China","titulo":"Ford plant in Michigan begins production of CATL-licensed LFP cells","resumo":"Ford's plant in Michigan has started assembling lithium-iron-phosphate battery cells utilizing technology licensing from China's CATL. The strategic partnership allows the American automaker to cut production costs and accelerate its transition to electric vehicles. The move highlights the global leadership and reliance on advanced battery technologies developed in China.","link":"https://k.sina.com.cn/article_7879924061_m1d5ae195d03301q59k.html","categoria":"AUTOMOTIVE INNOVATION","lang":"en"},{"fonte":"Público","pais":"Portugal","titulo":"The goose that lays the golden eggs can survive the science law: it depends on regulation","resumo":"A new regulatory debate brings to light the relationship between the laws of science and technology-driven economic growth. Experts warn that the continued success of highly profitable sectors directly depends on the creation of balanced regulations. The current challenge is to ensure a favorable regulatory environment that does not stifle scientific innovation.","link":"https://www.publico.pt/2026/11/20/ciencia/opiniao/galinha-ovos-ouro-sobreviver-lei-ciencia-depende-regulamento-2195584","categoria":"REGULATION","lang":"en"},{"fonte":"Bem Paraná","pais":"Brazil","titulo":"Curitiba hosts Artificial Intelligence symposium that broadens debate on technology and quality of life","resumo":"The city of Curitiba hosted a symposium focused on Artificial Intelligence to discuss the impacts of new technologies on everyday society. Experts gathered to analyze ethical applications of AI aimed at well-being and sustainable urban development. The event strengthens the region's position as a hub for technological debate in the country.","link":"https://www.bemparana.com.br/noticias/economia/curitiba-recebe-simposio-de-inteligencia-artificial-que-amplia-debate-sobre-tecnologia-e-qualidade-de-vida/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"O GLOBO","pais":"United States","titulo":"Anthropic shares drop nearly 10% following historic IPO amid tech sector sell-off","resumo":"Artificial intelligence startup Anthropic faced a sharp drop in the stock market shortly after its initial public offering. The movement occurred during a day of widespread retraction in shares of major tech companies. Despite the initial pullback, the IPO was considered a historic event for the emerging AI market. Investors continue to closely monitor the financial impact of this recent fluctuation.","link":"https://oglobo.globo.com/economia/financas/noticia/2026/11/20/mercado-sexta-feira-bolsas-globais-anthropic.ghtml","categoria":"FINANCIAL MARKET","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"Government eliminates bureaucracy for strategic science: centers will be able to pay researchers more and make purchases more quickly","resumo":"New government regulations aim to cut red tape in the management of high-impact research centers in Spain. From now on, institutions will have greater financial flexibility to attract and retain talent with more competitive salaries, in addition to streamlining the acquisition of laboratory supplies. The initiative intends to accelerate the development of priority scientific projects in the country.","link":"https://elpais.com/ciencia/2026-11-20/el-gobierno-elimina-la-asfixia-burocratica-para-la-ciencia-estrategica-los-centros-podran-pagar-mas-a-sus-investigadores-y-comprar-mas-rapido.html","categoria":"SCIENCE","lang":"en"},{"fonte":"中国新闻网","pais":"China","titulo":"Institute of Ethics in Artificial Intelligence and Life Sciences founded in Hong Kong","resumo":"Hong Kong has formalized the creation of a new institute focused on the ethical study of artificial intelligence applied to life sciences and medicine. The institution seeks to establish regulatory guidelines and moral standards for the responsible use of algorithms in biomedical research and healthcare. The measure aims to balance rapid scientific advancement with societal safety and rights.","link":"https://www.chinanews.com.cn/dwq/2026/11-21/10735673.shtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Tek Notícias","pais":"Portugal","titulo":"Electro-digital industry grows faster than the economy, generating billions of euros","resumo":"The electro-digital sector showed a growth rate significantly higher than the overall advance of the national economy. Currently, this industry is already responsible for generating billions of euros in revenue, consolidating itself as an essential pillar. This dynamism reinforces the relevance of digital transformation and the consumption of technological products in the current market.","link":"https://tek.sapo.pt/noticias/negocios/artigos/industria-eletrodigital-cresce-mais-do-que-a-economia-e-ja-movimenta-milhares-de-milhoes-de-euros/","categoria":"BUSINESS","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"Researcher says AI led to the solution of an 1859 mathematical problem","resumo":"A scientist revealed that advanced Artificial Intelligence systems were instrumental in solving a complex mathematical problem that had remained open since 1859. The achievement highlights the analytical potential of machines in aiding high-level scientific discoveries. The feat paves the way for new frontiers in the field of pure and applied mathematics.","link":"https://www1.folha.uol.com.br/ciencia/2026/11/pesquisador-diz-que-com-ajuda-de-claude-teria-resolvido-mais-um-problema-do-milenio-da-matematica.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"Al Jazeera","pais":"United States","titulo":"Trump calls for Nvidia to reinstate 'brilliant' Jensen Huang","resumo":"The former president of the United States made public statements praising the leader of semiconductor giant Nvidia. The remarks sparked reactions among investors and experts in the tech and politics markets. Executive Jensen Huang is widely recognized for propelling the company in the global race for artificial intelligence chips. The statement highlights the strong connection between geopolitics and large technology corporations.","link":"https://www.aljazeera.com/news/2026/11/21/trump-calls-for-nvidia-to-reinstate-brilliant-jensen-huang","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Ayuntamiento de Zaragoza","pais":"Spain","titulo":"Zaragoza celebrates European Capital of Accessibility with the first national conference on science and technology applied to disability","resumo":"Zaragoza hosted an unprecedented event gathering researchers and developers to discuss innovations focused on accessibility and inclusion. During the meeting, robotic solutions, assistive software, and smart devices designed to improve the autonomy of people with disabilities were showcased. The event consolidates the city as a European hub in assistive technology and social responsibility.","link":"https://www.zaragoza.es/sede/servicio/noticia/366628","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"汽车之家","pais":"China","titulo":"Opel signs partnership with Leapmotor and adopts Chinese technology to accelerate transition","resumo":"Traditional European automaker Opel has signed a formal agreement with Chinese electric vehicle manufacturer Leapmotor to integrate its technology platforms. The collaboration aims to drastically reduce the development and launch time of new electric models in the international market. The agreement highlights a historic reversal in the automotive sector, with European giants resorting to Chinese innovations.","link":"https://chejiahao.autohome.com.cn/info/26932060","categoria":"BUSINESS AND TECHNOLOGY","lang":"en"},{"fonte":"G1","pais":"Brazil","titulo":"Nvidia shares face worst losing streak in the stock market since 2008","resumo":"Shares of chip giant Nvidia are facing their worst devaluation streak in the stock market since the 2008 financial crisis. The movement reflects investor fears regarding the pace of returns on heavy investments in AI infrastructure. The scenario directly impacts the entire ecosystem of global technology companies.","link":"https://g1.globo.com/tecnologia/noticia/2026/11/20/acoes-da-nvidia-tem-pior-sequencia-de-quedas-na-bolsa-desde-2008.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"G1","pais":"United States","titulo":"Trump states he will not allow companies to build data centers outside the US","resumo":"Recent statements signal intentions to restrict the expansion of technology infrastructure outside American territory. The measure aims to focus investments in artificial intelligence and data processing within national borders. Experts point out potential impacts for technology giants and international digital services trade. The proposal seeks to prioritize technological sovereignty and the creation of local jobs in the sector.","link":"https://g1.globo.com/mundo/noticia/2026/11/20/trump-diz-que-nao-permitira-que-empresas-construam-data-centers-fora-dos-eua.ghtml","categoria":"POLITICS","lang":"en"},{"fonte":"El Correo Gallego","pais":"Spain","titulo":"USC researcher Julián Bergueiro reinforces scientific talent in Galicia: 'Top-tier science is done here'","resumo":"Scientist Julián Bergueiro highlights the excellence and quality of research projects currently developed in Galicia. The return of talent and targeted funding have driven relevant discoveries in strategic areas of contemporary science. The researcher's career exemplifies the strengthening of Spanish academic hubs on the international stage.","link":"https://www.elcorreogallego.es/santiago/2026/11/21/investigador-usc-julian-bergueiro-refuerza-136656208.html","categoria":"SCIENCE","lang":"en"},{"fonte":"中华网","pais":"China","titulo":"Xingmang discusses development costs and the future of innovation in new AI technologies","resumo":"Xingmang publicly responded to criticism regarding the high cost of its artificial intelligence solutions, emphasizing that affordability is not the main focus of innovation. Leadership stressed that cutting-edge research into advanced models requires massive investments to ensure real and sustainable breakthroughs. The debate highlights the dilemma between commercial accessibility and the high costs of frontier technological development.","link":"https://news.china.com/socialgd/10000169/20261121/49893520.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Tudo ok Notícias","pais":"Brazil","titulo":"Women make strides in Brazilian science and lead research in the oceans and Antarctica","resumo":"Brazilian female scientists have been gaining decisive ground in leading strategic research in the oceans and the Antarctic continent. The studies conducted by these researchers contribute to the advancement of global scientific knowledge on climate change. Female leadership strengthens and inspires innovation and scientific development in the country.","link":"https://tudooknoticias.com.br/brasil/mulheres-avancam-na-ciencia-brasileira-e-lideram-pesquisas-nos-oceanos-e-na-antartica/","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"United States","titulo":"US Trade Representative downplays restrictions on chip sales to countries like Brazil","resumo":"The US trade authority classified the new semiconductor export rules as the closing of a regulatory loophole. The measure affects the shipment of advanced technological components to various global nations, including Brazil. The government's justification seeks to protect critical technologies and mitigate risks of unauthorized re-export. The stance attempts to reassure the international market by guaranteeing stability in diplomatic relations.","link":"https://oglobo.globo.com/economia/noticia/2026/11/20/representante-comercial-dos-eua-minimiza-restricoes-a-venda-de-chips-a-paises-como-o-brasil-fechamento-de-uma-brecha.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Correo Gallego","pais":"Spain","titulo":"Carmen Álvarez Lorenzo, 2026 Galician of the Year in Science and Research: \"Galician science competes on equal footing with the international community\"","resumo":"Researcher Carmen Álvarez Lorenzo was recognized for her outstanding work in advancing scientific and pharmaceutical research in Spain. In her statement, she highlighted the ability of local laboratories to generate innovations with global impact. The award highlights the consolidation of regional research as a benchmark in academic excellence and development.","link":"https://www.elcorreogallego.es/galicia/2026/11/21/carmen-alvarez-gallega-ano-2026-ciencia-puede-competir-internacional-usc-136561078.html","categoria":"SCIENCE","lang":"en"},{"fonte":"中国科学院","pais":"China","titulo":"Researcher Pan Shuheng receives prestigious APS measurement science award","resumo":"Chinese researcher Pan Shuheng was awarded the highest measurement science prize granted by the American Physical Society. The honor recognizes his fundamental contributions to the development of high-precision physical instruments and advanced microscopy. The award reaffirms the prominent role of the Chinese scientific community in contemporary experimental physics.","link":"https://www.cas.cn/cm/202611/t20261120_5124715.shtml","categoria":"SCIENCE","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
