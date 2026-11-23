@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-cPt3ICpZ8NYIRwoLHajwCkF1'; script-src 'nonce-cPt3ICpZ8NYIRwoLHajwCkF1'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="cPt3ICpZ8NYIRwoLHajwCkF1">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">23/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="cPt3ICpZ8NYIRwoLHajwCkF1">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Portal NE9","pais":"Brasil","titulo":"Piauiense de 17 anos cria startup para desenvolver tecnologia de cultivo de alimentos no espaço","resumo":"Um jovem piauiense de apenas 17 anos fundou uma startup inovadora focada na produção sustentável de alimentos para missões espaciais de longa duração. A iniciativa combina biotecnologia e engenharia para superar os desafios do cultivo em ambientes de gravidade reduzida. Esse avanço posiciona o ecossistema brasileiro de inovação em destaque na área de tecnologia aeroespacial e segurança alimentar global.","link":"https://ne9.com.br/jovem-piauiense-startup-cultivar-alimentos-espaco/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Unmanned Systems Technology","pais":"Estados Unidos","titulo":"Apellix utiliza drone para realizar limpeza de contratorpedeiro da Marinha dos EUA","resumo":"A empresa Apellix demonstrou o uso inovador de tecnologia de drones autônomos para realizar a limpeza e manutenção de embarcações militares da Marinha americana. A operação automatizada reduz os riscos operacionais para trabalhadores humanos em tarefas de alta periculosidade. Além disso, a iniciativa otimiza significativamente o tempo e os custos logísticos de manutenção naval.","link":"https://www.unmannedsystemstechnology.com/video/apellix-cleans-navy-destroyer-with-a-drone/","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"RFI","pais":"França","titulo":"Clima: captura de CO2 é uma tecnologia dispendiosa que custa a se expandir","resumo":"A captura e armazenamento de carbono surge como uma das apostas para mitigar as emissões globais de gases de efeito estufa. No entanto, o alto custo financeiro e a complexidade técnica têm desacelerado a implementação dessa tecnologia em larga escala. Especialistas alertam que, sem subsídios significativos e avanços na eficiência, o recurso poderá não atingir seu potencial a tempo de cumprir as metas climáticas.","link":"https://www.rfi.fr/fr/environnement/20261123-climat-le-captage-du-co2-une-technologie-on%C3%A9reuse-qui-peine-%C3%A0-se-d%C3%A9ployer","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Kalkine","pais":"Inglaterra","titulo":"Acusensus mantém tecnologia de segurança no trânsito em foco após relatório do ano fiscal de 2026","resumo":"A Acusensus continua avançando na implementação de suas tecnologias patenteadas para monitoramento e segurança nas estradas globais. Com o encerramento do relatório do ano fiscal, a empresa destaca o crescimento do uso de inteligência artificial para detectar infrações de trânsito em tempo real. A expansão reforça o compromisso de reduzir fatalidades e modernizar a gestão do tráfego rodoviário internacional.","link":"https://kalkine.com.au/news/industrials/acusensus-asxace-keeps-road-safety-technology-in-focus-following-fy26-reporting","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Diario de León","pais":"Espanha","titulo":"Oncologia e Cardiologia impulsionam a ciência no Hospital de León com 80 estudos ativos","resumo":"O Hospital de León se consolida como um centro de referência em pesquisa médica, com 80 ensaios clínicos em andamento liderados pelas áreas de Oncologia e Cardiologia. Essa intensa atividade científica busca trazer tratamentos inovadores diretamente para a prática clínica e melhorar a qualidade de vida dos pacientes. O investimento contínuo fortalece a infraestrutura regional e atrai novos talentos da medicina.","link":"https://www.diariodeleon.es/leon/261123/2103943/onco-cardiologia-tiran-ciencia-hospital-80-estudios-activos.html","categoria":"CIÊNCIA E SAÚDE","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Duas novas espécies de tardígrados são descobertas","resumo":"Pesquisadores anunciaram a descoberta de duas novas espécies de tardígrados, micro-organismos conhecidos por sua extrema capacidade de sobrevivência em ambientes hostis. A pesquisa aprofunda o conhecimento sobre a biodiversidade aquática e terrestre dessas criaturas fascinantes. Os achados abrem novas oportunidades para estudos em biotecnologia e resistência biológica a condições extremas. A descoberta reforça a relevância da investigação taxonômica na biologia moderna.","link":"https://wissenschaft.de/artikel/zwei-neue-baertierchen-arten-entdeckt","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"JRA anuncia dados inéditos de tempo de volta e serviço de vídeo pioneiro na Japan Cup","resumo":"A Associação Japonesa de Corridas (JRA) anunciou o lançamento de um serviço de transmissão inédito no mundo para a tradicional corrida Japan Cup. A tecnologia permitirá acompanhar em tempo real os dados de velocidade e tempo de cada cavalo durante a prova através de sensores avançados. Essa inovação busca transformar a experiência dos espectadores e modernizar a análise de desempenho no esporte equestre.","link":"https://news.yahoo.co.jp/articles/a2fe5bcb8cfd61cfa50e2f171ff592c37d97ce7c","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Retail Technology Innovation Hub","pais":"China","titulo":"Startup de IA fundada por ex-executivo da Alibaba capta investimento para conectar varejistas a fábricas na China","resumo":"A startup de inteligência artificial Everful, fundada por um ex-executivo da Alibaba, captou novos recursos para otimizar a cadeia de suprimentos global. A plataforma utiliza algoritmos avançados para intermediar e automatizar a comunicação direta entre varejistas internacionais e indústrias chinesas. Essa iniciativa busca reduzir custos operacionais e acelerar a produção em escala, impactando o comércio eletrônico global.","link":"https://retailtechinnovationhub.com/home/2026/11/23/former-alibaba-execs-ai-powered-startup-everful-bags-funding-to-connect-retailers-with-chinese-factories","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The 420.in","pais":"Índia","titulo":"A Tecnologia Aberta ou Restrições Moldarão o Futuro da IA? Yann LeCun Critica Postura de Amodei","resumo":"O debate sobre o futuro do desenvolvimento de inteligência artificial esquentou após declarações polêmicas entre líderes do setor. Yann LeCun criticou duramente a visão defensora de restrições rígidas no acesso a modelos avançados de IA. A discussão levanta questões fundamentais sobre segurança, inovação aberta e o controle corporativo da tecnologia. O desfecho dessa disputa pode definir o rumo da regulamentação tecnológica global nos próximos anos.","link":"https://the420.in/will-open-technology-or-restrictions-shape-the-future-of-ai-yann-lecun-calls-out-amodeis-stance-as-medieval/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Público","pais":"Portugal","titulo":"Ciberataques e falhas técnicas: estamos excessivamente dependentes da tecnologia?","resumo":"O aumento de ciberataques e falhas técnicas globais acende o alerta sobre a vulnerabilidade da sociedade moderna. O episódio discute a crescente dependência das infraestruturas digitais em setores vitais do cotidiano. Especialistas analisam como mitigar riscos e fortalecer a resiliência dos sistemas frente a apagões tecnológicos. O debate reforça a urgência de planejar alternativas seguras para emergências no mundo conectado.","link":"https://www.publico.pt/2026/11/23/enter/podcast/ciberataques-falhas-tecnicas-demasiado-dependentes-tecnologia-2195779","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"R7","pais":"Brasil","titulo":"Brasil recebe testes de nova tecnologia biológica contra o greening","resumo":"O Brasil iniciou os testes de uma solução biológica promissora destinada a combater o greening, a doença mais destrutiva da citricultura mundial. A tecnologia visa neutralizar a bactéria causadora de forma sustentável, reduzindo a dependência de defensivos químicos tradicionais. A inovação pode proteger a produção nacional de laranjas e garantir a liderança global do país nas exportações do setor.","link":"https://noticias.r7.com/prisma/mundo-agro/brasil-recebe-testes-de-nova-tecnologia-biologica-contra-o-greening-23112026/","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Live Science","pais":"Estados Unidos","titulo":"Erupção vulcânica 'impossível' na Fossa das Marianas deixa cientistas perplexos","resumo":"Pesquisadores registraram uma atividade vulcânica inesperada na região de Challenger Deep, o ponto mais profundo conhecido nos oceanos da Terra. O fenômeno desafia os modelos geológicos atuais sobre as pressões extremas e o comportamento do magma em grandes profundidades marinhas. A descoberta abre novas fronteiras para a compreensão da atividade tectônica do planeta.","link":"https://www.livescience.com/planet-earth/impossible-volcanic-eruption-spotted-in-deepest-part-of-the-ocean-perplexing-scientists","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Science et vie","pais":"França","titulo":"Mulher de 34 anos desenvolve câncer de pele agressivo devido a vírus comum, em inédito médico","resumo":"Um caso inédito na medicina acendeu o alerta sobre as complicações raras decorrentes de infecções virais comuns após uma paciente desenvolver um tipo agressivo de câncer de pele. Médicos e pesquisadores identificaram a relação direta entre o vírus frequente e a proliferação celular maligna. A descoberta abre novos caminhos para entender a oncogênese viral e reforça a importância do acompanhamento dermatológico.","link":"https://www.science-et-vie.com/corps-et-sante/cancer/une-femme-de-34-ans-a-developpe-un-cancer-de-la-peau-agressif-a-cause-dun-virus-commun-une-premiere-207925.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Financial Times","pais":"Inglaterra","titulo":"O problema com a economia circular da inteligência artificial","resumo":"A ascensão da inteligência artificial criou um ecossistema financeiro onde grandes empresas de tecnologia investem massivamente umas nas outras para sustentar valorações elevadas. Essa dinâmica de economia circular levanta preocupações sobre a sustentabilidade real do setor e o risco de bolhas financeiras. Especialistas alertam que a falta de receita direta em escala pode comprometer o futuro do desenvolvimento tecnológico.","link":"https://www.ft.com/content/e49add11-3cc8-4edd-8daa-db8daaf994dd?syn-25a6b1a6=1","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"Faro de Vigo","pais":"Espanha","titulo":"Terremoto na ciência: resolvem com IA um dos maiores desafios matemáticos","resumo":"Pesquisadores alcançaram um marco histórico ao utilizar inteligência artificial para solucionar um problema matemático complexo que intrigava cientistas há décadas. A aplicação da IA demonstra como algoritmos avançados podem acelerar descobertas fundamentais e transformar a investigação científica. A conquista abre caminho para novas metodologias de pesquisa em matemática pura e computação.","link":"https://www.farodevigo.es/sociedad/2026/11/22/terremoto-ciencia-resuelven-ia-mayores-136727734.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Euronews.com","pais":"Alemanha","titulo":"Alemanha testa drones kamikaze e tecnologia com IA na Lituânia","resumo":"A Alemanha iniciou testes com drones kamikaze equipados com inteligência artificial para identificação e engajamento de alvos na Lituânia. A tecnologia visa aprimorar a precisão tática e automatizar decisões estratégicas no campo de batalha moderno. A iniciativa faz parte do plano de modernização militar e fortalecimento do flanco leste da OTAN. A integração de IA em sistemas de defesa levanta debates sobre segurança e eficácia operacional.","link":"https://pt.euronews.com/2026/11/22/alemanha-testa-drones-kamikaze-e-tecnologia-de-alvo-com-inteligencia-artificial-na-lituani","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"R7","pais":"Japão","titulo":"Entenda a escassez de lixeiras públicas no Japão e como a tecnologia pode ajudar","resumo":"A falta de lixeiras públicas nas cidades japonesas é um desafio histórico relacionado a medidas de segurança adotadas na década de 1990. Para conter o acúmulo desordenado de resíduos, soluções tecnológicas modernas como lixeiras inteligentes com compactadores e sensores IoT vêm sendo testadas no país. Essas inovações prometem otimizar a coleta e manter as ruas limpas sem comprometer a segurança urbana.","link":"https://noticias.r7.com/internacional/entenda-a-escassez-de-lixeiras-publicas-no-japao-e-como-a-tecnologia-pode-ajudar-23112026/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"对外经济贸易大学新闻网","pais":"China","titulo":"Comitiva liderada por Wu Weixing realiza visita técnica à gigante de IA iFlytek","resumo":"Uma comitiva oficial liderada por Wu Weixing realizou uma visita de pesquisa às instalações da iFlytek, destaque em inteligência artificial e reconhecimento de voz. O encontro teve como foco discutir avanços no desenvolvimento de modelos de linguagem e soluções tecnológicas avançadas. A iniciativa fortalece a integração entre instituições de pesquisa e o ecossistema chinês de inovação.","link":"https://news.uibe.edu.cn/info/1608/147908.htm","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Moneycontrol.com","pais":"Índia","titulo":"Ex-Aluno do IIT Delhi Afirma que Apple Copiou Tecnologia de Sua Startup e Pede Indenização Bilionária","resumo":"Um empreendedor indiano formado no prestigiado IIT Delhi abriu um processo alegando violação de propriedade intelectual contra a Apple. Ele afirma que a gigante de tecnologia copiou a solução de compartilhamento de contatos desenvolvida por sua startup. A disputa judicial exige uma indenização bilionária e coloca em destaque a proteção de patentes de inovadores indianos no cenário global. Caso avance, o processo pode gerar forte impacto nas operações da Apple no mercado indiano.","link":"https://www.moneycontrol.com/news/trends/iit-delhi-alumnus-claims-apple-copied-his-startup-s-contact-sharing-technology-seeks-rs-1-500-crore-in-damages-14086908.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Euronews.com","pais":"Portugal","titulo":"Estados Unidos: ações de tecnologia voltam a cair com forte baixa em Wall Street","resumo":"As ações das principais empresas de tecnologia enfrentam um novo ciclo de queda nos mercados norte-americanos. O movimento reflete a apreensão dos investidores diante do cenário econômico global e da alta nos juros. Wall Street registra perdas expressivas nas grandes empresas do setor de inovação e softwares. Analistas preveem volatilidade contínua enquanto as corporações buscam reestruturar seus custos operacionais.","link":"https://pt.euronews.com/2026/11/23/estados-unidos-tecnologia-continua-a-cair-com-derrocada-em-wall-street","categoria":"MERCADO DIGITAL","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Cientista-chefe da OpenAI propõe desaceleração no desenvolvimento de IAs avançadas até garantir controle","resumo":"O cientista-chefe da OpenAI defendeu publicamente uma pausa no avanço dos modelos de inteligência artificial mais potentes até que mecanismos de alinhamento e segurança sejam totalmente desenvolvidos. A declaração reflete uma crescente preocupação ética com os riscos de sistemas autônomos fora de controle. O posicionamento deve impulsionar novos debates regulatórios e diretrizes de governança em nível global.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/22/cientista-chefe-da-openai-propoe-que-empresas-freiem-a-criacao-de-ias-mais-poderosas-ate-que-seja-possivel-controla-las.ghtml","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"Tecnologia de laser de alta precisão é aplicada em pesquisas no topo do mundo","resumo":"Cientistas implantaram sistemas avançados de varredura a laser em regiões de altitude extrema para monitorar mudanças ambientais e estruturais. A tecnologia permite a coleta de dados topográficos com nível de detalhamento inédito em condições climáticas severas. O avanço representa um salto qualitativo para estudos climáticos e mapeamento geográfico global.","link":"https://science.nasa.gov/earth/earth-observatory/laser-focus-at-the-top-of-the-world/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Presse Agence","pais":"França","titulo":"Paris: Cosméticos - A nova onda antienvelhecimento aposta na ciência e em ativos de ponta","resumo":"A indústria da beleza em Paris está passando por uma revolução impulsionada por avanços científicos e biotecnologia aplicada a cosméticos. Novas fórmulas antienvelhecimento utilizam ingredientes ativos de ponta capazes de atuar diretamente na regeneração celular e na proteção da pele. Essa sinergia entre ciência dermatológica e inovação atrai a atenção do mercado e consolida uma nova tendência global.","link":"https://presseagence.fr/paris-cosmetique-la-nouvelle-vague-anti-age-mise-sur-la-science-et-les-actifs-de-pointe/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"CEO de agência de financiamento científico do Reino Unido é criticado por sindicato devido a cortes","resumo":"A liderança da agência de fomento à ciência e pesquisa do Reino Unido enfrenta forte pressão do sindicato dos trabalhadores após o anúncio de reduções orçamentárias. A medida gerou receio sobre a demissão de pesquisadores e o cancelamento de projetos estratégicos de inovação no país. Entidades do setor alertam que os cortes podem enfraquecer a competitividade científica britânica nos próximos anos.","link":"https://www.theguardian.com/education/2026/nov/22/prospect-union-leader-uk-funding-agency-science-research-ukri","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Diario AS","pais":"Espanha","titulo":"A ciência confirma: estes são os dois momentos em que os humanos envelhecem mais rápido","resumo":"Um estudo científico revelou que o envelhecimento humano não ocorre de forma linear, mas apresenta picos acentuados em duas fases específicas da vida: aos 44 e aos 60 anos. Durante esses períodos, ocorrem alterações drásticas em milhares de moléculas e microorganismos no corpo. A descoberta promete revolucionar a medicina preventiva e a compreensão dos processos biológicos.","link":"https://as.com/actualidad/ciencia/la-ciencia-lo-confirma-estos-son-los-dos-momentos-en-los-que-los-humanos-envejecemos-mas-rapido-f202611-n/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"TradingView","pais":"Alemanha","titulo":"Montadoras alemãs enfrentam risco de paralisações por conflitos sindicais","resumo":"O setor automotivo alemão enfrenta tensões crescentes com sindicatos, que ameaçam realizar greves durante a temporada de inverno. As reivindicações envolvem aumentos salariais e a preservação de postos de trabalho em meio à transição para carros elétricos. A instabilidade ocorre em um momento crítico para a competitividade das fabricantes na Europa. O impacto potencial pode afetar severamente a produção e as cadeias de suprimento regionais.","link":"https://es.tradingview.com/news/reuters.com,2026:newsml_L5N474054:0/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Forbes JAPAN","pais":"Japão","titulo":"Startup MetAI usa tecnologia de gêmeo digital para replicar megafábrica da TSMC em minutos","resumo":"A startup taiwanesa MetAI desenvolveu uma solução baseada em gêmeos digitais capaz de simular a infraestrutura de instalações complexas, como a fábrica da TSMC, em questão de minutos. Essa inovação acelera drasticamente o planejamento industrial e o teste de processos sem interromper a produção física real. A aplicação dessa tecnologia no setor de semicondutores promete aumentar significativamente a eficiência operacional da indústria avançada.","link":"https://forbesjapan.com/articles/detail/108009","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"经济参考报","pais":"China","titulo":"Turing Quantum inaugura centro avançado de empacotamento e testes de semicondutores","resumo":"A Turing Quantum anunciou o início das operações de seu novo centro voltado ao empacotamento e teste avançado de chips quânticos. A infraestrutura representa um salto significativo para a capacidade fabril e de validação de hardware de alta performance na China. O avanço contribui para a autonomia tecnológica do país na corrida da computação de última geração.","link":"https://www.jjckb.cn/20261123/4955163630304079afeea9de88c61b7f/c.html","categoria":"COMPUTAÇÃO QUÂNTICA","lang":"pt"},{"fonte":"CXOToday.com","pais":"Índia","titulo":"L\u0026T Technology Services Lança SDVault.ai para Trazer Inteligência a Veículos Definidos por Software","resumo":"A L\u0026T Technology Services anunciou o lançamento da plataforma SDVault.ai para transformar a engenharia automotiva moderna. A ferramenta visa otimizar o ciclo de desenvolvimento de veículos definidos por software utilizando inteligência artificial. Com essa inovação, a empresa busca acelerar testes, validações e a segurança em veículos de última geração. A novidade posiciona a indústria indiana na vanguarda da mobilidade autônoma e conectada.","link":"https://cxotoday.com/media-coverage/lt-technology-services-launches-sdvault-ai-to-bring-engineering-intelligence-to-the-software-defined-vehicle-v-cycle/","categoria":"INOVAÇÃO TECNOLÓGICA","lang":"pt"},{"fonte":"Campeão das Províncias","pais":"Portugal","titulo":"Universidade de Coimbra abre as portas à ciência com atividades em seis escolas","resumo":"A Universidade de Coimbra promove uma semana dedicada à divulgação científica e ao envolvimento comunitário. Diversas atividades práticas e palestras interativas acontecem simultaneamente em seis faculdades da instituição. O objetivo é aproximar estudantes e a população dos avanços da pesquisa acadêmica moderna. A iniciativa busca incentivar novas vocações científicas e desmistificar temas complexos de forma acessível.","link":"https://www.campeaoprovincias.pt/2026/11/22/upcoimbra-abre-as-portas-a-ciencia-com-actividades-nas-seis-escolas/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Inteligência Artificial pode substituir planilhas no controle das finanças pessoais e empresariais","resumo":"Novas ferramentas baseadas em inteligência artificial estão transformando a gestão financeira ao automatizar a análise de dados e dispensar as tradicionais planilhas. A tecnologia permite prever cenários, categorizar despesas automaticamente e oferecer orientações estratégicas em tempo real. A mudança promete otimizar o planejamento de empresas e consumidores, aumentando a eficiência no setor financeiro.","link":"https://www1.folha.uol.com.br/mercado/2026/11/ia-pode-aposentar-planilhas-no-controle-das-financas-veja-o-que-ja-existe.shtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The New York Times","pais":"Estados Unidos","titulo":"EUA monitoraram contatos entre executiva e espionagem chinesa no caso Nvidia","resumo":"Investigações federais revelaram que autoridades americanas rastrearam comunicações sigilosas entre Alice Huang e agentes de inteligência da China. O caso traz à tona graves preocupações sobre segurança nacional e espionagem industrial no setor de semicondutores. A situação intensifica as tensões geopolíticas no mercado global de alta tecnologia.","link":"https://www.nytimes.com/2026/11/22/us/politics/alice-huang-china-spy-agency-nvidia.html","categoria":"SEGURANÇA","lang":"pt"},{"fonte":"BBC","pais":"Inglaterra","titulo":"A IA pode detectar o câncer de mama mais cedo? NHS lança o maior teste do mundo para descobrir","resumo":"O Serviço Nacional de Saúde do Reino Unido deu início ao maior estudo clínico do mundo para avaliar o uso de inteligência artificial no diagnóstico precoce do câncer de mama. A iniciativa busca analisar milhares de mamografias para identificar tumores em estágios iniciais com maior precisão e rapidez. Se bem-sucedido, o projeto pode transformar o rastreamento oncologicamente preventivo na medicina pública.","link":"https://www.bbc.com/news/articles/cmpdwnw3nvzjo","categoria":"SAÚDE E TECNOLOGIA","lang":"pt"},{"fonte":"OkDiario","pais":"Espanha","titulo":"Indra Group converte inteligência artificial e tecnologia civil em novas capacidades para a defesa","resumo":"O Indra Group está transformando avanços de inteligência artificial e tecnologias do setor civil em soluções estratégicas para a área de defesa. A iniciativa visa fortalecer a autonomia tecnológica europeia diante dos novos desafios geopolíticos globais. Essa convergência entre tecnologias civis e militares redefine a inovação no setor de segurança.","link":"https://okdiario.com/economia/empresas/indra-group-convierte-inteligencia-artificial-tecnologia-civil-nuevas-capacidades-defensa-espanola-21235766","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Spiegel","pais":"Alemanha","titulo":"Opinião: A economia alemã ganha impulso com boas notícias na semana","resumo":"Análises recentes indicam que a economia da Alemanha pode estar recuperando o ritmo de crescimento após um período de estagnação. Dados de produção industrial e confiança dos empresários mostraram sinais positivos na última semana. Especialistas avaliam que medidas de incentivo e estabilização de custos de energia começam a surtir efeito. A trajetória ascendente traz otimismo renovado para os mercados financeiros e o setor produtivo.","link":"https://www.spiegel.de/ausland/wirtschaft-in-deutschland-aufschwung-und-mehr-geld-fuer-start-ups-nur-gute-nachrichten-a-27f5a596-3d36-450b-95d3-265ed3df0285","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Jornal Económico","pais":"Japão","titulo":"Dados econômicos da China e do Japão decepcionam e evidenciam fraqueza no consumo interno","resumo":"Relatórios recentes sobre as economias do Japão e da China indicam uma desaceleração preocupante na recuperação pós-pandemia. O enfraquecimento do consumo interno em ambos os países pressiona os governos a buscar novas medidas de estímulo financeiro. Esse cenário de incerteza gera apreensão no mercado global, afetando projeções de crescimento para todo o continente asiático.","link":"https://jornaleconomico.sapo.pt/noticias/dados-da-china-e-japao-desiludem-e-mostram-fragilidade-no-consumo-interno-de-ambos/","categoria":"ECONOMIA","lang":"pt"},{"fonte":"Plataforma Media","pais":"China","titulo":"Macau busca conectar empresas de saúde dos países lusófonos ao mercado da China","resumo":"O governo de Macau intensificou esforços para atuar como ponte comercial entre empresas do setor de saúde dos países de língua portuguesa e o mercado chinês. A iniciativa pretende simplificar processos regulatórios e incentivar parcerias estratégicas em biotecnologia e medicina. A medida promete impulsionar o comércio bilateral e expandir a inovação em saúde na região.","link":"https://www.plataformamedia.com/2026/11/23/macau-quer-ajudar-empresas-lusofonas-da-saude-a-explorar-mercado-chines/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"CNBC TV18","pais":"Índia","titulo":"Controladora da Kissht Projeta Crescimento de 60% em Ativos sob Gestão e Menores Custos de Crédito","resumo":"A empresa indiana de tecnologia financeira OnEMI Technology estabeleceu metas ambiciosas para impulsionar seu volume de crédito nos próximos trimestres. A companhia aposta na eficiência de algoritmos de concessão para reduzir custos de crédito e inadimplência. O movimento reflete o forte aquecimento do setor de fintechs no mercado consumidor da Índia. Especialistas acompanham a expansão como indicador da penetração do crédito digital no país.","link":"https://www.cnbctv18.com/business/companies/kissht-onemi-technology-aum-growth-credit-costs-alpha-article-20039583.htm/amp","categoria":"FINTECH","lang":"pt"},{"fonte":"oRegiões","pais":"Portugal","titulo":"Papa alerta para enormes riscos da tecnologia sem ética e defende o uso pacífico do espaço","resumo":"O pontífice fez um apelo global destacando a importância da responsabilidade moral no avanço tecnológico. Ele alertou sobre os perigos da inteligência artificial descontrolada e do avanço militar no ambiente espacial. O discurso enfatiza a necessidade de tratados internacionais que garantam o uso pacífico do cosmos. A liderança religiosa ressaltou que a inovação só cumpre seu papel quando serve ao bem-estar da humanidade.","link":"https://oregioes.pt/papa-leao-xiv-alerta-para-riscos-enormes-se-tecnologia-nao-for-regida-pela-etica-e-defende-uso-pacifico-do-espaco/","categoria":"ÉTICA DIGITAL","lang":"pt"},{"fonte":"Rádio Pampa","pais":"Brasil","titulo":"Apple é investigada no Brasil por restrições ao acesso de terceiros à tecnologia NFC nos iPhones","resumo":"As autoridades regulatórias brasileiras abriram uma investigação contra a Apple por suposta conduta anticompetitiva ao limitar o uso do chip NFC nos iPhones apenas ao Apple Pay. A prática pode prejudicar fintechs e bancos locais que buscam oferecer suas próprias soluções de pagamento por aproximação. O desfecho do processo poderá forçar mudanças nas políticas de ecossistema fechado da gigante de tecnologia no país.","link":"https://www.radiopampa.com.br/apple-e-investigada-no-brasil-por-restricoes-ao-acesso-de-terceiros-a-tecnologia-de-pagamento-por-aproximacao-nos-iphones/","categoria":"REGULAÇÃO","lang":"pt"},{"fonte":"Bloomberg.com","pais":"Estados Unidos","titulo":"Restrições de Trump a chips de IA provocam impacto colateral no mercado asiático","resumo":"As novas medidas rigorosas impostas pelos Estados Unidos para limitar a exportação de microchips de inteligência artificial geraram fortes perturbações na cadeia de suprimentos da Ásia. Empresas de tecnologia da região enfrentam incertezas operacionais e custos crescentes devido às limitações comerciais. O cenário reacende o debate sobre o protecionismo tecnológico global.","link":"https://www.bloomberg.com/news/features/2026-11-22/trump-s-ai-chip-crackdown-on-china-after-nvidia-crisis-squeezes-southeast-asia","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Comunidad de Madrid |","pais":"Espanha","titulo":"Genética, tecnologia e saúde: a pesquisa do Hospital 12 de Octubre por dentro","resumo":"Uma visão aprofundada do Hospital 12 de Octubre revela como a união entre genética e tecnologia está impulsionando a medicina de precisão. O centro hospitalar utiliza ferramentas avançadas para acelerar diagnósticos e desenvolver terapias personalizadas para doenças complexas. Essa abordagem multidisciplinar consolida o hospital como uma referência em inovação em saúde na Espanha.","link":"https://www.comunidad.madrid/actividades/2026/genetica-tecnologia-salud-investigacion-hospital-12-octubre-dentro","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Japão","titulo":"Sonda espacial conjunta da Europa e do Japão entra na órbita de Mercúrio","resumo":"A missão espacial BepiColombo, desenvolvida em parceria entre as agências espaciais da Europa e do Japão, alcançou com sucesso a órbita de Mercúrio. A sonda realizará análises detalhadas da composição, campo magnético e estrutura do planeta mais próximo do Sol. Essa conquista científica representa um marco histórico para a exploração espacial e para a compreensão da formação do sistema solar.","link":"https://www1.folha.uol.com.br/ciencia/2026/11/sonda-conjunta-da-europa-e-do-japao-entrou-na-orbita-de-mercurio.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"China","titulo":"Espionagem chinesa foca em burlar restrições dos EUA para obter chips avançados de IA","resumo":"Sob o governo de Xi Jinping, ações de inteligência têm focado em contornar as sanções de exportação aplicadas pelos Estados Unidos sobre semicondutores avançados. De acordo com o New York Times, o objetivo é garantir suprimento de hardware essencial para o avanço de algoritmos de inteligência artificial. O cenário intensifica a disputa pela supremacia tecnológica e militar global.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/22/sob-xi-jinping-driblar-restricoes-dos-eua-para-obter-chips-avancados-de-ia-vira-prioridade-da-espionagem-chinesa-revela-nyt.ghtml","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"Business Standard","pais":"Índia","titulo":"PMI Composto Preliminar da Índia Sobe para 56,3 em Novembro Impulsionado pela Manufatura","resumo":"O índice gerente de compras (PMI) da Índia registrou forte expansão no mês de novembro, impulsionado pelo setor fabril e serviços. Os dados refletem a resiliência econômica do país diante do cenário de volatilidade no mercado internacional. O aumento na produção industrial demonstra maior demanda e investimentos contínuos em capacidade produtiva. O desempenho reforça a posição da Índia como um dos motores de crescimento global na Ásia.","link":"https://www.business-standard.com/economy/news/india-flash-pmi-november-2026-manufacturing-services-private-sector-growth-126112300257_1.html","categoria":"ECONOMIA","lang":"pt"},{"fonte":"RTP","pais":"Portugal","titulo":"Enter - Tecnologia Para Todos: destaques da edição de 22 de novembro","resumo":"A nova edição do programa apresenta as principais tendências e ferramentas focadas na inclusão digital. O conteúdo aborda soluções tecnológicas acessíveis desenvolvidas para otimizar a rotina de diversos públicos. Especialistas convidados discutem o impacto da automação no dia a dia e no mercado de trabalho. A atração reforça como a democratização da tecnologia pode transformar positivamente a sociedade.","link":"https://www.rtp.pt/play/p16977/e969316/enter-tecnologia-para-todos","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"PlatôBR","pais":"Brasil","titulo":"Setor de tecnologia cobra agenda governamental para segurança digital após onda de ciberataques","resumo":"Diante do recente aumento de ataques cibernéticos contra instituições públicas e privadas no Brasil, líderes da indústria de tecnologia cobram ações concretas do governo federal. As reivindicações incluem a criação de políticas nacionais de cibersegurança mais rigorosas e incentivos para a infraestrutura digital. A mobilização busca fortalecer a resiliência estratégica do país contra ameaças virtuais crescentes.","link":"https://platobr.com.br/apos-ciberataques-setor-de-tecnologia-cobra-agenda-de-lula-para-seguranca-digital","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"UOL Economia","pais":"Estados Unidos","titulo":"Fortuna dos fundadores da Anthropic atinge US$ 141 bilhões após IPO","resumo":"A estreia da Anthropic no mercado de ações impulsionou o patrimônio conjunto de seus sete fundadores a patamares históricos. O resultado reflete o forte otimismo dos investidores no setor de inteligência artificial generativa. A valorização consolida a empresa como uma das principais concorrentes na corrida pelo domínio tecnológico.","link":"https://economia.uol.com.br/noticias/redacao/2026/11/22/sete-fundadores-de-empresa-de-ia-somam-us-141-bi-menos-que-musk.ghtm","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Jornal Económico","pais":"China","titulo":"Indicadores econômicos da China e do Japão apontam fraqueza no consumo interno","resumo":"Novos relatórios econômicos divulgados pela China e pelo Japão revelaram uma desaceleração preocupante na demanda dos consumidores locais. Os dados desapontaram analistas e evidenciam os desafios enfrentados pelas duas maiores economias da Ásia para sustentar a recuperação econômica. O resultado pressiona governos a adotarem novas medidas de estímulo financeiro.","link":"https://jornaleconomico.sapo.pt/noticias/dados-da-china-e-japao-desiludem-e-mostram-fragilidade-no-consumo-interno-de-ambos/","categoria":"ECONOMIA","lang":"pt"},{"fonte":"DD India","pais":"Índia","titulo":"Mesa-Redonda do Festival de Cinema do BRICS Explora Coprodução e Troca Tecnológica no 57º IFFI","resumo":"Durante o 57º IFFI, representantes dos países do BRICS reuniram-se para debater parcerias na indústria audiovisual e transmissão de conhecimento. O encontro destacou o papel de novas tecnologias na distribuição global de conteúdos e produção de efeitos visuais. A iniciativa busca fortalecer a cooperação internacional entre mercados emergentes de cinema. O intercâmbio promete impulsionar novas soluções tecnológicas aplicadas ao entretenimento e mídias digitais.","link":"https://ddindia.co.in/2026/11/brics-film-festival-roundtable-explores-opportunities-in-co-production-distribution-and-technology-exchange-at-57th-iffi/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Portal NE9","pais":"Brazil","titulo":"17-year-old from Piauí creates startup to develop food cultivation technology in space","resumo":"A 17-year-old from Piauí has founded an innovative startup focused on the sustainable production of food for long-duration space missions. The initiative combines biotechnology and engineering to overcome the challenges of cultivation in reduced-gravity environments. This advancement places the Brazilian innovation ecosystem in the spotlight regarding aerospace technology and global food security.","link":"https://ne9.com.br/jovem-piauiense-startup-cultivar-alimentos-espaco/","categoria":"SCIENCE","lang":"en"},{"fonte":"Unmanned Systems Technology","pais":"United States","titulo":"Apellix uses drone to clean US Navy destroyer","resumo":"Apellix demonstrated the innovative use of autonomous drone technology to perform cleaning and maintenance on US Navy military vessels. The automated operation reduces operational risks for human workers in high-hazard tasks. Furthermore, the initiative significantly optimizes maintenance time and logistical costs for the navy.","link":"https://www.unmannedsystemstechnology.com/video/apellix-cleans-navy-destroyer-with-a-drone/","categoria":"ROBOTICS","lang":"en"},{"fonte":"RFI","pais":"France","titulo":"Climate: CO2 capture is a costly technology that struggles to expand","resumo":"Carbon capture and storage is emerging as one of the strategies to mitigate global greenhouse gas emissions. However, the high financial cost and technical complexity have slowed the implementation of this technology on a large scale. Experts warn that without significant subsidies and efficiency improvements, the resource may fail to reach its potential in time to meet climate targets.","link":"https://www.rfi.fr/fr/environnement/20261123-climat-le-captage-du-co2-une-technologie-on%C3%A9reuse-qui-peine-%C3%A0-se-d%C3%A9ployer","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Kalkine","pais":"England","titulo":"Acusensus keeps road safety technology in focus following FY 2026 report","resumo":"Acusensus continues to advance in the implementation of its patented technologies for global road monitoring and safety. With the close of the fiscal year report, the company highlights the growth of artificial intelligence usage to detect traffic violations in real time. This expansion reinforces its commitment to reducing fatalities and modernizing international road traffic management.","link":"https://kalkine.com.au/news/industrials/acusensus-asxace-keeps-road-safety-technology-in-focus-following-fy26-reporting","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Diario de León","pais":"Spain","titulo":"Oncology and Cardiology drive science at Hospital de León with 80 active studies","resumo":"The Hospital de León is solidifying its position as a reference center for medical research, with 80 ongoing clinical trials led by Oncology and Cardiology departments. This intense scientific activity seeks to bring innovative treatments directly into clinical practice and improve patients' quality of life. Ongoing investment strengthens regional infrastructure and attracts new medical talent.","link":"https://www.diariodeleon.es/leon/261123/2103943/onco-cardiologia-tiran-ciencia-hospital-80-estudios-activos.html","categoria":"SCIENCE AND HEALTH","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"Two new tardigrade species discovered","resumo":"Researchers have announced the discovery of two new species of tardigrades, micro-organisms known for their extreme survival capacity in hostile environments. The research deepens knowledge regarding the aquatic and terrestrial biodiversity of these fascinating creatures. The findings open new opportunities for studies in biotechnology and biological resistance to extreme conditions. The discovery reinforces the relevance of taxonomic investigation in modern biology.","link":"https://wissenschaft.de/artikel/zwei-neue-baertierchen-arten-entdeckt","categoria":"SCIENCE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"JRA announces unprecedented lap time data and pioneering video service at the Japan Cup","resumo":"The Japan Racing Association (JRA) has announced the launch of a world-first broadcasting service for the traditional Japan Cup race. The technology will allow viewers to track each horse's speed and time data in real time during the race using advanced sensors. This innovation aims to transform the spectator experience and modernize performance analysis in equestrian sports.","link":"https://news.yahoo.co.jp/articles/a2fe5bcb8cfd61cfa50e2f171ff592c37d97ce7c","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Retail Technology Innovation Hub","pais":"China","titulo":"AI startup founded by former Alibaba executive secures funding to connect retailers with factories in China","resumo":"Artificial intelligence startup Everful, founded by a former Alibaba executive, has secured new funds to optimize the global supply chain. The platform uses advanced algorithms to intermediate and automate direct communication between international retailers and Chinese manufacturers. This initiative aims to reduce operating costs and accelerate production at scale, impacting global e-commerce.","link":"https://retailtechinnovationhub.com/home/2026/11/23/former-alibaba-execs-ai-powered-startup-everful-bags-funding-to-connect-retailers-with-chinese-factories","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The 420.in","pais":"India","titulo":"Will Open Technology or Restrictions Shape the Future of AI? Yann LeCun Criticizes Amodei's Stance","resumo":"The debate over the future of artificial intelligence development heated up following controversial statements among industry leaders. Yann LeCun sharply criticized the viewpoint advocating for strict restrictions on access to advanced AI models. The discussion raises fundamental questions about security, open innovation, and corporate control of technology. The outcome of this dispute could define the direction of global tech regulation in the coming years.","link":"https://the420.in/will-open-technology-or-restrictions-shape-the-future-of-ai-yann-lecun-calls-out-amodeis-stance-as-medieval/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Público","pais":"Portugal","titulo":"Cyberattacks and technical failures: are we excessively dependent on technology?","resumo":"The rise in cyberattacks and global technical failures raises alarms about modern society's vulnerability. The episode discusses the growing dependence on digital infrastructure in vital everyday sectors. Experts analyze how to mitigate risks and strengthen systems' resilience against technological blackouts. The debate reinforces the urgency of planning safe alternatives for emergencies in a connected world.","link":"https://www.publico.pt/2026/11/23/enter/podcast/ciberataques-falhas-tecnicas-demasiado-dependentes-tecnologia-2195779","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"R7","pais":"Brazil","titulo":"Brazil receives tests for new biological technology against citrus greening","resumo":"Brazil has begun testing a promising biological solution aimed at combating greening, the most destructive disease in global citriculture. The technology aims to neutralize the causative bacterium sustainably, reducing dependence on traditional chemical pesticides. The innovation could protect national orange production and ensure the country's global leadership in sector exports.","link":"https://noticias.r7.com/prisma/mundo-agro/brasil-recebe-testes-de-nova-tecnologia-biologica-contra-o-greening-23112026/","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Live Science","pais":"United States","titulo":"'Impossible' volcanic eruption in the Mariana Trench leaves scientists perplexed","resumo":"Researchers recorded unexpected volcanic activity in the Challenger Deep region, the deepest known point in Earth's oceans. The phenomenon challenges current geological models regarding extreme pressures and magma behavior at great marine depths. The discovery opens new frontiers for understanding the planet's tectonic activity.","link":"https://www.livescience.com/planet-earth/impossible-volcanic-eruption-spotted-in-deepest-part-of-the-ocean-perplexing-scientists","categoria":"SCIENCE","lang":"en"},{"fonte":"Science et vie","pais":"France","titulo":"34-year-old woman develops aggressive skin cancer due to common virus, in medical first","resumo":"An unprecedented medical case raised alarms about rare complications resulting from common viral infections after a patient developed an aggressive type of skin cancer. Doctors and researchers identified a direct link between the frequent virus and malignant cell proliferation. The discovery paves new ways to understand viral oncogenesis and reinforces the importance of dermatological monitoring.","link":"https://www.science-et-vie.com/corps-et-sante/cancer/une-femme-de-34-ans-a-developpe-un-cancer-de-la-peau-agressif-a-cause-dun-virus-commun-une-premiere-207925.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Financial Times","pais":"England","titulo":"The problem with artificial intelligence's circular economy","resumo":"The rise of artificial intelligence has created a financial ecosystem where major tech companies heavily invest in one another to sustain high valuations. This circular economy dynamic raises concerns about the sector's real sustainability and the risk of financial bubbles. Experts warn that a lack of direct revenue at scale could compromise the future of technological development.","link":"https://www.ft.com/content/e49add11-3cc8-4edd-8daa-db8daaf994dd?syn-25a6b1a6=1","categoria":"TRENDS","lang":"en"},{"fonte":"Faro de Vigo","pais":"Spain","titulo":"Earthquake in science: one of the biggest mathematical challenges solved with AI","resumo":"Researchers achieved a historical milestone by using artificial intelligence to solve a complex mathematical problem that had puzzled scientists for decades. The application of AI demonstrates how advanced algorithms can accelerate fundamental discoveries and transform scientific research. The achievement paves the way for new research methodologies in pure mathematics and computing.","link":"https://www.farodevigo.es/sociedad/2026/11/22/terremoto-ciencia-resuelven-ia-mayores-136727734.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Euronews.com","pais":"Germany","titulo":"Germany Tests Kamikaze Drones and AI Technology in Lithuania","resumo":"Germany has begun testing kamikaze drones equipped with artificial intelligence for target identification and engagement in Lithuania. The technology aims to enhance tactical precision and automate strategic decisions on the modern battlefield. The initiative is part of a military modernization plan and strengthens NATO's eastern flank. The integration of AI into defense systems raises debates regarding security and operational efficacy.","link":"https://pt.euronews.com/2026/11/22/alemanha-testa-drones-kamikaze-e-tecnologia-de-alvo-com-inteligencia-artificial-na-lituani","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"R7","pais":"Japan","titulo":"Understanding the Scarcity of Public Trash Cans in Japan and How Technology Can Help","resumo":"The lack of public trash cans in Japanese cities is a historical challenge related to security measures adopted in the 1990s. To contain the disorderly accumulation of waste, modern technological solutions such as smart trash cans with compactors and IoT sensors are being tested in the country. These innovations promise to optimize collection and keep streets clean without compromising urban security.","link":"https://noticias.r7.com/internacional/entenda-a-escassez-de-lixeiras-publicas-no-japao-e-como-a-tecnologia-pode-ajudar-23112026/","categoria":"INNOVATION","lang":"en"},{"fonte":"对外经济贸易大学新闻网","pais":"China","titulo":"Delegation Led by Wu Weixing Conducts Technical Visit to AI Giant iFlytek","resumo":"An official delegation led by Wu Weixing conducted a research visit to the facilities of iFlytek, a leader in artificial intelligence and voice recognition. The meeting focused on discussing advancements in the development of language models and advanced technological solutions. The initiative strengthens the integration between research institutions and the Chinese innovation ecosystem.","link":"https://news.uibe.edu.cn/info/1608/147908.htm","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Moneycontrol.com","pais":"India","titulo":"IIT Delhi Alumnus Claims Apple Copied His Startup's Technology and Seeks Billion-Dollar Damages","resumo":"An Indian entrepreneur who graduated from the prestigious IIT Delhi has filed a lawsuit alleging intellectual property infringement against Apple. He claims that the tech giant copied the contact-sharing solution developed by his startup. The legal dispute demands billion-dollar damages and highlights the patent protection of Indian innovators on the global stage. If it moves forward, the lawsuit could have a strong impact on Apple's operations in the Indian market.","link":"https://www.moneycontrol.com/news/trends/iit-delhi-alumnus-claims-apple-copied-his-startup-s-contact-sharing-technology-seeks-rs-1-500-crore-in-damages-14086908.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Euronews.com","pais":"Portugal","titulo":"United States: Tech Stocks Fall Again Amid Sharp Decline on Wall Street","resumo":"Shares of major tech companies are facing a new downward cycle in North American markets. The movement reflects investors' apprehension regarding the global economic scenario and rising interest rates. Wall Street is recording expressive losses among large companies in the innovation and software sector. Analysts predict continuous volatility as corporations seek to restructure their operating costs.","link":"https://pt.euronews.com/2026/11/23/estados-unidos-tecnologia-continua-a-cair-com-derrocada-em-wall-street","categoria":"DIGITAL MARKET","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"OpenAI Chief Scientist Proposes Slowdown in Advanced AI Development Until Control Is Guaranteed","resumo":"OpenAI's chief scientist publicly advocated for a pause in the advancement of the most powerful artificial intelligence models until alignment and safety mechanisms are fully developed. The statement reflects growing ethical concern over the risks of out-of-control autonomous systems. The stance is expected to drive new regulatory debates and governance guidelines on a global level.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/22/cientista-chefe-da-openai-propoe-que-empresas-freiem-a-criacao-de-ias-mais-poderosas-ate-que-seja-possivel-controla-las.ghtml","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"High-Precision Laser Technology Applied in Research at the Top of the World","resumo":"Scientists have deployed advanced laser scanning systems in extreme altitude regions to monitor environmental and structural changes. The technology enables the collection of topographic data with an unprecedented level of detail under severe weather conditions. The advancement represents a qualitative leap for climate studies and global geographic mapping.","link":"https://science.nasa.gov/earth/earth-observatory/laser-focus-at-the-top-of-the-world/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Presse Agence","pais":"France","titulo":"Paris: Cosmetics - The New Anti-Aging Wave Focuses on Science and Cutting-Edge Active Ingredients","resumo":"The beauty industry in Paris is undergoing a revolution driven by scientific advancements and biotechnology applied to cosmetics. New anti-aging formulas utilize cutting-edge active ingredients capable of acting directly on cellular regeneration and skin protection. This synergy between dermatological science and innovation attracts market attention and consolidates a new global trend.","link":"https://presseagence.fr/paris-cosmetique-la-nouvelle-vague-anti-age-mise-sur-la-science-et-les-actifs-de-pointe/","categoria":"INNOVATION","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"UK Science Funding Agency CEO Criticized by Union Over Cuts","resumo":"The leadership of the United Kingdom's science and research funding agency is facing heavy pressure from the workers' union following the announcement of budget reductions. The measure has sparked fears over the layoff of researchers and the cancellation of strategic innovation projects in the country. Industry entities warn that the cuts could weaken British scientific competitiveness in the coming years.","link":"https://www.theguardian.com/education/2026/nov/22/prospect-union-leader-uk-funding-agency-science-research-ukri","categoria":"SCIENCE","lang":"en"},{"fonte":"Diario AS","pais":"Spain","titulo":"Science Confirms: These Are the Two Times in Life When Humans Age Fastest","resumo":"A scientific study revealed that human aging does not occur linearly, but presents sharp peaks in two specific phases of life: at ages 44 and 60. During these periods, drastic changes occur in thousands of molecules and microorganisms in the body. The discovery promises to revolutionize preventive medicine and the understanding of biological processes.","link":"https://as.com/actualidad/ciencia/la-ciencia-lo-confirma-estos-son-los-dos-momentos-en-los-que-los-humanos-envejecemos-mas-rapido-f202611-n/","categoria":"SCIENCE","lang":"en"},{"fonte":"TradingView","pais":"Germany","titulo":"German Automakers Face Risk of Shutdowns Due to Labor Conflicts","resumo":"The German automotive sector is facing growing tensions with labor unions, which are threatening to strike during the winter season. The demands involve wage increases and the preservation of jobs amid the transition to electric vehicles. The instability comes at a critical time for manufacturers' competitiveness in Europe. The potential impact could severely affect production and regional supply chains.","link":"https://es.tradingview.com/news/reuters.com,2026:newsml_L5N474054:0/","categoria":"BUSINESS","lang":"en"},{"fonte":"Forbes JAPAN","pais":"Japan","titulo":"Startup MetAI Uses Digital Twin Technology to Replicate TSMC Mega-Factory in Minutes","resumo":"Taiwanese startup MetAI has developed a digital twin-based solution capable of simulating the infrastructure of complex facilities, such as the TSMC factory, in a matter of minutes. This innovation drastically accelerates industrial planning and process testing without disrupting actual physical production. The application of this technology in the semiconductor sector promises to significantly increase the operational efficiency of advanced industry.","link":"https://forbesjapan.com/articles/detail/108009","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"经济参考报","pais":"China","titulo":"Turing Quantum Opens Advanced Semiconductor Packaging and Testing Center","resumo":"Turing Quantum announced the start of operations at its new center focused on the packaging and advanced testing of quantum chips. The infrastructure represents a significant leap for China's manufacturing and high-performance hardware validation capacity. The advancement contributes to the country's technological autonomy in the next-generation computing race.","link":"https://www.jjckb.cn/20261123/4955163630304079afeea9de88c61b7f/c.html","categoria":"QUANTUM COMPUTING","lang":"en"},{"fonte":"CXOToday.com","pais":"India","titulo":"L\u0026T Technology Services Launches SDVault.ai to Bring Intelligence to Software-Defined Vehicles","resumo":"L\u0026T Technology Services announced the launch of the SDVault.ai platform to transform modern automotive engineering. The tool aims to optimize the development cycle of software-defined vehicles using artificial intelligence. With this innovation, the company seeks to accelerate testing, validations, and safety in next-generation vehicles. The novelty positions the Indian industry at the forefront of autonomous and connected mobility.","link":"https://cxotoday.com/media-coverage/lt-technology-services-launches-sdvault-ai-to-bring-engineering-intelligence-to-the-software-defined-vehicle-v-cycle/","categoria":"TECHNOLOGICAL INNOVATION","lang":"en"},{"fonte":"Campeão das Províncias","pais":"Portugal","titulo":"University of Coimbra Opens Its Doors to Science with Activities Across Six Schools","resumo":"The University of Coimbra is promoting a week dedicated to scientific outreach and community engagement. Various practical activities and interactive lectures are taking place simultaneously across the institution's six faculties. The goal is to bring students and the general public closer to the advancements of modern academic research. The initiative seeks to encourage new scientific vocations and demystify complex topics in an accessible way.","link":"https://www.campeaoprovincias.pt/2026/11/22/upcoimbra-abre-as-portas-a-ciencia-com-actividades-nas-seis-escolas/","categoria":"SCIENCE","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"Artificial Intelligence Could Replace Spreadsheets in Personal and Business Financial Control","resumo":"New AI-powered tools are transforming financial management by automating data analysis and eliminating traditional spreadsheets. The technology enables scenario forecasting, automatic expense categorization, and real-time strategic guidance. The shift promises to streamline planning for businesses and consumers alike, boosting efficiency in the financial sector.","link":"https://www1.folha.uol.com.br/mercado/2026/11/ia-pode-aposentar-planilhas-no-controle-das-financas-veja-o-que-ja-existe.shtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The New York Times","pais":"United States","titulo":"U.S. Monitored Contacts Between Executive and Chinese Espionage in Nvidia Case","resumo":"Federal investigations revealed that U.S. authorities tracked confidential communications between Alice Huang and Chinese intelligence agents. The case raises serious national security and industrial espionage concerns within the semiconductor sector. The situation intensifies geopolitical tensions in the global high-tech market.","link":"https://www.nytimes.com/2026/11/22/us/politics/alice-huang-china-spy-agency-nvidia.html","categoria":"SECURITY","lang":"en"},{"fonte":"BBC","pais":"England","titulo":"Can AI Detect Breast Cancer Earlier? NHS Launches World's Largest Trial to Find Out","resumo":"The UK's National Health Service has launched the world's largest clinical study to evaluate the use of artificial intelligence in early breast cancer diagnosis. The initiative aims to analyze thousands of mammograms to identify tumors in early stages with greater precision and speed. If successful, the project could transform preventative oncology screening in public healthcare.","link":"https://www.bbc.com/news/articles/cmpdwnw3nvzjo","categoria":"HEALTH AND TECHNOLOGY","lang":"en"},{"fonte":"OkDiario","pais":"Spain","titulo":"Indra Group Converts Artificial Intelligence and Civil Technology into New Defense Capabilities","resumo":"Indra Group is transforming advances in artificial intelligence and civil-sector technologies into strategic defense solutions. The initiative aims to strengthen European technological autonomy in the face of new global geopolitical challenges. This convergence between civil and military technologies is redefining innovation in the security sector.","link":"https://okdiario.com/economia/empresas/indra-group-convierte-inteligencia-artificial-tecnologia-civil-nuevas-capacidades-defensa-espanola-21235766","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Spiegel","pais":"Germany","titulo":"Opinion: German Economy Gains Momentum with Positive News This Week","resumo":"Recent analyses indicate that Germany's economy may be regaining its growth momentum after a period of stagnation. Industrial production data and business confidence showed positive signs over the past week. Experts assess that stimulus measures and energy cost stabilization are beginning to take effect. The upward trajectory brings renewed optimism to financial markets and the productive sector.","link":"https://www.spiegel.de/ausland/wirtschaft-in-deutschland-aufschwung-und-mehr-geld-fuer-start-ups-nur-gute-nachrichten-a-27f5a596-3d36-450b-95d3-265ed3df0285","categoria":"ECONOMY","lang":"en"},{"fonte":"Jornal Económico","pais":"Japan","titulo":"Chinese and Japanese Economic Data Disappoints, Highlighting Weakness in Domestic Consumption","resumo":"Recent reports on the economies of Japan and China indicate a concerning slowdown in the post-pandemic recovery. Weakening domestic consumption in both countries is pressuring governments to pursue new financial stimulus measures. This uncertain scenario generates apprehension in the global market, affecting growth projections across the Asian continent.","link":"https://jornaleconomico.sapo.pt/noticias/dados-da-china-e-japao-desiludem-e-mostram-fragilidade-no-consumo-interno-de-ambos/","categoria":"ECONOMY","lang":"en"},{"fonte":"Plataforma Media","pais":"China","titulo":"Macau Seeks to Connect Portuguese-Speaking Healthcare Companies to the Chinese Market","resumo":"The government of Macau has stepped up efforts to act as a trade bridge between healthcare sector companies in Portuguese-speaking countries and the Chinese market. The initiative aims to simplify regulatory processes and encourage strategic partnerships in biotechnology and medicine. The move promises to boost bilateral trade and expand health innovation in the region.","link":"https://www.plataformamedia.com/2026/11/23/macau-quer-ajudar-empresas-lusofonas-da-saude-a-explorar-mercado-chines/","categoria":"INNOVATION","lang":"en"},{"fonte":"CNBC TV18","pais":"India","titulo":"Kissht Parent Projects 60% Growth in Assets Under Management and Lower Credit Costs","resumo":"Indian fintech firm OnEMI Technology has set ambitious targets to boost its credit volume over the coming quarters. The company is relying on the efficiency of underwriting algorithms to reduce credit costs and default rates. The move reflects the strong heating up of the fintech sector in India's consumer market. Experts are monitoring the expansion as an indicator of digital credit penetration in the country.","link":"https://www.cnbctv18.com/business/companies/kissht-onemi-technology-aum-growth-credit-costs-alpha-article-20039583.htm/amp","categoria":"FINTECH","lang":"en"},{"fonte":"oRegiões","pais":"Portugal","titulo":"Pope Warns of Enormous Risks of Unethical Technology and Defends Peaceful Use of Space","resumo":"The pontiff issued a global appeal highlighting the importance of moral responsibility in technological advancement. He warned against the dangers of uncontrolled artificial intelligence and military advancement in the space environment. The speech emphasizes the need for international treaties guaranteeing the peaceful use of the cosmos. The religious leader stressed that innovation only fulfills its role when it serves the well-being of humanity.","link":"https://oregioes.pt/papa-leao-xiv-alerta-para-riscos-enormes-se-tecnologia-nao-for-regida-pela-etica-e-defende-uso-pacifico-do-espaco/","categoria":"DIGITAL ETHICS","lang":"en"},{"fonte":"Rádio Pampa","pais":"Brazil","titulo":"Apple Investigated in Brazil Over Restrictions on Third-Party Access to NFC Technology on iPhones","resumo":"Brazilian regulatory authorities have opened an investigation against Apple for alleged anti-competitive conduct by limiting the use of the NFC chip in iPhones exclusively to Apple Pay. The practice could harm local fintechs and banks seeking to offer their own contactless payment solutions. The outcome of the process could force changes to the tech giant's closed-ecosystem policies in the country.","link":"https://www.radiopampa.com.br/apple-e-investigada-no-brasil-por-restricoes-ao-acesso-de-terceiros-a-tecnologia-de-pagamento-por-aproximacao-nos-iphones/","categoria":"REGULATION","lang":"en"},{"fonte":"Bloomberg.com","pais":"United States","titulo":"Trump's AI Chip Restrictions Trigger Collateral Impact on Asian Market","resumo":"The strict new measures imposed by the United States to limit the export of artificial intelligence microchips have caused severe disruptions in Asia's supply chain. Technology companies in the region face operational uncertainties and rising costs due to trade limitations. The scenario rekindles the debate over global technological protectionism.","link":"https://www.bloomberg.com/news/features/2026-11-22/trump-s-ai-chip-crackdown-on-china-after-nvidia-crisis-squeezes-southeast-asia","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Comunidad de Madrid |","pais":"Spain","titulo":"Genetics, Technology, and Health: Inside the Research at Hospital 12 de Octubre","resumo":"An in-depth look at Hospital 12 de Octubre reveals how the union of genetics and technology is driving precision medicine. The hospital center utilizes advanced tools to accelerate diagnostics and develop personalized therapies for complex diseases. This multidisciplinary approach solidifies the hospital as a reference in health innovation in Spain.","link":"https://www.comunidad.madrid/actividades/2026/genetica-tecnologia-salud-investigacion-hospital-12-octubre-dentro","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Japan","titulo":"Joint European and Japanese Space Probe Enters Mercury's Orbit","resumo":"The BepiColombo space mission, developed in partnership between the space agencies of Europe and Japan, has successfully reached Mercury's orbit. The probe will perform detailed analyses of the composition, magnetic field, and structure of the planet closest to the Sun. This scientific achievement represents a historic milestone for space exploration and the understanding of solar system formation.","link":"https://www1.folha.uol.com.br/ciencia/2026/11/sonda-conjunta-da-europa-e-do-japao-entrou-na-orbita-de-mercurio.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"China","titulo":"Chinese Espionage Focuses on Bypassing U.S. Restrictions to Obtain Advanced AI Chips","resumo":"Under Xi Jinping's government, intelligence operations have focused on circumventing export sanctions applied by the United States on advanced semiconductors. According to the New York Times, the goal is to secure essential hardware supplies for the advancement of artificial intelligence algorithms. The scenario intensifies the race for global technological and military supremacy.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/22/sob-xi-jinping-driblar-restricoes-dos-eua-para-obter-chips-avancados-de-ia-vira-prioridade-da-espionagem-chinesa-revela-nyt.ghtml","categoria":"DIGITAL SECURITY","lang":"en"},{"fonte":"Business Standard","pais":"India","titulo":"India Flash Composite PMI Rises to 56.3 in November Driven by Manufacturing","resumo":"India's purchasing managers' index (PMI) registered strong expansion in November, driven by the manufacturing and services sectors. The data reflects the country's economic resilience in the face of volatility in the international market. The increase in industrial production demonstrates higher demand and continuous investments in productive capacity. The performance reinforces India's position as one of the global growth engines in Asia.","link":"https://www.business-standard.com/economy/news/india-flash-pmi-november-2026-manufacturing-services-private-sector-growth-126112300257_1.html","categoria":"ECONOMY","lang":"en"},{"fonte":"RTP","pais":"Portugal","titulo":"Enter - Technology for Everyone: Highlights from the November 22 Edition","resumo":"The new edition of the program showcases the main trends and tools focused on digital inclusion. The content covers accessible technological solutions developed to optimize daily routines for various audiences. Guest experts discuss the impact of automation on everyday life and the job market. The show reinforces how the democratization of technology can positively transform society.","link":"https://www.rtp.pt/play/p16977/e969316/enter-tecnologia-para-todos","categoria":"INNOVATION","lang":"en"},{"fonte":"PlatôBR","pais":"Brazil","titulo":"Tech Sector Demands Government Agenda for Digital Security Following Wave of Cyberattacks","resumo":"In light of the recent surge in cyberattacks against public and private institutions in Brazil, technology industry leaders are demanding concrete actions from the federal government. The demands include the creation of stricter national cybersecurity policies and incentives for digital infrastructure. The mobilization seeks to strengthen the country's strategic resilience against growing virtual threats.","link":"https://platobr.com.br/apos-ciberataques-setor-de-tecnologia-cobra-agenda-de-lula-para-seguranca-digital","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"UOL Economia","pais":"United States","titulo":"Anthropic Founders' Wealth Reaches $141 Billion Following IPO","resumo":"Anthropic's stock market debut propelled the combined net worth of its seven founders to historic levels. The result reflects strong investor optimism in the generative artificial intelligence sector. The valuation cements the company as a major contender in the race for technological dominance.","link":"https://economia.uol.com.br/noticias/redacao/2026/11/22/sete-fundadores-de-empresa-de-ia-somam-us-141-bi-menos-que-musk.ghtm","categoria":"BUSINESS","lang":"en"},{"fonte":"Jornal Económico","pais":"China","titulo":"China and Japan Economic Indicators Point to Domestic Consumption Weakness","resumo":"New economic reports released by China and Japan revealed a concerning slowdown in local consumer demand. The data disappointed analysts and highlights the challenges faced by Asia's two largest economies in sustaining economic recovery. The result pressures governments to adopt new financial stimulus measures.","link":"https://jornaleconomico.sapo.pt/noticias/dados-da-china-e-japao-desiludem-e-mostram-fragilidade-no-consumo-interno-de-ambos/","categoria":"ECONOMY","lang":"en"},{"fonte":"DD India","pais":"India","titulo":"BRICS Film Festival Roundtable Explores Co-production and Technology Exchange at the 57th IFFI","resumo":"During the 57th IFFI, representatives from BRICS countries gathered to discuss partnerships in the audiovisual industry and knowledge transfer. The meeting highlighted the role of new technologies in global content distribution and visual effects production. The initiative seeks to strengthen international cooperation among emerging cinema markets. The exchange promises to drive new technological solutions applied to entertainment and digital media.","link":"https://ddindia.co.in/2026/11/brics-film-festival-roundtable-explores-opportunities-in-co-production-distribution-and-technology-exchange-at-57th-iffi/","categoria":"TECHNOLOGY","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
