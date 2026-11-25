@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-A2T5JFyMaDfD6o07ybExoFwR'; script-src 'nonce-A2T5JFyMaDfD6o07ybExoFwR'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="A2T5JFyMaDfD6o07ybExoFwR">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">25/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="A2T5JFyMaDfD6o07ybExoFwR">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"'Novo Labubu' traz tecnologia: robô japonês se move sozinho, reage ao toque e vira acessório de moda","resumo":"Um novo dispositivo robótico desenvolvido no Japão está chamando a atenção no universo da moda e da tecnologia. Capaz de se movimentar de forma autônoma e responder a estímulos táteis, o robô foi projetado para ser usado como um acessório interativo no cotidiano. O lançamento reflete a crescente fusão entre robótica pessoal, inteligência artificial e produtos de estilo de vida.","link":"https://oglobo.globo.com/economia/epoca/noticia/2026/11/25/novo-labubu-tem-tecnologia-robo-japones-se-mexe-sozinho-reage-a-toques-e-vira-acessorio-de-moda.ghtml","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"Investing News Network","pais":"Estados Unidos","titulo":"O Próximo Capítulo do Wi-Fi: Tecnologia Sem Fio na Era da IA","resumo":"A integração de inteligência artificial na tecnologia sem fio promete revolucionar a gestão de redes Wi-Fi e otimizar o tráfego de dados. O avanço permitirá transmissões mais eficientes, reduzindo a latência e prevendo falhas operacionais antes que ocorram. Com o aumento da demanda por conectividade, essa evolução impulsionará a automação industrial e dispositivos inteligentes em escala global.","link":"https://investingnews.com/wi-fis-next-chapter-wireless-technology-in-the-age-of-ai/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Libertad Digital","pais":"França","titulo":"França intensifica a guerra regulatória contra a Shein","resumo":"A França está aumentando a pressão legislativa e regulatória contra a gigante do comércio eletrônico Shein. As autoridades francesas buscam aplicar medidas severas para conter o impacto ambiental e a concorrência desleal do ultra fast fashion. A nova legislação prevê penalidades financeiras e restrições publicitárias para plataformas de consumo rápido. Essa iniciativa pioneira pode estabelecer um novo padrão de regulamentação para o mercado digital na União Europeia.","link":"https://www.libertaddigital.com/libremercado/negocios/2026-11-25/francia-recrudece-la-guerra-contra-shein-prohibira-su-publicidad-e-impondra-multas-de-100-000-euros-7454163/","categoria":"REGULAMENTAÇÃO","lang":"pt"},{"fonte":"France 24","pais":"Inglaterra","titulo":"Após a IA, a Europa não quer perder o trem da computação quântica","resumo":"A Europa está intensificando seus investimentos e esforços estratégicos no setor de tecnologia quântica para garantir a soberania tecnológica do continente. O movimento visa evitar a repetição do atraso observado no desenvolvimento de inteligência artificial em relação a outras potências globais. Especialistas destacam que o avanço quântico será fundamental para a segurança cibernética, inovação industrial e pesquisas científicas nos próximos anos.","link":"https://www.france24.com/fr/info-en-continu/20261125-apr%C3%A8s-l-ia-l-europe-ne-veut-pas-rater-le-train-du-quantique","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Confidencial","pais":"Espanha","titulo":"A conquista do maior enigma matemático fez duvidar até quem descartava que a IA provocaria um apocalipse","resumo":"Pesquisadores utilizaram sistemas avançados de inteligência artificial para resolver um dos dilemas matemáticos mais complexos da história recente. O avanço surpreendeu a comunidade científica global ao demonstrar uma capacidade de raciocínio lógico que supera expectativas anteriores. Especialistas em tecnologia agora reavaliam os impactos do avanço acelerado da inteligência artificial na sociedade e na ciência.","link":"https://www.elconfidencial.com/tecnologia/ciencia/2026-11-25/mayor-enigma-matematicas-claude-superinteligencia-ia-claude-anthropic_4471083/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Como as vespas reconhecem umas às outras pelo rosto","resumo":"Pesquisadores descobriram detalhes impressionantes sobre a capacidade visual e cognitiva das vespas em identificar indivíduos da mesma espécie. O estudo revela que esses insetos possuem mecanismos cerebrais especializados para o reconhecimento facial, muito semelhantes aos encontrados em primatas. A descoberta desafia preceitos sobre a complexidade neurológica de cérebros pequenos e abre portas para novos desenvolvimentos em visão computacional.","link":"https://wissenschaft.de/artikel/wie-wespen-einander-am-gesicht-erkennen","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Toyota GR Starlet será um esportivo leve de 1 tonelada? Turbo de 140 cv e câmbio manual de 6 marchas pode surgir em 2027","resumo":"A Toyota está desenvolvendo uma versão esportiva e leve do modelo Starlet sob a divisão GR, visando competir diretamente com o Suzuki Swift Sport. O veículo deve pesar cerca de uma tonelada e contar com um motor turbo de 140 cv aliado a uma transmissão manual de seis velocidades. Essa novidade sinaliza um movimento forte no mercado de veículos compactos de alto desempenho planejado para 2027.","link":"https://news.yahoo.co.jp/articles/2c0db78b254e1ab6f907bf594d34547facc802ce","categoria":"AUTOMOBILISMO","lang":"pt"},{"fonte":"科学网—新闻","pais":"China","titulo":"Artigo de capa | Journal of Salt Lake Research: Síntese de cristais de borato de imidazol e pesquisa de propriedades ópticas não lineares","resumo":"O estudo publicado na revista Journal of Salt Lake Research destaca avanços na síntese de cristais de borato de imidazol com propriedades ópticas não lineares promissoras. A pesquisa explora como a estrutura cristalina única desses compostos possibilita aplicações avançadas no desenvolvimento de dispositivos ópticos de nova geração. Essa descoberta contribui significativamente para a ciência dos materiais e para o fortalecimento da pesquisa tecnológica chinesa na área da fotônica.","link":"https://news.sciencenet.cn/htmlnews/2026/11/575302.shtm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ANI News","pais":"Índia","titulo":"Índia destaca supervisão humana no uso de IA em conflitos e alerta sobre riscos na ONU","resumo":"A Índia enfatizou na Organização das Nações Unidas a importância da supervisão humana direta na aplicação da inteligência artificial em cenários de conflito armado. O país alertou sobre os riscos crescentes do uso indevido dessas tecnologias avançadas por atores não estatais e grupos extremistas. Além disso, destacou a necessidade urgente de estabelecer normas globais rigorosas para garantir a segurança e a ética no desenvolvimento militar tecnológico.","link":"https://www.aninews.in/news/world/us/india-stresses-human-oversight-in-ai-use-during-conflicts-flags-risks-of-misuse-at-un20261125064412","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"Júri norte-americano condena Huawei por conspiração para roubar segredos comerciais","resumo":"Um júri federal nos Estados Unidos culpou a gigante chinesa de tecnologia Huawei por conspirar para roubar segredos comerciais de concorrentes americanas. A decisão reforça as acusações históricas de espionagem industrial e tensões geopolíticas entre Washington e Pequim. O veredito traz sérias implicações legais e financeiras para a empresa globalmente. Além disso, o caso pode intensificar as restrições comerciais impostas à fabricante no mercado ocidental.","link":"https://www.cmjornal.pt/tecnologia/detalhe/juri-norte-americano-culpa-huawei-de-conspiracao-para-roubar-segredos-comerciais","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Brasil","titulo":"Engenheiro acusado de espionar a sede da OpenAI é libertado após fiança milionária","resumo":"Um engenheiro de origem saudita que enfrentava acusações de grampear as instalações da OpenAI obteve liberdade provisória mediante o pagamento de uma fiança de valor milionário. O caso gerou forte repercussão na comunidade de tecnologia por envolver possíveis brechas de segurança em uma das empresas líderes no desenvolvimento de inteligência artificial. A investigação segue em andamento para apurar a extensão do vazamento de informações confidenciais.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/25/engenheiro-saudita-acusado-de-grampear-sede-da-openai-e-libertado-apos-fianca-milionaria.ghtml","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"Mashable","pais":"Estados Unidos","titulo":"Descoberta da Voyager 1 Deixa Cientistas Perplexos Enquanto a Sonda Ultrapassa um Dia-Luz","resumo":"A sonda Voyager 1 alcançou a marca histórica de um dia-luz de distância da Terra e registrou novos dados astronômicos inesperados. Cientistas tentam compreender fenômenos detectados no espaço interestelar que desafiam modelos astrofísicos atuais. A descoberta reforça a relevância contínua da missão espacial, oferecendo insights valiosos sobre as fronteiras do nosso sistema solar.","link":"https://mashable.com/science/voyager-1-biggest-discovery-beyond-solar-system-interstellar-space","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"energynews.pro","pais":"França","titulo":"Nuclear Diamond Batteries obtém opção de tecnologia betavoltaica da Ohio State","resumo":"A startup Nuclear Diamond Batteries garantiu os direitos de opção para licenciar uma inovadora tecnologia betavoltaica desenvolvida na Universidade Estadual de Ohio. O sistema utiliza diamantes semicondutores para converter radiação em eletricidade limpa e de altíssima durabilidade. A inovação promete alimentar dispositivos de baixo consumo por décadas sem a necessidade de recarga ou substituição. A tecnologia possui grande potencial de aplicação em exploração espacial, sensores industriais e implantes médicos.","link":"https://energynews.pro/nuclear-diamond-batteries-obtient-une-option-sur-la-technologie-betavoltaique-dohio-state","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"GOV.UK","pais":"Inglaterra","titulo":"Novo membro do conselho nomeado para o Science Museum Group","resumo":"O governo britânico anunciou a nomeação de um novo conselheiro para integrar a liderança do Science Museum Group no Reino Unido. O profissional desempenhará um papel fundamental na orientação estratégica e na preservação de uma das coleções de ciência e inovação mais importantes do mundo. A iniciativa busca fortalecer a educação científica e incentivar o engajamento público com o avanço tecnológico.","link":"https://www.gov.uk/government/news/trustee-appointed-to-the-science-museum-group","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Xataka","pais":"Espanha","titulo":"A ciência debatia há anos se a mudança climática traria mais ou menos raios; uma IA acaba de dar uma resposta inquietante","resumo":"Um novo modelo de inteligência artificial foi aplicado para analisar padrões meteorológicos globais e responder a um antigo impasse científico. Os resultados indicam uma alteração significativa na frequência e intensidade de tempestades elétricas no planeta. O achado reforça a importância de ferramentas computacionais no monitoramento de fenômenos decorrentes do aquecimento global.","link":"https://www.xataka.com/ecologia-y-naturaleza/ciencia-llevaba-anos-debatiendo-cambio-climatico-traeria-rayos-ia-acaba-dar-respuesta-inquietante","categoria":"CIÊNCIA E TECNOLOGIA","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Controvérsia da Nvidia: Trump diz que perdão a Huang é sempre uma opção","resumo":"Declarações recentes envolvendo a liderança da Nvidia e tensões políticas nos Estados Unidos voltaram a agitar o setor de tecnologia global. A menção a um possível perdão presencial ao CEO Jensen Huang destaca o clima de incerteza regulatória e pressão geopolítica sobre a indústria de semicondutores. O episódio traz desdobramentos importantes para o mercado financeiro e para as relações comerciais entre grandes potências tecnológicas.","link":"https://www.sueddeutsche.de/wirtschaft/nvidia-kontroverse-trump-begnadigung-huangs-immer-eine-option-dpa.urn-newsml-dpa-com-20090101-261125-930-47305","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"AFP.com","pais":"Japão","titulo":"Kioxia apresentará a tecnologia XL-FLASH™ de 3ª geração para memória flash de alto desempenho e baixa latência focada em IA","resumo":"A Kioxia anunciou a demonstração de sua nova geração de memórias XL-FLASH durante o KIOXIA Forum, projetada para atender às altas demandas do processamento de inteligência artificial. A tecnologia traz avanços significativos na redução da latência e no aumento da largura de banda para centros de dados modernos. Essa inovação visa acelerar o desempenho de modelos complexos de aprendizado de máquina e sistemas corporativos.","link":"https://www.afp.com/en/infos/kioxia-showcase-xl-flashtm-generation-3-technology-next-generation-low-latency-high","categoria":"SEMICONDUTORES","lang":"pt"},{"fonte":"天津大学新闻网","pais":"China","titulo":"Universidade de Tianjin lança o grande modelo de design de enzimas Tianhua Kaiwu para impulsionar a biomanufatura","resumo":"A Universidade de Tianjin anunciou o lançamento do Tianhua Kaiwu, um modelo de inteligência artificial voltado para o design de enzimas de alta precisão. A inovação visa superar o longo bloqueio tecnológico de países ocidentais e fortalecer a competitividade central da China no setor de biomanufatura. O modelo promete acelerar o desenvolvimento de processos biotecnológicos sustentáveis e otimizar a criação de soluções farmacêuticas e industriais.","link":"https://news.tju.edu.cn/info/1005/622509.htm","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The Times of India","pais":"Índia","titulo":"Estudo com 18.457 esqueletos de 45 países revela redução na altura humana com o avanço da agricultura","resumo":"Uma pesquisa abrangente analisou mais de dezoito mil esqueletos ao longo de séculos e identificou uma diminuição no tamanho médio dos seres humanos. O estudo aponta que o surgimento da agricultura e novas tecnologias inicialmente provocaram declínios na nutrição e saúde da população mundial. Esses achados oferecem uma nova perspectiva sobre os impactos socioeconômicos e biológicos da transição para a vida agrícola.","link":"https://timesofindia.indiatimes.com/science/archaeology/study-reveals-shocking-link-between-technology-farming-and-declining-human-height-over-centuries/articleshow/136128658.cms","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Jornal de Negócios","pais":"Portugal","titulo":"Tecnologia portuguesa ajuda a prever atrasos em aeroportos","resumo":"Uma nova solução tecnológica desenvolvida em Portugal promete otimizar a gestão de tráfego aéreo e prever atrasos em aeroportos. A ferramenta utiliza algoritmos avançados para analisar dados operacionais e meteorológicos em tempo real. Com isso, companhias aéreas e gestores aeroportuários podem tomar decisões preventivas de forma mais eficaz. A inovação visa melhorar significativamente a experiência dos passageiros e reduzir custos operacionais.","link":"https://www.jornaldenegocios.pt/negocios-iniciativas/premio-nacional-de-inovacao/detalhe/tecnologia-portuguesa-ajuda-a-prever-atrasos-nos-aeroportos","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"CNN Brasil","pais":"Brasil","titulo":"Na ONU, Brasil defende o controle humano obrigatório sobre inteligência artificial em conflitos armados","resumo":"Durante debates na Organização das Nações Unidas, a diplomacia brasileira posicionou-se firmemente a favor da regulamentação rigorosa de tecnologias militares autônomas. O país defendeu que qualquer decisão de uso de força letal por sistemas baseados em inteligência artificial deve obrigatoriamente manter a supervisão e o julgamento humano. A iniciativa busca mitigar os riscos éticos e humanitários decorrentes da automatização da guerra moderna.","link":"https://www.cnnbrasil.com.br/internacional/na-onu-brasil-defende-controle-humano-sobre-ia-em-conflitos-armados/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"News-Medical","pais":"Estados Unidos","titulo":"Tecnologia de Diálise Neonatal Transforma o Atendimento a Bebês com Doença Renal","resumo":"Um novo avanço na tecnologia de diálise neonatal está revolucionando o tratamento intensivo para recém-nascidos com insuficiência renal grave. O equipamento miniaturizado permite maior precisão técnica, reduzindo riscos cirúrgicos e aumentando expressivamente a taxa de sobrevivência dos bebês. A inovação representa um marco para a medicina pediátrica global ao viabilizar terapias anteriormente inviáveis em pacientes tão pequenos.","link":"https://www.news-medical.net/news/20261124/Neonatal-dialysis-technology-transforms-care-for-babies-with-kidney-disease.aspx","categoria":"SAÚDE E TECNOLOGIA","lang":"pt"},{"fonte":"El Debate","pais":"Espanha","titulo":"Em 2022 atingimos um asteroide para proteger a Terra: agora é hora de verificar se funcionou","resumo":"A missão espacial que colidiu uma sonda contra um asteroide entra em uma nova fase crucial de análise de dados. Cientistas trabalham para examinar a alteração orbital e os detritos gerados pelo impacto defensivo. Os resultados finais devem consolidar as estratégias de defesa planetária contra potenciais ameaças cósmicas futuras.","link":"https://www.eldebate.com/ciencia/20261125/ano-2022-golpeamos-asteroide-proteger-tierra-ahora-toca-comprobar-funciono_484689.html","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Bizarro: Físicos transmitem mensagens usando a gravidade","resumo":"Em um experimento inédito, cientistas conseguiram utilizar ondas e campos gravitacionais para codificar e transmitir informações à distância. Embora a tecnologia ainda esteja em estágio teórico e experimental avançado, a técnica demonstra que a força da gravidade pode ser manipulada para comunicação. O feito é considerado um marco para a física fundamental e pode abrir caminho para novos métodos de transmissão incalculavelmente complexos.","link":"https://wissenschaft.de/artikel/skurril-physiker-uebermitteln-botschaften-mittels-gravitation","categoria":"FÍSICA","lang":"pt"},{"fonte":"kakaku.com","pais":"Japão","titulo":"Ecovacs lança dois novos modelos de robôs aspiradores com tecnologias avançadas de limpeza e automação","resumo":"A Ecovacs expandiu sua linha de eletrodomésticos inteligentes com a introdução do robô aspirador DEEBOT T80S MAX OMNI e outro modelo complementar. Os novos dispositivos possuem capacidades aprimoradas de sucção, navegação autônoma de alta precisão e estações de limpeza multifuncionais totalmente automatizadas. Os lançamentos visam consolidar a liderança da empresa no mercado global de automação residencial e limpeza inteligente.","link":"https://news.kakaku.com/prdnews/cd=kaden/ctcd=2130/id=160574/","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"21财经","pais":"China","titulo":"Economia de Guangzhou cresce nos primeiros 10 meses e produção de veículos elétricos salta 55%","resumo":"Os dados econômicos dos primeiros dez meses do ano em Guangzhou revelaram um crescimento expressivo de 55% na produção de veículos movidos a energia limpa. O resultado reflete a forte aceleração da indústria automotiva chinesa e a consolidação da cidade como um hub de veículos elétricos. O desempenho consolida a liderança tecnológica da região na transição global para a mobilidade sustentável.","link":"https://www.21jingji.com/article/20261125/herald/222659637504b04bd044526ff990c64c.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"pib.gov.in","pais":"Índia","titulo":"A Revolução dos Semicondutores e da Inteligência Artificial","resumo":"A interseção entre o avanço dos semicondutores e o crescimento da inteligência artificial está transformando a infraestrutura tecnológica global. Novos chips estão sendo projetados especificamente para suprir as demandas massivas de processamento exigidas por modelos complexos de IA. Esse movimento impulsiona a inovação industrial e posiciona países estrategicamente no cenário econômico e tecnológico internacional.","link":"https://www.pib.gov.in/FactsheetDetails.aspx?Id=150860\u0026reg=48\u0026lang=2","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"ECO","pais":"Portugal","titulo":"European Innovation Act: como transformar ciência em crescimento econômico","resumo":"O European Innovation Act surge como uma iniciativa estratégica para impulsionar a conversão de pesquisas científicas em soluções de mercado. A proposta busca desburocratizar o financiamento e incentivar a criação de startups de tecnologia profunda no continente europeu. Especialistas destacam a importância de integrar universidades, indústrias e governos para fortalecer a competitividade global. Esse movimento é visto como fundamental para garantir a soberania tecnológica da Europa.","link":"https://eco.sapo.pt/opiniao/o-european-innovation-act-como-transformar-ciencia-em-crescimento-economico/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Prefeitura Municipal de Amambai","pais":"Brasil","titulo":"Mato Grosso do Sul recebe tecnologia inédita para o combate ao Aedes aegypti","resumo":"O município de Amambai passa a implementar uma solução tecnológica inovadora desenvolvida para controlar a população do mosquito transmissor da dengue e de outras arboviroses. A iniciativa aplica métodos científicos avançados de monitoramento e supressão do vetor, prometendo maior eficiência em comparação aos métodos tradicionais. O projeto piloto serve como modelo de inovação em saúde pública para toda a região Centro-Oeste.","link":"https://www.amambai.ms.gov.br/noticia/62353/amambai-recebe-tecnologia-inedita-em-mato-grosso-do-sul-para-combater-o-aedes-aegypti-neste-sabado","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"OpenAI","pais":"Estados Unidos","titulo":"Modelos GPT-6 Demonstram Capacidades Intrínsecas de Design de Proteínas","resumo":"Os novos modelos da arquitetura GPT-6 demonstraram habilidades avançadas no desenvolvimento e design intrínseco de proteínas sintéticas. Essa capacidade de inteligência artificial acelera o descobrimento de fármacos e a criação de tratamentos biológicos personalizados para diversas doenças. O impacto esperado na biotecnologia é profundo, reduzindo custos e anos de pesquisas em laboratórios tradicionais.","link":"https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"MarketScreener España","pais":"Espanha","titulo":"Bolsas chinesas caem por vendas em tecnologia e reativação de tensões comerciais com os Estados Unidos","resumo":"O mercado financeiro asiático registrou quedas expressivas lideradas pelo setor tecnológico devido a novas restrições e disputas geopolíticas. A instabilidade reflete o receio de investidores frente ao endurecimento das políticas comerciais entre Washington e Pequim. O cenário pressiona cadeias globais de suprimentos e o financiamento de inovações tecnológicas.","link":"https://es.marketscreener.com/noticias/las-bolsas-chinas-caen-por-las-ventas-en-tecnolog-a-y-la-reactivaci-n-de-las-tensiones-comerciales-c-ce7851dbdf80fe23","categoria":"MERCADO GLOBAL","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"Quanto microplástico flutua no ar das nossas casas?","resumo":"Estudos recentes alertam para a presença massiva de partículas microscópicas de plástico no ar que respiramos dentro de ambientes fechados. A degradação de tecidos sintéticos, móveis e embalagens contribui significativamente para o acúmulo dessas substâncias em residências. Especialistas investigam os impactos contínuos dessa inalação para a saúde humana, defendendo maior ventilação e filtros de ar eficientes.","link":"https://wissenschaft.de/artikel/wie-viel-mikroplastik-schwebt-in-unserer-wohnungsluft","categoria":"MEIO AMBIENTE","lang":"pt"},{"fonte":"株式会社イード","pais":"Japão","titulo":"SAVAWAY solicita patente para tecnologia de controle de estoque voltada ao comércio baseado em agentes de IA","resumo":"Com o avanço de agentes de inteligência artificial realizando compras de forma autônoma, a gestão de estoque se tornou um novo desafio para o e-commerce. A SAVAWAY desenvolveu uma solução patenteada que otimiza a alocação e o fluxo de inventários para transações automatizadas por robôs. Essa tecnologia pretende preparar a infraestrutura das lojas virtuais para a era do comércio eletrônico impulsionado por IA.","link":"https://www.iid.co.jp/news/press/2026/112501.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Báo VietNamNet","pais":"China","titulo":"A Samsung deveria aprender com a tecnologia de câmera da Huawei para o Galaxy S27 Ultra?","resumo":"Analistas e entusiastas do setor de smartphones debatem como as recentes inovações ópticas da Huawei podem influenciar os projetos futuros da Samsung para a linha Galaxy S27 Ultra. A liderança da fabricante chinesa em sensores e processamento de imagem reafirma a posição de vanguarda da China no segmento móvel. Esse cenário evidencia como as tecnologias chinesas estão ditando os rumos e padrões globais de concorrência.","link":"https://vietnamnet.vn/en/should-samsung-learn-from-huawei-s-camera-technology-for-galaxy-s27-ultra-2578337.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"News On AIR","pais":"Índia","titulo":"Economia espacial da Índia deve atingir 45 bilhões de dólares em menos de uma década impulsionada pelo setor privado","resumo":"O ministro da União da Índia anunciou que a economia espacial do país atingirá entre 40 e 45 bilhões de dólares em menos de dez anos. O crescimento vertiginoso do setor é impulsionado principalmente pelo aumento da participação de empresas privadas e startups inovadoras. Essa expansão consolida a Índia como uma das grandes potências globais na exploração comercial do espaço e desenvolvimento aeroespacial.","link":"https://newsonair.gov.in/indias-space-economy-to-reach-40-to-45-billion-dollars-in-under-decade-as-private-sector-drives-growth-says-union-minister-jitendra-singh/","categoria":"TECNOLOGIA ESPACIAL","lang":"pt"},{"fonte":"Governo Federal","pais":"Brasil","titulo":"Segurança do Distrito Federal é reforçada com tecnologia antidrones entregue pelo Ministério da Justiça","resumo":"O Ministério da Justiça e Segurança Pública realizou a entrega de um sistema avançado de tecnologia antidrones para reforçar o esquema de segurança na capital federal. Os equipamentos permitem a detecção, identificação e neutralização de aeronaves não autorizadas em áreas restritas de Brasília. A medida visa proteger autoridades nacionais, delegações internacionais e infraestruturas críticas contra potenciais ameaças aéreas.","link":"https://www.gov.br/mj/pt-br/assuntos/noticias/seguranca-do-distrito-federal-e-reforcada-com-tecnologia-antidrones-entregue-pelo-mjsp","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Mercy","pais":"Estados Unidos","titulo":"Revista TIME Adiciona Aidoc, Parceira de Tecnologia da Mercy, à Lista de Melhores Invenções","resumo":"A revista TIME incluiu a plataforma de inteligência artificial da Aidoc entre as principais invenções do ano por seu impacto no diagnóstico médico. Utilizada na rede de saúde Mercy, a tecnologia acelera a identificação de anomalias radiológicas críticas em tempo recorde. A conquista destaca a rápida consolidação da IA generativa e preditiva no setor médico hospitalar.","link":"https://www.mercy.net/newsroom/2026-11-24/time-magazine-adds-mercy-technology-partner-aidoc-to-best-invent/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"E se falarmos do futuro da Espanha? Falemos de ciência","resumo":"Debates sobre o desenvolvimento estratégico espanhol colocam o investimento em pesquisa e inovação no centro das atenções. Especialistas defendem que o fortalecimento do ecossistema científico é vital para a soberania tecnológica e econômica do país. A iniciativa busca engajar a sociedade e gestores públicos na construção de políticas de longo prazo.","link":"https://elpais.com/ciencia/2026-11-25/y-si-hablamos-del-futuro-de-espana-hablemos-de-ciencia.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"RiffReporter","pais":"Alemanha","titulo":"IA: Ciência alemã se previne contra o iminente roubo de dados","resumo":"Instituições de pesquisa na Alemanha estão reforçando suas infraestruturas de cibersegurança para proteger acervos científicos contra raspagem não autorizada e espionagem de dados por inteligências artificiais. O avanço acelerado dos modelos de linguagem impulsionou o acesso indevido a propriedades intelectuais valiosas. As novas diretrizes visam garantir a soberania tecnológica do país sem comprometer a colaboração acadêmica global.","link":"https://www.riffreporter.de/de/wissen/wissenschaft-kuenstliche-intelligenz-angst-vor-datenabfluss-openai-anthropic-lokale-ki","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"日本経済新聞","pais":"Japão","titulo":"IID e SAVAWAY registram patente de controle de estoque focado na era de compras realizadas por agentes de IA","resumo":"A divulgação financeira oficial destaca a nova tecnologia de controle de estoque da SAVAWAY voltada ao ecossistema de comércio por agentes de IA. A inovação responde à transição do mercado onde algoritmos autônomos assumem a decisão e execução de compras online. A tecnologia garante que as plataformas digitais mantenham a precisão de disponibilidade sem sofrer com gargalos operacionais decorrentes da concorrência autônoma.","link":"https://www.nikkei.com/nkd/disclosure/tdnr/20261124585407/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Sky News","pais":"China","titulo":"Primeiro histórico: Por que este lançamento de foguete chinês é tão significativo","resumo":"A China alcançou um marco histórico em seu programa espacial com o sucesso do recente lançamento orbital de um novo foguete comercial. O evento representa um avanço expressivo nas capacidades astronáuticas do país, consolidando a infraestrutura necessária para missões futuras. Analistas apontam que essa conquista reforça a soberania tecnológica chinesa e expande sua competitividade na corrida espacial global.","link":"https://news.sky.com/video/historic-first-why-this-chinese-rocket-launch-is-so-significant-13616251","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"Comisión Económica para América Latina y el Caribe","pais":"Brasil","titulo":"América Latina e Caribe discutem no Brasil agenda de cooperação em Ciência, Tecnologia e Inovação","resumo":"Representantes de diversos países latino-americanos e caribenhos reuniram-se no Brasil para estabelecer diretrizes estratégicas voltadas à transformação produtiva regional. O encontro destacou a importância do compartilhamento de pesquisas, investimentos em ciência aplicada e integração de políticas de inovação tecnológica. A cooperação visa fortalecer a competitividade da região frente aos desafios econômicos e ambientais globais.","link":"https://www.cepal.org/en/pressreleases/latin-america-and-caribbean-discusses-brazil-cooperation-agenda-science-technology-and","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"NASA Science (.gov)","pais":"Estados Unidos","titulo":"Aeronave Dragonfly da NASA Prometida para Titã Recebe Seus Olhos","resumo":"A missão Dragonfly da NASA alcançou uma etapa crucial com a instalação dos sensores ópticos e câmeras avançadas que servirão como os olhos do rotorcraft. A aeronave explorará a superfície de Titã, a maior lua de Saturno, em busca de compostos químicos pré-bióticos. O projeto amplia as fronteiras da robótica espacial ao permitir voos autônomos em uma atmosfera extraterrestre densa.","link":"https://science.nasa.gov/missions/dragonfly/nasas-titan-bound-dragonfly-rotorcraft-gets-its-eyes/","categoria":"EXPLORAÇÃO ESPACIAL","lang":"pt"},{"fonte":"Atlántico","pais":"Espanha","titulo":"Tecnologia da empresa Centum ajuda na busca por um montanhista desaparecido","resumo":"Sistemas avançados de radiolocalização desenvolvidos na Galícia foram mobilizados em uma complexa operação de resgate em áreas de difícil acesso. A tecnologia permite identificar sinais de telefones celulares mesmo sem cobertura de rede tradicional na região. O caso evidencia o papel fundamental da inovação aplicada em missões de emergência e salvamento.","link":"https://www.atlantico.net/economia/tecnologia-viguesa-centum-busqueda-montanero_1_20261125-4506883.html","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"SZ.de","pais":"Alemanha","titulo":"Transição energética: Energia solar ultrapassa pela primeira vez a marca de 100 terawatt-hora","resumo":"A transição para fontes limpas na Alemanha atingiu um marco histórico ao superar cem terawatt-hora de eletricidade gerada por energia fotovoltaica em um único ano. O avanço reflete investimentos massivos em infraestrutura sustentável e na ampliação de parques solares pelo país. Esse resultado consolida a liderança alemã em energias renováveis e acelera a meta de descarbonização da matriz energética europeia.","link":"https://www.sueddeutsche.de/wirtschaft/energiewende-solarstrom-knackt-erstmals-die-marke-von-100-terawattstunden-dpa.urn-newsml-dpa-com-20090101-261125-930-47200","categoria":"ENERGIA","lang":"pt"},{"fonte":"Digital PR Platform","pais":"Japão","titulo":"DIC e Toyo Kagaku introduzem linha piloto para comercialização da tecnologia de reciclagem de materiais DeReSus®","resumo":"As empresas japonesas DIC e Toyo Kagaku uniram forças para construir uma linha piloto focada na comercialização do processo de reciclagem DeReSus®. A tecnologia visa transformar resíduos plásticos difíceis de tratar em materiais reutilizáveis de alta qualidade, promovendo a economia circular. A iniciativa representa um avanço crucial na busca por processos industriais sustentáveis na indústria química do Japão.","link":"https://digitalpr.jp/r/149247","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"中国日报网","pais":"China","titulo":"Tecnologia de virtualização da Universidade Jiao Tong de Xangai fortalece base de computação para agentes de IA","resumo":"Pesquisadores da Universidade Jiao Tong de Xangai desenvolveram uma inovadora tecnologia de virtualização focada em otimizar o processamento computacional para agentes inteligentes. A solução permite integrar múltiplos recursos de computação de maneira eficiente para sustentar grandes cargas de trabalho em IA. Essa arquitetura pavimenta o caminho para avanços no desenvolvimento de inteligência artificial autônoma e de alto desempenho.","link":"https://cn.chinadaily.com.cn/a/202611/25/WS6b06421de4b0e14252fcd458.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Agência FAPESP","pais":"Brasil","titulo":"Manuscrito inédito de Paul Feyerabend revela raízes científicas de sua filosofia","resumo":"A descoberta e análise de um texto inédito do renomado filósofo Paul Feyerabend lançam nova luz sobre a evolução do seu pensamento a respeito da ciência. O documento demonstra como suas críticas às metodologias rígidas eram fundamentadas em um profundo entendimento do trabalho científico empírico. A publicação promete reacender importantes debates historiográficos e epistemológicos entre acadêmicos de todo o mundo.","link":"https://agencia.fapesp.br/manuscrito-inedito-de-paul-feyerabend-ajuda-a-revelar-as-raizes-cientificas-de-sua-filosofia/59686","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"O GLOBO","pais":"Estados Unidos","titulo":"Gigante Chinesa Huawei é Condenada nos EUA por Fraude e Roubo de Segredos","resumo":"A gigante tecnológica chinesa Huawei foi declarada culpada pela Justiça dos Estados Unidos por práticas ilícitas que incluem fraude bancária e roubo de segredos comerciais. A decisão encerra um longo embate jurídico e deve endurecer ainda mais as restrições de mercado impostas a empresas estrangeiras de tecnologia no país. O veredito acentua as tensões geopolíticas globais e reconfigura as cadeias de suprimento de telecomunicações.","link":"https://oglobo.globo.com/economia/noticia/2026/11/24/huawei-e-considerada-culpada-de-acusacoes-criminais-nos-eua-em-caso-historico.ghtml","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"Deia","pais":"Espanha","titulo":"Tecnologia e dados para moldar uma Biscaia mais eficiente","resumo":"A região de Biscaia implementou um projeto abrangente baseado em inteligência de dados para otimizar serviços públicos e mobilidade urbana. A iniciativa visa melhorar a tomada de decisões administrativas e a sustentabilidade no gerenciamento de recursos locais. O modelo serve de referência para a transformação digital de governos regionais.","link":"https://www.deia.eus/economia/2026/11/25/tecnologia-datos-bizkaia-eficiente-11779543.html","categoria":"CIDADES INTELIGENTES","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"New Labubu features technology: Japanese robot moves on its own, reacts to touch and becomes a fashion accessory","resumo":"A new robotic device developed in Japan is turning heads in the fashion and technology world. Capable of moving autonomously and responding to tactile stimuli, the robot was designed to be worn as an interactive everyday accessory. The launch reflects the growing fusion between personal robotics, artificial intelligence, and lifestyle products.","link":"https://oglobo.globo.com/economia/epoca/noticia/2026/11/25/novo-labubu-tem-tecnologia-robo-japones-se-mexe-sozinho-reage-a-toques-e-vira-acessorio-de-moda.ghtml","categoria":"ROBOTICS","lang":"en"},{"fonte":"Investing News Network","pais":"United States","titulo":"The Next Chapter of Wi-Fi: Wireless Technology in the Era of AI","resumo":"The integration of artificial intelligence into wireless technology promises to revolutionize Wi-Fi network management and optimize data traffic. This advancement will enable more efficient transmissions, reducing latency and predicting operational failures before they occur. With the surging demand for connectivity, this evolution will drive industrial automation and smart devices on a global scale.","link":"https://investingnews.com/wi-fis-next-chapter-wireless-technology-in-the-age-of-ai/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Libertad Digital","pais":"France","titulo":"France intensifies regulatory war against Shein","resumo":"France is stepping up legislative and regulatory pressure against e-commerce giant Shein. French authorities are seeking to enforce strict measures to curb the environmental impact and unfair competition of ultra-fast fashion. The new legislation provides for financial penalties and advertising restrictions for fast-consumption platforms. This pioneering initiative could set a new regulatory standard for the digital market across the European Union.","link":"https://www.libertaddigital.com/libremercado/negocios/2026-11-25/francia-recrudece-la-guerra-contra-shein-prohibira-su-publicidad-e-impondra-multas-de-100-000-euros-7454163/","categoria":"REGULATION","lang":"en"},{"fonte":"France 24","pais":"England","titulo":"Following AI, Europe is determined not to miss the quantum computing wave","resumo":"Europe is stepping up its investments and strategic efforts in the quantum technology sector to ensure the continent's technological sovereignty. This move aims to prevent a repeat of the lag observed in artificial intelligence development compared to other global powers. Experts emphasize that quantum advancement will be critical for cybersecurity, industrial innovation, and scientific research in the coming years.","link":"https://www.france24.com/fr/info-en-continu/20261125-apr%C3%A8s-l-ia-l-europe-ne-veut-pas-rater-le-train-du-quantique","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Confidencial","pais":"Spain","titulo":"Conquering the greatest mathematical enigma casts doubt even on those who dismissed an AI apocalypse","resumo":"Researchers used advanced artificial intelligence systems to solve one of the most complex mathematical dilemmas in recent history. The breakthrough surprised the global scientific community by demonstrating logical reasoning capabilities that exceed previous expectations. Technology experts are now reassessing the impacts of rapid artificial intelligence advancement on society and science.","link":"https://www.elconfidencial.com/tecnologia/ciencia/2026-11-25/mayor-enigma-matematicas-claude-superinteligencia-ia-claude-anthropic_4471083/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"How wasps recognize each other by face","resumo":"Researchers have discovered striking details about the visual and cognitive ability of wasps to identify individuals of the same species. The study reveals that these insects possess specialized brain mechanisms for facial recognition very similar to those found in primates. This discovery challenges assumptions about the neurological complexity of small brains and opens doors for new developments in computer vision.","link":"https://wissenschaft.de/artikel/wie-wespen-einander-am-gesicht-erkennen","categoria":"SCIENCE","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Toyota GR Starlet to be a lightweight 1-ton sports car? 140 hp turbo and 6-speed manual transmission could arrive in 2027","resumo":"Toyota is developing a lightweight sports version of the Starlet model under its GR division, aiming to compete directly with the Suzuki Swift Sport. The vehicle is expected to weigh around one metric ton and feature a 140 hp turbocharged engine paired with a six-speed manual transmission. This news signals a strong push into the high-performance compact vehicle market planned for 2027.","link":"https://news.yahoo.co.jp/articles/2c0db78b254e1ab6f907bf594d34547facc802ce","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"科学网—新闻","pais":"China","titulo":"Cover Article | Journal of Salt Lake Research: Synthesis of imidazole borate crystals and nonlinear optical properties research","resumo":"The study published in the Journal of Salt Lake Research highlights advances in the synthesis of imidazole borate crystals with promising nonlinear optical properties. The research explores how the unique crystal structure of these compounds enables advanced applications in developing next-generation optical devices. This discovery contributes significantly to materials science and strengthens Chinese technological research in the field of photonics.","link":"https://news.sciencenet.cn/htmlnews/2026/11/575302.shtm","categoria":"SCIENCE","lang":"en"},{"fonte":"ANI News","pais":"India","titulo":"India stresses human oversight in AI use during conflicts and flags risks at UN","resumo":"India emphasized at the United Nations the importance of direct human oversight in applying artificial intelligence to armed conflict scenarios. The country warned of the growing risks of misuse of these advanced technologies by non-state actors and extremist groups. Furthermore, it highlighted the urgent need to establish rigorous global standards to ensure safety and ethics in military technological development.","link":"https://www.aninews.in/news/world/us/india-stresses-human-oversight-in-ai-use-during-conflicts-flags-risks-of-misuse-at-un20261125064412","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Correio da Manhã","pais":"Portugal","titulo":"US jury finds Huawei guilty of conspiracy to steal trade secrets","resumo":"A federal jury in the United States found Chinese tech giant Huawei guilty of conspiring to steal trade secrets from American competitors. The decision reinforces historical accusations of industrial espionage and geopolitical tensions between Washington and Beijing. The verdict brings serious legal and financial implications for the global company. Additionally, the case could intensify trade restrictions imposed on the manufacturer in the Western market.","link":"https://www.cmjornal.pt/tecnologia/detalhe/juri-norte-americano-culpa-huawei-de-conspiracao-para-roubar-segredos-comerciais","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Engineer accused of bugging OpenAI headquarters released on million-dollar bail","resumo":"A Saudi-born engineer facing charges of bugging OpenAI facilities has been granted provisional release upon payment of a multi-million dollar bail. The case generated strong repercussions in the tech community by involving potential security breaches at one of the leading artificial intelligence companies. The investigation is ongoing to determine the extent of the confidential information leak.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/25/engenheiro-saudita-acusado-de-grampear-sede-da-openai-e-libertado-apos-fianca-milionaria.ghtml","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"Mashable","pais":"United States","titulo":"Voyager 1 Discovery Leaves Scientists Perplexed As Probe Crosses One Light-Day","resumo":"The Voyager 1 probe has reached the historic milestone of one light-day's distance from Earth and recorded unexpected new astronomical data. Scientists are trying to understand phenomena detected in interstellar space that challenge current astrophysical models. The discovery reinforces the ongoing relevance of the space mission, offering valuable insights into the borders of our solar system.","link":"https://mashable.com/science/voyager-1-biggest-discovery-beyond-solar-system-interstellar-space","categoria":"SCIENCE","lang":"en"},{"fonte":"energynews.pro","pais":"France","titulo":"Nuclear Diamond Batteries secures betavoltaic technology option from Ohio State","resumo":"Startup Nuclear Diamond Batteries has secured the option rights to license innovative betavoltaic technology developed at Ohio State University. The system uses semiconductor diamonds to convert radiation into clean, highly durable electricity. The innovation promises to power low-consumption devices for decades without the need for recharging or replacement. The technology holds immense potential for applications in space exploration, industrial sensors, and medical implants.","link":"https://energynews.pro/nuclear-diamond-batteries-obtient-une-option-sur-la-technologie-betavoltaique-dohio-state","categoria":"SCIENCE","lang":"en"},{"fonte":"GOV.UK","pais":"England","titulo":"New board member appointed to the Science Museum Group","resumo":"The British government announced the appointment of a new trustee to join the leadership of the Science Museum Group in the UK. The professional will play a vital role in strategic guidance and the preservation of one of the world's most important science and innovation collections. The initiative seeks to strengthen science education and encourage public engagement with technological advancement.","link":"https://www.gov.uk/government/news/trustee-appointed-to-the-science-museum-group","categoria":"SCIENCE","lang":"en"},{"fonte":"Xataka","pais":"Spain","titulo":"Science debated for years whether climate change would bring more or fewer lightning strikes; an AI just gave a troubling answer","resumo":"A new artificial intelligence model was applied to analyze global weather patterns and resolve a long-standing scientific impasse. The results indicate a significant change in the frequency and intensity of electrical storms on the planet. This finding reinforces the importance of computational tools in monitoring phenomena resulting from global warming.","link":"https://www.xataka.com/ecologia-y-naturaleza/ciencia-llevaba-anos-debatiendo-cambio-climatico-traeria-rayos-ia-acaba-dar-respuesta-inquietante","categoria":"SCIENCE AND TECHNOLOGY","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Nvidia Controversy: Trump Says Pardoning Huang Is Always an Option","resumo":"Recent statements involving Nvidia's leadership and political tensions in the United States have once again stirred the global tech sector. The mention of a possible presidential pardon for CEO Jensen Huang highlights the climate of regulatory uncertainty and geopolitical pressure on the semiconductor industry. The episode brings significant developments for the financial market and commercial relations between major tech superpowers.","link":"https://www.sueddeutsche.de/wirtschaft/nvidia-kontroverse-trump-begnadigung-huangs-immer-eine-option-dpa.urn-newsml-dpa-com-20090101-261125-930-47305","categoria":"BUSINESS","lang":"en"},{"fonte":"AFP.com","pais":"Japan","titulo":"Kioxia to Showcase 3rd Generation XL-FLASH™ Technology for High-Performance, Low-Latency AI Flash Memory","resumo":"Kioxia announced the demonstration of its new generation of XL-FLASH memory during the KIOXIA Forum, designed to meet the high demands of artificial intelligence processing. The technology brings significant advancements in reducing latency and increasing bandwidth for modern data centers. This innovation aims to accelerate the performance of complex machine learning models and enterprise systems.","link":"https://www.afp.com/en/infos/kioxia-showcase-xl-flashtm-generation-3-technology-next-generation-low-latency-high","categoria":"SEMICONDUCTORS","lang":"en"},{"fonte":"天津大学新闻网","pais":"China","titulo":"Tianjin University Launches Tianhua Kaiwu Large Enzyme Design Model to Boost Biomanufacturing","resumo":"Tianjin University announced the launch of Tianhua Kaiwu, an artificial intelligence model focused on high-precision enzyme design. The innovation aims to overcome the long-standing technological blockade by Western countries and strengthen China's core competitiveness in the biomanufacturing sector. The model promises to accelerate the development of sustainable biotechnological processes and optimize the creation of pharmaceutical and industrial solutions.","link":"https://news.tju.edu.cn/info/1005/622509.htm","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The Times of India","pais":"India","titulo":"Study of 18,457 Skeletons from 45 Countries Reveals Decrease in Human Height with the Advance of Agriculture","resumo":"Comprehensive research analyzed over eighteen thousand skeletons across centuries and identified a decrease in the average size of human beings. The study points out that the emergence of agriculture and new technologies initially caused declines in nutrition and health among the world's population. These findings offer a new perspective on the socioeconomic and biological impacts of the transition to agricultural life.","link":"https://timesofindia.indiatimes.com/science/archaeology/study-reveals-shocking-link-between-technology-farming-and-declining-human-height-over-centuries/articleshow/136128658.cms","categoria":"SCIENCE","lang":"en"},{"fonte":"Jornal de Negócios","pais":"Portugal","titulo":"Portuguese Technology Helps Predict Airport Delays","resumo":"A new technological solution developed in Portugal promises to optimize air traffic management and predict airport delays. The tool uses advanced algorithms to analyze operational and weather data in real-time. As a result, airlines and airport managers can make preventive decisions much more effectively. The innovation aims to significantly improve the passenger experience and reduce operating costs.","link":"https://www.jornaldenegocios.pt/negocios-iniciativas/premio-nacional-de-inovacao/detalhe/tecnologia-portuguesa-ajuda-a-prever-atrasos-nos-aeroportos","categoria":"INNOVATION","lang":"en"},{"fonte":"CNN Brasil","pais":"Brazil","titulo":"At the UN, Brazil Defends Mandatory Human Control Over Artificial Intelligence in Armed Conflicts","resumo":"During debates at the United Nations, Brazilian diplomacy positioned itself firmly in favor of strict regulation of autonomous military technologies. The country argued that any decision regarding the use of lethal force by artificial intelligence-based systems must strictly maintain human supervision and judgment. The initiative seeks to mitigate the ethical and humanitarian risks arising from the automation of modern warfare.","link":"https://www.cnnbrasil.com.br/internacional/na-onu-brasil-defende-controle-humano-sobre-ia-em-conflitos-armados/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"News-Medical","pais":"United States","titulo":"Neonatal Dialysis Technology Transforms Care for Babies with Kidney Disease","resumo":"A new breakthrough in neonatal dialysis technology is revolutionizing intensive care for newborns with severe renal failure. The miniaturized equipment allows for greater technical precision, reducing surgical risks and significantly increasing baby survival rates. The innovation represents a milestone for global pediatric medicine by making therapies previously unfeasible for such small patients viable.","link":"https://www.news-medical.net/news/20261124/Neonatal-dialysis-technology-transforms-care-for-babies-with-kidney-disease.aspx","categoria":"HEALTH AND TECHNOLOGY","lang":"en"},{"fonte":"El Debate","pais":"Spain","titulo":"In 2022 We Hit an Asteroid to Protect Earth: Now It Is Time to Verify If It Worked","resumo":"The space mission that collided a probe with an asteroid enters a crucial new phase of data analysis. Scientists are working to examine the orbital alteration and debris generated by the defensive impact. The final results should consolidate planetary defense strategies against potential future cosmic threats.","link":"https://www.eldebate.com/ciencia/20261125/ano-2022-golpeamos-asteroide-proteger-tierra-ahora-toca-comprobar-funciono_484689.html","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"Bizarre: Physicists Transmit Messages Using Gravity","resumo":"In an unprecedented experiment, scientists successfully used gravitational waves and fields to encode and transmit information over a distance. Although the technology is still in an advanced theoretical and experimental stage, the technique demonstrates that the force of gravity can be manipulated for communication. The feat is considered a milestone for fundamental physics and could pave the way for incalculably complex new transmission methods.","link":"https://wissenschaft.de/artikel/skurril-physiker-uebermitteln-botschaften-mittels-gravitation","categoria":"PHYSICS","lang":"en"},{"fonte":"kakaku.com","pais":"Japan","titulo":"Ecovacs Launches Two New Robot Vacuum Models with Advanced Cleaning and Automation Technologies","resumo":"Ecovacs has expanded its line of smart home appliances with the introduction of the DEEBOT T80S MAX OMNI robot vacuum and another complementary model. The new devices feature enhanced suction capabilities, high-precision autonomous navigation, and fully automated multi-functional cleaning stations. The launches aim to consolidate the company's leadership in the global smart home automation and cleaning market.","link":"https://news.kakaku.com/prdnews/cd=kaden/ctcd=2130/id=160574/","categoria":"ROBOTICS","lang":"en"},{"fonte":"21财经","pais":"China","titulo":"Guangzhou's Economy Grows in First 10 Months as Electric Vehicle Production Jumps 55%","resumo":"Economic data from the first ten months of the year in Guangzhou revealed an expressive 55% growth in the production of clean energy vehicles. The result reflects the strong acceleration of China's automotive industry and the city's consolidation as an electric vehicle hub. The performance solidifies the region's technological leadership in the global transition to sustainable mobility.","link":"https://www.21jingji.com/article/20261125/herald/222659637504b04bd044526ff990c64c.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"pib.gov.in","pais":"India","titulo":"The Semiconductor and Artificial Intelligence Revolution","resumo":"The intersection between semiconductor advancement and artificial intelligence growth is transforming global technology infrastructure. New chips are being specifically designed to supply the massive processing demands required by complex AI models. This movement drives industrial innovation and strategically positions countries in the international economic and technological landscape.","link":"https://www.pib.gov.in/FactsheetDetails.aspx?Id=150860\u0026reg=48\u0026lang=2","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"ECO","pais":"Portugal","titulo":"European Innovation Act: How to Transform Science into Economic Growth","resumo":"The European Innovation Act emerges as a strategic initiative to boost the conversion of scientific research into market solutions. The proposal seeks to reduce bureaucracy in funding and encourage the creation of deep tech startups on the European continent. Experts highlight the importance of integrating universities, industries, and governments to strengthen global competitiveness. This movement is seen as fundamental to ensuring Europe's technological sovereignty.","link":"https://eco.sapo.pt/opiniao/o-european-innovation-act-como-transformar-ciencia-em-crescimento-economico/","categoria":"SCIENCE","lang":"en"},{"fonte":"Prefeitura Municipal de Amambai","pais":"Brazil","titulo":"Mato Grosso do Sul Receives Unprecedented Technology to Combat Aedes aegypti","resumo":"The municipality of Amambai is implementing an innovative technological solution developed to control the population of the mosquito that transmits dengue and other arboviruses. The initiative applies advanced scientific methods of vector monitoring and suppression, promising greater efficiency compared to traditional methods. The pilot project serves as a public health innovation model for the entire Midwest region.","link":"https://www.amambai.ms.gov.br/noticia/62353/amambai-recebe-tecnologia-inedita-em-mato-grosso-do-sul-para-combater-o-aedes-aegypti-neste-sabado","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"OpenAI","pais":"United States","titulo":"GPT-6 Models Demonstrate Intrinsic Protein Design Capabilities","resumo":"The new models of the GPT-6 architecture have demonstrated advanced skills in the development and intrinsic design of synthetic proteins. This artificial intelligence capability accelerates drug discovery and the creation of personalized biological treatments for various diseases. The expected impact on biotechnology is profound, reducing costs and years of research in traditional laboratories.","link":"https://openai.com/index/gpt-6-models-demonstrate-intrinsic-protein-design-capabilities/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"MarketScreener España","pais":"Spain","titulo":"Chinese Stock Markets Fall Due to Tech Sell-Off and Renewed Trade Tensions with the United States","resumo":"The Asian financial market recorded significant declines led by the technology sector due to new restrictions and geopolitical disputes. The instability reflects investors' concerns over the tightening of trade policies between Washington and Beijing. The scenario puts pressure on global supply chains and the financing of technological innovations.","link":"https://es.marketscreener.com/noticias/las-bolsas-chinas-caen-por-las-ventas-en-tecnolog-a-y-la-reactivaci-n-de-las-tensiones-comerciales-c-ce7851dbdf80fe23","categoria":"GLOBAL MARKET","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"How Much Microplastic Floats in the Air of Our Homes?","resumo":"Recent studies warn of the massive presence of microscopic plastic particles in the air we breathe indoors. The degradation of synthetic fabrics, furniture, and packaging contributes significantly to the accumulation of these substances in residences. Experts are investigating the ongoing health impacts of this inhalation, advocating for better ventilation and efficient air filters.","link":"https://wissenschaft.de/artikel/wie-viel-mikroplastik-schwebt-in-unserer-wohnungsluft","categoria":"ENVIRONMENT","lang":"en"},{"fonte":"株式会社イード","pais":"Japan","titulo":"SAVAWAY Files Patent for Inventory Control Technology Aimed at AI Agent-Based Commerce","resumo":"With the rise of artificial intelligence agents making purchases autonomously, inventory management has become a new challenge for e-commerce. SAVAWAY has developed a patented solution that optimizes allocation and inventory flow for automated robot transactions. This technology aims to prepare the infrastructure of virtual stores for the era of AI-driven electronic commerce.","link":"https://www.iid.co.jp/news/press/2026/112501.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Báo VietNamNet","pais":"China","titulo":"Should Samsung Learn from Huawei's Camera Technology for the Galaxy S27 Ultra?","resumo":"Analysts and smartphone industry enthusiasts are debating how Huawei's recent optical innovations could influence Samsung's future projects for the Galaxy S27 Ultra line. The Chinese manufacturer's leadership in sensors and image processing reaffirms China's vanguard position in the mobile segment. This scenario highlights how Chinese technologies are dictating global competition trends and standards.","link":"https://vietnamnet.vn/en/should-samsung-learn-from-huawei-s-camera-technology-for-galaxy-s27-ultra-2578337.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"News On AIR","pais":"India","titulo":"India's Space Economy Projected to Reach $45 Billion in Under a Decade Driven by Private Sector","resumo":"India's Union Minister announced that the country's space economy will reach between 40 and 45 billion dollars in less than ten years. The sector's meteoric growth is driven primarily by the increased participation of private companies and innovative startups. This expansion consolidates India as one of the major global powers in commercial space exploration and aerospace development.","link":"https://newsonair.gov.in/indias-space-economy-to-reach-40-to-45-billion-dollars-in-under-decade-as-private-sector-drives-growth-says-union-minister-jitendra-singh/","categoria":"SPACE TECHNOLOGY","lang":"en"},{"fonte":"Governo Federal","pais":"Brazil","titulo":"Federal District Security Reinforced with Anti-Drone Technology Delivered by the Ministry of Justice","resumo":"The Ministry of Justice and Public Security delivered an advanced anti-drone technology system to reinforce security arrangements in the federal capital. The equipment allows for the detection, identification, and neutralization of unauthorized aircraft in restricted areas of Brasília. The measure aims to protect national authorities, international delegations, and critical infrastructure against potential aerial threats.","link":"https://www.gov.br/mj/pt-br/assuntos/noticias/seguranca-do-distrito-federal-e-reforcada-com-tecnologia-antidrones-entregue-pelo-mjsp","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Mercy","pais":"United States","titulo":"TIME Magazine Adds Aidoc, Mercy Technology Partner, to Best Inventions List","resumo":"TIME magazine included Aidoc's artificial intelligence platform among the top inventions of the year for its impact on medical diagnosis. Used across the Mercy health network, the technology accelerates the identification of critical radiological anomalies in record time. The achievement highlights the rapid consolidation of generative and predictive AI in the hospital and medical sector.","link":"https://www.mercy.net/newsroom/2026-11-24/time-magazine-adds-mercy-technology-partner-aidoc-to-best-invent/","categoria":"INNOVATION","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"What If We Talk About Spain's Future? Let's Talk About Science","resumo":"Debates on Spain's strategic development place investment in research and innovation at center stage. Experts argue that strengthening the scientific ecosystem is vital for the country's technological and economic sovereignty. The initiative seeks to engage society and public managers in building long-term policies.","link":"https://elpais.com/ciencia/2026-11-25/y-si-hablamos-del-futuro-de-espana-hablemos-de-ciencia.html","categoria":"SCIENCE","lang":"en"},{"fonte":"RiffReporter","pais":"Germany","titulo":"AI: German Science Guards Against Imminent Data Theft","resumo":"Research institutions in Germany are reinforcing their cybersecurity infrastructures to protect scientific collections against unauthorized web scraping and data espionage by artificial intelligences. The accelerated advancement of language models has driven improper access to valuable intellectual property. The new guidelines aim to guarantee the country's technological sovereignty without compromising global academic collaboration.","link":"https://www.riffreporter.de/de/wissen/wissenschaft-kuenstliche-intelligenz-angst-vor-datenabfluss-openai-anthropic-lokale-ki","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"日本経済新聞","pais":"Japan","titulo":"IID and SAVAWAY Register Inventory Control Patent Focused on the Era of Purchases Made by AI Agents","resumo":"Official financial disclosures highlight SAVAWAY's new inventory control technology tailored to the AI agent commerce ecosystem. The innovation responds to market transition where autonomous algorithms take over online shopping decisions and execution. The technology ensures that digital platforms maintain availability accuracy without suffering operational bottlenecks resulting from autonomous competition.","link":"https://www.nikkei.com/nkd/disclosure/tdnr/20261124585407/","categoria":"BUSINESS","lang":"en"},{"fonte":"Sky News","pais":"China","titulo":"Historic First: Why This Chinese Rocket Launch Is So Significant","resumo":"China reached a historic milestone in its space program with the successful recent orbital launch of a new commercial rocket. The event represents an expressive advancement in the country's astronautical capabilities, consolidating the infrastructure necessary for future missions. Analysts point out that this achievement reinforces Chinese technological sovereignty and expands its competitiveness in the global space race.","link":"https://news.sky.com/video/historic-first-why-this-chinese-rocket-launch-is-so-significant-13616251","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"Comisión Económica para América Latina y el Caribe","pais":"Brazil","titulo":"Latin America and the Caribbean Discuss Cooperation Agenda in Science, Technology, and Innovation in Brazil","resumo":"Representatives from various Latin American and Caribbean countries gathered in Brazil to establish strategic guidelines aimed at regional productive transformation. The meeting highlighted the importance of sharing research, investing in applied science, and integrating technological innovation policies. The cooperation aims to strengthen the region's competitiveness against global economic and environmental challenges.","link":"https://www.cepal.org/en/pressreleases/latin-america-and-caribbean-discusses-brazil-cooperation-agenda-science-technology-and","categoria":"INNOVATION","lang":"en"},{"fonte":"NASA Science (.gov)","pais":"United States","titulo":"NASA's Titan-Bound Dragonfly Rotorcraft Gets Its Eyes","resumo":"NASA's Dragonfly mission has reached a crucial milestone with the installation of optical sensors and advanced cameras that will serve as the rotorcraft's eyes. The aircraft will explore the surface of Titan, Saturn's largest moon, in search of prebiotic chemical compounds. The project expands the frontiers of space robotics by enabling autonomous flights in a dense extraterrestrial atmosphere.","link":"https://science.nasa.gov/missions/dragonfly/nasas-titan-bound-dragonfly-rotorcraft-gets-its-eyes/","categoria":"SPACE EXPLORATION","lang":"en"},{"fonte":"Atlántico","pais":"Spain","titulo":"Technology from Centum Company Helps in Search for Missing Mountaineer","resumo":"Advanced radiolocation systems developed in Galicia were deployed in a complex rescue operation in hard-to-reach areas. The technology makes it possible to identify cell phone signals even without traditional network coverage in the region. The case highlights the fundamental role of applied innovation in emergency and rescue missions.","link":"https://www.atlantico.net/economia/tecnologia-viguesa-centum-busqueda-montanero_1_20261125-4506883.html","categoria":"INNOVATION","lang":"en"},{"fonte":"SZ.de","pais":"Germany","titulo":"Energy Transition: Solar Energy Surpasses the 100 Terawatt-Hour Mark for the First Time","resumo":"The transition to clean sources in Germany reached a historic milestone by exceeding one hundred terawatt-hours of electricity generated by photovoltaic energy in a single year. The advance reflects massive investments in sustainable infrastructure and the expansion of solar parks across the country. This result solidifies German leadership in renewable energies and accelerates the decarbonization target for the European energy matrix.","link":"https://www.sueddeutsche.de/wirtschaft/energiewende-solarstrom-knackt-erstmals-die-marke-von-100-terawattstunden-dpa.urn-newsml-dpa-com-20090101-261125-930-47200","categoria":"ENERGY","lang":"en"},{"fonte":"Digital PR Platform","pais":"Japan","titulo":"DIC and Toyo Kagaku Introduce Pilot Line for Commercialization of DeReSus® Material Recycling Technology","resumo":"Japanese companies DIC and Toyo Kagaku have joined forces to build a pilot line focused on the commercialization of the DeReSus® recycling process. The technology aims to transform hard-to-treat plastic waste into high-quality reusable materials, promoting the circular economy. This initiative represents a crucial step forward in the pursuit of sustainable industrial processes within Japan's chemical industry.","link":"https://digitalpr.jp/r/149247","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"中国日报网","pais":"China","titulo":"Shanghai Jiao Tong University Virtualization Technology Strengthens Computing Base for AI Agents","resumo":"Researchers at Shanghai Jiao Tong University have developed an innovative virtualization technology focused on optimizing computational processing for intelligent agents. The solution makes it possible to efficiently integrate multiple computing resources to support heavy AI workloads. This architecture paves the way for breakthroughs in the development of autonomous, high-performance artificial intelligence.","link":"https://cn.chinadaily.com.cn/a/202611/25/WS6b06421de4b0e14252fcd458.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Agência FAPESP","pais":"Brazil","titulo":"Unpublished Manuscript by Paul Feyerabend Reveals Scientific Roots of His Philosophy","resumo":"The discovery and analysis of an unpublished text by renowned philosopher Paul Feyerabend shed new light on the evolution of his thought regarding science. The document demonstrates how his criticisms of rigid methodologies were grounded in a deep understanding of empirical scientific work. The publication promises to reignite important historiographical and epistemological debates among scholars worldwide.","link":"https://agencia.fapesp.br/manuscrito-inedito-de-paul-feyerabend-ajuda-a-revelar-as-raizes-cientificas-de-sua-filosofia/59686","categoria":"SCIENCE","lang":"en"},{"fonte":"O GLOBO","pais":"United States","titulo":"Chinese Tech Giant Huawei Convicted in US for Fraud and Theft of Secrets","resumo":"Chinese tech giant Huawei has been found guilty by a U.S. court of illicit practices including bank fraud and trade secret theft. The ruling concludes a lengthy legal battle and is expected to further tighten market restrictions imposed on foreign tech companies in the country. The verdict heightens global geopolitical tensions and reshapes telecommunications supply chains.","link":"https://oglobo.globo.com/economia/noticia/2026/11/24/huawei-e-considerada-culpada-de-acusacoes-criminais-nos-eua-em-caso-historico.ghtml","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"Deia","pais":"Spain","titulo":"Technology and Data to Shape a More Efficient Biscay","resumo":"The Biscay region has implemented a comprehensive project based on data intelligence to optimize public services and urban mobility. The initiative aims to improve administrative decision-making and sustainability in local resource management. The model serves as a benchmark for the digital transformation of regional governments.","link":"https://www.deia.eus/economia/2026/11/25/tecnologia-datos-bizkaia-eficiente-11779543.html","categoria":"SMART CITIES","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
