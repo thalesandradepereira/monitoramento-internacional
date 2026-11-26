@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-e//8AOGn9VDeKrYCmRF2uSCY'; script-src 'nonce-e//8AOGn9VDeKrYCmRF2uSCY'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="e//8AOGn9VDeKrYCmRF2uSCY">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">26/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="e//8AOGn9VDeKrYCmRF2uSCY">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"Jornal do Comércio","pais":"Brasil","titulo":"Código aberto devolve o controle para quem usa a tecnologia, diz SUSE","resumo":"A SUSE destacou a relevância do código aberto para garantir soberania digital e flexibilidade às empresas contemporâneas. O modelo open source surge como alternativa crucial frente à dependência de fornecedores proprietários e custos crescentes de licenciamento. Essa abordagem fortalece a inovação comunitária e acelera a adoção segura de novas tecnologias em ecossistemas corporativos.","link":"https://www.jornaldocomercio.com/economia/2026/11/1271717-codigo-aberto-devolve-o-controle-para-quem-usa-a-tecnologia-diz-suse.html","categoria":"SOFTWARE LIVRE","lang":"pt"},{"fonte":"O GLOBO","pais":"Estados Unidos","titulo":"Neuralink recebe autorização para testar chip cerebral em pacientes com paralisia","resumo":"A empresa de neurotecnologia de Elon Musk obteve aprovação regulatória para expandir os testes clínicos de seu dispositivo implantável. O objetivo principal do ensaio é permitir que pessoas com tetraplegia controlem dispositivos digitais apenas com o pensamento. Essa nova fase representa um marco decisivo na interface cérebro-computador para reabilitação médica. Os avanços podem transformar radicalmente o tratamento de severas limitações motoras no futuro.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/25/neuralink-de-elon-musk-recebe-autorizacao-para-testar-chip-cerebral-em-pacientes-com-paralisia.ghtml","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Sud Ouest","pais":"França","titulo":"Saúde: \"Respostas erradas ou inadequadas\", a agência de segurança do medicamento alerta para os perigos dos conselhos médicos fornecidos por inteligência artificial","resumo":"A Agência Nacional de Segurança do Medicamento da França alertou publicamente sobre os riscos do uso de ferramentas de inteligência artificial para a obtenção de conselhos médicos. A entidade destacou que diversos sistemas têm fornecido orientações imprecisas ou completamente inadequadas aos usuários. Essa situação pode levar a diagnósticos incorretos e atrasar o tratamento adequado de condições de saúde graves. Diante desse cenário, especialistas reforçam a importância de consultar profissionais humanos qualificados antes de tomar qualquer decisão sobre tratamentos.","link":"https://www.sudouest.fr/sciences-et-technologie/intelligence-artificielle/sante-des-reponses-erronees-ou-inadaptees-l-agence-de-securite-du-medicament-alerte-sur-les-dangers-des-conseils-medicaux-delivres-par-l-intelligence-artificielle-31675809.php","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"International Mining","pais":"Inglaterra","titulo":"Plus Pumps e PlusSmart Technology fecham parceria para permitir monitoramento remoto global de bombas","resumo":"A Plus Pumps firmou uma parceria estratégica com a PlusSmart Technology para implementar soluções avançadas de monitoramento remoto em bombas industriais globalmente. A tecnologia permite o acompanhamento em tempo real do desempenho e da manutenção preventiva dos equipamentos, otimizando operações e reduzindo custos. A iniciativa promete transformar a eficiência operacional do setor ao integrar conectividade inteligente e análise preditiva de dados.","link":"https://im-mining.com/2026/11/26/plus-pumps-plussmart-technology-partner-to-enable-global-remote-monitoring-of-pumps/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"RTVE.es","pais":"Espanha","titulo":"O experimento de defesa planetária da NASA deixa uma cratera do tamanho de um estádio no asteroide Dimorphos","resumo":"A missão DART da NASA demonstrou com sucesso a capacidade da humanidade de alterar a trajetória de um corpo celeste ao colidir intencionalmente com a lua de asteroide Dimorphos. Observações recentes revelaram que o impacto cinético alterou significativamente a estrutura do objeto, criando uma cratera massiva. Este feito representa um marco histórico para a ciência e para o desenvolvimento de tecnologias de defesa planetária contra futuras ameaças espaciais.","link":"https://www.rtve.es/noticias/20261126/nasa-dart-defensa-planetaria-crater-asteroide-dimorphos/17331466.shtml","categoria":"CIÊNCIA ESPACIAL","lang":"pt"},{"fonte":"Bild der Wissenschaft","pais":"Alemanha","titulo":"'BrainBots' transportam princípios ativos para o cérebro","resumo":"Pesquisadores desenvolveram nanorrobôs conhecidos como BrainBots, projetados para navegar pelo sistema circulatório e entregar medicamentos diretamente no cérebro. Essa inovação promete revolucionar o tratamento de doenças neurológicas complexas, como tumores cerebrais e Alzheimer, ao ultrapassar a barreira hematoencefálica. O avanço representa um grande marco para a medicina de precisão e para a nanotecnologia aplicada à saúde.","link":"https://wissenschaft.de/artikel/brainbots-transportieren-wirkstoffe-ins-gehirn","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"EnterpriseZine","pais":"Japão","titulo":"Fujitsu oferecerá novo serviço de segurança utilizando tecnologia OpenAI Daybreak","resumo":"A Fujitsu anunciou o desenvolvimento de uma nova solução de segurança da informação baseada na tecnologia OpenAI Daybreak. A iniciativa visa aprimorar o monitoramento e a resposta a ameaças cibernéticas complexas em ambientes corporativos. O impacto esperado inclui maior automação e eficiência na proteção de dados críticos contra ataques de última geração.","link":"https://enterprisezine.jp/news/detail/25579","categoria":"SEGURANÇA DIGITAL","lang":"pt"},{"fonte":"上海国际人才网","pais":"China","titulo":"Aproveitando a oportunidade estratégica, Xangai cria um 'cérebro de IA' para instrumentos científicos nacionais","resumo":"Xangai está impulsionando o desenvolvimento de instrumentos científicos nacionais através da integração de inteligência artificial avançada. A iniciativa busca criar um ecossistema tecnológico mais independente e inovador para impulsionar a pesquisa científica. O projeto representa um marco estratégico para consolidar a autonomia tecnológica da China no setor de alta precisão.","link":"https://www.sh-italent.com/Article/202611/202611250004.shtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"SCC Online","pais":"Índia","titulo":"Workshop UPSIFS 2026: Especialistas discutem policiamento guiado por IA, preparação cibernética e adoção de tecnologia confiável no governo","resumo":"O workshop da UPSIFS reuniu especialistas para debater a integração de inteligência artificial na segurança pública e governança. O evento destacou a urgência de fortalecer a cibersegurança e adotar tecnologias confiáveis nas instituições. Essa iniciativa busca modernizar as estratégias de policiamento e preparar o setor público para futuros desafios digitais.","link":"https://www.scconline.com/blog/post/2026/11/26/upsifs-workshop-2026-ai-law-enforcement-cybersecurity/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"Fabricação de gelo no Ártico para combater o aquecimento global","resumo":"Iniciativas inovadoras buscam recriar camadas de gelo na região ártica para tentar conter os impactos avassaladores das mudanças climáticas globais. O projeto utiliza engenharia ambiental de ponta para reverter o derretimento polar e resfriar o planeta. A abordagem levanta debates científicos sobre a eficácia de intervenções artificiais em grande escala na natureza.","link":"https://pplware.sapo.pt/ciencia/startup-real-ice-congelar-artico-agua-mar/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Governo Federal","pais":"Brasil","titulo":"MCTI investe R$ 120 milhões em pesquisas para o desenvolvimento de tecnologias inovadoras para o SUS","resumo":"O Ministério da Ciência, Tecnologia e Inovação anunciou um aporte substancial de R$ 120 milhões voltado ao Sistema Único de Saúde. Os recursos apoiarão projetos científicos focados na criação de novos tratamentos, diagnósticos avançados e equipamentos médicos nacionais. A iniciativa visa fortalecer a autonomia tecnológica do setor de saúde brasileiro e aprimorar o atendimento público à população.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2026/11/mcti-investe-r-120-milhoes-em-pesquisas-para-o-desenvolvimento-de-tecnologias-inovadoras-para-o-sus","categoria":"CIÊNCIA E SAÚDE","lang":"pt"},{"fonte":"The New York Times","pais":"Estados Unidos","titulo":"Missão Hera da Europa divulga imagens detalhadas de asteroide atingido pela NASA","resumo":"A Agência Espacial Europeia divulgou novos registros em alta resolução do sistema de asteroides Dimorphos e Didymos. As imagens mostram os impactos causados pela espaçonave DART da NASA em sua missão de defesa planetária. Os cientistas analisam a topografia resultante para entender a eficácia de desviar asteroides potencialmente perigosos. A cooperação internacional reforça o progresso nos estudos de segurança espacial humana.","link":"https://www.nytimes.com/2026/11/25/science/hera-nasa-photos-dart-asteroid.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Electroniques","pais":"França","titulo":"Alice \u0026 Bob eleva suas ambições quânticas","resumo":"A startup francesa Alice \u0026 Bob anunciou uma expansão significativa em suas metas de desenvolvimento de computação quântica. A empresa visa aprimorar a arquitetura de seus qubits cat para criar computadores quânticos tolerantes a falhas de forma mais rápida. Esse avanço posiciona a França na vanguarda da corrida tecnológica global por supercomputadores seguros e eficientes. O movimento reflete o amadurecimento do ecossistema europeu de tecnologia profunda e atrai novos investimentos estratégicos.","link":"https://www.electroniques.biz/technologie/circuits-numeriques/alice-bob-revoit-ses-ambitions-quantiques-a-la-hausse/","categoria":"COMPUTAÇÃO QUÂNTICA","lang":"pt"},{"fonte":"The Independent","pais":"Inglaterra","titulo":"Google registra patente de canal de TV com IA que coloca espectadores como protagonistas","resumo":"O Google deu entrada no registro de uma patente inovadora para um sistema de canal de televisão alimentado por inteligência artificial que insere o próprio espectador na narrativa como personagem principal. A tecnologia utiliza geração de conteúdo em tempo real para adaptar histórias, cenários e diálogos de acordo com as preferências do usuário. Essa abordagem promete revolucionar o entretenimento interativo e a personalização de mídias digitais.","link":"https://www.independent.co.uk/tech/ai-tv-channel-google-patent-b3091877.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"El Mundo","pais":"Espanha","titulo":"Por que passar horas sem comer aguça o engenho: a ciência decifra a ligação entre o jejum e o cérebro","resumo":"Pesquisadores científicos identificaram os mecanismos biológicos pelos quais períodos de jejum intermitente afetam positivamente a cognição humana. A privação temporária de alimento ativa respostas evolutivas no cérebro que aumentam o foco, a clareza mental e a plasticidade neuronal. O estudo oferece novas perspectivas sobre como hábitos alimentares e restrições calóricas estratégicas podem beneficiar a saúde neurológica e o desempenho intelectual.","link":"https://www.elmundo.es/salud/2026/11/25/6b070798e9cf4a8f208b45b6.html","categoria":"CIÊNCIA E SAÚDE","lang":"pt"},{"fonte":"Le Parisien","pais":"Alemanha","titulo":"Guerra na Ucrânia: 'Tecnologia de ponta e poder de fogo', Kiev recebe seus primeiros blindados Lynx novinhos vindos da Alemanha","resumo":"A Ucrânia recebeu o primeiro lote de veículos blindados de combate Lynx de última geração fornecidos diretamente pela Alemanha. Os veículos contam com tecnologia militar avançada, alta capacidade de sobrevivência e grande poder de fogo para reforçar o exército ucraniano. A entrega marca uma nova fase no suporte tecnológico e militar de Berlim às forças armadas de Kiev no conflito.","link":"https://www.leparisien.fr/international/ukraine/guerre-en-ukraine-technologie-de-pointe-et-puissance-de-feu-kiev-receptionne-ses-premiers-blindes-lynx-flambant-neufs-venus-dallemagne-26-11-2026-AREPE7EV6FFY3FJ2YRYQJ7FZIE.php","categoria":"DEFESA","lang":"pt"},{"fonte":"客观日本","pais":"Japão","titulo":"Universidade de Kyushu descobre mecanismo de esquecimento seletivo de memória","resumo":"Pesquisadores da Universidade de Kyushu identificaram, por meio de experimentos com nematódeos, um mecanismo neural que regula o esquecimento seletivo de memórias. A pesquisa mapeou as moléculas e os circuitos neurais específicos envolvidos no processo. Essa descoberta abre novos caminhos para entender distúrbios cognitivos e o funcionamento da memória humana.","link":"https://www.keguanjp.com/kgjp_keji/kgjp_kj_smkx/pt20261126000012.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"ThePaper.cn","pais":"China","titulo":"Wang Xingxing: OpenAI não desistiu de robôs, mas focou em convergência técnica; IA física não tem barreiras intransponíveis","resumo":"Especialistas discutem o futuro da robótica e da inteligência artificial aplicada ao mundo físico. A convergência técnica está moldando uma nova era para o desenvolvimento de robôs humanoides e autônomos. As barreiras tecnológicas estão sendo superadas rapidamente com novos modelos de aprendizado e adaptação.","link":"https://www.thepaper.cn/newsDetail_forward_34563486","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"scanx.trade","pais":"Índia","titulo":"IPO da Airpro Technology India: Nova emissão de ₹24,91 crore e lucro líquido com alta de 438% em dois anos","resumo":"A Airpro Technology India anunciou sua oferta pública inicial de ações, movimentando uma quantia expressiva no mercado financeiro. A empresa demonstrou um crescimento financeiro notável, registrando um aumento expressivo em seu lucro líquido ao longo dos últimos dois anos. Esse movimento reflete a forte expansão e a atratividade do setor tecnológico indiano para investidores.","link":"https://scanx.trade/stock-market-news/ipo/airpro-technology-india-ipo-24-91-crore-fresh-issue-pat-up-438-two-check-allotment-status/57212842","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Tecnologia naval une Portugal e Espanha","resumo":"Uma nova parceria estratégica entre Portugal e Espanha fortalece o desenvolvimento conjunto de tecnologias avançadas voltadas para o setor naval. A cooperação visa aumentar a competitividade da península ibérica no mercado marítimo internacional através da inovação digital. O acordo prevê intercâmbio de conhecimento e o fomento a projetos de engenharia sustentável nos oceanos.","link":"https://sapo.pt/artigo/tecnologia-naval-une-portugal-e-espanha-6b073f686f3268eeeb90c86f","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Governo Federal","pais":"Brasil","titulo":"Inmetro inaugura novos laboratórios para fortalecer a ciência, tecnologia e a inovação no Brasil","resumo":"O Inmetro inaugurou novas instalações laboratoriais dedicadas à pesquisa metrológica e ao desenvolvimento de padrões de qualidade avançados. As novas estruturas atendem exigências crescentes de inovação industrial e garantem suporte a múltiplos setores tecnológicos do país. O investimento reforça a soberania científica nacional e eleva a competitividade do Brasil no mercado global.","link":"https://www.gov.br/inmetro/pt-br/centrais-de-conteudo/noticias/2026/inmetro-inaugura-novos-laboratorios-para-fortalecer-a-ciencia-e-a-inovacao-no-brasil","categoria":"INFRAESTRUTURA","lang":"pt"},{"fonte":"The Guardian","pais":"Estados Unidos","titulo":"Governo dos EUA aprova plano da SpaceX para centros de dados no espaço","resumo":"As autoridades norte-americanas concederam autorização para a SpaceX implantar satélites voltados ao processamento de dados e inteligência artificial na órbita terrestre. A iniciativa visa fornecer infraestrutura computacional orbital para suprir a demanda global de IA com menor latência. O projeto revoluciona o mercado de telecomunicações e computação de alta performance fora da Terra. Espera-se um aumento significativo no volume de lançamentos nos próximos anos.","link":"https://www.theguardian.com/us-news/2026/nov/25/spacex-datacenter-satellites-approval","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Electroniques","pais":"França","titulo":"Os capacitores eletrolíticos de alumínio da Vishay aumentam a tensão","resumo":"A Vishay Intertechnology apresentou avanços significativos em sua linha de capacitores eletrolíticos de alumínio com maior capacidade de tensão. Os novos componentes foram projetados para atender às rigorosas exigências de aplicações industriais e automotivas modernas. Essa inovação permite maior eficiência energética em sistemas de conversão de energia e veículos elétricos. O lançamento fortalece a cadeia de suprimentos eletrônicos para infraestruturas de alta potência.","link":"https://www.electroniques.biz/technologie/passifs/les-condensateurs-electrolytiques-aluminium-de-vishay-montent-en-tension/","categoria":"ELETRÔNICA","lang":"pt"},{"fonte":"The Guardian","pais":"Inglaterra","titulo":"IA ajuda a recriar voz do falecido narrador John Motson para jogo de futebol","resumo":"Ferramentas avançadas de inteligência artificial foram utilizadas para recriar a icônica voz do falecido narrador esportivo John Motson em um novo jogo de futebol. A iniciativa visa prestar uma homenagem à lenda do jornalismo britânico, trazendo sua narração marcante para as novas gerações de jogadores. A novidade destaca o avanço das tecnologias de síntese vocal na indústria de entretenimento e jogos eletrônicos.","link":"https://www.theguardian.com/media/2026/nov/25/ai-helps-resurrect-voice-john-motson-football-video-game-fc27","categoria":"GAMES","lang":"pt"},{"fonte":"Diario AS","pais":"Espanha","titulo":"Cinco avanços tecnológicos para 2027 que parecem saídos da ficção científica","resumo":"Especialistas apontam cinco inovações disruptivas que devem transformar o cotidiano global até o ano de 2027, aproximando a realidade de cenários futuristas. As tendências incluem desde avanços em computação quântica e inteligência artificial autônoma até biotecnologia avançada e novas interfaces cérebro-máquina. Essas tecnologias prometem redefinir indústrias inteiras, impactando a saúde, a mobilidade e a forma como a sociedade interage com o mundo digital.","link":"https://as.com/meristation/betech/cinco-avances-tecnologicos-para-2027-que-parecen-sacados-de-la-ciencia-ficcion-f202611-n/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"n-tv.de","pais":"Alemanha","titulo":"Ações de chips em queda livre: Nvidia arrasta Wall Street para baixo","resumo":"As ações do setor de semicondutores sofreram forte desvalorização no mercado financeiro global, lideradas por uma queda expressiva nos papéis da Nvidia. O movimento negativo impactou fortemente os principais índices de Wall Street, gerando apreensão entre investidores de tecnologia. Analistas apontam incertezas econômicas e ajustes no setor de inteligência artificial como fatores determinantes para essa retração.","link":"https://www.n-tv.de/wirtschaft/Nvidia-reisst-die-Wall-Street-in-die-Tiefe-id31578217.html","categoria":"MERCADO","lang":"pt"},{"fonte":"九州大学","pais":"Japão","titulo":"Universidade de Kyushu e Asahi Kasei avaliam impacto econômico e ambiental da reciclagem de eletrodos","resumo":"Um projeto conjunto de pesquisa entre a Universidade de Kyushu e a empresa Asahi Kasei busca quantificar os valores ambientais e econômicos da reciclagem de eletrodos de baterias. A iniciativa visa estabelecer métricas precisas para apoiar a transição energética e a sustentabilidade no setor de baterias. O estudo reforça o desenvolvimento de tecnologias mais limpas e economicamente viáveis.","link":"https://www.kyushu-u.ac.jp/ja/notices/view/3217","categoria":"SUSTENTABILIDADE","lang":"pt"},{"fonte":"黑龙江日报","pais":"China","titulo":"Tecnologia robusta do Instituto de Tecnologia de Harbin apoia a missão de voo espacial Shenzhou 24","resumo":"O Instituto de Tecnologia de Harbin forneceu suporte tecnológico essencial para o sucesso da missão espacial Shenzhou 24. A conquista demonstra a avançada capacidade da engenharia aeroespacial chinesa em missões tripuladas. O projeto fortalece ainda mais a posição de liderança do país na exploração espacial.","link":"https://www.hljnews.cn/ljxw/content/2026-11/26/content_918596.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Pharmabiz.com","pais":"Índia","titulo":"Bioeconomia da Índia deve atingir 300 milhões de dólares até 2030; Dr. Jitendra Singh insta a indústria a aproveitar oportunidades na próxima revolução biotecnológica","resumo":"O governo indiano traçou metas ambiciosas para o crescimento do setor de bioeconomia nas próximas décadas. Autoridades destacaram a necessidade de a indústria nacional liderar a inovação na próxima revolução biotecnológica. A estratégia visa consolidar o país como um polo global de desenvolvimento sustentável e ciência avançada.","link":"https://www.pharmabiz.com/NewsDetails.aspx?aid=192149\u0026sid=2","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Observador","pais":"Portugal","titulo":"Festival de Ciência C8 começa em dezembro em Coimbra com palestras especiais","resumo":"A cidade de Coimbra se prepara para receber o Festival de Ciência C8, trazendo debates importantes sobre inovação e design tecnológico moderno. O evento contará com a presença de especialistas renomados para discutir o futuro da mobilidade e da criatividade digital. A programação busca aproximar a comunidade acadêmica e o público geral das principais tendências científicas atuais.","link":"https://observador.pt/2026/11/25/festival-de-ciencia-c8-arranca-a-9-de-dezembro-em-coimbra-com-conversa-com-o-designer-do-smart/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"FIEMS","pais":"Brasil","titulo":"IA exige mais governança do que tecnologia, defende especialista no Fórum MS de IA Segura","resumo":"Durante o primeiro Fórum MS de IA Segura, especialistas ressaltaram que a implementação ética da inteligência artificial depende primordialmente de boas práticas de governança corporativa. Mais do que meros avanços de algoritmos, a segurança e a privacidade dos dados exigem regulamentações claras e supervisão humana constante. A discussão aponta para um novo patamar de responsabilidade e conformidade no ambiente tecnológico brasileiro.","link":"https://www.fiems.com.br/noticias/ia-exige-mais-governanca-do-que-tecnologia-defende-especialista-do-senai-durante-1o-forum-ms-de-ia-segura/70762","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"The Washington Post","pais":"Estados Unidos","titulo":"Autoridades do Pentágono cogitaram usar lei de guerra para reconduzir CEO da Nvidia","resumo":"Documentos revelam que oficiais do Departamento de Defesa dos EUA discutiram a aplicação da Lei de Produção de Defesa para manter lideranças estratégicas no setor de semicondutores. A medida visava garantir a soberania nacional do país no desenvolvimento de chips avançados para inteligência artificial. A discussão destaca a crescente intersecção entre tecnologia de ponta e segurança nacional de alto nível. O debate gerou reações no meio político e empresarial norte-americano.","link":"https://www.washingtonpost.com/technology/2026/11/25/hegseth-pentagon-officials-floated-using-wartime-law-reappoint-nvidia-ceo/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Zonebourse","pais":"França","titulo":"Smart Eye garante pedido de tecnologia de câmera no valor de 75 milhões","resumo":"A empresa Smart Eye fechou um contrato milionário para fornecer sistemas avançados de monitoramento por câmera para a indústria automotiva. A tecnologia é voltada para a detecção de fadiga e atenção dos motoristas, aumentando a segurança viária. Este projeto reforça a tendência de integração de visão computacional em veículos de última geração. O acordo consolida a posição da empresa como líder no fornecimento de tecnologias de assistência ao condutor.","link":"https://www.zonebourse.com/actualite-bourse/smart-eye-decroche-une-commande-de-technologie-de-camera-da-une-valeur-de-75-millions-ce7851d8dc8ef227","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Gamereactor UK","pais":"Inglaterra","titulo":"EA Sports FC 27 adiciona voz recriada por IA do falecido comentarista John Motson","resumo":"A EA Sports anunciou a inclusão da voz gerada por inteligência artificial do lendário comentarista John Motson no jogo EA Sports FC 27. O projeto utilizou gravações históricas para treinar modelos de áudio capazes de narrar partidas virtuais com alta fidelidade e emoção. A inclusão reforça o uso ético e tecnológico da IA na preservação da memória de figuras históricas dos esportes.","link":"https://www.gamereactor.eu/ea-sports-fc-27-john-motson-ai-commentary/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"El Mundo","pais":"Espanha","titulo":"Pior que o estouro da bolha ponto-com: o impacto econômico de um colapso na bolha de IA","resumo":"Analistas econômicos alertam para os riscos crescentes associados aos investimentos massivos e às avaliações inflacionadas no setor de inteligência artificial. Um potencial ajuste ou colapso nesse mercado poderia gerar consequências mais severas para a economia global do que a crise das empresas de tecnologia nos anos 2000. O debate destaca a necessidade de sustentabilidade financeira e modelos de negócios sólidos diante do entusiasmo excessivo dos investidores.","link":"https://www.elmundo.es/economia/2026/11/25/6b0717dd21efa07c118b4599.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Mindener Tageblatt","pais":"Alemanha","titulo":"'Barômetro Elétrico': Carros elétricos alemães ficam para trás","resumo":"O novo relatório do barômetro de veículos elétricos revelou que os fabricantes alemães estão perdendo espaço na corrida pela mobilidade elétrica global. A forte concorrência estrangeira, aliada a altos custos de produção e desafios tecnológicos, tem pressionado as montadoras tradicionais da Alemanha. O cenário exige reestruturações estratégicas urgentes para que a indústria automobilística do país recupere sua competitividade.","link":"https://www.mt.de/weltnews/wirtschaft/wirtschaft-ueberblick/E-Barometer-Deutsche-Elektroautos-im-Hintertreffen-24471320.html","categoria":"AUTOMOBILÍSTICO","lang":"pt"},{"fonte":"Science Portal","pais":"Japão","titulo":"Inovação em tecnologia de refrigeração de próxima geração: perspectivas para o mercado de refrigeração sólida","resumo":"Um novo relatório analisa os avanços e oportunidades de negócios na área de refrigeração de estado sólido, considerada uma alternativa promissora aos sistemas tradicionais. A tecnologia oferece maior eficiência energética e menor impacto ambiental ao eliminar fluidos refrigerantes poluentes. O setor promete transformar indústrias que dependem do controle térmico avançado.","link":"https://scienceportal.jst.go.jp/events/19949/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"BigGo ファイナンス","pais":"China","titulo":"Ranking dos cem melhores centros de inovação científica do mundo divulgado: Xangai sobe para a 9ª posição","resumo":"O novo ranking global de centros de inovação científica destaca a ascensão impressionante de Xangai para a nona posição mundial. Várias cidades chinesas figuram na lista, refletindo o forte investimento do país em pesquisa e desenvolvimento. Esse crescimento consolida o ecossistema tecnológico asiático no cenário internacional.","link":"https://finance.biggo.jp/news/09e166c3-1804-4d98-a286-092cfde74df9","categoria":"TENDÊNCIAS","lang":"pt"},{"fonte":"SAPO","pais":"Portugal","titulo":"Nissan evolui tecnologia e-Power que estreia na nova geração do X-Trail","resumo":"A montadora Nissan aprimorou seu sistema híbrido exclusivo conhecido como e-Power, integrando-o à nova geração do SUV X-Trail. A tecnologia proporciona uma experiência de condução elétrica sem a necessidade de recarga em tomadas tradicionais. Essa evolução reflete a busca da indústria automobilística por alternativas mais eficientes e sustentáveis para o consumo diário.","link":"https://sapo.pt/artigo/nissan-evolui-tecnologia-e-power-que-se-estreia-na-nova-geracao-do-x-trail-6b06f881ed7962199d09e662","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Governo Federal","pais":"Brasil","titulo":"Aliança Lusófona prevê internet via satélite e computadores para 18 territórios","resumo":"Uma nova aliança entre países de língua portuguesa viabilizará a instalação de conexões de internet via satélite e infraestrutura computacional em 18 regiões isoladas. O projeto busca reduzir significativamente o abismo digital enfrentado por comunidades periféricas e rurais nesses territórios. Com essa iniciativa, espera-se impulsionar a inclusão digital, o acesso à educação remota e o desenvolvimento socioeconômico local.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2026/11/alianca-lusofona-preve-internet-via-satelite-e-computadores-para-18-territorios","categoria":"TELECOMUNICAÇÕES","lang":"pt"},{"fonte":"NPR","pais":"Estados Unidos","titulo":"Suplementos de cogumelos prometem benefícios à saúde: o que diz a ciência?","resumo":"O mercado global de suplementos à base de fungos medicinais cresceu drasticamente impulsionado por promessas de melhora cognitiva e imunológica. Pesquisadores avaliaram estudos recentes para verificar se há evidências científicas sólidas que comprovem esses efeitos no organismo humano. Embora alguns compostos apresentem propriedades promissoras em testes preliminares, especialistas alertam para a falta de regulamentação rígida. O tema exige maior rigor em ensaios clínicos antes de conclusões definitivas.","link":"https://www.npr.org/2026/11/25/nx-s1-6047791-e1/mushroom-supplements-promise-health-benefits-what-does-the-science-say","categoria":"SAÚDE","lang":"pt"},{"fonte":"tv5monde","pais":"França","titulo":"Em Cingapura, uma mini-cidade para robôs autônomos movidos a IA","resumo":"Cingapura inaugurou uma infraestrutura de testes em escala reduzida voltada para o desenvolvimento e aperfeiçoamento de robôs autônomos. A mini-cidade serve como um campo de provas controlado onde algoritmos de inteligência artificial interagem com o ambiente urbano. Essa iniciativa visa acelerar a adoção segura de robôs de entrega e serviços na vida cotidiana. O projeto posiciona a região como referência mundial em inovação robótica e cidades inteligentes.","link":"https://information.tv5monde.com/economie/singapour-une-mini-ville-pour-des-robots-nourris-lia-et-autonomes-2847102","categoria":"ROBÓTICA","lang":"pt"},{"fonte":"UK Parliament","pais":"Inglaterra","titulo":"Sistema de inovação do NHS com falhas perde oportunidades de salvar vidas e impulsionar a economia, alertam nobres","resumo":"Um relatório emitido pela Câmara dos Lordes do Reino Unido alerta que falhas estruturais no sistema de inovação do NHS estão impedindo a adoção de novas tecnologias na saúde pública. Os parlamentares sinalizam que a falta de agilidade custa vidas, sobrecarrega o sistema médico e resulta em perda de crescimento econômico. O documento exige reformas urgentes para facilitar a integração de soluções tecnológicas avançadas na rede hospitalar.","link":"https://committees.parliament.uk/committee/193/science-and-technology-committee/news/219262/broken-nhs-innovation-system-losing-opportunities-to-ease-nhs-pressure-save-lives-and-support-economic-growth-peers-warn/","categoria":"SAÚDE","lang":"pt"},{"fonte":"Diario de Sevilla","pais":"Espanha","titulo":"O segredo está no ar: drones e tecnologia para proteger as aves andaluzas","resumo":"Projetos de conservação na Andaluzia estão utilizando drones equipados com sensores avançados e monitoramento inteligente para proteger a fauna avícola local. A tecnologia permite supervisionar habitats sensíveis de forma não invasiva, identificando ameaças e monitorando populações em tempo real. Essa iniciativa destaca o papel fundamental da inovação tecnológica na preservação da biodiversidade e no combate aos impactos ambientais.","link":"https://www.diariodesevilla.es/bc-sevilla/secreto-aire-drones-tecnologia-proteger_0_2008588694.html","categoria":"INOVAÇÃO AMBIENTAL","lang":"pt"},{"fonte":"Mindener Tageblatt","pais":"Alemanha","titulo":"Meu amigo, o Chatbot: Especialistas alertam sobre IAs 'amigas'","resumo":"Especialistas em tecnologia e psicologia alertam para os riscos do aumento da dependência emocional de usuários em relação a chatbots sociáveis. As chamadas IAs de companhia têm simulado comportamentos de amizade de forma cada vez mais convincente, o que pode distanciar indivíduos de relações humanas reais. O fenômeno levanta debates urgentes sobre a ética no desenvolvimento de inteligência artificial e a proteção da saúde mental.","link":"https://www.mt.de/weltnews/wissenschaft/Mein-Freund-der-Chatbot-Experten-warnen-vor-Kumpel-KIs-24471289.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Yahoo!ニュース","pais":"Japão","titulo":"Exposição de tecnologia automotiva avançada em Nagoya destaca condução autônoma","resumo":"A feira de tecnologia de ponta para o setor automotivo realizada em Nagoya apresentou as mais recentes inovações em condução autônoma e mobilidade inteligente. O evento reuniu grandes empresas do setor para demonstrar sistemas de assistência ao motorista e veículos conectados. A iniciativa busca acelerar a adoção comercial de veículos autônomos na região e no mundo.","link":"https://news.yahoo.co.jp/articles/b3806b7ed8cce8e6a229764121a51275e4ed6d9c","categoria":"AUTOMOBILÍSTICA","lang":"pt"},{"fonte":"科学网","pais":"China","titulo":"IA torna-se uma especialista em matemática, mas por que a comunidade matemática está tanto alegre quanto preocupada?","resumo":"A inteligência artificial atingiu novos patamares ao resolver problemas matemáticos complexos com alta precisão e rapidez. Enquanto cientistas celebram o avanço na capacidade computacional, surgem debates sobre o impacto dessa tecnologia na originalidade humana. O dilema reflete a rápida transformação que a IA traz para campos puramente teóricos.","link":"https://wap.sciencenet.cn/mobile.php?type=detail\u0026cat=news\u0026id=575342\u0026mobile=1","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"CNN Portugal","pais":"Portugal","titulo":"Nova tecnologia não invasiva recupera movimentos das mãos em lesões medulares","resumo":"Pesquisadores desenvolveram uma técnica inovadora e não invasiva capaz de devolver a mobilidade das mãos a pacientes com lesões na medula espinhal. O método utiliza sinais cerebrais e estímulos externos para contornar áreas danificadas do sistema nervoso central. A descoberta representa um marco histórico na medicina de reabilitação e na melhoria da qualidade de vida.","link":"https://cnnportugal.iol.pt/lesao-medular-grave/tecnologia-nao-invasiva/nova-tecnologia-nao-invasiva-permite-recuperar-movimentos-das-maos-em-pessoas-com-lesoes-medulares-graves/20261125/6b06b2d80cf2c0fc744b77c9","categoria":"SAÚDE","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"ANTT realiza visita técnica em rodovia com tecnologia inovadora de pesagem de caminhões","resumo":"A Agência Nacional de Transportes Terrestres vistoriou uma inovação tecnológica implementada em rodovias de Goiás para fiscalização contínua do peso de veículos pesados. A solução realiza a pesagem em movimento sem a necessidade de parar os caminhões, otimizando o fluxo logístico e reduzindo o desgaste das vias. O sistema moderno eleva a eficiência do transporte de cargas e a segurança no tráfego das rodovias brasileiras.","link":"https://www.gov.br/antt/pt-br/assuntos/ultimas-noticias-antt/em-goias-antt-realiza-visita-tecnica-em-rodovia-com-tecnologia-que-revoluciona-a-fiscalizacao-de-pesagem-de-caminhoes","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"The Motley Fool","pais":"Estados Unidos","titulo":"Qualcomm vs. SanDisk: qual ação de tecnologia é a melhor compra para 2027?","resumo":"Analistas de mercado compararam o desempenho financeiro e as perspectivas de crescimento de duas gigantes do setor de hardware. A análise avalia a forte presença da Qualcomm no mercado de conectividade e chips para inteligência artificial mobile contra a demanda por memórias flash da SanDisk. O estudo pondera os riscos macroeconômicos e a capacidade de inovação de cada empresa para os próximos anos. Investidores acompanham a disputa estratégica pelo controle de cadeias de suprimento globais.","link":"https://www.fool.com/coverage/better-buy/2026/11/25/qualcomm-vs-sandisk-which-technology-stock-is-a-better-buy-for-2027/","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"Jornal do Comércio","pais":"Brazil","titulo":"Open source returns control to technology users, says SUSE","resumo":"SUSE highlighted the relevance of open source in guaranteeing digital sovereignty and flexibility for contemporary businesses. The open-source model emerges as a crucial alternative to proprietary vendor lock-in and rising licensing costs. This approach strengthens community innovation and accelerates the secure adoption of new technologies in corporate ecosystems.","link":"https://www.jornaldocomercio.com/economia/2026/11/1271717-codigo-aberto-devolve-o-controle-para-quem-usa-a-tecnologia-diz-suse.html","categoria":"FREE SOFTWARE","lang":"en"},{"fonte":"O GLOBO","pais":"United States","titulo":"Neuralink receives authorization to test brain chip in paralyzed patients","resumo":"Elon Musk's neurotechnology company has obtained regulatory approval to expand clinical trials of its implantable device. The main objective of the trial is to allow people with quadriplegia to control digital devices using only their thoughts. This new phase represents a decisive milestone in the brain-computer interface for medical rehabilitation. These advancements could radically transform the treatment of severe motor limitations in the future.","link":"https://oglobo.globo.com/economia/tecnologia/noticia/2026/11/25/neuralink-de-elon-musk-recebe-autorizacao-para-testar-chip-cerebral-em-pacientes-com-paralisia.ghtml","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Sud Ouest","pais":"France","titulo":"Health: \"Erroneous or inadequate answers\", the drug safety agency warns against the dangers of medical advice provided by artificial intelligence","resumo":"France's National Agency for Medicines Safety has publicly warned about the risks of using artificial intelligence tools to obtain medical advice. The entity highlighted that several systems have provided inaccurate or completely inappropriate guidance to users. This situation can lead to incorrect diagnoses and delay the proper treatment of serious health conditions. Faced with this scenario, experts reinforce the importance of consulting qualified human professionals before making any decisions about treatments.","link":"https://www.sudouest.fr/sciences-et-technologie/intelligence-artificielle/sante-des-reponses-erronees-ou-inadaptees-l-agence-de-securite-du-medicament-alerte-sur-les-dangers-des-conseils-medicaux-delivres-par-l-intelligence-artificielle-31675809.php","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"International Mining","pais":"England","titulo":"Plus Pumps and PlusSmart Technology partner to enable global remote monitoring of pumps","resumo":"Plus Pumps has established a strategic partnership with PlusSmart Technology to implement advanced remote monitoring solutions in industrial pumps globally. The technology allows real-time tracking of equipment performance and preventive maintenance, optimizing operations and reducing costs. The initiative promises to transform the sector's operational efficiency by integrating smart connectivity and predictive data analysis.","link":"https://im-mining.com/2026/11/26/plus-pumps-plussmart-technology-partner-to-enable-global-remote-monitoring-of-pumps/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"RTVE.es","pais":"Spain","titulo":"NASA's planetary defense experiment leaves a stadium-sized crater on asteroid Dimorphos","resumo":"NASA's DART mission successfully demonstrated humanity's ability to alter the trajectory of a celestial body by intentionally colliding with the asteroid moon Dimorphos. Recent observations revealed that the kinetic impact significantly altered the object's structure, creating a massive crater. This feat represents a historic milestone for science and for the development of planetary defense technologies against future space threats.","link":"https://www.rtve.es/noticias/20261126/nasa-dart-defensa-planetaria-crater-asteroide-dimorphos/17331466.shtml","categoria":"SPACE SCIENCE","lang":"en"},{"fonte":"Bild der Wissenschaft","pais":"Germany","titulo":"'BrainBots' transport active ingredients to the brain","resumo":"Researchers have developed nanorobots known as BrainBots, designed to navigate the circulatory system and deliver medications directly to the brain. This innovation promises to revolutionize the treatment of complex neurological disorders, such as brain tumors and Alzheimer's, by crossing the blood-brain barrier. The breakthrough represents a major milestone for precision medicine and nanotechnology applied to health.","link":"https://wissenschaft.de/artikel/brainbots-transportieren-wirkstoffe-ins-gehirn","categoria":"SCIENCE","lang":"en"},{"fonte":"EnterpriseZine","pais":"Japan","titulo":"Fujitsu to offer new security service using OpenAI Daybreak technology","resumo":"Fujitsu announced the development of a new information security solution based on OpenAI Daybreak technology. The initiative aims to enhance the monitoring and response to complex cyber threats in corporate environments. The expected impact includes greater automation and efficiency in protecting critical data against next-generation attacks.","link":"https://enterprisezine.jp/news/detail/25579","categoria":"CYBERSECURITY","lang":"en"},{"fonte":"上海国际人才网","pais":"China","titulo":"Seizing strategic opportunity, Shanghai creates an 'AI brain' for national scientific instruments","resumo":"Shanghai is boosting the development of national scientific instruments through the integration of advanced artificial intelligence. The initiative seeks to create a more independent and innovative technological ecosystem to drive scientific research. The project represents a strategic milestone to consolidate China's technological autonomy in the high-precision sector.","link":"https://www.sh-italent.com/Article/202611/202611250004.shtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"SCC Online","pais":"India","titulo":"UPSIFS Workshop 2026: Experts discuss AI-driven policing, cyber readiness, and trusted tech adoption in government","resumo":"The UPSIFS workshop brought together experts to debate the integration of artificial intelligence in public safety and governance. The event highlighted the urgency of strengthening cybersecurity and adopting trusted technologies in institutions. This initiative seeks to modernize policing strategies and prepare the public sector for future digital challenges.","link":"https://www.scconline.com/blog/post/2026/11/26/upsifs-workshop-2026-ai-law-enforcement-cybersecurity/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"Manufacturing ice in the Arctic to combat global warming","resumo":"Innovative initiatives seek to recreate ice layers in the Arctic region in an attempt to curb the devastating impacts of global climate change. The project uses cutting-edge environmental engineering to reverse polar melting and cool the planet. The approach raises scientific debates on the effectiveness of large-scale artificial interventions in nature.","link":"https://pplware.sapo.pt/ciencia/startup-real-ice-congelar-artico-agua-mar/","categoria":"SCIENCE","lang":"en"},{"fonte":"Governo Federal","pais":"Brazil","titulo":"MCTI invests R$ 120 million in research for the development of innovative technologies for SUS","resumo":"The Ministry of Science, Technology and Innovation announced a substantial investment of R$ 120 million aimed at the Unified Health System (SUS). The funds will support scientific projects focused on the creation of new treatments, advanced diagnostics, and national medical equipment. The initiative aims to strengthen the technological autonomy of the Brazilian health sector and improve public care for the population.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2026/11/mcti-investe-r-120-milhoes-em-pesquisas-para-o-desenvolvimento-de-tecnologias-inovadoras-para-o-sus","categoria":"SCIENCE AND HEALTH","lang":"en"},{"fonte":"The New York Times","pais":"United States","titulo":"Europe's Hera mission releases detailed images of NASA-hit asteroid","resumo":"The European Space Agency released new high-resolution records of the Dimorphos and Didymos asteroid system. The images show the impacts caused by NASA's DART spacecraft in its planetary defense mission. Scientists are analyzing the resulting topography to understand the effectiveness of deflecting potentially hazardous asteroids. International cooperation reinforces progress in human space security studies.","link":"https://www.nytimes.com/2026/11/25/science/hera-nasa-photos-dart-asteroid.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Electroniques","pais":"France","titulo":"Alice \u0026 Bob raises its quantum ambitions","resumo":"French startup Alice \u0026 Bob has announced a significant expansion in its quantum computing development goals. The company aims to improve the architecture of its cat qubits to create fault-tolerant quantum computers more quickly. This advancement positions France at the forefront of the global technological race for secure and efficient supercomputers. The move reflects the maturation of the European deep tech ecosystem and attracts new strategic investments.","link":"https://www.electroniques.biz/technologie/circuits-numeriques/alice-bob-revoit-ses-ambitions-quantiques-a-la-hausse/","categoria":"QUANTUM COMPUTING","lang":"en"},{"fonte":"The Independent","pais":"England","titulo":"Google files patent for AI TV channel that puts viewers as protagonists","resumo":"Google has filed an innovative patent for an artificial intelligence-powered television channel system that inserts the viewer themselves into the narrative as the main character. The technology uses real-time content generation to adapt stories, settings, and dialogue according to user preferences. This approach promises to revolutionize interactive entertainment and the personalization of digital media.","link":"https://www.independent.co.uk/tech/ai-tv-channel-google-patent-b3091877.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"El Mundo","pais":"Spain","titulo":"Why spending hours without eating sharpens the wit: science decodes the link between fasting and the brain","resumo":"Scientific researchers have identified the biological mechanisms by which periods of intermittent fasting positively affect human cognition. Temporary food deprivation triggers evolutionary responses in the brain that increase focus, mental clarity, and neuronal plasticity. The study offers new perspectives on how dietary habits and strategic caloric restriction can benefit neurological health and intellectual performance.","link":"https://www.elmundo.es/salud/2026/11/25/6b070798e9cf4a8f208b45b6.html","categoria":"SCIENCE AND HEALTH","lang":"en"},{"fonte":"Le Parisien","pais":"Germany","titulo":"War in Ukraine: 'Cutting-edge technology and firepower,' Kyiv receives its brand new Lynx armored vehicles from Germany","resumo":"Ukraine has received the first batch of state-of-the-art Lynx combat armored vehicles supplied directly by Germany. The vehicles feature advanced military technology, high survivability, and heavy firepower to reinforce the Ukrainian army. The delivery marks a new phase in Berlin's technological and military support for Kyiv's armed forces in the conflict.","link":"https://www.leparisien.fr/international/ukraine/guerre-en-ukraine-technologie-de-pointe-et-puissance-de-feu-kiev-receptionne-ses-premiers-blindes-lynx-flambant-neufs-venus-dallemagne-26-11-2026-AREPE7EV6FFY3FJ2YRYQJ7FZIE.php","categoria":"DEFENSE","lang":"en"},{"fonte":"客观日本","pais":"Japan","titulo":"Kyushu University discovers selective memory-forgetting mechanism","resumo":"Researchers at Kyushu University have identified, through experiments with nematodes, a neural mechanism that regulates the selective forgetting of memories. The research mapped the specific molecules and neural circuits involved in the process. This discovery opens new pathways for understanding cognitive disorders and the functioning of human memory.","link":"https://www.keguanjp.com/kgjp_keji/kgjp_kj_smkx/pt20261126000012.html","categoria":"SCIENCE","lang":"en"},{"fonte":"ThePaper.cn","pais":"China","titulo":"Wang Xingxing: OpenAI has not given up on robots, but focused on technical convergence; physical AI has no insurmountable barriers","resumo":"Experts discuss the future of robotics and artificial intelligence applied to the physical world. Technical convergence is shaping a new era for the development of humanoid and autonomous robots. Technological barriers are being rapidly overcome with new learning and adaptation models.","link":"https://www.thepaper.cn/newsDetail_forward_34563486","categoria":"INNOVATION","lang":"en"},{"fonte":"scanx.trade","pais":"India","titulo":"Airpro Technology India IPO: New issue of ₹24.91 crore and net profit up 438% in two years","resumo":"Airpro Technology India has announced its initial public offering, moving a significant amount in the financial market. The company demonstrated notable financial growth, registering an expressive increase in its net profit over the past two years. This move reflects the strong expansion and attractiveness of the Indian technology sector for investors.","link":"https://scanx.trade/stock-market-news/ipo/airpro-technology-india-ipo-24-91-crore-fresh-issue-pat-up-438-two-check-allotment-status/57212842","categoria":"BUSINESS","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Naval technology unites Portugal and Spain","resumo":"A new strategic partnership between Portugal and Spain strengthens the joint development of advanced technologies aimed at the naval sector. The cooperation aims to increase the Iberian Peninsula's competitiveness in the international maritime market through digital innovation. The agreement provides for the exchange of knowledge and the promotion of sustainable ocean engineering projects.","link":"https://sapo.pt/artigo/tecnologia-naval-une-portugal-e-espanha-6b073f686f3268eeeb90c86f","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Governo Federal","pais":"Brazil","titulo":"Inmetro inaugurates new laboratories to strengthen science, technology, and innovation in Brazil","resumo":"Inmetro has inaugurated new laboratory facilities dedicated to metrological research and the development of advanced quality standards. The new structures meet growing demands for industrial innovation and guarantee support for multiple technological sectors in the country. The investment reinforces national scientific sovereignty and raises Brazil's competitiveness in the global market.","link":"https://www.gov.br/inmetro/pt-br/centrais-de-conteudo/noticias/2026/inmetro-inaugura-novos-laboratorios-para-fortalecer-a-ciencia-e-a-inovacao-no-brasil","categoria":"INFRASTRUCTURE","lang":"en"},{"fonte":"The Guardian","pais":"United States","titulo":"US government approves SpaceX plan for space data centers","resumo":"North American authorities have granted authorization for SpaceX to deploy satellites aimed at data processing and artificial intelligence in Earth orbit. The initiative aims to provide orbital computational infrastructure to supply global AI demand with lower latency. The project revolutionizes the telecommunications and high-performance computing market off Earth. A significant increase in launch volume is expected in the coming years.","link":"https://www.theguardian.com/us-news/2026/nov/25/spacex-datacenter-satellites-approval","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Electroniques","pais":"France","titulo":"Vishay's aluminum electrolytic capacitors increase voltage","resumo":"Vishay Intertechnology has presented significant advancements in its line of aluminum electrolytic capacitors with higher voltage capability. The new components were designed to meet the rigorous demands of modern industrial and automotive applications. This innovation allows for greater energy efficiency in power conversion systems and electric vehicles. The launch strengthens the electronic supply chain for high-power infrastructures.","link":"https://www.electroniques.biz/technologie/passifs/les-condensateurs-electrolytiques-aluminium-de-vishay-montent-en-tension/","categoria":"ELECTRONICS","lang":"en"},{"fonte":"The Guardian","pais":"England","titulo":"AI helps recreate voice of late commentator John Motson for football video game","resumo":"Advanced artificial intelligence tools were used to recreate the iconic voice of the late sports commentator John Motson in a new football video game. The initiative aims to pay tribute to the legend of British journalism, bringing his striking commentary to new generations of players. The novelty highlights the advancement of voice synthesis technologies in the entertainment and electronic gaming industry.","link":"https://www.theguardian.com/media/2026/nov/25/ai-helps-resurrect-voice-john-motson-football-video-game-fc27","categoria":"GAMES","lang":"en"},{"fonte":"Diario AS","pais":"Spain","titulo":"Five technological advancements for 2027 that look like science fiction","resumo":"Experts point to five disruptive innovations expected to transform global daily life by 2027, bringing reality closer to futuristic scenarios. Trends range from breakthroughs in quantum computing and autonomous artificial intelligence to advanced biotechnology and new brain-machine interfaces. These technologies promise to redefine entire industries, impacting healthcare, mobility, and the way society interacts with the digital world.","link":"https://as.com/meristation/betech/cinco-avances-tecnologicos-para-2027-que-parecen-sacados-de-la-ciencia-ficcion-f202611-n/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"n-tv.de","pais":"Germany","titulo":"Chip stocks in free fall: Nvidia drags Wall Street down","resumo":"Semiconductor sector stocks suffered a sharp devaluation in the global financial market, led by an expressive drop in Nvidia shares. The negative movement heavily impacted major Wall Street indices, generating apprehension among technology investors. Analysts point to economic uncertainties and adjustments in the artificial intelligence sector as decisive factors for this pullback.","link":"https://www.n-tv.de/wirtschaft/Nvidia-reisst-die-Wall-Street-in-die-Tiefe-id31578217.html","categoria":"MARKET","lang":"en"},{"fonte":"九州大学","pais":"Japan","titulo":"Kyushu University and Asahi Kasei evaluate economic and environmental impact of electrode recycling","resumo":"A joint research project between Kyushu University and Asahi Kasei seeks to quantify the environmental and economic values of battery electrode recycling. The initiative aims to establish precise metrics to support the energy transition and sustainability in the battery sector. The study reinforces the development of cleaner and economically viable technologies.","link":"https://www.kyushu-u.ac.jp/ja/notices/view/3217","categoria":"SUSTAINABILITY","lang":"en"},{"fonte":"黑龙江日报","pais":"China","titulo":"Robust technology from Harbin Institute of Technology supports Shenzhou 24 space flight mission","resumo":"The Harbin Institute of Technology provided essential technological support for the success of the Shenzhou 24 space mission. The achievement demonstrates the advanced capability of Chinese aerospace engineering in crewed missions. The project further strengthens the country's leading position in space exploration.","link":"https://www.hljnews.cn/ljxw/content/2026-11/26/content_918596.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Pharmabiz.com","pais":"India","titulo":"India's bioeconomy expected to reach 300 million dollars by 2030; Dr. Jitendra Singh urges industry to seize opportunities in the next biotech revolution","resumo":"The Indian government has outlined ambitious targets for the growth of the bioeconomy sector in the coming decades. Authorities highlighted the need for the national industry to lead innovation in the next biotechnological revolution. The strategy aims to consolidate the country as a global hub for sustainable development and advanced science.","link":"https://www.pharmabiz.com/NewsDetails.aspx?aid=192149\u0026sid=2","categoria":"SCIENCE","lang":"en"},{"fonte":"Observador","pais":"Portugal","titulo":"C8 Science Festival begins in December in Coimbra with special lectures","resumo":"The city of Coimbra is preparing to host the C8 Science Festival, bringing important debates on innovation and modern technological design. The event will feature renowned experts to discuss the future of mobility and digital creativity. The schedule seeks to bring the academic community and the general public closer to current major scientific trends.","link":"https://observador.pt/2026/11/25/festival-de-ciencia-c8-arranca-a-9-de-dezembro-em-coimbra-com-conversa-com-o-designer-do-smart/","categoria":"SCIENCE","lang":"en"},{"fonte":"FIEMS","pais":"Brazil","titulo":"AI requires more governance than technology, argues expert at MS Forum for Secure AI","resumo":"During the first MS Forum for Secure AI, experts emphasized that the ethical implementation of artificial intelligence depends primarily on good corporate governance practices. More than mere algorithmic advances, data security and privacy require clear regulations and constant human supervision. The discussion points to a new level of responsibility and compliance in the Brazilian technological environment.","link":"https://www.fiems.com.br/noticias/ia-exige-mais-governanca-do-que-tecnologia-defende-especialista-do-senai-durante-1o-forum-ms-de-ia-segura/70762","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"The Washington Post","pais":"United States","titulo":"Pentagon officials considered using wartime law to reappoint Nvidia CEO","resumo":"Documents reveal that U.S. Department of Defense officials discussed applying the Defense Production Act to retain strategic leadership in the semiconductor sector. The measure aimed to ensure the country's national sovereignty in developing advanced chips for artificial intelligence. The discussion highlights the growing intersection between cutting-edge technology and high-level national security. The debate sparked reactions in the North American political and business communities.","link":"https://www.washingtonpost.com/technology/2026/11/25/hegseth-pentagon-officials-floated-using-wartime-law-reappoint-nvidia-ceo/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Zonebourse","pais":"France","titulo":"Smart Eye secures 75 million camera technology order","resumo":"Smart Eye has closed a multimillion-dollar contract to supply advanced camera monitoring systems for the automotive industry. The technology is designed to detect driver fatigue and attention, enhancing road safety. This project reinforces the trend of integrating computer vision into next-generation vehicles. The agreement consolidates the company's position as a leader in driver assistance technologies.","link":"https://www.zonebourse.com/actualite-bourse/smart-eye-decroche-une-commande-de-technologie-de-camera-da-une-valeur-de-75-millions-ce7851d8dc8ef227","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Gamereactor UK","pais":"England","titulo":"EA Sports FC 27 adds AI-recreated voice of late commentator John Motson","resumo":"EA Sports has announced the inclusion of the artificial intelligence-generated voice of legendary commentator John Motson in the game EA Sports FC 27. The project used historical recordings to train audio models capable of narrating virtual matches with high fidelity and emotion. This inclusion reinforces the ethical and technological use of AI in preserving the memory of historical sports figures.","link":"https://www.gamereactor.eu/ea-sports-fc-27-john-motson-ai-commentary/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"El Mundo","pais":"Spain","titulo":"Worse than the dot-com bubble burst: The economic impact of an AI bubble collapse","resumo":"Economic analysts are warning of the growing risks associated with massive investments and inflated valuations in the artificial intelligence sector. A potential market correction or collapse could generate more severe consequences for the global economy than the 2000s tech company crisis. The debate highlights the need for financial sustainability and solid business models in the face of excessive investor enthusiasm.","link":"https://www.elmundo.es/economia/2026/11/25/6b0717dd21efa07c118b4599.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Mindener Tageblatt","pais":"Germany","titulo":"'Electric Barometer': German electric cars fall behind","resumo":"The new electric vehicle barometer report revealed that German manufacturers are losing ground in the global electric mobility race. Strong foreign competition, combined with high production costs and technological challenges, has pressured traditional automakers in Germany. The scenario demands urgent strategic restructuring for the country's automotive industry to recover its competitiveness.","link":"https://www.mt.de/weltnews/wirtschaft/wirtschaft-ueberblick/E-Barometer-Deutsche-Elektroautos-im-Hintertreffen-24471320.html","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"Science Portal","pais":"Japan","titulo":"Next-generation cooling technology innovation: Outlook for the solid-state refrigeration market","resumo":"A new report analyzes advances and business opportunities in the field of solid-state refrigeration, considered a promising alternative to traditional systems. The technology offers greater energy efficiency and lower environmental impact by eliminating polluting refrigerants. The sector promises to transform industries that depend on advanced thermal control.","link":"https://scienceportal.jst.go.jp/events/19949/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"BigGo ファイナンス","pais":"China","titulo":"Top one hundred global scientific innovation centers ranking released: Shanghai rises to 9th place","resumo":"The new global scientific innovation center ranking highlights Shanghai's impressive rise to ninth place worldwide. Several Chinese cities feature on the list, reflecting the country's heavy investment in research and development. This growth consolidates the Asian technology ecosystem on the international stage.","link":"https://finance.biggo.jp/news/09e166c3-1804-4d98-a286-092cfde74df9","categoria":"TRENDS","lang":"en"},{"fonte":"SAPO","pais":"Portugal","titulo":"Nissan evolves e-Power technology debuting in the new generation X-Trail","resumo":"Automaker Nissan has upgraded its exclusive hybrid system known as e-Power, integrating it into the new generation of the X-Trail SUV. The technology provides an electric driving experience without the need for traditional plug-in recharging. This evolution reflects the automotive industry's pursuit of more efficient and sustainable alternatives for daily consumption.","link":"https://sapo.pt/artigo/nissan-evolui-tecnologia-e-power-que-se-estreia-na-nova-geracao-do-x-trail-6b06f881ed7962199d09e662","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Governo Federal","pais":"Brazil","titulo":"Lusophone Alliance plans satellite internet and computers for 18 territories","resumo":"A new alliance among Portuguese-speaking countries will enable the installation of satellite internet connections and computing infrastructure in 18 isolated regions. The project seeks to significantly reduce the digital divide faced by peripheral and rural communities in these territories. This initiative is expected to boost digital inclusion, access to remote education, and local socioeconomic development.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2026/11/alianca-lusofona-preve-internet-via-satelite-e-computadores-para-18-territorios","categoria":"TELECOMMUNICATIONS","lang":"en"},{"fonte":"NPR","pais":"United States","titulo":"Mushroom supplements promise health benefits: What does science say?","resumo":"The global market for medicinal mushroom supplements has grown dramatically, driven by promises of cognitive and immune improvement. Researchers evaluated recent studies to verify whether there is solid scientific evidence proving these effects on the human body. Although some compounds show promising properties in preliminary tests, experts warn of a lack of strict regulation. The topic requires greater rigor in clinical trials before definitive conclusions can be drawn.","link":"https://www.npr.org/2026/11/25/nx-s1-6047791-e1/mushroom-supplements-promise-health-benefits-what-does-the-science-say","categoria":"HEALTH","lang":"en"},{"fonte":"tv5monde","pais":"France","titulo":"In Singapore, a mini-city for AI-powered autonomous robots","resumo":"Singapore has inaugurated a small-scale testing infrastructure aimed at developing and improving autonomous robots. The mini-city serves as a controlled proving ground where artificial intelligence algorithms interact with the urban environment. This initiative aims to accelerate the safe adoption of delivery and service robots in daily life. The project positions the region as a global benchmark in robotic innovation and smart cities.","link":"https://information.tv5monde.com/economie/singapour-une-mini-ville-pour-des-robots-nourris-lia-et-autonomes-2847102","categoria":"ROBOTICS","lang":"en"},{"fonte":"UK Parliament","pais":"England","titulo":"Flawed NHS innovation system misses opportunities to save lives and boost economy, peers warn","resumo":"A report issued by the UK House of Lords warns that structural flaws in the NHS innovation system are preventing the adoption of new technologies in public health. Lawmakers indicate that a lack of agility costs lives, overburdens the medical system, and results in lost economic growth. The document demands urgent reforms to facilitate the integration of advanced technological solutions into the hospital network.","link":"https://committees.parliament.uk/committee/193/science-and-technology-committee/news/219262/broken-nhs-innovation-system-losing-opportunities-to-ease-nhs-pressure-save-lives-and-support-economic-growth-peers-warn/","categoria":"HEALTH","lang":"en"},{"fonte":"Diario de Sevilla","pais":"Spain","titulo":"The secret is in the air: Drones and technology to protect Andalusian birds","resumo":"Conservation projects in Andalusia are utilizing drones equipped with advanced sensors and smart monitoring to protect local avian fauna. The technology makes it possible to supervise sensitive habitats in a non-invasive way, identifying threats and monitoring populations in real time. This initiative highlights the fundamental role of technological innovation in preserving biodiversity and combating environmental impacts.","link":"https://www.diariodesevilla.es/bc-sevilla/secreto-aire-drones-tecnologia-proteger_0_2008588694.html","categoria":"ENVIRONMENTAL INNOVATION","lang":"en"},{"fonte":"Mindener Tageblatt","pais":"Germany","titulo":"My friend, the Chatbot: Experts warn about 'friendly' AIs","resumo":"Technology and psychology experts are warning about the risks of users' increasing emotional dependence on sociable chatbots. So-called companion AIs have been simulating friendship behaviors more and more convincingly, which can distance individuals from real human relationships. The phenomenon raises urgent debates about ethics in artificial intelligence development and mental health protection.","link":"https://www.mt.de/weltnews/wissenschaft/Mein-Freund-der-Chatbot-Experten-warnen-vor-Kumpel-KIs-24471289.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Yahoo!ニュース","pais":"Japan","titulo":"Advanced automotive technology exhibition in Nagoya highlights autonomous driving","resumo":"The cutting-edge technology trade show for the automotive sector held in Nagoya showcased the latest innovations in autonomous driving and smart mobility. The event brought together major industry companies to demonstrate driver assistance systems and connected vehicles. The initiative aims to accelerate the commercial adoption of autonomous vehicles in the region and globally.","link":"https://news.yahoo.co.jp/articles/b3806b7ed8cce8e6a229764121a51275e4ed6d9c","categoria":"AUTOMOTIVE","lang":"en"},{"fonte":"科学网","pais":"China","titulo":"AI becomes a mathematics expert, but why is the math community both joyful and concerned?","resumo":"Artificial intelligence has reached new heights by solving complex mathematical problems with high precision and speed. While scientists celebrate the advancement in computational capability, debates arise over the impact of this technology on human originality. The dilemma reflects the rapid transformation that AI brings to purely theoretical fields.","link":"https://wap.sciencenet.cn/mobile.php?type=detail\u0026cat=news\u0026id=575342\u0026mobile=1","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"CNN Portugal","pais":"Portugal","titulo":"New non-invasive technology restores hand movement in spinal cord injuries","resumo":"Researchers have developed an innovative, non-invasive technique capable of restoring hand mobility to patients with spinal cord injuries. The method uses brain signals and external stimuli to bypass damaged areas of the central nervous system. The discovery represents a historic milestone in rehabilitation medicine and the improvement of quality of life.","link":"https://cnnportugal.iol.pt/lesao-medular-grave/tecnologia-nao-invasiva/nova-tecnologia-nao-invasiva-permite-recuperar-movimentos-das-maos-em-pessoas-com-lesoes-medulares-graves/20261125/6b06b2d80cf2c0fc744b77c9","categoria":"HEALTH","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"ANTT conducts technical visit to highway featuring innovative truck-weighing technology","resumo":"The National Land Transportation Agency inspected a technological innovation implemented on highways in Goiás for continuous monitoring of heavy vehicle weights. The solution performs weigh-in-motion without the need to stop the trucks, optimizing logistical flow and reducing road wear. The modern system increases the efficiency of cargo transport and traffic safety on Brazilian highways.","link":"https://www.gov.br/antt/pt-br/assuntos/ultimas-noticias-antt/em-goias-antt-realiza-visita-tecnica-em-rodovia-com-tecnologia-que-revoluciona-a-fiscalizacao-de-pesagem-de-caminhoes","categoria":"INNOVATION","lang":"en"},{"fonte":"The Motley Fool","pais":"United States","titulo":"Qualcomm vs. SanDisk: Which technology stock is a better buy for 2027?","resumo":"Market analysts compared the financial performance and growth prospects of two hardware industry giants. The analysis evaluates Qualcomm's strong presence in the connectivity and mobile AI chip market against SanDisk's demand for flash memory. The study weighs macroeconomic risks and each company's innovation capacity for the coming years. Investors are closely watching the strategic battle for control of global supply chains.","link":"https://www.fool.com/coverage/better-buy/2026/11/25/qualcomm-vs-sandisk-which-technology-stock-is-a-better-buy-for-2027/","categoria":"BUSINESS","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
