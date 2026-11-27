@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'nonce-pC7sI3/2YfkA/D2TnblRaw7f'; script-src 'nonce-pC7sI3/2YfkA/D2TnblRaw7f'; connect-src https://abacus.jasoncameron.dev; base-uri 'none'; object-src 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="no-referrer">
+  <title>Monitoramento Mídia Internacional | Global Media Monitoring</title>
+  <style nonce="pC7sI3/2YfkA/D2TnblRaw7f">
+    :root {
+      --bg-main: #0B0F19;
+      --bg-panel: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text-main: #E2E8F0;
+      --text-muted: #94A3B8;
+      --accent: #D4AF37;
+      --accent-hover: #FDE047;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      background-image: radial-gradient(circle at top right, rgba(212, 175, 55, 0.15), transparent 400px),
+                        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 400px);
+    }
+    header {
+      padding: 1.5rem 5%;
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .logo-img {
+      height: 48px; /* Altura ajustável do logo */
+      width: auto;
+      object-fit: contain;
+      border-radius: 8px; /* Caso não seja transparente */
+    }
+    .logo-text {
+      font-weight: 700;
+      font-size: clamp(1rem, 2vw, 1.5rem);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logo-text .title-light,
+    .logo-text .title-separator {
+      color: #fff;
+    }
+    .logo-text .title-accent {
+      color: var(--accent);
+    }
+    .date-badge {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      padding: 2rem 5%;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+    .filters {
+      flex: 0 0 300px;
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 6rem;
+    }
+    .filter-group {
+      margin-bottom: 1.5rem;
+    }
+    .filter-group label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+    select option {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .results {
+      flex: 1;
+    }
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    .results-title {
+      margin: 0;
+      font-size: 1.5rem;
+      color: #fff;
+    }
+    .results-count {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .news-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(212, 175, 55, 0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .category {
+      color: var(--accent);
+    }
+    .country {
+      color: var(--text-muted);
+    }
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 0 0 1rem 0;
+      color: #fff;
+    }
+    .card-summary {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      flex: 1;
+    }
+    .card-summary ul {
+      margin: 0;
+      padding-left: 1.2rem;
+    }
+    .card-summary li {
+      margin-bottom: 0.25rem;
+    }
+    .card-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1rem;
+    }
+    .read-more {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      color: var(--accent-hover);
+    }
+    .source {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .btn-clear {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      margin-top: 0.5rem;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .btn-clear:hover {
+      background: var(--accent);
+      color: var(--bg-main);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    /* Simple CSS reset/scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-main); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-panel); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .filters {
+        flex: none;
+        width: 100%;
+        position: static;
+        box-sizing: border-box;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-container">
+    <img src="logo.jpg" alt="TAP Logo" class="logo-img">
+    <div class="logo-text" aria-label="Monitoramento Mídia Internacional | Global Media Monitoring"><span class="title-light">Monitoramento Mídia</span><span class="title-accent">Internacional</span><span class="title-separator">|</span><span class="title-light">Global Media</span><span class="title-accent">Monitoring</span></div>
+  </div>
+  <div class="date-badge">27/11/2026</div>
+</header>
+
+<div class="container">
+  <aside class="filters">
+    <div class="filter-group">
+      <label for="search">Busca / Search</label>
+      <input type="text" id="search" placeholder="Palavra-chave...">
+    </div>
+    
+    <div class="filter-group">
+      <label for="lang">Idioma / Language</label>
+      <select id="lang">
+        <option value="pt">Português (PT-BR)</option>
+        <option value="en">English (US)</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="country">País / Country</label>
+      <select id="country">
+        <option value="all">Todos / All</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="category">Categoria / Category</label>
+      <select id="category">
+        <option value="all">Todas / All</option>
+      </select>
+    </div>
+    
+    <button id="clear-filters" class="btn-clear">Limpar / Clear</button>
+  </aside>
+
+  <main class="results">
+    <div class="results-header">
+      <h2 class="results-title">Resultados</h2>
+      <span class="results-count" id="count">0 notícias</span>
+    </div>
+    <div class="news-grid" id="grid">
+      <!-- Injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script nonce="pC7sI3/2YfkA/D2TnblRaw7f">
+  // Injeta os dados originais no frontend
+  const data = [{"fonte":"O GLOBO","pais":"Brasil","titulo":"Redes sociais, pornografia e IA: como a tecnologia está mudando a sexualidade masculina e quais são os riscos","resumo":"A rápida evolução do acesso a conteúdos digitais, impulsionada por algoritmos de inteligência artificial e redes sociais, vem transformando comportamentos e expectativas sexuais. Especialistas alertam sobre os impactos psicológicos desse ecossistema digital nos homens, destacando riscos de isolamento social e disfunções interpessoais. O debate reforça a urgência de promover a conscientização e o uso saudável das novas ferramentas tecnológicas no cotidiano.","link":"https://oglobo.globo.com/saude/noticia/2026/11/27/redes-sociais-pornografia-e-ia-como-a-tecnologia-esta-mudando-a-sexualidade-masculina-e-quais-sao-os-riscos.ghtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"The Times of India","pais":"Estados Unidos","titulo":"Tecnologia de chip cerebral de Elon Musk recebe nova aprovação para testes em pacientes","resumo":"A empresa de neurotecnologia fundada por Elon Musk obteve uma nova autorização regulatória para avançar nos testes de seu implante cerebral em seres humanos. O dispositivo promete conectar a mente humana a computadores e potencialmente tratar condições neurológicas severas. A aprovação marca um passo histórico para a medicina e a interface cérebro-máquina, gerando grandes expectativas na comunidade científica.","link":"https://timesofindia.indiatimes.com/technology/tech-news/elon-muska-jesus-level-brain-chip-technology-earns-new-approval-says-can-be-tested-on-patients-with-/articleshow/136210286.cms","categoria":"NEUROTECNOLOGIA","lang":"pt"},{"fonte":"Investing.com France","pais":"França","titulo":"Por que as ações da Beijing Zhongke Wenge Science and Tech estão subindo hoje?","resumo":"As ações da empresa chinesa de tecnologia Beijing Zhongke Wenge apresentaram uma forte alta no mercado financeiro recentemente. O movimento atrai a atenção de investidores focados no setor de inteligência artificial e análise de dados avançada. A valorização reflete o otimismo em relação às inovações tecnológicas desenvolvidas pela companhia e seu potencial de crescimento. Este cenário demonstra o impacto direto do avanço tecnológico nas cotações de empresas de ponta no mercado global.","link":"https://fr.investing.com/news/stock-market-news/pourquoi-laction-beijing-zhongke-wenge-science-and-t-senvoletelle-aujourdhui--93CH-3714189","categoria":"MERCADO FINANCEIRO","lang":"pt"},{"fonte":"Cambridge Network","pais":"Inglaterra","titulo":"Cambridge Multiphysics é nomeada a Melhor Empresa de Tecnologia de Simulação de Energia Limpa de 2026 no Reino Unido","resumo":"A empresa Cambridge Multiphysics foi reconhecida nacionalmente no Reino Unido por suas contribuições inovadoras no setor de simulação voltado para energia limpa. A tecnologia desenvolvida permite otimizar processos complexos de engenharia e acelerar a transição energética global. Este prêmio destaca a importância de ferramentas computacionais avançadas na busca por soluções sustentáveis de alto impacto.","link":"https://www.cambridgenetwork.co.uk/news/cambridge-multiphysics-named-best-clean-energy-simulation-technology-company-2026-uk","categoria":"ENERGIA LIMPA","lang":"pt"},{"fonte":"Investing.com España","pais":"Espanha","titulo":"Samsung e SK Hynix adotam tecnologia de memória da chinesa YMTC","resumo":"As gigantes sul-coreanas da tecnologia Samsung e SK Hynix começaram a integrar avanços de memória desenvolvidos pela chinesa YMTC em suas operações. Essa movimentação destaca a crescente relevância e competitividade das inovações de semicondutores originadas na China no mercado global. O movimento pode redefinir parcerias estratégicas e a cadeia de suprimentos global de microchips. Além disso, a adoção ressalta o avanço técnico da indústria chinesa frente aos desafios geopolíticos e sanções internacionais.","link":"https://es.investing.com/news/stock-market-news/samsung-y-sk-hynix-adoptan-tecnologia-de-memoria-de-ymtc-de-china-3944896","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"FAZ","pais":"Alemanha","titulo":"Economia de Hesse cresce graças à inteligência artificial e ao setor de defesa","resumo":"A economia do estado de Hesse, na Alemanha, registrou um crescimento impulsionado principalmente pela expansão da inteligência artificial e pelo fortalecimento da indústria de defesa. Esse avanço reflete a crescente demanda geopolítica e os intensos investimentos em tecnologias disruptivas na região. A combinação entre inovação tecnológica e defesa posiciona o estado como um polo estratégico para o desenvolvimento econômico alemão. Especialistas preveem que essa tendência de alta continue a atrair novos investimentos e gerar empregos nos próximos anos.","link":"https://www.faz.net/aktuell/rhein-main/frankfurt/hessische-wirtschaft-waechst-dank-ki-und-ruestung-201719110.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"KEK｜高エネルギー加速器研究機構","pais":"Japão","titulo":"Participação Confirmada no Tsukuba Science Festival 2026","resumo":"O evento Tsukuba Science Festival 2026 contará com apresentações interativas de inovações científicas e tecnológicas voltadas para a comunidade. A iniciativa busca promover o conhecimento aproximando pesquisadores, estudantes e o público em geral no Japão. A participação destaca o compromisso em inspirar novas gerações através da divulgação científica e da tecnologia de ponta.","link":"https://www.kek.jp/ja/event/202611281000","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"新华网","pais":"China","titulo":"Nova tecnologia de interface cérebro-computador ajuda pacientes com ELA a 'falar'","resumo":"Pesquisadores chineses desenvolveram uma nova tecnologia de interface cérebro-computador que permite a pacientes com esclerose lateral amiotrófica se comunicarem com maior eficiência. O avanço traduz sinais neurais diretamente em texto e fala sintética, superando limitações de dispositivos anteriores. Essa inovação representa um marco significativo para a neurotecnologia e promete melhorar drasticamente a qualidade de vida de pessoas com paralisia motora grave.","link":"https://www.news.cn/tech/20261127/bd0e1493aac54e6594278afc41336ab9/c.html","categoria":"NEUROTECNOLOGIA","lang":"pt"},{"fonte":"The Times of India","pais":"Índia","titulo":"A SAP, maior empresa de tecnologia da Europa, planeja cortar 10.000 empregos para focar em IA","resumo":"A gigante europeia de software SAP anunciou um plano de reestruturação global que deve afetar cerca de 10.000 funcionários em suas operações. A medida visa focar os investimentos da empresa no desenvolvimento de inteligência artificial generativa e soluções avançadas em nuvem. Essa reorganização reflete a crescente pressão sobre as grandes empresas de tecnologia para adaptar seus modelos de negócios às novas demandas do mercado. Espera-se que a transição ocorra ao longo dos próximos meses por meio de programas de requalificação e saídas voluntárias.","link":"https://timesofindia.indiatimes.com/technology/tech-news/europes-biggest-technology-company-sap-is-planning-to-cut-10000-jobs-as-it-prepares-for-/articleshow/136207404.cms","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"Tempestade solar a caminho da Terra: perigos e auroras boreais","resumo":"Uma nova tempestade solar está se aproximando da Terra, trazendo consigo a promessa de intensas auroras boreais em diversas latitudes. Embora o espetáculo visual seja impressionante, cientistas alertam para os riscos reais de interferência em redes elétricas, sistemas de navegação por GPS e comunicações via satélite. O fenômeno ressalta a importância do monitoramento constante do clima espacial para proteger a infraestrutura tecnológica global.","link":"https://pplware.sapo.pt/ciencia/tempestade-solar-27-novembro-2026/","categoria":"ASTRONOMIA","lang":"pt"},{"fonte":"Folha de S.Paulo","pais":"Brasil","titulo":"Cientistas encontram dezenas de espécies potencialmente novas em montanhas da Amazônia","resumo":"Uma expedição científica realizada nas regiões montanhosas e de difícil acesso da Amazônia resultou na descoberta de dezenas de possíveis novas espécies de fauna e flora. A descoberta ressalta a rica e ainda inexplorada biodiversidade do bioma amazônico, fundamental para o avanço da ciência global. Pesquisadores destacam a relevância da preservação ambiental para a proteção dessas espécies recém-descobertas frente às ameaças climáticas.","link":"https://www1.folha.uol.com.br/ciencia/2026/11/cientistas-encontram-dezenas-de-especies-potencialmente-novas-em-montanhas-da-amazonia.shtml","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Baking Business","pais":"Estados Unidos","titulo":"Empresa de tecnologia de fermentação transfere sede da Europa para Nova York","resumo":"Uma inovadora empresa focada em tecnologia de fermentação anunciou a mudança de suas operações da Europa para o estado de Nova York. A migração visa aproveitar o ecossistema de inovação norte-americano e expandir a produção de soluções biotecnológicas sustentáveis. O movimento reforça o papel dos Estados Unidos como um polo atrativo para startups globais de alta tecnologia e biologia sintética.","link":"https://www.bakingbusiness.com/articles/67304-fermentation-technology-company-moving-to-ny-from-europe","categoria":"BIOTECNOLOGIA","lang":"pt"},{"fonte":"Notebookcheck.fr","pais":"França","titulo":"O incrível Oceanus em titânio da Casio, equipado com tecnologia Gallium Tough Solar e em edição limitada, entra à venda","resumo":"A Casio anunciou o lançamento oficial de seu novo relógio da linha Oceanus em edição limitada construído em titânio. O dispositivo destaca-se por incorporar a inovadora tecnologia Gallium Tough Solar para carregamento por energia solar de alta eficiência. O modelo une design sofisticado de alta precisão com engenharia de materiais avançada para consumidores exigentes. A novidade reforça a liderança da marca em relógios tecnológicos de alto padrão no mercado internacional.","link":"https://www.notebookcheck.biz/La-superbe-Oceanus-en-titane-de-Casio-dotee-de-la-technologie-Gallium-Tough-Solar-et-proposee-en-edition-limitee-est-mise-en-vente.1461175.0.html","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Emergency Services Times","pais":"Inglaterra","titulo":"Serviço de ambulâncias expande teste com IA para apoiar equipes no preenchimento de prontuários","resumo":"Um serviço de atendimento móvel de urgência no Reino Unido expandiu o uso de inteligência artificial para otimizar o acesso e o registro de prontuários médicos pelas equipes de emergência. A ferramenta visa reduzir drasticamente a carga administrativa dos paramédicos durante atendimentos críticos. Com isso, espera-se aumentar a eficiência nos diagnósticos pré-hospitalares e garantir que informações vitais cheguem com agilidade aos hospitais.","link":"https://emergencyservicestimes.com/2026/11/27/ambulance-service-expands-trial-of-ai-technology-to-support-crews-with-patient-records/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Hosteltur","pais":"Espanha","titulo":"O desafio dos hotéis diante da IA: assumir o controle da distribuição, dados e decisões","resumo":"O setor hoteleiro enfrenta uma profunda transformação digital impulsionada pela inteligência artificial. Para manter a competitividade, os estabelecimentos precisam recuperar a gestão direta sobre seus dados operacionais e canais de distribuição de reservas. A automação promete otimizar a tomada de decisões e personalização de serviços aos clientes. O sucesso nessa transição definirá a autonomia das redes hoteleiras frente às grandes plataformas tecnológicas intermediárias.","link":"https://www.hosteltur.com/180272_el-reto-de-los-hoteles-ante-la-ia-ganar-control-sobre-la-distribucion-los-datos-y-las-decisiones.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"XINHUA Português","pais":"China","titulo":"28ª Feira de Alta Tecnologia da China começa em Shenzhen","resumo":"A 28ª edição da Feira de Alta Tecnologia da China foi aberta oficialmente em Shenzhen, reunindo os principais líderes e empresas do setor tecnológico mundial. O evento destaca avanços em inteligência artificial, robótica, sustentabilidade e novas tecnologias de semicondutores. A feira serve como uma vitrine global para o ecossistema de inovação chinês e promove parcerias estratégicas no setor de tecnologia avançada.","link":"http://portuguese.xinhuanet.com/20261127/ce7754c5cee8465c8cfd6bd0824f7b77/c.html","categoria":"EVENTO TECH","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"Avanço incrível: novo medicamento faz desaparecer câncer de pâncreas em ensaio clínico","resumo":"Um novo tratamento experimental apresentou resultados promissores ao eliminar completamente tumores de pâncreas em testes clínicos iniciais. A descoberta traz uma nova esperança para a oncologia, visto que esse tipo de câncer é conhecido por sua alta agressividade e diagnósticos tardios. Pesquisadores agora planejam expandir os ensaios para avaliar a eficácia do fármaco em grupos maiores de pacientes.","link":"https://pplware.sapo.pt/ciencia/cancro-pancreas-medicamento-daraxonrasib-tumores/","categoria":"MEDICINA","lang":"pt"},{"fonte":"Agência Pará de Notícias","pais":"Brasil","titulo":"Formação em inteligência artificial orienta estudantes e professores sobre uso da tecnologia na educação","resumo":"Um programa voltado à capacitação em inteligência artificial está instruindo educadores e alunos a integrarem ferramentas tecnológicas nas salas de aula. A iniciativa visa otimizar os processos de aprendizagem e promover o pensamento crítico no ambiente acadêmico. Com essa abordagem, o setor educacional busca preparar as novas gerações para lidar de forma responsável e eficiente com as inovações tecnológicas no mercado moderno.","link":"https://agenciapara.com.br/noticia/80802/formacao-em-inteligencia-artificial-orienta-estudantes-e-professores-sobre-uso-da-tecnologia-na-educacao","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"France 24","pais":"Estados Unidos","titulo":"Estados Unidos rejeitam plano da União Europeia de tributar gigantes de tecnologia","resumo":"O governo dos Estados Unidos se manifestou contrariamente à proposta da União Europeia que visa impor novas taxas sobre grandes empresas de tecnologia. A administração americana alega que a medida tributária desproporcional prejudica multinacionais do país e pode desencadear retaliações comerciais. O impasse reforça as tensões geopolíticas em torno da regulação e tributação do mercado digital global.","link":"https://www.france24.com/es/programas/econom%C3%ADa/20261127-estados-unidos-rechaza-el-plan-de-la-uni%C3%B3n-europea-para-gravar-a-las-tecnol%C3%B3gicas","categoria":"ECONOMIA DIGITAL","lang":"pt"},{"fonte":"Investing.com France","pais":"França","titulo":"Samsung e SK Hynix adotam tecnologia de memória da YMTC da China","resumo":"As gigantes sul-coreanas de semicondutores Samsung e SK Hynix começaram a integrar tecnologias de memória desenvolvidas pela chinesa YMTC. A decisão estratégica visa otimizar custos e aprimorar a eficiência produtiva em suas cadeias de suprimentos de componentes. Essa movimentação reflete a crescente relevância e maturidade da indústria de chips da China no cenário mundial. A adoção pode redefinir parcerias globais e a dinâmica de concorrência no setor de microeletrônica.","link":"https://fr.investing.com/news/stock-market-news/samsung-et-sk-hynix-adoptent-la-technologie-memoire-de-ymtc-chine-3714138","categoria":"HARDWARE","lang":"pt"},{"fonte":"The Independent","pais":"Inglaterra","titulo":"Queda no número de estudantes internacionais 'prejudica a economia e as universidades do RU', alerta relatório","resumo":"Especialistas e líderes acadêmicos emitiram um alerta ao governo britânico ressaltando os impactos negativos causados pela redução na entrada de alunos estrangeiros nas universidades do país. A diminuição desse público afeta diretamente a sustentabilidade financeira das pesquisas universitárias e reduz a receita econômica local. O relatório sugere revisões nas políticas migratórias para reter talentos e manter a competitividade acadêmica.","link":"https://www.independent.co.uk/news/uk/home-news/international-students-universities-uk-economy-b3092453.html","categoria":"EDUCAÇÃO","lang":"pt"},{"fonte":"El Mundo","pais":"Espanha","titulo":"Peter Gabriel, 50 anos de música e tecnologia: \"A IA vai nos superar em tudo, inclusive na criatividade\"","resumo":"O renomado músico Peter Gabriel refletiu sobre suas cinco décadas de carreira e a forte ligação entre arte e inovação tecnológica. Gabriel alertou que a inteligência artificial inevitavelmente ultrapassará as capacidades humanas em diversos aspectos, inclusive no âmbito criativo. Suas declarações acendem um intenso debate sobre o futuro dos direitos autorais e da expressão artística. O artista defende a adaptação e o entendimento ético dessas novas ferramentas na produção cultural contemporânea.","link":"https://www.elmundo.es/la-lectura/2026/11/26/6afc5a81fdddffc4068b45b9.html","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"央视网","pais":"China","titulo":"Tecnologia de exibição nacional da China avança com inovações em toda a cadeia produtiva","resumo":"A indústria chinesa de tecnologia de telas e monitores registrou novos avanços estruturais impulsionados pela inovação contínua ao longo de toda a sua cadeia de suprimentos. Os novos painéis oferecem maior eficiência energética e fidelidade visual, atendendo desde dispositivos móveis até telas industriais complexas. Esse progresso fortalece a autossuficiência tecnológica do país e expande sua presença no mercado global de displays.","link":"https://news.cctv.com/2026/11/27/ARTIZIy8M3PKSFLqyeHatdAG261127.shtml","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Pplware","pais":"Portugal","titulo":"NASA colide com asteroide e ESA descobre cenário de caos","resumo":"A missão DART da NASA impactou com sucesso um asteroide para testar técnicas de defesa planetária e desvio de trajetória. Observações subsequentes da Agência Espacial Europeia (ESA) revelaram que o choque gerou um verdadeiro caos de detritos e alterou significativamente a estrutura do corpo celeste. O estudo desses fragmentos oferece insights valiosos sobre a composição dos asteroides e a viabilidade de proteger a Terra de futuras ameaças.","link":"https://pplware.sapo.pt/ciencia/nasa-asteroide-dimorphos-esa-hera-impacto/","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Goias.GOV","pais":"Brasil","titulo":"Goiás terá festival gratuito de tecnologia, IA e economia criativa","resumo":"O estado de Goiás se prepara para sediar um festival inteiramente gratuito focado em inovações de inteligência artificial, tendências tecnológicas e economia criativa. O evento busca conectar estudantes, empreendedores e entusiastas do setor por meio de palestras, oficinas práticas e exposições de soluções digitais. A ação visa fortalecer o ecossistema regional de inovação e democratizar o acesso às principais tecnologias emergentes.","link":"https://goias.gov.br/goias-tera-festival-gratuito-de-tecnologia-ia-e-economia-criativa/","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"IDTechEx","pais":"Estados Unidos","titulo":"Tecnologia de baterias impulsionada por IA: Visão geral em vídeo","resumo":"Um novo panorama em vídeo detalha como a inteligência artificial está revolucionando o desenvolvimento de baterias de alta eficiência. A aplicação de algoritmos avançados permite acelerar a descoberta de novos materiais e otimizar o desempenho energético para veículos elétricos e eletrônicos. Essa convergência entre IA e armazenamento de energia promete transformar a indústria de tecnologia limpa.","link":"https://www.idtechex.com/en/research-article/ai-driven-battery-technology-video-overview/35706","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"24 Notícias","pais":"França","titulo":"Macron avisa que só poderá negociar orçamento da UE até o final do ano","resumo":"O presidente francês Emmanuel Macron estabeleceu um prazo rígido para as negociações do orçamento da União Europeia. O líder indicou que os acordos devem ser concluídos impreterivelmente até o encerramento deste ano. A declaração pressiona os demais países membros a buscarem um consenso rápido sobre prioridades financeiras do bloco. A postura firme reflete os desafios políticos e econômicos enfrentados pelas nações europeias no momento atual.","link":"https://24noticias.sapo.pt/economia/artigos/macron-avisa-que-so-podera-negociar-orcamento-da-ue-ate-ao-final-do-ano","categoria":"POLÍTICA","lang":"pt"},{"fonte":"The Conversation","pais":"Inglaterra","titulo":"Beber leite cru realmente traz benefícios extras para a saúde? O que diz a ciência","resumo":"Um estudo científico recente analisa os riscos e os supostos benefícios associados ao consumo de leite não pasteurizado, tema em alta no debate de bem-estar. Apesar das alegações de defensores sobre maior valor nutricional, pesquisadores reforçam os perigos de contaminações por bactérias nocivas. A análise apresenta evidências microbiológicas para esclarecer o público sobre as reais consequências dessa prática.","link":"https://theconversation.com/does-drinking-raw-milk-actually-deliver-extra-health-benefits-heres-the-science-296915","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"AutoRevista","pais":"Espanha","titulo":"Niulinx apresenta sua tecnologia de condução autônoma para carros compartilhados no Congresso AUCON","resumo":"A Niulinx apresentou suas mais recentes soluções em condução autônoma voltadas para o ecossistema de veículos compartilhados durante o Congresso AUCON. A tecnologia visa aumentar a eficiência operacional e a segurança do transporte urbano inteligente. A demonstração evidenciou o progresso dos veículos autônomos na frota pública e de uso compartilhado. Especialistas apontam essa inovação como um passo crucial para a mobilidade sustentável nas cidades do futuro.","link":"https://www.auto-revista.com/texto-diario/mostrar/6110835/niulinx-mostro-tecnologia-conduccion-autonoma-coches-compartidos-congreso-aucon","categoria":"INOVAÇÃO","lang":"pt"},{"fonte":"Investing.com UK","pais":"China","titulo":"Samsung e SK Hynix adotam tecnologia de memória da chinesa YMTC, aponta relatório","resumo":"As gigantes sul-coreanas da tecnologia Samsung e SK Hynix começaram a adotar tecnologias de arquitetura de memória desenvolvidas pela chinesa YMTC em suas linhas de produção. A decisão reflete o avanço técnico e a competitividade alcançados pelas empresas chinesas de semicondutores nos últimos anos. Essa movimentação pode redefinir parcerias estratégicas e dinâmicas de fornecimento no mercado global de chips.","link":"https://uk.investing.com/news/stock-market-news/samsung-sk-hynix-adopt-chinas-ymtc-memory-technology-nikkei-reports-5005874","categoria":"SEMICONDUTORES","lang":"pt"},{"fonte":"Agroportal","pais":"Portugal","titulo":"Alqueva testará tecnologia com inteligência artificial para monitorar a qualidade da água","resumo":"A região do Alqueva será palco de um projeto inovador que utiliza sensores avançados e algoritmos de inteligência artificial para vigiar a qualidade dos recursos hídricos. A tecnologia permitirá identificar contaminações e variações na água em tempo real, otimizando o manejo ambiental e a segurança do abastecimento. A iniciativa representa um passo importante na aplicação da IA para a sustentabilidade e gestão ecológica.","link":"https://www.agroportal.pt/alqueva-vai-testar-tecnologia-com-inteligencia-artificial-para-vigiar-a-qualidade-da-agua/","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"MCTI aproxima pesquisas em tecnologia assistiva das políticas públicas de inclusão","resumo":"O Ministério da Ciência, Tecnologia e Inovação está articulando esforços para integrar o desenvolvimento de tecnologias assistivas diretamente às políticas públicas nacionais de inclusão social. A proposta tem como objetivo garantir que soluções de acessibilidade cheguem com mais facilidade às pessoas com deficiência. Com isso, busca-se impulsionar a autonomia desse público e fomentar o setor nacional de pesquisa e desenvolvimento de tecnologias sociais.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2026/11/mcti-aproxima-pesquisas-em-tecnologia-assistiva-das-politicas-publicas-de-inclusao","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"NPR","pais":"Estados Unidos","titulo":"Esta semana na ciência: ansiedade universitária, batatas na Lua e meleca de baleia","resumo":"O resumo semanal de destaques científicos aborda pesquisas recentes sobre a saúde mental de estudantes universitários e o impacto do estresse acadêmico. Além disso, cientistas exploram a viabilidade do cultivo de batatas em solo simulado da Lua para futuras missões espaciais. A edição também destaca estudos inusitados sobre a coleta de amostras biológicas de baleias para monitoramento marinho.","link":"https://www.npr.org/2026/11/26/nx-s1-6044622/this-week-in-science-anxiety-in-college-students-potatoes-on-the-moon-and-whale-snot","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Agence Science-Presse","pais":"França","titulo":"IA e matemática: estudantes preocupados","resumo":"O avanço acelerado das ferramentas de inteligência artificial tem gerado forte apreensão entre estudantes de matemática. A automação de cálculos complexos e resoluções teóricas levanta debates sobre o futuro das carreiras acadêmicas e profissionais. Educadores e alunos buscam entender como equilibrar o aprendizado tradicional com as novas tecnologias emergentes. Esse cenário destaca a necessidade de adaptar as metodologias de ensino para a era digital.","link":"https://www.sciencepresse.qc.ca/actualites-scientifiques/2026/11/26/ia-mathematiques-etudiants-inquiets","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Retail Systems","pais":"Inglaterra","titulo":"Sainsbury's expande tecnologia de autoatendimento com IA para lojas de conveniência","resumo":"A rede britânica de supermercados Sainsbury's anunciou a ampliação de caixas de autoatendimento equipados com inteligência artificial para suas lojas de conveniência. A tecnologia auxilia no reconhecimento automático de itens e na prevenção de erros, acelerando o fluxo de compras em locais de alto tráfego. A iniciativa reflete a forte tendência de automação do varejo para aprimorar a experiência do consumidor.","link":"https://www.retail-systems.com/rs/Sainsburys_Extends_AI_Selfcheckout_Technology_To_Convenience_Stores.php","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Expansión","pais":"Espanha","titulo":"Microsoft, Alphabet, Meta e Amazon são a 'tecnologia de qualidade' para 2027, segundo Pictet","resumo":"Análises financeiras da gestora Pictet indicam que grandes empresas como Microsoft, Alphabet, Meta e Amazon continuam sendo investimentos sólidos em tecnologia até 2027. O relatório destaca a resiliência dessas gigantes impulsionada por avanços em nuvem e inteligência artificial. O domínio de mercado e a capacidade contínua de inovação mantêm essas corporações na liderança global. Investidores veem esse grupo como a espinha dorsal do crescimento tecnológico para os próximos anos.","link":"https://www.expansion.com/mercados/2026/11/27/microsoft-alphabet-meta-amazon-son-tecnologia-calidad-2027-pictet.html","categoria":"MERCADO DIGITAL","lang":"pt"},{"fonte":"北京大学医学部","pais":"China","titulo":"Cinco projetos do Terceiro Hospital da Universidade de Pequim vencem Prêmio de Ciência e Tecnologia","resumo":"O Terceiro Hospital da Universidade de Pequim teve cinco de suas pesquisas médicas premiadas na edição mais recente do Prêmio de Ciência e Tecnologia de Pequim. Os projetos contemplam áreas como cirurgia de precisão, medicina reprodutiva e terapias inovadoras para doenças crônicas. O reconhecimento destaca o papel de instituições acadêmicas e hospitalares de ponta no avanço da ciência médica na China.","link":"https://bynews.bjmu.edu.cn/zhxw/2026/d7911578da8744bda43e1e5edd69f441.htm","categoria":"CIÊNCIA E SAÚDE","lang":"pt"},{"fonte":"Novum Canal","pais":"Portugal","titulo":"ULS Tâmega e Sousa instala novo TAC capaz de realizar exames cardíacos em um único batimento","resumo":"Uma nova tecnologia de tomografia computadorizada foi instalada na ULS Tâmega e Sousa, permitindo capturar imagens detalhadas do coração em apenas um batimento cardíaco. O equipamento de ponta reduz significativamente o tempo de exposição dos pacientes à radiação e melhora a precisão dos diagnósticos cardiovasculares. O avanço moderniza o atendimento médico hospitalar e eleva a eficiência dos exames preventivos.","link":"https://novumcanal.pt/2026/11/uls-tamega-e-sousa-instala-novo-tac-com-tecnologia-que-permite-exames-cardiacos-num-unico-batimento/","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"www.gov.br","pais":"Brasil","titulo":"Marengo alerta sobre priorizar investimentos na ciência para enfrentar eventos climáticos extremos","resumo":"O cientista José Marengo ressaltou a necessidade urgente de aumentar o financiamento e o foco nas pesquisas científicas para embasar a formulação de políticas públicas eficazes. Segundo o especialista, o conhecimento científico é a principal ferramenta para mitigar os impactos sociais e econômicos decorrentes de eventos climáticos extremos. O alerta reforça que a tomada de decisões baseada em dados concretos é vital para aumentar a resiliência das cidades.","link":"https://www.gov.br/cemaden/pt-br/assuntos/noticias-cemaden/marengo-alerta-sobre-priorizar-investimentos-na-ciencia-base-para-politicas-publicas-diante-dos-eventos-extremos","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"SWI swissinfo.ch","pais":"Estados Unidos","titulo":"EUA rejeitam planos da UE de taxar as grandes empresas de tecnologia","resumo":"Os Estados Unidos reafirmaram sua oposição formal aos planos europeus de implementar impostos sobre os serviços digitais de grandes companhias de tecnologia. A posição do governo norte-americano busca proteger o setor de tecnologia nacional de taxas consideradas discriminatórias. O debate internacional coloca em evidência a busca por um consenso global sobre a fiscalização de multinacionais do setor de tecnologia.","link":"https://www.swissinfo.ch/por/eua-rejeita-planos-da-ue-de-taxar-as-grandes-empresas-de-tecnologia/92445299","categoria":"POLÍTICA TECNOLÓGICA","lang":"pt"},{"fonte":"RFI","pais":"França","titulo":"Orçamento da UE: França aumenta o tom sobre a Política Agrícola Comum","resumo":"A França adotou uma postura mais firme nos debates sobre a distribuição do orçamento da União Europeia. O governo francês exige a preservação dos recursos destinados à Política Agrícola Comum para proteger seus produtores. O impasse gera discussões acaloradas entre os países membros do bloco que buscam redistribuir fundos comunitários. O resultado dessas negociações terá grande impacto na sustentabilidade do setor agropecuário europeu.","link":"https://www.rfi.fr/fr/%C3%A9conomie/20261126-budget-de-l-ue-la-france-hausse-le-ton-sur-la-politique-agricole-commune","categoria":"ECONOMIA","lang":"pt"},{"fonte":"EL PAÍS","pais":"Espanha","titulo":"Um mês com o iPhone Duo é viver 'De Volta para o Futuro'","resumo":"Um teste prolongado do novo iPhone Duo revelou uma experiência inovadora que remete a conceitos futuristas da tecnologia móvel. A análise detalha a integração entre hardware de tela dupla e novas rotinas de produtividade no ecossistema da Apple. Usuários relatam uma grande mudança na usabilidade e na execução de tarefas multitarefa do dia a dia. Esse avanço reforça a constante evolução dos dispositivos dobráveis e de múltiplas telas no mercado de smartphones.","link":"https://elpais.com/tecnologia/2026-11-27/un-mes-con-el-iphone-duo-es-vivir-regreso-al-futuro.html?outputType=amp","categoria":"GADGETS","lang":"pt"},{"fonte":"科学网—新闻","pais":"China","titulo":"Cinco acadêmicos discutem ciência sintética e ressaltam a necessidade de integração interdisciplinar","resumo":"Em um painel científico de alto nível, cinco renomados acadêmicos chineses debateram o futuro da biologia e ciência sintética no país. Os especialistas enfatizaram que a colaboração entre áreas como computação, química e biologia ainda é insuficiente para atingir todo o potencial do setor. O grupo defendeu a criação de novas plataformas de pesquisa focadas em soluções transversais para desafios globais.","link":"https://news.sciencenet.cn/htmlnews/2026/11/575388.shtm","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Público","pais":"Portugal","titulo":"Comprar tecnologia recondicionada vale a pena? Testamos um MacBook \"como novo\"","resumo":"O mercado de eletrônicos recondicionados tem crescido como uma alternativa econômica e sustentável para a aquisição de computadores e smartphones premium. Testes práticos com um MacBook recondicionado demonstraram alto desempenho e preservação dos componentes internos por uma fração do preço original. A análise conclui que, com a devida garantia técnica, a compra desses dispositivos é extremamente vantajosa para o consumidor final.","link":"https://www.publico.pt/2026/11/26/enter/noticia/comprar-tecnologia-recondicionada-compensa-testamos-macbook-novo-2196442?ref=hp\u0026cx=ultimas_1","categoria":"TECNOLOGIA","lang":"pt"},{"fonte":"Agência Marinha","pais":"Brasil","titulo":"Documentário revela produção da ciência brasileira na Antártica e destaca apoio da Marinha","resumo":"Uma nova produção audiovisual documenta as pesquisas científicas desenvolvidas por equipes brasileiras no continente antártico, ressaltando o valor dos dados coletados para o entendimento do clima global. A produção enfatiza o suporte logístico prestado pela Marinha do Brasil, crucial para a manutenção contínua dos trabalhos de campo em condições extremas. A obra busca aproximar a sociedade do impacto direto da ciência antártica no cotidiano nacional.","link":"https://www.agencia.marinha.mil.br/especial/documentario-revela-producao-da-ciencia-brasileira-na-antartica-e-destaca-apoio-da-marinha","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Business Standard","pais":"Estados Unidos","titulo":"EUA associam vantagem de exportação da Índia a insumos industriais baratos da China","resumo":"Relatórios dos Estados Unidos apontam que o crescimento nas exportações da Índia está fortemente atrelado ao uso de componentes e insumos industriais baratos vindos da China. A análise destaca a dependência da cadeia de suprimentos indiana em relação à manufatura chinesa para manter a competitividade global. O cenário lança luz sobre os desafios de reestruturação do comércio internacional e dependência tecnológica.","link":"https://www.business-standard.com/economy/news/us-links-india-export-edge-to-cheap-chinese-manufacturing-inputs-126112601531_1.html","categoria":"COMÉRCIO GLOBAL","lang":"pt"},{"fonte":"La France aux États-Unis","pais":"França","titulo":"Café das Ciências SF: a ciência do clima em ação","resumo":"O evento Café das Ciências de São Francisco reuniu especialistas para debater ações práticas diante das mudanças climáticas. Os palestrantes apresentaram pesquisas recentes e inovações tecnológicas voltadas para a sustentabilidade e mitigação ambiental. A iniciativa busca aproximar o conhecimento científico do público e incentivar soluções eficazes para o planeta. O encontro reforça o papel da ciência no enfrentamento dos desafios ambientais globais do século XXI.","link":"https://us.diplomatie.gouv.fr/fr/cafe-des-sciences-sf-la-science-du-climat-en-action","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Interempresas Media","pais":"Espanha","titulo":"Aimplas recebe o Prêmio Basf de Economia Circular por seu projeto em parques naturais","resumo":"O instituto tecnológico Aimplas foi condecorado com o Prêmio Basf de Economia Circular graças a um projeto inovador voltado para preservação em parques naturais. A iniciativa desenvolve soluções sustentáveis para a gestão de resíduos e proteção de ecossistemas vulneráveis. O prêmio reconhece a aplicação prática da ciência no combate à contaminação e promoção da sustentabilidade. A conquista fortalece a relevância de parcerias entre centros de pesquisa e indústrias para o meio ambiente.","link":"https://www.interempresas.net/Plastico/670955-Aimplas-recibe-el-Premio-Basf-de-Economia-Circular-por-su-proyecto-en-parques-naturales.html","categoria":"CIÊNCIA","lang":"pt"},{"fonte":"Investing.com India","pais":"China","titulo":"Ações da Beijing Zhongke WengeAI sobem fortemente impulsionadas por novos avanços em IA","resumo":"A empresa de inteligência artificial Beijing Zhongke WengeAI registrou uma forte alta em suas ações no mercado financeiro chinês após anúncios de progresso em seus modelos de dados. A empresa tem se destacado no fornecimento de soluções corporativas baseadas em IA de linguagem natural e análise preditiva. O otimismo dos investidores reforça o momento aquecido do mercado de inteligência artificial na região.","link":"https://in.investing.com/news/stock-market-news/why-is-beijing-zhongke-wengeai-science-and-technology-stock-surging-today-93CH-5727646","categoria":"INTELIGÊNCIA ARTIFICIAL","lang":"pt"},{"fonte":"Expresso","pais":"Portugal","titulo":"'Startups' europeias precisam de vontade política e maturidade para crescer","resumo":"Especialistas do setor de inovação alertam que o ecossistema de startups na Europa enfrenta gargalos estruturais em comparação aos mercados norte-americano e asiático. A falta de incentivos regulatórios e a menor oferta de capital de risco maduro dificultam a escala de novas empresas de tecnologia. O estudo defende que é urgente haver maior empenho político para criar condições de financiamento e competitividade global.","link":"https://expresso.pt/internacional/2026-11-26-startups-europeias-precisam-de-vontade-politica-e-maturidade-4ec36283?utm_source=expresso\u0026utm_medium=content\u0026utm_campaign=WEB\u0026utm_content=/internacional/2026-11-26-startups-europeias-precisam-de-vontade-politica-e-maturidade-4ec36283","categoria":"NEGÓCIOS","lang":"pt"},{"fonte":"O GLOBO","pais":"Brazil","titulo":"Social media, pornography, and AI: how technology is changing male sexuality and what the risks are","resumo":"The rapid evolution of access to digital content, driven by artificial intelligence algorithms and social media, has been transforming sexual behaviors and expectations. Experts warn about the psychological impacts of this digital ecosystem on men, highlighting risks of social isolation and interpersonal dysfunction. The debate reinforces the urgency of promoting awareness and the healthy use of new technological tools in daily life.","link":"https://oglobo.globo.com/saude/noticia/2026/11/27/redes-sociais-pornografia-e-ia-como-a-tecnologia-esta-mudando-a-sexualidade-masculina-e-quais-sao-os-riscos.ghtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"The Times of India","pais":"United States","titulo":"Elon Musk's brain chip technology receives new approval for patient testing","resumo":"The neurotechnology company founded by Elon Musk has obtained a new regulatory authorization to advance human trials of its brain implant. The device promises to connect the human mind to computers and potentially treat severe neurological conditions. The approval marks a historic step for medicine and brain-machine interface, generating high expectations in the scientific community.","link":"https://timesofindia.indiatimes.com/technology/tech-news/elon-muska-jesus-level-brain-chip-technology-earns-new-approval-says-can-be-tested-on-patients-with-/articleshow/136210286.cms","categoria":"NEUROTECHNOLOGY","lang":"en"},{"fonte":"Investing.com France","pais":"France","titulo":"Why are Beijing Zhongke Wenge Science and Tech shares rising today?","resumo":"Shares of the Chinese technology company Beijing Zhongke Wenge showed a sharp rise in the financial market recently. The movement attracts the attention of investors focused on the artificial intelligence and advanced data analysis sector. The appreciation reflects optimism regarding the technological innovations developed by the company and its growth potential. This scenario demonstrates the direct impact of technological advancement on the stock prices of leading companies in the global market.","link":"https://fr.investing.com/news/stock-market-news/pourquoi-laction-beijing-zhongke-wenge-science-and-t-senvoletelle-aujourdhui--93CH-3714189","categoria":"FINANCIAL MARKET","lang":"en"},{"fonte":"Cambridge Network","pais":"England","titulo":"Cambridge Multiphysics named UK's Best Clean Energy Simulation Technology Company 2026","resumo":"Cambridge Multiphysics was nationally recognized in the UK for its innovative contributions to the clean energy simulation sector. The technology developed allows the optimization of complex engineering processes and accelerates the global energy transition. This award highlights the importance of advanced computational tools in the pursuit of high-impact sustainable solutions.","link":"https://www.cambridgenetwork.co.uk/news/cambridge-multiphysics-named-best-clean-energy-simulation-technology-company-2026-uk","categoria":"CLEAN ENERGY","lang":"en"},{"fonte":"Investing.com España","pais":"Spain","titulo":"Samsung and SK Hynix adopt memory technology from China's YMTC","resumo":"South Korean tech giants Samsung and SK Hynix have begun integrating memory advancements developed by China's YMTC into their operations. This move highlights the growing relevance and competitiveness of semiconductor innovations originating in China in the global market. The move could redefine strategic partnerships and the global microchip supply chain. Furthermore, the adoption underscores the technical progress of the Chinese industry in the face of geopolitical challenges and international sanctions.","link":"https://es.investing.com/news/stock-market-news/samsung-y-sk-hynix-adoptan-tecnologia-de-memoria-de-ymtc-de-china-3944896","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"FAZ","pais":"Germany","titulo":"Hesse economy grows thanks to artificial intelligence and the defense sector","resumo":"The economy of the state of Hesse, in Germany, registered growth driven primarily by the expansion of artificial intelligence and the strengthening of the defense industry. This advancement reflects growing geopolitical demand and intense investments in disruptive technologies in the region. The combination of technological innovation and defense positions the state as a strategic hub for German economic development. Experts predict that this upward trend will continue to attract new investments and create jobs in the coming years.","link":"https://www.faz.net/aktuell/rhein-main/frankfurt/hessische-wirtschaft-waechst-dank-ki-und-ruestung-201719110.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"KEK｜高エネルギー加速器研究機構","pais":"Japan","titulo":"Confirmed Participation in Tsukuba Science Festival 2026","resumo":"The Tsukuba Science Festival 2026 event will feature interactive presentations of scientific and technological innovations aimed at the community. The initiative seeks to promote knowledge by bringing researchers, students, and the general public closer together in Japan. The participation highlights the commitment to inspiring new generations through science communication and cutting-edge technology.","link":"https://www.kek.jp/ja/event/202611281000","categoria":"SCIENCE","lang":"en"},{"fonte":"新华网","pais":"China","titulo":"New brain-computer interface technology helps ALS patients 'speak'","resumo":"Chinese researchers have developed a new brain-computer interface technology that allows amyotrophic lateral sclerosis patients to communicate more efficiently. The breakthrough translates neural signals directly into text and synthetic speech, overcoming limitations of previous devices. This innovation represents a significant milestone for neurotechnology and promises to drastically improve the quality of life for people with severe motor paralysis.","link":"https://www.news.cn/tech/20261127/bd0e1493aac54e6594278afc41336ab9/c.html","categoria":"NEUROTECHNOLOGY","lang":"en"},{"fonte":"The Times of India","pais":"India","titulo":"SAP, Europe's largest technology company, plans to cut 10,000 jobs to focus on AI","resumo":"European software giant SAP has announced a global restructuring plan expected to affect about 10,000 employees across its operations. The measure aims to focus the company's investments on the development of generative artificial intelligence and advanced cloud solutions. This reorganization reflects growing pressure on large technology companies to adapt their business models to new market demands. The transition is expected to take place over the coming months through retraining programs and voluntary departures.","link":"https://timesofindia.indiatimes.com/technology/tech-news/europes-biggest-technology-company-sap-is-planning-to-cut-10000-jobs-as-it-prepares-for-/articleshow/136207404.cms","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"Solar storm heading to Earth: dangers and auroras","resumo":"A new solar storm is approaching Earth, bringing with it the promise of intense auroras across various latitudes. Although the visual spectacle is impressive, scientists warn of real risks of interference in power grids, GPS navigation systems, and satellite communications. The phenomenon underscores the importance of constant space weather monitoring to protect global technological infrastructure.","link":"https://pplware.sapo.pt/ciencia/tempestade-solar-27-novembro-2026/","categoria":"ASTRONOMY","lang":"en"},{"fonte":"Folha de S.Paulo","pais":"Brazil","titulo":"Scientists find dozens of potentially new species in Amazon mountains","resumo":"A scientific expedition carried out in the mountainous and hard-to-reach regions of the Amazon resulted in the discovery of dozens of potential new species of fauna and flora. The discovery highlights the rich and still unexplored biodiversity of the Amazon biome, fundamental for the advancement of global science. Researchers emphasize the relevance of environmental protection to safeguard these newly discovered species against climate threats.","link":"https://www1.folha.uol.com.br/ciencia/2026/11/cientistas-encontram-dezenas-de-especies-potencialmente-novas-em-montanhas-da-amazonia.shtml","categoria":"SCIENCE","lang":"en"},{"fonte":"Baking Business","pais":"United States","titulo":"Fermentation technology company moves headquarters from Europe to New York","resumo":"An innovative company focused on fermentation technology has announced the relocation of its operations from Europe to the state of New York. The migration aims to leverage the North American innovation ecosystem and expand the production of sustainable biotechnological solutions. The move reinforces the role of the United States as an attractive hub for global high-tech and synthetic biology startups.","link":"https://www.bakingbusiness.com/articles/67304-fermentation-technology-company-moving-to-ny-from-europe","categoria":"BIOTECHNOLOGY","lang":"en"},{"fonte":"Notebookcheck.fr","pais":"France","titulo":"Casio's incredible titanium Oceanus, equipped with Gallium Tough Solar technology in a limited edition, goes on sale","resumo":"Casio has announced the official launch of its new limited edition titanium Oceanus watch line. The device stands out for incorporating the innovative Gallium Tough Solar technology for high-efficiency solar charging. The model combines sophisticated high-precision design with advanced materials engineering for demanding consumers. The novelty reinforces the brand's leadership in high-end technological watches in the international market.","link":"https://www.notebookcheck.biz/La-superbe-Oceanus-en-titane-de-Casio-dotee-de-la-technologie-Gallium-Tough-Solar-et-proposee-en-edition-limitee-est-mise-en-vente.1461175.0.html","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Emergency Services Times","pais":"England","titulo":"Ambulance service expands AI trial to support crews in completing medical records","resumo":"An emergency medical service in the UK has expanded the use of artificial intelligence to optimize access and recording of medical records by emergency crews. The tool aims to drastically reduce the administrative burden on paramedics during critical care. As a result, it is expected to increase efficiency in pre-hospital diagnoses and ensure vital information reaches hospitals swiftly.","link":"https://emergencyservicestimes.com/2026/11/27/ambulance-service-expands-trial-of-ai-technology-to-support-crews-with-patient-records/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Hosteltur","pais":"Spain","titulo":"The challenge for hotels facing AI: taking control of distribution, data, and decisions","resumo":"The hotel sector is facing a profound digital transformation driven by artificial intelligence. To maintain competitiveness, establishments need to regain direct management over their operational data and reservation distribution channels. Automation promises to optimize decision-making and customer service personalization. Success in this transition will define the autonomy of hotel chains against large intermediary technology platforms.","link":"https://www.hosteltur.com/180272_el-reto-de-los-hoteles-ante-la-ia-ganar-control-sobre-la-distribucion-los-datos-y-las-decisiones.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"XINHUA Português","pais":"China","titulo":"28th China High-Tech Fair Kicks Off in Shenzhen","resumo":"The 28th edition of the China High-Tech Fair officially opened in Shenzhen, gathering top leaders and companies from the global technology sector. The event highlights breakthroughs in artificial intelligence, robotics, sustainability, and new semiconductor technologies. The fair serves as a global showcase for China's innovation ecosystem and promotes strategic partnerships in the advanced tech sector.","link":"http://portuguese.xinhuanet.com/20261127/ce7754c5cee8465c8cfd6bd0824f7b77/c.html","categoria":"TECH EVENT","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"Incredible Breakthrough: New Drug Makes Pancreatic Cancer Disappear in Clinical Trial","resumo":"A new experimental treatment has shown promising results by completely eliminating pancreatic tumors in early clinical trials. The discovery brings new hope to oncology, given that this type of cancer is known for its high aggressiveness and late diagnoses. Researchers now plan to expand trials to evaluate the drug's efficacy in larger patient groups.","link":"https://pplware.sapo.pt/ciencia/cancro-pancreas-medicamento-daraxonrasib-tumores/","categoria":"MEDICINE","lang":"en"},{"fonte":"Agência Pará de Notícias","pais":"Brazil","titulo":"Artificial Intelligence Training Guides Students and Teachers on Technology Use in Education","resumo":"A program focused on artificial intelligence training is instructing educators and students on how to integrate technological tools into the classroom. The initiative aims to optimize learning processes and promote critical thinking in the academic environment. Through this approach, the educational sector seeks to prepare new generations to handle technological innovations responsibly and efficiently in the modern market.","link":"https://agenciapara.com.br/noticia/80802/formacao-em-inteligencia-artificial-orienta-estudantes-e-professores-sobre-uso-da-tecnologia-na-educacao","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"France 24","pais":"United States","titulo":"United States Rejects European Union Plan to Tax Tech Giants","resumo":"The United States government has spoken out against the European Union proposal aimed at imposing new taxes on major technology companies. The US administration argues that the disproportionate tax measure harms the country's multinationals and could trigger trade retaliation. The deadlock reinforces geopolitical tensions surrounding the regulation and taxation of the global digital market.","link":"https://www.france24.com/es/programas/econom%C3%ADa/20261127-estados-unidos-rechaza-el-plan-de-la-uni%C3%B3n-europea-para-gravar-a-las-tecnol%C3%B3gicas","categoria":"DIGITAL ECONOMY","lang":"en"},{"fonte":"Investing.com France","pais":"France","titulo":"Samsung and SK Hynix Adopt Memory Technology from China's YMTC","resumo":"South Korean semiconductor giants Samsung and SK Hynix have begun integrating memory technologies developed by China's YMTC. The strategic decision aims to optimize costs and improve production efficiency in their component supply chains. This move reflects the growing relevance and maturity of China's chip industry on the world stage. The adoption could redefine global partnerships and competition dynamics in the microelectronics sector.","link":"https://fr.investing.com/news/stock-market-news/samsung-et-sk-hynix-adoptent-la-technologie-memoire-de-ymtc-chine-3714138","categoria":"HARDWARE","lang":"en"},{"fonte":"The Independent","pais":"United Kingdom","titulo":"Drop in International Student Numbers 'Harms UK Economy and Universities,' Report Warns","resumo":"Experts and academic leaders have issued a warning to the British government highlighting the negative impacts caused by the reduction in the intake of foreign students at the country's universities. The decline in this demographic directly affects the financial sustainability of university research and reduces local economic revenue. The report suggests revisions to immigration policies to retain talent and maintain academic competitiveness.","link":"https://www.independent.co.uk/news/uk/home-news/international-students-universities-uk-economy-b3092453.html","categoria":"EDUCATION","lang":"en"},{"fonte":"El Mundo","pais":"Spain","titulo":"Peter Gabriel, 50 Years of Music and Technology: 'AI Will Surpass Us in Everything, Including Creativity'","resumo":"Renowned musician Peter Gabriel reflected on his five decades of career and the strong connection between art and technological innovation. Gabriel warned that artificial intelligence will inevitably surpass human capabilities in various aspects, including the creative realm. His statements spark an intense debate over the future of copyright and artistic expression. The artist advocates for adaptation and ethical understanding of these new tools in contemporary cultural production.","link":"https://www.elmundo.es/la-lectura/2026/11/26/6afc5a81fdddffc4068b45b9.html","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"央视网","pais":"China","titulo":"China's Domestic Display Technology Advances with Innovations Across the Production Chain","resumo":"China's screen and monitor technology industry has registered new structural advances driven by continuous innovation throughout its entire supply chain. The new panels offer greater energy efficiency and visual fidelity, catering to everything from mobile devices to complex industrial displays. This progress strengthens the country's technological self-sufficiency and expands its presence in the global display market.","link":"https://news.cctv.com/2026/11/27/ARTIZIy8M3PKSFLqyeHatdAG261127.shtml","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Pplware","pais":"Portugal","titulo":"NASA Collides with Asteroid and ESA Discovers Chaos Scenario","resumo":"NASA's DART mission successfully impacted an asteroid to test planetary defense techniques and trajectory deflection. Subsequent observations by the European Space Agency (ESA) revealed that the crash generated true debris chaos and significantly altered the celestial body's structure. The study of these fragments offers valuable insights into asteroid composition and the feasibility of protecting Earth from future threats.","link":"https://pplware.sapo.pt/ciencia/nasa-asteroide-dimorphos-esa-hera-impacto/","categoria":"SCIENCE","lang":"en"},{"fonte":"Goias.GOV","pais":"Brazil","titulo":"Goiás to Host Free Festival on Technology, AI, and Creative Economy","resumo":"The state of Goiás is preparing to host a completely free festival focused on artificial intelligence innovations, technological trends, and the creative economy. The event seeks to connect students, entrepreneurs, and industry enthusiasts through lectures, hands-on workshops, and exhibitions of digital solutions. The action aims to strengthen the regional innovation ecosystem and democratize access to key emerging technologies.","link":"https://goias.gov.br/goias-tera-festival-gratuito-de-tecnologia-ia-e-economia-criativa/","categoria":"INNOVATION","lang":"en"},{"fonte":"IDTechEx","pais":"United States","titulo":"AI-Driven Battery Technology: Video Overview","resumo":"A new video overview details how artificial intelligence is revolutionizing the development of high-efficiency batteries. The application of advanced algorithms accelerates the discovery of new materials and optimizes energy performance for electric vehicles and electronics. This convergence between AI and energy storage promises to transform the clean tech industry.","link":"https://www.idtechex.com/en/research-article/ai-driven-battery-technology-video-overview/35706","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"24 Notícias","pais":"France","titulo":"Macron Warns He Can Only Negotiate EU Budget Until the End of the Year","resumo":"French President Emmanuel Macron has established a strict deadline for European Union budget negotiations. The leader indicated that agreements must be concluded without fail by the end of this year. The statement pressures other member states to rapidly reach a consensus on the bloc's financial priorities. The firm stance reflects the political and economic challenges facing European nations at the present time.","link":"https://24noticias.sapo.pt/economia/artigos/macron-avisa-que-so-podera-negociar-orcamento-da-ue-ate-ao-final-do-ano","categoria":"POLITICS","lang":"en"},{"fonte":"The Conversation","pais":"United Kingdom","titulo":"Does Drinking Raw Milk Actually Deliver Extra Health Benefits? Here's What Science Says","resumo":"A recent scientific study analyzes the risks and alleged benefits associated with the consumption of unpasteurized milk, a hot topic in the wellness debate. Despite proponents' claims of higher nutritional value, researchers reinforce the dangers of contamination by harmful bacteria. The analysis presents microbiological evidence to clarify the real consequences of this practice to the public.","link":"https://theconversation.com/does-drinking-raw-milk-actually-deliver-extra-health-benefits-heres-the-science-296915","categoria":"SCIENCE","lang":"en"},{"fonte":"AutoRevista","pais":"Spain","titulo":"Niulinx Showcases Autonomous Driving Technology for Carsharing at AUCON Congress","resumo":"Niulinx presented its latest autonomous driving solutions geared toward the shared vehicle ecosystem during the AUCON Congress. The technology aims to increase operational efficiency and safety in smart urban transportation. The demonstration highlighted the progress of autonomous vehicles in public and shared-use fleets. Experts point to this innovation as a crucial step for sustainable mobility in the cities of the future.","link":"https://www.auto-revista.com/texto-diario/mostrar/6110835/niulinx-mostro-tecnologia-conduccion-autonoma-coches-compartidos-congreso-aucon","categoria":"INNOVATION","lang":"en"},{"fonte":"Investing.com UK","pais":"China","titulo":"Samsung and SK Hynix Adopt Memory Technology from China's YMTC, Report Says","resumo":"South Korean technology giants Samsung and SK Hynix have begun adopting memory architecture technologies developed by China's YMTC in their production lines. The decision reflects the technical advancement and competitiveness achieved by Chinese semiconductor companies in recent years. This move could redefine strategic partnerships and supply dynamics in the global chip market.","link":"https://uk.investing.com/news/stock-market-news/samsung-sk-hynix-adopt-chinas-ymtc-memory-technology-nikkei-reports-5005874","categoria":"SEMICONDUCTORS","lang":"en"},{"fonte":"Agroportal","pais":"Portugal","titulo":"Alqueva to test artificial intelligence technology to monitor water quality","resumo":"The Alqueva region will host an innovative project using advanced sensors and artificial intelligence algorithms to monitor the quality of water resources. The technology will allow for the identification of contamination and water variations in real time, optimizing environmental management and supply security. The initiative represents an important step in applying AI to sustainability and ecological management.","link":"https://www.agroportal.pt/alqueva-vai-testar-tecnologia-com-inteligencia-artificial-para-vigiar-a-qualidade-da-agua/","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"MCTI aligns assistive technology research with public inclusion policies","resumo":"The Ministry of Science, Technology, and Innovation is coordinating efforts to integrate the development of assistive technologies directly into national social inclusion public policies. The proposal aims to ensure that accessibility solutions reach people with disabilities more easily. By doing so, it seeks to boost the autonomy of this demographic and foster the domestic research and development sector for social technologies.","link":"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2026/11/mcti-aproxima-pesquisas-em-tecnologia-assistiva-das-politicas-publicas-de-inclusao","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"NPR","pais":"United States","titulo":"This week in science: college anxiety, potatoes on the moon, and whale snot","resumo":"The weekly science roundup covers recent research on the mental health of college students and the impact of academic stress. Additionally, scientists are exploring the feasibility of growing potatoes in simulated lunar soil for future space missions. The edition also highlights unusual studies on collecting biological samples from whales for marine monitoring.","link":"https://www.npr.org/2026/11/26/nx-s1-6044622/this-week-in-science-anxiety-in-college-students-potatoes-on-the-moon-and-whale-snot","categoria":"SCIENCE","lang":"en"},{"fonte":"Agence Science-Presse","pais":"France","titulo":"AI and mathematics: concerned students","resumo":"The rapid advancement of artificial intelligence tools has sparked strong concern among mathematics students. The automation of complex calculations and theoretical problem-solving raises debates about the future of academic and professional careers. Educators and students are seeking to understand how to balance traditional learning with emerging new technologies. This scenario highlights the need to adapt teaching methodologies for the digital age.","link":"https://www.sciencepresse.qc.ca/actualites-scientifiques/2026/11/26/ia-mathematiques-etudiants-inquiets","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Retail Systems","pais":"England","titulo":"Sainsbury's expands AI self-checkout technology to convenience stores","resumo":"British supermarket chain Sainsbury's has announced the expansion of self-checkout registers equipped with artificial intelligence to its convenience stores. The technology assists with automatic item recognition and error prevention, speeding up the shopping flow in high-traffic locations. The initiative reflects a strong retail automation trend aimed at improving the consumer experience.","link":"https://www.retail-systems.com/rs/Sainsburys_Extends_AI_Selfcheckout_Technology_To_Convenience_Stores.php","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Expansión","pais":"Spain","titulo":"Microsoft, Alphabet, Meta, and Amazon are 'quality tech' for 2027, according to Pictet","resumo":"Financial analyses from asset manager Pictet indicate that major companies like Microsoft, Alphabet, Meta, and Amazon remain solid technology investments through 2027. The report highlights the resilience of these giants, driven by advancements in cloud computing and artificial intelligence. Market dominance and continuous innovation capacity keep these corporations in global leadership. Investors view this group as the backbone of technological growth for the coming years.","link":"https://www.expansion.com/mercados/2026/11/27/microsoft-alphabet-meta-amazon-son-tecnologia-calidad-2027-pictet.html","categoria":"DIGITAL MARKET","lang":"en"},{"fonte":"北京大学医学部","pais":"China","titulo":"Five projects from Peking University Third Hospital win Science and Technology Award","resumo":"Peking University Third Hospital had five of its medical research projects awarded at the most recent Beijing Science and Technology Awards. The projects cover areas such as precision surgery, reproductive medicine, and innovative therapies for chronic diseases. The recognition highlights the role of top-tier academic and hospital institutions in advancing medical science in China.","link":"https://bynews.bjmu.edu.cn/zhxw/2026/d7911578da8744bda43e1e5edd69f441.htm","categoria":"SCIENCE AND HEALTH","lang":"en"},{"fonte":"Novum Canal","pais":"Portugal","titulo":"ULS Tâmega e Sousa installs new CT scanner capable of performing cardiac exams in a single heartbeat","resumo":"New computed tomography technology has been installed at ULS Tâmega e Sousa, allowing for detailed images of the heart to be captured in just a single heartbeat. The cutting-edge equipment significantly reduces patients' radiation exposure time and improves the accuracy of cardiovascular diagnoses. This advancement modernizes hospital medical care and increases the efficiency of preventive exams.","link":"https://novumcanal.pt/2026/11/uls-tamega-e-sousa-instala-novo-tac-com-tecnologia-que-permite-exames-cardiacos-num-unico-batimento/","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"www.gov.br","pais":"Brazil","titulo":"Marengo warns about prioritizing investments in science to face extreme weather events","resumo":"Scientist José Marengo highlighted the urgent need to increase funding and focus on scientific research to support the formulation of effective public policies. According to the expert, scientific knowledge is the primary tool for mitigating the social and economic impacts resulting from extreme weather events. The warning reinforces that decision-making based on concrete data is vital to increasing cities' resilience.","link":"https://www.gov.br/cemaden/pt-br/assuntos/noticias-cemaden/marengo-alerta-sobre-priorizar-investimentos-na-ciencia-base-para-politicas-publicas-diante-dos-eventos-extremos","categoria":"SCIENCE","lang":"en"},{"fonte":"SWI swissinfo.ch","pais":"United States","titulo":"U.S. rejects EU plans to tax major tech companies","resumo":"The United States has reaffirmed its formal opposition to European plans to implement digital services taxes on large tech companies. The U.S. government's stance seeks to protect the domestic technology sector from fees considered discriminatory. The international debate highlights the quest for a global consensus on the oversight of multinational tech corporations.","link":"https://www.swissinfo.ch/por/eua-rejeita-planos-da-ue-de-taxar-as-grandes-empresas-de-tecnologia/92445299","categoria":"TECH POLICY","lang":"en"},{"fonte":"RFI","pais":"France","titulo":"EU budget: France hardens its stance on the Common Agricultural Policy","resumo":"France has adopted a firmer posture in debates over the distribution of the European Union budget. The French government is demanding the preservation of resources allocated to the Common Agricultural Policy to protect its producers. The impasse generates heated discussions among member states of the bloc seeking to redistribute community funds. The outcome of these negotiations will have a major impact on the sustainability of the European agricultural sector.","link":"https://www.rfi.fr/fr/%C3%A9conomie/20261126-budget-de-l-ue-la-france-hausse-le-ton-sur-la-politique-agricole-commune","categoria":"ECONOMY","lang":"en"},{"fonte":"EL PAÍS","pais":"Spain","titulo":"A month with the iPhone Duo is like living 'Back to the Future'","resumo":"An extended test of the new iPhone Duo revealed an innovative experience reminiscent of futuristic mobile technology concepts. The review details the integration between dual-screen hardware and new productivity routines within the Apple ecosystem. Users report a major shift in usability and the execution of day-to-day multitasking tasks. This advancement reinforces the constant evolution of foldable and multi-screen devices in the smartphone market.","link":"https://elpais.com/tecnologia/2026-11-27/un-mes-con-el-iphone-duo-es-vivir-regreso-al-futuro.html?outputType=amp","categoria":"GADGETS","lang":"en"},{"fonte":"科学网—新闻","pais":"China","titulo":"Five academics discuss synthetic science and emphasize the need for interdisciplinary integration","resumo":"In a high-level scientific panel, five renowned Chinese academics debated the future of biology and synthetic science in the country. The experts emphasized that collaboration between fields such as computing, chemistry, and biology remains insufficient to achieve the sector's full potential. The group advocated for the creation of new research platforms focused on cross-cutting solutions for global challenges.","link":"https://news.sciencenet.cn/htmlnews/2026/11/575388.shtm","categoria":"SCIENCE","lang":"en"},{"fonte":"Público","pais":"Portugal","titulo":"Is buying refurbished tech worth it? We tested a 'like-new' MacBook","resumo":"The market for refurbished electronics has grown as an economical and sustainable alternative for acquiring premium computers and smartphones. Practical tests with a refurbished MacBook demonstrated high performance and preserved internal components at a fraction of the original price. The review concludes that, with proper technical warranty, purchasing these devices is extremely advantageous for the final consumer.","link":"https://www.publico.pt/2026/11/26/enter/noticia/comprar-tecnologia-recondicionada-compensa-testamos-macbook-novo-2196442?ref=hp\u0026cx=ultimas_1","categoria":"TECHNOLOGY","lang":"en"},{"fonte":"Agência Marinha","pais":"Brazil","titulo":"Documentary reveals Brazilian science production in Antarctica and highlights Navy support","resumo":"A new audiovisual production documents the scientific research carried out by Brazilian teams on the Antarctic continent, emphasizing the value of data collected for understanding global climate. The production highlights the logistical support provided by the Brazilian Navy, which is crucial for the continuous maintenance of fieldwork under extreme conditions. The work aims to bring society closer to the direct impact of Antarctic science on everyday national life.","link":"https://www.agencia.marinha.mil.br/especial/documentario-revela-producao-da-ciencia-brasileira-na-antartica-e-destaca-apoio-da-marinha","categoria":"SCIENCE","lang":"en"},{"fonte":"Business Standard","pais":"United States","titulo":"US Links India's Export Advantage to Cheap Chinese Industrial Inputs","resumo":"United States reports indicate that growth in India's export sector is strongly tied to the use of cheap industrial components and inputs from China. The analysis highlights the dependence of the Indian supply chain on Chinese manufacturing to maintain global competitiveness. This scenario sheds light on the challenges of international trade restructuring and technological dependence.","link":"https://www.business-standard.com/economy/news/us-links-india-export-edge-to-cheap-chinese-manufacturing-inputs-126112601531_1.html","categoria":"GLOBAL TRADE","lang":"en"},{"fonte":"La France aux États-Unis","pais":"France","titulo":"Café des Sciences SF: Climate Science in Action","resumo":"The San Francisco Café des Sciences event gathered experts to discuss practical actions in the face of climate change. Speakers presented recent research and technological innovations focused on sustainability and environmental mitigation. The initiative aims to bring scientific knowledge closer to the public and encourage effective solutions for the planet. The meeting reinforces the role of science in addressing the global environmental challenges of the 21st century.","link":"https://us.diplomatie.gouv.fr/fr/cafe-des-sciences-sf-la-science-du-climat-en-action","categoria":"SCIENCE","lang":"en"},{"fonte":"Interempresas Media","pais":"Spain","titulo":"Aimplas Receives BASF Circular Economy Award for Natural Parks Project","resumo":"The technological institute Aimplas has been awarded the BASF Circular Economy Prize thanks to an innovative project aimed at preservation in natural parks. The initiative develops sustainable solutions for waste management and the protection of vulnerable ecosystems. The award recognizes the practical application of science in combating contamination and promoting sustainability. This achievement strengthens the relevance of partnerships between research centers and industries for the environment.","link":"https://www.interempresas.net/Plastico/670955-Aimplas-recibe-el-Premio-Basf-de-Economia-Circular-por-su-proyecto-en-parques-naturales.html","categoria":"SCIENCE","lang":"en"},{"fonte":"Investing.com India","pais":"China","titulo":"Beijing Zhongke WengeAI Shares Surge Sharply Driven by New AI Advances","resumo":"Artificial intelligence company Beijing Zhongke WengeAI registered a sharp rise in its shares on the Chinese financial market following announcements of progress in its data models. The company has stood out in providing corporate solutions based on natural language AI and predictive analysis. Investor optimism reinforces the heated market environment for artificial intelligence in the region.","link":"https://in.investing.com/news/stock-market-news/why-is-beijing-zhongke-wengeai-science-and-technology-stock-surging-today-93CH-5727646","categoria":"ARTIFICIAL INTELLIGENCE","lang":"en"},{"fonte":"Expresso","pais":"Portugal","titulo":"European Startups Need Political Will and Maturity to Grow","resumo":"Innovation sector experts warn that the startup ecosystem in Europe faces structural bottlenecks compared to the North American and Asian markets. The lack of regulatory incentives and a smaller supply of mature venture capital hinder the scaling of new technology companies. The study argues that there is an urgent need for greater political commitment to create financing conditions and global competitiveness.","link":"https://expresso.pt/internacional/2026-11-26-startups-europeias-precisam-de-vontade-politica-e-maturidade-4ec36283?utm_source=expresso\u0026utm_medium=content\u0026utm_campaign=WEB\u0026utm_content=/internacional/2026-11-26-startups-europeias-precisam-de-vontade-politica-e-maturidade-4ec36283","categoria":"BUSINESS","lang":"en"}];
+
+  const searchInput = document.getElementById('search');
+  const langSelect = document.getElementById('lang');
+  const countrySelect = document.getElementById('country');
+  const categorySelect = document.getElementById('category');
+  const grid = document.getElementById('grid');
+  const countEl = document.getElementById('count');
+  const clearBtn = document.getElementById('clear-filters');
+
+  // Escapa texto inserido em templates HTML. Links passam por validação adicional.
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function safeHttpUrl(value) {
+    try {
+      const parsed = new URL(String(value || ''));
+      return parsed.protocol === 'https:' || parsed.protocol === 'http:' ? parsed.href : '#';
+    } catch {
+      return '#';
+    }
+  }
+
+  function populateSelects() {
+    const lang = langSelect.value;
+    const currentData = data.filter(d => d.lang === lang);
+
+    const countries = [...new Set(currentData.map(d => d.pais))].filter(Boolean).sort();
+    const categories = [...new Set(currentData.map(d => d.categoria))].filter(Boolean).sort();
+
+    const currentCountry = countrySelect.value;
+    const currentCategory = categorySelect.value;
+
+    countrySelect.innerHTML = '<option value="all">Todos / All</option>';
+    categorySelect.innerHTML = '<option value="all">Todas / All</option>';
+
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      countrySelect.appendChild(opt);
+    });
+
+    categories.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      categorySelect.appendChild(opt);
+    });
+
+    if (currentCountry !== 'all' && countries.includes(currentCountry)) {
+      countrySelect.value = currentCountry;
+    }
+    if (currentCategory !== 'all' && categories.includes(currentCategory)) {
+      categorySelect.value = currentCategory;
+    }
+  }
+
+  function render(items) {
+    countEl.textContent = `${items.length} notícia${items.length !== 1 ? 's' : ''}`;
+    
+    grid.innerHTML = items.map(item => {
+      const readMoreTxt = item.lang === 'pt' ? 'Ler mais' : 'Read more';
+      
+      const bulletList = (item.resumo || '').split('\n')
+        .filter(Boolean)
+        .map(line => `<li>${esc(line.replace(/^- /, ''))}</li>`)
+        .join('');
+
+      return `
+        <div class="news-card">
+          <div class="card-meta">
+            <span class="category">${esc(item.categoria) || 'Geral'}</span>
+            <span class="country">${esc(item.pais) || 'Global'}</span>
+          </div>
+          <h3 class="card-title">${esc(item.titulo)}</h3>
+          <div class="card-summary">
+            <ul>${bulletList}</ul>
+          </div>
+          <div class="card-footer">
+            <a href="${esc(safeHttpUrl(item.link))}" target="_blank" rel="noopener noreferrer" class="read-more">
+              ${readMoreTxt} &rarr;
+            </a>
+            <span class="source">${esc(item.fonte)}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function filterData() {
+    const query = searchInput.value.toLowerCase();
+    const lang = langSelect.value;
+    const country = countrySelect.value;
+    const category = categorySelect.value;
+
+    const filtered = data.filter(item => {
+      const matchLang = item.lang === lang;
+      const matchCountry = country === 'all' || item.pais === country;
+      const matchCategory = category === 'all' || item.categoria === category;
+      const matchSearch = query === '' 
+        || (item.titulo || '').toLowerCase().includes(query)
+        || (item.resumo || '').toLowerCase().includes(query)
+        || (item.fonte || '').toLowerCase().includes(query);
+
+      return matchLang && matchCountry && matchCategory && matchSearch;
+    });
+
+    render(filtered);
+  }
+
+  // Binds
+  searchInput.addEventListener('input', filterData);
+  langSelect.addEventListener('change', () => {
+    populateSelects();
+    filterData();
+  });
+  countrySelect.addEventListener('change', filterData);
+  categorySelect.addEventListener('change', filterData);
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    countrySelect.value = 'all';
+    categorySelect.value = 'all';
+    filterData();
+  });
+
+  // Initialization
+  populateSelects();
+  filterData(); // trigger first render
+
+  // Contagem anônima de visualizações. Nenhum cookie, credencial ou conteúdo
+  // da página é enviado; a CSP permite somente este endpoint de analytics.
+  (function trackDashboardView() {
+    try {
+      const pageKey = location.pathname.split('/').pop()?.replace(/.html$/, '') || '';
+      if (!pageKey.startsWith('Dashboard-Monitoramento-')) return;
+
+      fetch('https://abacus.jasoncameron.dev/hit/tap-intl-monitor/' + encodeURIComponent(pageKey), {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-store',
+        credentials: 'omit',
+        referrerPolicy: 'no-referrer'
+      }).catch(function() {
+        // Analytics nunca deve impedir o uso do dashboard.
+      });
+    } catch (_error) {
+      // Analytics nunca deve impedir o uso do dashboard.
+    }
+  })();
+</script>
+</body>
+</html>
